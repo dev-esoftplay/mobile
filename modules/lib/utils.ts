@@ -3,7 +3,7 @@ import { Linking, Platform, Clipboard, CameraRoll, Share } from "react-native"
 import * as FileSystem from 'expo-file-system';
 import { esp, LibToastProperty, _global } from "esoftplay"
 import shorthash from "shorthash"
-import { CommonActions } from '@react-navigation/native';
+import { StackActions, NavigationActions } from 'react-navigation';
 const Buffer = require('buffer/').Buffer
 
 
@@ -42,13 +42,13 @@ export default class eutils {
     if (!defOutput) {
       defOutput = "";
     }
-    return props && props.route && props.route.params && props.route.params[key] || defOutput;
+    return props && props.navigation && props.navigation.state && props.navigation.state.params && props.navigation.state.params[key] || defOutput;
   }
   static getArgsAll(props: any, defOutput?: any): any {
     if (!defOutput) {
       defOutput = "";
     }
-    return props && props.route && props.route.params || defOutput;
+    return props && props.navigation && props.navigation.state && props.navigation.state.params || defOutput;
   }
 
   static getReduxState(key: string, ...keys: string[]): any {
@@ -58,7 +58,7 @@ export default class eutils {
       if (_params.length > 0)
         for (let i = 0; i < _params.length; i++) {
           const key = _params[i];
-          if (state && state.hasOwnProperty(key)) {
+          if (state.hasOwnProperty(key)) {
             state = state[key];
           } else {
             state = {};
@@ -139,18 +139,18 @@ export default class eutils {
   static navReset(navigation: any, isLogin?: boolean): void {
     console.warn('LibUtils.navReset is deprecated, use LibNavigation.reset instead')
     const home = esp.config('home')
-    const resetAction = CommonActions.reset({
+    const resetAction = StackActions.reset({
       index: 0,
-      routes: [{ name: isLogin ? home.member : home.public }]
+      actions: [NavigationActions.navigate({ routeName: isLogin ? home.member : home.public })],
     });
     navigation.dispatch(resetAction);
   }
 
   static navResetCustom(navigation: any, routeName: string): void {
     console.warn('LibUtils.navResetCustom is deprecated, use LibNavigation.reset(\'customRouteName\') instead')
-    const resetAction = CommonActions.reset({
+    const resetAction = StackActions.reset({
       index: 0,
-      routes: [{ name: routeName }]
+      actions: [NavigationActions.navigate({ routeName })],
     });
     navigation.dispatch(resetAction);
   }

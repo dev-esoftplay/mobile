@@ -255,7 +255,7 @@ yarn.lock\n\
 			console.log('.gitignore has been created');
 		});
 
-		const AppJS = `import React, { useEffect, useMemo } from 'react';
+		const AppJS = `import React from 'react';
 import { createStore } from 'redux';
 import { persistStore } from 'redux-persist'
 import { PersistGate } from 'redux-persist/integration/react'
@@ -267,21 +267,24 @@ import * as ErrorRecovery from 'expo-error-recovery';
 _global.store = createStore(esp.reducer())
 _global.persistor = persistStore(_global.store)
 
-export default function App(props: any) {
-	const Home = useMemo(() => esp.home(), [])
+export default class App extends React.Component {
+	Home = esp.home()
 
-	useEffect(() => {
+	constructor(props: any) {
+		super(props)
 		ErrorRecovery.setRecoveryProps(props)
 		ErrorReport.getError(props.exp.errorRecovery)
-	}, [])
+	}
 
-	return (
-		<Provider store={_global.store}>
-			<PersistGate loading={null} persistor={_global.persistor}>
-				<Home />
-			</PersistGate>
-		</Provider>
-	)
+	render() {
+		return (
+			<Provider store={_global.store}>
+				<PersistGate loading={null} persistor={_global.persistor}>
+					<this.Home />
+				</PersistGate>
+			</Provider>
+		)
+	}
 }`
 			;
 		var bashScript = 'cd ../../ && expo install ';
@@ -312,9 +315,9 @@ export default function App(props: any) {
 			"moment-timezone",
 			"native-base",
 			"react-native-modal",
+			"react-navigation",
 			"react-native-screens",
-			"@react-navigation/native",
-			"@react-navigation/stack",
+			"react-navigation-stack",
 			"@react-native-community/masked-view",
 			"react-native-safe-area-context",
 			"react-redux",

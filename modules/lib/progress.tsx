@@ -78,6 +78,8 @@ class m extends LibComponent<LibProgressProps, LibProgressState>{
     }
   }
 
+
+
   render(): any {
     const { message, show } = this.props
     if (!show) return null

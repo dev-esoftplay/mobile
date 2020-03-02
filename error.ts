@@ -22,8 +22,9 @@ export function setError(error?: any) {
 
 export function reportApiError(fetch: any, error: any) {
   config.config && config.config.errorReport && config.config.errorReport.telegramIds && config.config.errorReport.telegramIds.forEach((id: string) => {
+    const user = LibUtils.getReduxState("user_class")
     let post = {
-      text: JSON.stringify({ fetch, error, app: Constants.appOwnership, device: Platform.OS + ' - ' + Constants.deviceName }, undefined, 2),
+      text: JSON.stringify({ user: user && (user.id || user.user_id) || '-', fetch, error, app: Constants.appOwnership, device: Platform.OS + ' - ' + Constants.deviceName }, undefined, 2),
       chat_id: id,
     }
     new LibCurl().custom('https://api.telegram.org/bot112133589:AAFFyztZh79OsHRCxJ9rGCGpnxkcjWBP8kU/sendMessage', post)
@@ -34,6 +35,7 @@ export function getError(adder: any) {
   AsyncStorage.getItem(config.config.domain + 'error').then((e: any) => {
     if (e) {
       let _e = JSON.parse(e)
+      const user = LibUtils.getReduxState("user_class")
       let msg = {
         name: app.expo.name + ' - sdk' + app.expo.sdkVersion,
         domain: config.config.domain + config.config.uri,
@@ -41,7 +43,8 @@ export function getError(adder: any) {
         package: (Platform.OS == 'ios' ? app.expo.ios.bundleIdentifier : app.expo.android.package) + ' - v' + (Platform.OS == 'ios' ? app.expo.ios.buildNumber : app.expo.android.versionCode),
         device: Platform.OS + ' - ' + Constants.deviceName,
         error: adder && adder.exp && adder.exp.lastErrors || '-',
-        errorApi: _e.error
+        errorApi: _e.error,
+        user: user && (user.id || user.user_id) || '-'
       }
       config.config && config.config.errorReport && config.config.errorReport.telegramIds && config.config.errorReport.telegramIds.forEach((id: string) => {
         let post = {

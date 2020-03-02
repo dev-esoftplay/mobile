@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, FlatList } from 'react-native';
-import { LibComponent, LibLoading, LibCurl, LibTextstyle, esp, LibListItemLayout } from 'esoftplay';
+import { LibComponent, LibLoading, LibCurl, LibTextstyle, esp, LibListItemLayout, LibStyle } from 'esoftplay';
 
 export interface LibInfiniteProps {
   url: string,
@@ -139,36 +139,36 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
     return (
       <View style={{ flex: 1 }} >
         {
-          (data && data.length == 0) && this.isStop && error != '' ?
-            errorView ? errorView :
-              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} >
-                <LibTextstyle text={error} textStyle="body" style={{ textAlign: 'center' }} />
-              </View>
+          (!data || data.length) == 0 && !this.isStop ?
+            <LibLoading />
             :
-            (!data || data.length) == 0 && !this.isStop ?
-              <LibLoading />
-              :
-              <FlatList
-                data={data}
-                onRefresh={() => this.loadData()}
-                refreshing={false}
-                keyExtractor={this._keyExtractor}
-                removeClippedSubviews
-                showsHorizontalScrollIndicator={false}
-                showsVerticalScrollIndicator={false}
-                windowSize={7}
-                ListFooterComponent={
-                  (!this.isStop) ? <View style={{ padding: 20 }} ><LibLoading /></View> : <View style={{ height: 50 }} />
+            <FlatList
+              data={data}
+              onRefresh={() => this.loadData()}
+              refreshing={false}
+              keyExtractor={this._keyExtractor}
+              removeClippedSubviews
+              ListEmptyComponent={
+                errorView ? errorView :
+                  <View style={{ flex: 1, marginTop: LibStyle.height * 0.3, justifyContent: 'center', alignItems: 'center' }} >
+                    <LibTextstyle text={error} textStyle="body" style={{ textAlign: 'center' }} />
+                  </View>
+              }
+              showsHorizontalScrollIndicator={false}
+              showsVerticalScrollIndicator={false}
+              windowSize={7}
+              ListFooterComponent={
+                (!this.isStop) ? <View style={{ padding: 20 }} ><LibLoading /></View> : <View style={{ height: 50 }} />
+              }
+              onEndReachedThreshold={0.5}
+              onEndReached={() => {
+                if (!this.isStop) {
+                  this.loadData(this.page + 1)
                 }
-                onEndReachedThreshold={0.5}
-                onEndReached={() => {
-                  if (!this.isStop) {
-                    this.loadData(this.page + 1)
-                  }
-                }}
-                {...this.props}
-                renderItem={this._renderItem}
-              />
+              }}
+              {...this.props}
+              renderItem={this._renderItem}
+            />
         }
       </View>
     )

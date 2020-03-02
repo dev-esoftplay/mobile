@@ -1,7 +1,6 @@
 import React from "react";
 import { esp, LibUtils, _global } from 'esoftplay';
-import { StackActions, CommonActions } from '@react-navigation/native';
-
+import { StackActions, NavigationActions } from 'react-navigation';
 
 // var _navigator: any = React.createRef()
 // var _navigation: any
@@ -23,7 +22,7 @@ export default class m {
 
   static navigate(route: string, params?: any): void {
     _global._navigator.dispatch(
-      CommonActions.navigate({ name: route, params: params })
+      NavigationActions.navigate({ routeName: route, params: params })
     )
   }
 
@@ -80,13 +79,19 @@ export default class m {
 
   static replace(routeName: string, params?: any): void {
     _global._navigator.dispatch(
-      StackActions.replace(routeName, params)
+      StackActions.replace({
+        routeName,
+        params
+      })
     )
   }
 
   static push(routeName: string, params?: any): void {
     _global._navigator.dispatch(
-      StackActions.push(routeName, params)
+      StackActions.push({
+        routeName,
+        params
+      })
     )
   }
 
@@ -97,20 +102,18 @@ export default class m {
       _routeName = [..._routeName, ...routeNames]
     }
 
-    const resetAction = CommonActions.reset({
+    const resetAction = StackActions.reset({
       index: _routeName.length - 1,
-      routes: _routeName.map((x) => ({ name: x })),
+      actions: _routeName.map((rn) => NavigationActions.navigate({ routeName: rn }))
     });
     _global._navigator.dispatch(resetAction);
   }
 
   static back(deep?: number): void {
     let _deep = deep || 1
-    if (_deep == 1) {
-      _global._navigator.goBack()
-      return
-    }
-    const popAction = StackActions.pop(_deep);
+    const popAction = StackActions.pop({
+      n: _deep
+    });
     _global._navigator.dispatch(popAction)
   }
 
