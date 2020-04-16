@@ -5,9 +5,10 @@ import { LibComponent, LibLoading, LibCurl, LibTextstyle, esp, LibListItemLayout
 export interface LibInfiniteProps {
   url: string,
   post?: any,
-  onDataChange?: (data: any, counter: number) => void
+  initialData?: any[],
+  onDataChange?: (data: any, page: number) => void
   error?: string,
-  errorView?: any,
+  errorView?: ((msg: string) => any) | any,
   mainIndex?: string,
   bounces?: boolean,
   staticHeight?: number,
@@ -87,6 +88,9 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
       this.pages.push(page)
       new LibCurl(url, post,
         (res, msg) => {
+          const update = () => {
+            this.props.onDataChange && this.props.onDataChange(this.state.data, this.page)
+          }
           let mainIndex: any = this.props.mainIndex && res[this.props.mainIndex] || res
           if (mainIndex.list.length == 0 || res.list == '') {
             this.page = page
@@ -96,7 +100,7 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
                 error: this.props.error || 'Belum ada data',
                 data: page == 0 ? [] : state.data,
               }
-            })
+            }, update)
           } else {
             this.page = page
             this.isStop = ([...this.state.data, ...mainIndex.list].length >= parseInt(mainIndex.total) || (this.page >= (mainIndex.pages || mainIndex.total_pages) - 1))
@@ -105,7 +109,7 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
               return {
                 data: page == 0 ? mainIndex.list : latestData,
               }
-            })
+            }, update)
           }
         },
         (msg) => {
@@ -120,16 +124,16 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
   }
 
   componentDidUpdate(prevProps: LibInfiniteProps, prevState: LibInfiniteState): void {
-    if (prevState.data != this.state.data) {
-      this.props.onDataChange && this.props.onDataChange(this.state.data, this.state.data.length)
+    if (this.props.initialData != undefined && prevProps.initialData != this.props.initialData && this.props.initialData.length != 0 && this.state.data.length == 0) {
+      this.setState({ data: this.props.initialData })
     }
   }
 
-  _renderItem({ item, index }): any {
+  _renderItem({ item, index }: any): any {
     return this.props.renderItem(item, index)
   }
 
-  _keyExtractor(item, index): string {
+  _keyExtractor(item: any, index: number): string {
     return item.hasOwnProperty('id') && item.id || index.toString()
   }
 
@@ -147,16 +151,21 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
               onRefresh={() => this.loadData()}
               refreshing={false}
               keyExtractor={this._keyExtractor}
-              removeClippedSubviews
               ListEmptyComponent={
-                errorView ? errorView :
+                errorView
+                  ? typeof errorView == 'function'
+                    ? errorView(error)
+                    : errorView
+                  :
                   <View style={{ flex: 1, marginTop: LibStyle.height * 0.3, justifyContent: 'center', alignItems: 'center' }} >
                     <LibTextstyle text={error} textStyle="body" style={{ textAlign: 'center' }} />
                   </View>
               }
               showsHorizontalScrollIndicator={false}
               showsVerticalScrollIndicator={false}
-              windowSize={7}
+              initialNumToRender={5}
+              maxToRenderPerBatch={10}
+              windowSize={10}
               ListFooterComponent={
                 (!this.isStop) ? <View style={{ padding: 20 }} ><LibLoading /></View> : <View style={{ height: 50 }} />
               }

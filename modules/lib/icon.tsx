@@ -97,24 +97,24 @@ export default class icon extends LibComponent<LibIconProps, LibIconState>{
   }
 
   static Ionicons(props: LibIonIconProps): any {
-    const _size = props.size || 23
-    return <Ionicons size={_size} color={'#222'} {...props} style={{ width: _size, height: _size, ...props.style }} />
+    const size = props.size || 23
+    return <Ionicons size={size} color={'#222'} {...props} style={{ width: size, height: size + 1, ...props.style }} />
   }
   static AntDesign(props: LibAntDesignIconProps): any {
-    const _size = props.size || 23
-    return <AntDesign size={_size} color={'#222'} {...props} style={{ width: _size, height: _size, ...props.style }} />
+    const size = props.size || 23
+    return <AntDesign size={size} color={'#222'} {...props} style={{ width: size, height: size + 1, ...props.style }} />
   }
   static SimpleLineIcons(props: LibSimpleLineIconProps): any {
-    const _size = props.size || 23
-    return <SimpleLineIcons size={_size} color={'#222'} {...props} style={{ width: _size, height: _size, ...props.style }} />
+    const size = props.size || 23
+    return <SimpleLineIcons size={size} color={'#222'} {...props} style={{ width: size, height: size + 1, ...props.style }} />
   }
   static EntypoIcons(props: LibEntypoIconProps): any {
-    const _size = props.size || 23
-    return <Entypo size={_size} color={'#222'} {...props} style={{ width: _size, height: _size, ...props.style }} />
+    const size = props.size || 23
+    return <Entypo size={size} color={'#222'} {...props} style={{ width: size, height: size + 1, ...props.style }} />
   }
 
   render(): any {
     const size = this.props.size || 23
-    return <MaterialCommunityIcons size={size} color={'#222'} {...this.props} style={{ width: size, height: size, ...this.props.style }} />
+    return <MaterialCommunityIcons size={size} color={'#222'} {...this.props} style={{ width: size, height: size + 1, ...this.props.style }} />
   }
 }

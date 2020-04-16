@@ -64,7 +64,7 @@ export default class EList extends LibComponent<LibListProps, LibListState> {
     return this.props.renderItem(item, index)
   }
 
-  keyExtractor(item, index): string {
+  keyExtractor(item: any, index: number): string {
     return item.hasOwnProperty('id') && item.id || index.toString()
   }
 
@@ -82,8 +82,9 @@ export default class EList extends LibComponent<LibListProps, LibListState> {
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
           refreshing={false}
-          removeClippedSubviews
-          windowSize={7}
+          initialNumToRender={5}
+          maxToRenderPerBatch={10}
+          windowSize={10}
           {...this.props}
           {...isStatic()}
           ListFooterComponent={this.props.renderFooter && this.props.renderFooter()}

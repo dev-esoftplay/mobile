@@ -263,6 +263,9 @@ import { Provider } from 'react-redux'
 import { esp, _global } from 'esoftplay';
 import * as ErrorReport from 'esoftplay/error'
 import * as ErrorRecovery from 'expo-error-recovery';
+import { enableScreens } from 'react-native-screens';
+
+enableScreens();
 
 _global.store = createStore(esp.reducer())
 _global.persistor = persistStore(_global.store)
@@ -313,7 +316,7 @@ export default class App extends React.Component {
 			"immutability-helper",
 			"moment",
 			"moment-timezone",
-			"native-base",
+			"native-base@2.13.8",
 			"react-native-modal",
 			"react-navigation",
 			"react-native-screens",

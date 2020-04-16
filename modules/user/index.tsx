@@ -123,7 +123,12 @@ export default function m(props: UserIndexProps): any {
         const initRoute = (user && (user.id || user.user_id)) ? econf.home.member : econf.home.public
         var config: any = {
           headerMode: "none",
-          initialRouteName: String(initRoute)
+          initialRouteName: String(initRoute),
+          defaultNavigationOption: {
+            cardStyle: {
+              backgroundColor: "white"
+            }
+          }
         }
         _global.Router = createAppContainer(createStackNavigator(navigations, config))
         await setFonts()

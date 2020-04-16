@@ -1,5 +1,5 @@
 import React from "react";
-import { LibUtils, esp } from 'esoftplay';
+import { LibUtils, esp, LibNavigation } from 'esoftplay';
 import { AsyncStorage } from 'react-native';
 
 export default class local {
@@ -18,12 +18,12 @@ export default class local {
     }
   }
 
-  static setLanguage(langId: string, navigation: any, isLogin?: boolean): void {
+  static setLanguage(langId: string): void {
     esp.dispatch({
       type: 'lib_locale_set_id',
       payload: langId
     })
-    LibUtils.navReset(navigation, isLogin)
+    LibNavigation.reset()
     AsyncStorage.setItem('locale', langId)
   }
 

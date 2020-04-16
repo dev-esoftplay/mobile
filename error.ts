@@ -13,8 +13,10 @@ const myErrorHandler = (e: any, isFatal: any) => {
 
 export function setError(error?: any) {
   let routes = LibUtils.getReduxState('user_index')
+  const user = LibUtils.getReduxState("user_class")
   let lastIndex = routes.routes.length - 1
   let _e: any = {}
+  _e['user'] = user
   _e['error'] = error
   _e['routes'] = routes.routes[lastIndex].routeName
   AsyncStorage.setItem(config.config.domain + 'error', JSON.stringify(_e))
@@ -26,8 +28,9 @@ export function reportApiError(fetch: any, error: any) {
     let post = {
       text: JSON.stringify({ user: user && (user.id || user.user_id) || '-', fetch, error, app: Constants.appOwnership, device: Platform.OS + ' - ' + Constants.deviceName }, undefined, 2),
       chat_id: id,
+      disable_web_page_preview: true
     }
-    new LibCurl().custom('https://api.telegram.org/bot112133589:AAFFyztZh79OsHRCxJ9rGCGpnxkcjWBP8kU/sendMessage', post)
+    new LibCurl().custom('https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage', post)
   })
 }
 
@@ -35,7 +38,6 @@ export function getError(adder: any) {
   AsyncStorage.getItem(config.config.domain + 'error').then((e: any) => {
     if (e) {
       let _e = JSON.parse(e)
-      const user = LibUtils.getReduxState("user_class")
       let msg = {
         name: app.expo.name + ' - sdk' + app.expo.sdkVersion,
         domain: config.config.domain + config.config.uri,
@@ -44,17 +46,18 @@ export function getError(adder: any) {
         device: Platform.OS + ' - ' + Constants.deviceName,
         error: adder && adder.exp && adder.exp.lastErrors || '-',
         errorApi: _e.error,
-        user: user && (user.id || user.user_id) || '-'
+        user: _e.user && (_e.user.id || _e.user.user_id) || '-'
       }
       config.config && config.config.errorReport && config.config.errorReport.telegramIds && config.config.errorReport.telegramIds.forEach((id: string) => {
         let post = {
           text: JSON.stringify(msg, undefined, 2),
-          chat_id: id
+          chat_id: id,
+          disable_web_page_preview: true
         }
         if (msg.error == '-') {
           msg.error = 'uncaught fatal error'
         }
-        new LibCurl().custom('https://api.telegram.org/bot112133589:AAFFyztZh79OsHRCxJ9rGCGpnxkcjWBP8kU/sendMessage', post)
+        new LibCurl().custom('https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage', post)
       });
       AsyncStorage.removeItem(config.config.domain + 'error')
     }

@@ -35,9 +35,6 @@ export default class m extends LibComponent<LibSlidingupProps, LibSlidingupState
     }
   }
 
-
-
-
   show(): void {
     if (this.props.children) {
       this.setState({ show: true }, () => {

@@ -6,7 +6,7 @@ import routers from './cache/routers';
 var app = require('../../app.json');
 var conf = require('../../config.json');
 import { connect as _connect } from 'react-redux';
-import { _global } from 'esoftplay';
+import { _global, esp } from 'esoftplay';
 
 export default (() => {
   function mergeDeep(target: any, source: any): any {
@@ -53,15 +53,32 @@ export default (() => {
     }
     return out;
   }
+
+  function readDeepObj(obj: any) {
+    return function (param?: string, ...params: string[]): any {
+      let out: any = obj
+      if (param) {
+        var _params = [param, ...params]
+        if (_params.length > 0)
+          for (let i = 0; i < _params.length; i++) {
+            const key = _params[i];
+            if (out.hasOwnProperty(key)) {
+              out = out[key];
+            } else {
+              out = undefined;
+            }
+          }
+      }
+      return out;
+    }
+  }
+
   function lang(...strings: string[]): string {
-    const _store: any = _global.store.getState()
-    const _langId = _store.lib_locale.lang_id
-    const _langIds: string[] = config('langIds')
-    const _langIndex = _langIds.indexOf(_langId)
-    if (_langIndex <= _langIds.length - 1)
-      return strings[_langIndex]
-    else
-      return strings[0]
+    let string = readDeepObj(esp.assets("locale/" + langId() + ".json"))(...strings)
+    if (!string) {
+      string = readDeepObj(esp.assets("locale/id.json"))(...strings)
+    }
+    return string
   }
   function langId(): string {
     const _store: any = _global.store.getState()

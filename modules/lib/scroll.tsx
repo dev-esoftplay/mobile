@@ -77,7 +77,7 @@ export default class escroll extends LibComponent<LibScrollProps, LibScrollState
     return item
   }
 
-  keyExtractor(item, index): string {
+  keyExtractor(item: any, index: number): string {
     return index.toString()
   }
 
@@ -93,7 +93,9 @@ export default class escroll extends LibComponent<LibScrollProps, LibScrollState
           ref={this.flatscroll}
           data={this.props.children}
           refreshing={false}
-          windowSize={7}
+          initialNumToRender={5}
+          maxToRenderPerBatch={10}
+          windowSize={10}
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
           keyExtractor={this.keyExtractor}

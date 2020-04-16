@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, ScrollView, Text, TouchableWithoutFeedback, Platform, TouchableOpacity, StyleSheet } from 'react-native';
-import { LibComponent } from 'esoftplay';
+import { LibComponent, LibFocus } from 'esoftplay';
 
 export interface LibCarrouselProps {
   children: any,
@@ -374,7 +374,7 @@ export default class m extends LibComponent<LibCarrouselProps, LibCarrouselState
     );
   }
 
-  render() {
+  render(): any {
     const contents = this._setUpPages();
     const containerProps = {
       onLayout: this._onLayout,
@@ -385,6 +385,7 @@ export default class m extends LibComponent<LibCarrouselProps, LibCarrouselState
 
     return (
       <View {...containerProps}>
+        <LibFocus onFocus={this._setUpTimer} onBlur={this._clearTimer} />
         <ScrollView
           ref={this.scrollView}
           onScrollBeginDrag={this._onScrollBegin}

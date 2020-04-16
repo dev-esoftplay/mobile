@@ -2,7 +2,7 @@
 
 import React, { useRef, useEffect } from 'react';
 import { TextInput } from 'react-native';
-import { LibUtils, _global, useSafeState } from 'esoftplay';
+import { LibUtils, _global, useSafeState, esp } from 'esoftplay';
 
 export interface LibInput_baseProps {
   name: string,
@@ -107,10 +107,6 @@ export default function m(props: LibInput_baseProps): any {
     mask: props.mask,
     maskFrom: props.maskFrom
   }
-  const [text, settext] = useSafeState(props.defaultValue || '')
-  useEffect(() => {
-    _global['inputRef'][props.name].current!.setNativeProps({ text: mask(props.name, text) })
-  })
 
   useEffect(() => {
     _global['inputRef'][props.name].current!.blur()
@@ -129,7 +125,6 @@ export default function m(props: LibInput_baseProps): any {
     ...props,
     onChangeText: (t: string) => {
       setText(props.name)(t)
-      settext(mask(props.name, t))
       props.onChangeText(unmask(props.name, t), mask(props.name, t))
     },
     maxLength: props.mask ? props.mask.length : undefined,

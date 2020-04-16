@@ -2,6 +2,7 @@
 
 import React, { useRef, useEffect, useMemo } from 'react';
 import { View, ScrollView } from 'react-native';
+import { LibFocus } from "esoftplay"
 
 export interface LibCarrousel_snapProps {
   data: any[]
@@ -72,6 +73,8 @@ export default function m(props: LibCarrousel_snapProps): any {
     if (align == 'left' && out == props.data.length - 1) {
       out = out - (props.maxWidth - props.itemWidth)
     }
+    if (props.onChangePage)
+      props.onChangePage(indexes[out])
     if (props.loop) {
       if (out >= (props.data.length + adderLength)) {
         const a = indexes[out];
@@ -95,7 +98,7 @@ export default function m(props: LibCarrousel_snapProps): any {
       }
     }
     if (props.onChangePage)
-      props.onChangePage(indexes[out])
+      props.onChangePage(indexes[Math.round(out)])
 
     if (props.loop) {
       let x = offsetX ? (offsetX / props.itemWidth) : 0
@@ -120,19 +123,20 @@ export default function m(props: LibCarrousel_snapProps): any {
 
   function prefixIndexs(): number[] {
     let out = []
+    const dataLength = props.data.length
     if (props.loop) {
-      if (props.data.length == 1) {
-        out.push(props.data.length - 1)
-        out.push(props.data.length - 1)
-        out.push(props.data.length - 1)
-      } else if (props.data.length > 2) {
-        out.push(props.data.length - 3)
-        out.push(props.data.length - 2)
-        out.push(props.data.length - 1)
+      if (dataLength == 1) {
+        out.push(dataLength - 1)
+        out.push(dataLength - 1)
+        out.push(dataLength - 1)
+      } else if (dataLength > 2) {
+        out.push(dataLength - 3)
+        out.push(dataLength - 2)
+        out.push(dataLength - 1)
       } else {
-        out.push(props.data.length - 1)
-        out.push(props.data.length - 2)
-        out.push(props.data.length - 1)
+        out.push(dataLength - 1)
+        out.push(dataLength - 2)
+        out.push(dataLength - 1)
       }
 
     }
@@ -142,18 +146,19 @@ export default function m(props: LibCarrousel_snapProps): any {
   function prefix(): any {
     let out = []
     if (props.loop) {
-      if (props.data.length == 1) {
-        out.push(renderItem(props.data[props.data.length - 1], 'x'))
-        out.push(renderItem(props.data[props.data.length - 1], 'y'))
-        out.push(renderItem(props.data[props.data.length - 1], 'z'))
-      } else if (props.data.length > 2) {
-        out.push(renderItem(props.data[props.data.length - 3], 'x'))
-        out.push(renderItem(props.data[props.data.length - 2], 'y'))
-        out.push(renderItem(props.data[props.data.length - 1], 'z'))
+      const dataLength = props.data.length
+      if (dataLength == 1) {
+        out.push(renderItem(props.data[dataLength - 1], 'x'))
+        out.push(renderItem(props.data[dataLength - 1], 'y'))
+        out.push(renderItem(props.data[dataLength - 1], 'z'))
+      } else if (dataLength > 2) {
+        out.push(renderItem(props.data[dataLength - 3], 'x'))
+        out.push(renderItem(props.data[dataLength - 2], 'y'))
+        out.push(renderItem(props.data[dataLength - 1], 'z'))
       } else {
-        out.push(renderItem(props.data[props.data.length - 1], 'x'))
-        out.push(renderItem(props.data[props.data.length - 2], 'y'))
-        out.push(renderItem(props.data[props.data.length - 1], 'z'))
+        out.push(renderItem(props.data[dataLength - 1], 'x'))
+        out.push(renderItem(props.data[dataLength - 2], 'y'))
+        out.push(renderItem(props.data[dataLength - 1], 'z'))
       }
 
     }
@@ -202,10 +207,12 @@ export default function m(props: LibCarrousel_snapProps): any {
 
   return (
     <View style={{}} >
+      <LibFocus onFocus={() => autoCycle && props.loop && props.align == 'center' ? timmer() : {}} onBlur={() => timmerTick ? clearInterval(timmerTick) : {}} />
       <ScrollView
         bounces={false}
         ref={sRef}
         horizontal
+        {...props}
         showsHorizontalScrollIndicator={false}
         onMomentumScrollEnd={onChangePage}
         snapToOffsets={renderOffsets}
