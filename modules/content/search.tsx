@@ -71,7 +71,7 @@ export default class esearch extends Component<ContentSearchProps, ContentSearch
               this.props.close()
             }}
             onChangeText={(e: any) => this.inputSearch = e}
-            placeholder={esp.lang("Temukan Berita ...", "Search Article...")} />
+            placeholder={"Temukan Berita ..."} />
           <Button
             transparent={true}
             style={{

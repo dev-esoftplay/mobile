@@ -23,6 +23,10 @@ export function alertInstall(title?: string, msg?: string): void {
   }], { cancelable: false })
 }
 
+export function checkAlertInstall(): void {
+  check((isNew) => { if (isNew) alertInstall() })
+}
+
 export function check(callback: (isNew: boolean) => void): void {
   if (!__DEV__)
     Updates.fetchUpdateAsync().then((v) => {

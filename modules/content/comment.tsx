@@ -73,7 +73,7 @@ export default class ecomment extends LibComponent<ContentCommentProps, ContentC
                 flex: 1,
                 color: colorAccent
               }}>
-              {esp.lang("Komentar", "Comment")}
+              {"Komentar"}
             </Text>
           </View>
           <ContentComment_list

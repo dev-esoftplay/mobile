@@ -346,7 +346,7 @@ class elist extends LibComponent<ContentListProps, ContentListState>{
                 dataProvider={this.dataProvider.cloneWithRows(this.state.data)}
                 rowRenderer={this._rowRenderer} />
               : this.state.data.length == 0 && this.state.isStop ?
-                <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} ><Text note >{esp.lang("Berita masih kosong", "Article not found")}</Text></View>
+                <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} ><Text note >{"Artikel masih kosong"}</Text></View>
                 :
                 <ActivityIndicator
                   color={colorPrimaryDark}

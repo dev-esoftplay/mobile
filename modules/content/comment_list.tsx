@@ -138,7 +138,7 @@ export default class commentList extends LibComponent<ContentComment_listProps, 
               }
             })
             if (!success)
-              Alert.alert(esp.lang('Komentar gagal dikirim', "Comment failed to send"), _msg[1])
+              Alert.alert('Komentar gagal dikirim', _msg[1])
           }, 1
         )
       }
@@ -169,24 +169,24 @@ export default class commentList extends LibComponent<ContentComment_listProps, 
 
   render(): any {
     var replyText = " "
-    var replySend = esp.lang("Kirim", "Send")
+    var replySend = "Kirim"
     if (this.props.par_id != 0) {
-      replyText = esp.lang(" Balasan ", " Reply ")
-      replySend = esp.lang("Balas", "Reply")
+      replyText = " Balasan "
+      replySend = "Balas"
     }
     const comment_login = esp.config("comment_login");
     if (comment_login == 1 && this.state.user == 1 && this.state.showLogin) {
       return (
         <View style={{ flex: 1, backgroundColor: "white" }} >
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }} >
-            <Text note style={{ flex: 1, padding: 10 }} >{esp.lang("Silakan login dengan salah satu akun sosial media berikut untuk dapat mengirimkan komentar", "Please log in with one of the following social media accounts to submit comments")}</Text>
+            <Text note style={{ flex: 1, padding: 10 }} >{"Silakan login dengan salah satu akun sosial media berikut untuk dapat mengirimkan komentar"}</Text>
             <View style={{ justifyContent: "center" }} >
               <Button primary transparent small
                 style={{ alignSelf: "flex-end" }}
                 onPress={() => {
                   this.setState({ showLogin: false, user: this.props.user })
                 }} >
-                <Text style={{ color: colorPrimary }} >{esp.lang("BATAL", "CANCEL")}</Text>
+                <Text style={{ color: colorPrimary }} >{"BATAL"}</Text>
               </Button>
             </View>
           </View>
@@ -205,7 +205,7 @@ export default class commentList extends LibComponent<ContentComment_listProps, 
         style={{ flex: 1, backgroundColor: "white" }} >
         {
           (this.state.total == 0 && !this.state.isLoading && this.state.data.length == 0) ?
-            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} ><Text note >{esp.lang("Belum ada", "")}{replyText}{esp.lang("Komentar", "Comment not found")}</Text></View>
+            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} ><Text note >{"Belum ada"}{replyText}{"Komentar"}</Text></View>
             :
             <RecyclerListView
               ref={(e => this.list = e)}
@@ -282,7 +282,7 @@ export default class commentList extends LibComponent<ContentComment_listProps, 
                 ref={(e) => this.input2 = e}
                 onSubmitEditing={() => this.postComment()}
                 onFocus={() => this.setState({ showLogin: true })}
-                placeholder={esp.lang("Tulis komentar", "Write Comment")}
+                placeholder={"Tulis komentar"}
                 selectionColor={LibUtils.colorAdjust(colorPrimary, 1)}
                 returnKeyType={"send"}
                 placeholderTextColor={"#999"}

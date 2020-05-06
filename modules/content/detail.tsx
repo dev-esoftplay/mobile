@@ -255,7 +255,7 @@ export default class edetail extends LibComponent<ContentDetailProps, ContentDet
                           small
                           style={{ alignSelf: "center", backgroundColor: colorPrimary }}
                           onPress={() => this.props.navigation.navigate("content/comment", { id: result.id })} >
-                          <Text>{esp.lang("Komentar", "Comment")}</Text>
+                          <Text>{"Komentar"}</Text>
                         </Button>
                         : null
                     }
@@ -285,7 +285,7 @@ export default class edetail extends LibComponent<ContentDetailProps, ContentDet
                       {
                         (result.related.length > 0) &&
                         <ListItem itemDivider first>
-                          <Text>{esp.lang("Artikel Terkait", "Related Content")}</Text>
+                          <Text>{"Artikel Terkait"}</Text>
                         </ListItem>
                       }
                       {

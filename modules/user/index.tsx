@@ -23,7 +23,8 @@ import {
   UserMain,
   LibNavigation,
   LibToast,
-  useSafeState
+  useSafeState,
+  LibUpdaterProperty,
 } from 'esoftplay';
 import firebase from 'firebase'
 import { Notifications } from "expo";
@@ -92,6 +93,7 @@ export default function m(props: UserIndexProps): any {
 
   useEffect(() => {
     setTimeout(async () => {
+      LibUpdaterProperty.checkAlertInstall()
       LibTheme.getTheme()
       LibLocale.getLanguage()
       if (esp.config().notification == 1) {

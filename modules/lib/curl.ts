@@ -2,7 +2,7 @@
 import react from "react";
 import momentTimeZone from "moment-timezone"
 import moment from "moment/min/moment-with-locales"
-import { esp, LibCrypt, LibWorker, LibProgress, _global } from 'esoftplay';
+import { esp, LibCrypt, LibProgress, _global, LibWorker } from 'esoftplay';
 import { reportApiError } from "../../error";
 
 export default class ecurl {
@@ -127,19 +127,21 @@ export default class ecurl {
     var options = {
       method: !this.post ? "GET" : "POST",
       headers: this.header,
-      body: this.post
+      body: this.post,
+      _post: post
     }
     if (debug == 1) esp.log(this.url + this.uri, options)
     this.fetchConf = { url: this.url + this.uri, options: options }
-    // if (!upload) {
-    //   LibWorker.curl(this.url + this.uri, options, async (resText) => {
-    //     this.onFetched(resText, onDone, onFailed, debug)
-    //   })
-    // } else {
-    var res = await fetch(this.url + this.uri, options);
-    let resText = await res.text()
-    this.onFetched(resText, onDone, onFailed, debug)
-    // }
+    if (!upload) {
+      LibWorker.curl(this.url + this.uri, options, async (resText) => {
+        if (typeof resText == 'string')
+          this.onFetched(resText, onDone, onFailed, debug)
+      })
+    } else {
+      var res = await fetch(this.url + this.uri, options);
+      let resText = await res.text()
+      this.onFetched(resText, onDone, onFailed, debug)
+    }
   }
 
   onFetched(resText: string, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string) => void, debug?: number): void {
@@ -156,7 +158,6 @@ export default class ecurl {
       if (debug == 1) this.onError(resText)
     }
   }
-
 
   onError(msg: string): void {
     esp.log("\x1b[31m", msg)

@@ -314,6 +314,7 @@ export default class App extends React.Component {
 			"buffer",
 			"firebase",
 			"immutability-helper",
+			"immhelper",
 			"moment",
 			"moment-timezone",
 			"native-base@2.13.8",

@@ -64,7 +64,7 @@ export default class Comment_item extends LibComponent<ContentComment_itemProps,
                     style={[styles.textPrimary13, { marginRight: 10 }]}
                     name="ios-chatbubbles" />
                   <Text
-                    style={styles.textPrimary13}>{reply} {esp.lang("balasan", "reply")}</Text>
+                    style={styles.textPrimary13}>{reply} {"balasan"}</Text>
                 </View>
               </TouchableWithoutFeedback>
             </View>
@@ -78,11 +78,11 @@ export default class Comment_item extends LibComponent<ContentComment_itemProps,
               style={{ justifyContent: "flex-end", margin: 0, backgroundColor: "transparent" }}>
               <View style={{ marginTop: (Platform.OS == "ios" ? STATUSBAR_HEIGHT : 0) + 50, paddingBottom: LibStyle.isIphoneX ? 15 : 0, backgroundColor: "white", flex: 1 }} >
                 <View style={{ flexDirection: "row", alignItems: "center", backgroundColor: "#f5f5f5", borderBottomWidth: 0.5, borderBottomColor: "#e1e1e1" }} >
-                  <Text note style={{ flex: 1, padding: 10 }} >{esp.lang("Balasan Komentar", "Reply Comment")}</Text>
+                  <Text note style={{ flex: 1, padding: 10 }} >{"Balasan Komentar"}</Text>
                   <Button primary transparent small
                     style={{ alignSelf: "center" }}
                     onPress={() => this.setState({ isOpenChild: false })} >
-                    <Text style={{ color: colorPrimary }} >{esp.lang("Tutup", "Close")}</Text>
+                    <Text style={{ color: colorPrimary }} >{"Tutup"}</Text>
                   </Button>
                 </View>
                 <View
