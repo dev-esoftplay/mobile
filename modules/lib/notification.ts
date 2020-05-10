@@ -1,7 +1,7 @@
 //
 import { Notifications } from 'expo';
 import * as Permissions from 'expo-permissions'
-import { Platform, Alert, Linking } from "react-native";
+import { Platform, Alert, Linking, Keyboard } from "react-native";
 import { esp, UserNotification, LibCurl, LibCrypt, LibNavigation } from "esoftplay";
 import moment from 'moment';
 import Constants from 'expo-constants';
@@ -33,6 +33,7 @@ export default class enotification {
           if (obj.remote == true && obj.origin == 'received') {
             UserNotification.user_notification_loadData()
             if (Platform.OS == 'ios') {
+              Keyboard.dismiss()
               Alert.alert(obj && obj.data && obj.data.title || 'Notification', obj && obj.data && obj.data.message || 'New notification has been received', [
                 {
                   text: 'Open',
@@ -46,7 +47,6 @@ export default class enotification {
                 }
               ])
             }
-            // AsyncStorage.setItem("enotification", JSON.stringify(obj));
           } else if (obj.remote == true && obj.origin == 'selected') {
             enotification.openPushNotif(obj.data)
             UserNotification.user_notification_loadData()

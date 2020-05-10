@@ -1,8 +1,11 @@
 // withHooks
 
 import React, { useEffect } from 'react';
-import { View, Image } from 'react-native';
-import { useSafeState, LibWorker } from 'esoftplay';
+import { View, Image, InteractionManager } from 'react-native';
+import { useSafeState, LibWorker, LibStyle } from 'esoftplay';
+import * as FileSystem from 'expo-file-system'
+const sh = require("shorthash")
+import _ from "lodash"
 
 export interface LibPictureSource {
   uri: string
@@ -13,6 +16,20 @@ export interface LibPictureProps {
   resizeMode?: "contain" | "cover"
 }
 
+const CACHE_DIR = `${FileSystem.cacheDirectory}lib-picture-cache/`;
+
+const getCacheEntry = async (uri: string, toSize: number): Promise<{ exists: boolean; path: string }> => {
+  const path = `${CACHE_DIR}${sh.unique(uri)}-${toSize}.txt`;
+  try {
+    await FileSystem.makeDirectoryAsync(CACHE_DIR);
+  } catch (e) {
+    // do nothing
+  }
+  const info = await FileSystem.getInfoAsync(path);
+  const { exists } = info;
+  return { exists, path };
+};
+
 export default function m(props: LibPictureProps): any {
   const [uri, setUri] = useSafeState("")
   const { width, height } = props.style
@@ -21,10 +38,26 @@ export default function m(props: LibPictureProps): any {
     throw "Width and Height is Required"
   }
 
+  var timmer: any
+
   useEffect(() => {
-    if (props.source.uri) {
-      LibWorker.image(props.source.uri, Math.max(width, height), setUri)
-    }
+    timmer = InteractionManager.runAfterInteractions(async () => {
+      if (props.source.uri) {
+        let toSize = Math.max(width, height)
+        toSize = isNaN(toSize) ? LibStyle.width * 0.5 : toSize
+        const { path, exists } = await getCacheEntry(props.source.uri, toSize)
+        if (exists) {
+          let uri = await FileSystem.readAsStringAsync(path)
+          setUri(uri)
+        } else {
+          LibWorker.image(props.source.uri, toSize, async (uri) => {
+            await FileSystem.writeAsStringAsync(path, uri);
+            setUri(uri)
+          })
+        }
+      }
+    })
+    return () => timmer.cancel()
   }, [props.source])
 
   if (!props.source.hasOwnProperty("uri")) {
