@@ -13,7 +13,7 @@ import {
   LibUtils,
   UserNotification_item,
 } from "esoftplay";
-
+import { Notifications } from 'expo'
 import { connect } from "react-redux"
 import moment from "moment/min/moment-with-locales"
 import update from "immutability-helper"
@@ -48,6 +48,8 @@ class m extends LibComponent<UserNotificationProps, UserNotificationState> {
           urls: []
         }
       case "user_notification_parseData":
+        let unreadedCount = [...state.data, ...action.payload.data].filter((item: any) => item.status != 2).length
+        Notifications.setBadgeNumberAsync(unreadedCount)
         return {
           ...state,
           data: [...state.data, ...action.payload.data],
@@ -108,6 +110,8 @@ class m extends LibComponent<UserNotificationProps, UserNotificationState> {
       post["user_id"] = user.id || user.user_id
       post["group_id"] = esp.config('group_id')
     }
+    let unreadedCount = data.filter((item: any) => item.status != 2).length
+    Notifications.setBadgeNumberAsync(unreadedCount)
     m.user_notification_fetchData(_uri, post);
   }
 

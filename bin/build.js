@@ -290,67 +290,77 @@ export default class App extends React.Component {
 	}
 }`
 			;
-		var bashScript = 'cd ../../ && expo install ';
 		var expoLib = [
-			"expo-av",
-			"expo-linear-gradient",
-			"expo-blur",
-			"expo-image-manipulator",
-			"expo-camera",
-			"expo-image-picker",
-			"expo-permissions",
-			"expo-sqlite",
-			"lodash",
-			"expo-file-system",
-			"expo-constants",
-			"expo-font",
-			"expo-error-recovery",
-			"@react-native-community/netinfo",
-			"react-native-gesture-handler",
-			"react-native-reanimated",
-			"expo-document-picker",
-			'react-native-webview',
-			"@expo/vector-icons",
-			"buffer",
-			"firebase",
-			"immutability-helper",
-			"immhelper",
-			"moment",
-			"moment-timezone",
-			"native-base@2.13.8",
-			"react-native-modal",
-			"react-navigation",
-			"react-native-screens",
-			"react-navigation-stack",
-			"@react-native-community/masked-view",
-			"react-native-safe-area-context",
-			"react-redux",
-			"recyclerlistview",
-			"redux",
-			"redux-persist",
-			"shorthash",
-			"react-native-picker-scrollview"
+			"cd ../../ && expo install expo-av",
+			"cd ../../ && expo install expo-linear-gradient",
+			"cd ../../ && expo install expo-blur",
+			"cd ../../ && expo install expo-image-manipulator",
+			"cd ../../ && expo install expo-camera",
+			"cd ../../ && expo install expo-image-picker",
+			"cd ../../ && expo install expo-permissions",
+			"cd ../../ && expo install expo-sqlite",
+			"cd ../../ && expo install lodash",
+			"cd ../../ && expo install expo-file-system",
+			"cd ../../ && expo install expo-constants",
+			"cd ../../ && expo install expo-font",
+			"cd ../../ && expo install expo-error-recovery",
+			"cd ../../ && expo install @react-native-community/netinfo",
+			"cd ../../ && expo install react-native-gesture-handler",
+			"cd ../../ && expo install react-native-reanimated",
+			"cd ../../ && expo install expo-document-picker",
+			'cd ../../ && expo install react-native-webview',
+			"cd ../../ && expo install @expo/vector-icons",
+			"cd ../../ && expo install buffer",
+			"cd ../../ && expo install firebase",
+			"cd ../../ && expo install immutability-helper",
+			"cd ../../ && expo install immhelper",
+			"cd ../../ && expo install moment",
+			"cd ../../ && expo install moment-timezone",
+			"cd ../../ && expo install native-base",
+			"cd ../../ && expo install react-native-modal",
+			"cd ../../ && expo install react-navigation",
+			"cd ../../ && expo install react-native-screens",
+			"cd ../../ && expo install react-navigation-stack",
+			"cd ../../ && expo install @react-native-community/masked-view",
+			"cd ../../ && expo install react-native-safe-area-context",
+			"cd ../../ && expo install react-redux",
+			"cd ../../ && expo install recyclerlistview",
+			"cd ../../ && expo install redux",
+			"cd ../../ && expo install redux-persist",
+			"cd ../../ && expo install shorthash",
+			"cd ../../ && expo install react-native-picker-scrollview",
+			"cd ../../ && npm install --save-dev @types/expo__vector-icons",
+			"cd ../../ && npm install --save-dev @types/node",
+			"cd ../../ && npm install --save-dev @types/react",
+			"cd ../../ && npm install --save-dev @types/react-native",
+			"cd ../../ && npm install --save-dev @types/react-redux",
+			"cd ../../ && npm install --save-dev babel-preset-expo",
+			"cd ../../ && npm install --save-dev react-native-typescript-transformer",
+			"cd ../../ && npm install --save-dev tslib",
+			"cd ../../ && npm install --save-dev typescript",
 		]
-		for (let i = 0; i < expoLib.length; i++) {
-			const element = expoLib[i];
-			bashScript += element + ' '
-		}
-		// bashScript += ' && npm install react-native-gesture-handler@1.0.14'
-		bashScript += ' && npm install --save-dev @types/expo__vector-icons @types/node @types/react @types/react-native @types/react-redux babel-preset-expo react-native-typescript-transformer tslib typescript'
+
+		const execSync = require('child_process').execSync;
 		fs.writeFile(appts, AppJS, (err) => {
 			if (err) throw err;
 			fs.unlink(appjs, (err) => { })
-			const exec = require('child_process').exec;
-			var yourscript = exec(
-				bashScript,
-				(error, stdout, stderr) => {
-					console.log(stdout);
-					console.log(stderr);
-					if (error !== null) {
-						console.log(`exec error: ${error}`);
-					}
-				});
-
+			for (let i = 0; i < expoLib.length; i++) {
+				const element = expoLib[i];
+				if (fs.existsSync("../../node_modules/" + element.substring(element.lastIndexOf(" ") + 1))) {
+					console.log(element.substring(element.lastIndexOf(" ") + 1) + " is Exist, Skipped")
+				} else {
+					console.log("Execute " + element)
+					execSync(
+						element,
+						(error, stdout, stderr) => {
+							console.log(stdout);
+							console.log(stderr);
+							if (error !== null) {
+								console.log(`exec error: ${error}`);
+							}
+						});
+				}
+			}
 			console.log('App.js has been replace to App.tsx');
 			console.log('Please wait until process finished...');
 		});
@@ -358,3 +368,6 @@ export default class App extends React.Component {
 } else {
 	console.log(packjson + " not found!!")
 }
+// packjson scripts
+// "preuninstall": "cd ../../ && node ./node_modules/.bin/esoftplay stop",
+// "postuninstall": "node ./bin/build.js uninstall",

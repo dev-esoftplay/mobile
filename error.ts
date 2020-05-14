@@ -26,7 +26,14 @@ export function reportApiError(fetch: any, error: any) {
   config.config && config.config.errorReport && config.config.errorReport.telegramIds && config.config.errorReport.telegramIds.forEach((id: string) => {
     const user = LibUtils.getReduxState("user_class")
     let post = {
-      text: JSON.stringify({ user: user && (user.id || user.user_id) || '-', fetch, error, app: Constants.appOwnership, device: Platform.OS + ' - ' + Constants.deviceName }, undefined, 2),
+      text: JSON.stringify({
+        user_id: user && (user.id || user.user_id) || '-',
+        fetch,
+        error,
+        app: Constants.appOwnership,
+        publish_id: config.config.hasOwnProperty("publish_id") ? config.config.publish_id : "-",
+        device: Platform.OS + ' - ' + Constants.deviceName
+      }, undefined, 2),
       chat_id: id,
       disable_web_page_preview: true
     }
@@ -46,7 +53,8 @@ export function getError(adder: any) {
         device: Platform.OS + ' - ' + Constants.deviceName,
         error: adder && adder.exp && adder.exp.lastErrors || '-',
         errorApi: _e.error,
-        user: _e.user && (_e.user.id || _e.user.user_id) || '-'
+        publish_id: config.config.hasOwnProperty("publish_id") ? config.config.publish_id : "-",
+        user_id: _e.user && (_e.user.id || _e.user.user_id) || '-'
       }
       config.config && config.config.errorReport && config.config.errorReport.telegramIds && config.config.errorReport.telegramIds.forEach((id: string) => {
         let post = {

@@ -1,7 +1,7 @@
 //
 import React from "react"
 import { AsyncStorage } from 'react-native';
-
+import { Notifications } from 'expo'
 import { LibNotification, esp, UserClass, LibCrypt, LibCurl } from "esoftplay";
 import moment from "moment";
 import Constants from 'expo-constants';
@@ -62,6 +62,7 @@ export default class eclass {
 
   static delete(): Promise<any> {
     return new Promise((r) => {
+      Notifications.setBadgeNumberAsync(0)
       esp.dispatch({ type: "user_class_delete" });
       AsyncStorage.removeItem("user");
       if (esp.config('notification') == 1) {
