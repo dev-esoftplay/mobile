@@ -12,8 +12,10 @@ export default class ecurl {
   url: any;
   uri: any;
   fetchConf: any = ''
+  maxTimeout = 120000 // 2 menit
+  timeout
 
-  constructor(uri?: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string) => void, debug?: number) {
+  constructor(uri?: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number) {
     this.setUri = this.setUri.bind(this);
     this.setUrl = this.setUrl.bind(this);
     this.onFetched = this.onFetched.bind(this)
@@ -23,7 +25,7 @@ export default class ecurl {
     if (uri && str.lib_net_status.isOnline) {
       this.init(uri, post, onDone, onFailed, debug);
     } else if (!str.lib_net_status.isOnline && onFailed) {
-      onFailed("Failed to access");
+      onFailed("Failed to access", false);
     }
   }
 
@@ -33,6 +35,11 @@ export default class ecurl {
 
   setUri(uri: string): void {
     this.uri = uri
+  }
+
+
+  setMaxTimeout(milisecond: number) {
+    this.maxTimeout = milisecond
   }
 
   async setHeader(): Promise<void> {
@@ -48,11 +55,11 @@ export default class ecurl {
 
   }
 
-  onFailed(msg: string): void {
+  onFailed(msg: string, timeout: boolean): void {
 
   }
 
-  upload(uri: string, postKey: string, fileUri: string, mimeType: string, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string) => void, debug?: number): void {
+  upload(uri: string, postKey: string, fileUri: string, mimeType: string, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number): void {
     postKey = postKey || "image";
     var uName = fileUri.substring(fileUri.lastIndexOf("/") + 1, fileUri.length);
     if (!uName.includes('.')) {
@@ -63,7 +70,11 @@ export default class ecurl {
     this.init(uri, post, onDone, onFailed, debug, true)
   }
 
-  async custom(uri: string, post?: any, onDone?: (res: any) => void, debug?: number): Promise<void> {
+  async custom(uri: string, post?: any, onDone?: (res: any, timeout: boolean) => void, debug?: number): Promise<void> {
+    this.timeout = setTimeout(() => {
+      onDone("Request Timed Out", true)
+      LibProgress.hide()
+    }, this.maxTimeout);
     const str: any = _global.store.getState()
     if (str.lib_net_status.isOnline) {
       if (post) {
@@ -97,16 +108,24 @@ export default class ecurl {
       var resText = await res.text()
       var resJson = (resText.startsWith("{") || resText.startsWith("[")) ? JSON.parse(resText) : null
       if (resJson) {
-        if (onDone) onDone(resJson)
+        if (onDone) onDone(resJson, false)
         this.onDone(resJson)
+        clearTimeout(this.timeout)
       } else {
+        clearTimeout(this.timeout)
         LibProgress.hide()
         if (debug == 1) this.onError(resText)
       }
     }
   }
 
-  async init(uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string) => void, debug?: number, upload?: boolean): Promise<void> {
+  async init(uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number, upload?: boolean): Promise<void> {
+    this.setMaxTimeout(this.maxTimeout)
+    this.timeout = setTimeout(() => {
+      this.onFailed("Request Timed Out", true)
+      onFailed("Request Timed Out", true)
+      LibProgress.hide()
+    }, this.maxTimeout);
     if (post) {
       let fd = new FormData();
       Object.keys(post).map(function (key) {
@@ -144,15 +163,17 @@ export default class ecurl {
     }
   }
 
-  onFetched(resText: string, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string) => void, debug?: number): void {
+  onFetched(resText: string, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number): void {
     var resJson = (resText.startsWith("{") && resText.endsWith("}")) || (resText.startsWith("[") && resText.endsWith("]")) ? JSON.parse(resText) : resText
     if (typeof resJson == "object") {
       if (resJson.ok === 1) {
         if (onDone) onDone(resJson.result, resJson.message)
         this.onDone(resJson.result, resJson.message)
+        clearTimeout(this.timeout)
       } else {
-        if (onFailed) onFailed(resJson.message)
-        this.onFailed(resJson.message)
+        if (onFailed) onFailed(resJson.message, false)
+        this.onFailed(resJson.message, false)
+        clearTimeout(this.timeout)
       }
     } else {
       if (debug == 1) this.onError(resText)
@@ -199,6 +220,3 @@ export default class ecurl {
     return day
   }
 }
-
-
-
