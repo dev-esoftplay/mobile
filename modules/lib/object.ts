@@ -16,6 +16,9 @@ export default class m {
   static set(obj: any, value: any): (cursor?: string | number, ...cursors: (string | number)[]) => any {
     return cursorBuilder("set", obj, value)
   }
+  static update(obj: any, callback: (lastValue: any) => any): (cursor?: string | number, ...cursors: (string | number)[]) => any {
+    return cursorBuilder("batch", obj, callback)
+  }
   // static assign(obj: any, obj1: any): (cursor?: string | number, ...cursors: (string | number)[]) => any {
   //   return cursorBuilder("assign", obj, obj1)
   // }

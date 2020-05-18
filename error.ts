@@ -3,6 +3,7 @@ import { Platform, AsyncStorage, Alert } from 'react-native';
 import { LibCurl, LibUtils } from 'esoftplay';
 import Constants from 'expo-constants';
 let config = require('../../config.json');
+let pack = require('../../package.json');
 let app = require('../../app.json');
 
 const defaultErrorHandler = ErrorUtils.getGlobalHandler()
@@ -27,6 +28,7 @@ export function reportApiError(fetch: any, error: any) {
     const user = LibUtils.getReduxState("user_class")
     let post = {
       text: JSON.stringify({
+        slug: "#" + app.expo.slug,
         user_id: user && (user.id || user.user_id) || '-',
         fetch,
         error,
@@ -46,7 +48,8 @@ export function getError(adder: any) {
     if (e) {
       let _e = JSON.parse(e)
       let msg = {
-        name: app.expo.name + ' - sdk' + app.expo.sdkVersion,
+        slug: "#" + app.expo.slug,
+        name: app.expo.name + ' - sdk' + pack.dependencies.expo,
         domain: config.config.domain + config.config.uri,
         module: _e.routes,
         package: (Platform.OS == 'ios' ? app.expo.ios.bundleIdentifier : app.expo.android.package) + ' - v' + (Platform.OS == 'ios' ? app.expo.ios.buildNumber : app.expo.android.versionCode),

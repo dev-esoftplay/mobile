@@ -80,11 +80,18 @@ switch (args[0]) {
 		switchMode("off")
 		consoleSucces("App now is in OFFLINE mode")
 		break
+	case "u":
+	case "update":
+		update()
+		break
 	case "on":
 	case "online":
 		switchMode("on")
 		consoleSucces("App now is in ONLINE mode")
-		break
+		break;
+	case "create-master":
+		createMaster(args[1])
+		break;
 	case "start":
 		execution();
 		break;
@@ -101,6 +108,150 @@ function consoleFunc(msg, success) {
 	}
 }
 
+function update() {
+	command("npm install -s esoftplay@latest")
+	consoleSucces("esoftplay framework sudah diupdate!")
+}
+
+
+function createMaster(module_name) {
+	if (module_name) {
+		const PATH = "../"
+		const index = "export const moduleName = \"" + module_name + "\""
+		const libs = "[]"
+		const mover = `const fs = require('fs');
+		const shell = require('child_process').execSync;
+		const merge = require('lodash/merge')
+		import { moduleName } from "./index"
+		
+		/* copy directory */
+		if (fs.existsSync('../esoftplay/esp.ts')) {
+			if (fs.existsSync('../esoftplay/modules/' + moduleName))
+				shell('rm -r ../esoftplay/modules/' + moduleName)
+			shell("cp -r ./" + moduleName + " ../esoftplay/modules/")
+		} else {
+			throw "Mohon install esoftplay package terlebih dahulu"
+		}
+		
+		function injectConfig(configPath) {
+			if (fs.existsSync(configPath)) {
+				const exsConf = require(configPath)
+				if (!exsConf.config.hasOwnProperty(moduleName)) {
+					const conf = require("./config.json")
+					fs.writeFileSync(configPath, JSON.stringify(merge(exsConf, { config: conf }), undefined, 2))
+				}
+			}
+		}
+		/*
+			untuk menambahkan default config["chat"] pada main project otomatis saat install esoftplay-chat
+		*/
+		injectConfig("../../config.json")
+		injectConfig("../../config.live.json")
+		injectConfig("../../config.debug.json")
+		
+		/* move assets */
+		if (fs.existsSync("./assets")) {
+			if (!fs.existsSync("../../assets/" + moduleName))
+				shell("mkdir -p ../../assets/" + moduleName)
+			shell("cp -r -n ./assets/* ../../assets/" + moduleName + "/")
+		}
+		
+		/* inject libs */
+		if (fs.existsSync("./libs.json")) {
+			const libs = require("./libs.json")
+			// shell()
+			// console.log("mohon tunggu ..")
+			console.log("installing: \\n" + libs.join("\\n"))
+			shell("cd ../../ && expo install " + libs.join(" && expo install "))
+		}
+		`
+		const packjson = `{
+			"name": "esoftplay-`+ module_name + `",
+			"version": "0.0.1",
+			"description": "`+ module_name + ` module on esoftplay framework",
+			"main": "index.js",
+			"scripts": {
+				"test": "echo \\"Error: no test specified\\" && exit 1",
+				"postinstall": "node ./mover.js"
+			},
+			"keywords": [
+				"espftplay-`+ module_name + `",
+				"esoftplay"
+			],
+			"author": "kholil@fisip.net",
+			"license": "GPL-3.0"
+		}`
+		const publisher = `// publisher
+
+		import { moduleName } from "./index"
+		const fs = require('fs');
+		const shell = require('child_process').execSync;
+		const assets = "assets/" + moduleName
+		
+		/* copy module */
+		if (fs.existsSync("./" + moduleName))
+			shell("rm -r ./" + moduleName)
+		shell("cp -r ../mobile/modules/" + moduleName + " ./")
+		
+		/* copy assets */
+		if (fs.existsSync("./assets"))
+			shell("rm -r ./assets")
+		shell("mkdir -p assets")
+		if (fs.existsSync("../mobile/" + assets))
+			shell("cp -r ../mobile/" + assets + "/* ./assets/")
+		
+		/* copy config */
+		if (fs.existsSync("../mobile/config.json")) {
+			const confMobile = require("../mobile/config.json")
+			if (confMobile.config.hasOwnProperty(moduleName)) {
+				const confMaster = { [moduleName]: confMobile.config[moduleName] }
+				fs.writeFileSync("./config.json", JSON.stringify(confMaster, undefined, 2))
+			}
+		}
+		
+		if (fs.existsSync("./package.json")) {
+			const packJson = require("./package.json")
+			const letterVersion = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",]
+			const version = packJson.version
+			const letter = version.match(/([a-z])/g)
+			const number = version.replace(/-/g, "").replace(letter, "")
+			let nextLetter = ""
+			let nextNumber = number.split(".")[2]
+			let nextVersion = number.split(".")[0] + "." + number.split(".")[1] + "."
+			if (!letter) {
+				nextLetter = letterVersion[0]
+				nextVersion += nextNumber
+				nextVersion += "-" + nextLetter
+			} else if (letter != "z") {
+				nextLetter = letterVersion[letterVersion.indexOf(String(letter)) + 1]
+				nextVersion += nextNumber
+				nextVersion += "-" + nextLetter
+			} else {
+				nextNumber = Number(nextNumber) + 1
+				nextVersion += nextNumber
+			}
+			const newPackJson = { ...packJson, version: nextVersion }
+			fs.writeFileSync("./package.json", JSON.stringify(newPackJson, undefined, 2))
+			shell("npm publish")
+			console.log("\\nnpm install --save esoftplay-" + moduleName + "@" + nextVersion+"\\n")
+		}`
+		if (!fs.existsSync(PATH + "master/")) {
+			fs.mkdirSync(PATH + "master")
+			fs.mkdirSync(PATH + "master/assets")
+			fs.mkdirSync(PATH + "master/" + module_name)
+			fs.writeFileSync(PATH + "master/index.js", index)
+			fs.writeFileSync(PATH + "master/libs.js", libs)
+			fs.writeFileSync(PATH + "master/mover.js", mover)
+			fs.writeFileSync(PATH + "master/package.json", packjson)
+			fs.writeFileSync(PATH + "master/publisher.js", publisher)
+			consoleSucces("Success create master for module: " + module_name + " ..!")
+		} else {
+			consoleError("Master " + module_name + " already exist!")
+		}
+	} else {
+		consoleError("Please insert moduleName")
+	}
+}
 
 function consoleError(msg) {
 	console.log("\x1b[31m", msg + " ✘", "\x1b[0m")
@@ -178,7 +329,7 @@ function publish() {
 		fs.writeFileSync(confjson, JSON.stringify(cjson, undefined, 2))
 		consoleSucces("start publishing " + status.toUpperCase() + " - PUBLISH_ID : " + (last_id + 1))
 		command("expo p")
-		tm("#PUBLISH\n" + cjson.config.domain + " - [ID] : " + (last_id + 1))
+		tm("#PUBLISH\n" + cjson.config.domain + "\n[ID] : " + (last_id + 1))
 	}
 }
 
@@ -369,9 +520,11 @@ function help() {
 		"\n esp [options]",
 		"\n\n OPTIONS :",
 		"\n - help                        : panduan penggunaan",
+		"\n - u|update                    : untuk update esp module ke versi terakhir",
 		"\n - start                       : start esoftplay framework",
 		"\n - f|file                      : untuk check status file",
 		"\n - c|check                     : untuk check status",
+		"\n - create-master [moduleName]  : untuk create master module terpisah",
 		"\n - d|debug                     : untuk ubah status DEBUG",
 		"\n - l|live                      : untuk ubah status LIVE",
 		"\n - off|offline                 : untuk ubah mode OFFLINE",
