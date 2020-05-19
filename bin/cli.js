@@ -287,6 +287,7 @@ function readToJSON(path) {
 
 function publish() {
 	let status = "-"
+	let ajson = readToJSON(appjson)
 	if (fs.existsSync(confjson)) {
 		let cjson = readToJSON(confjson)
 		let clive
@@ -329,7 +330,7 @@ function publish() {
 		fs.writeFileSync(confjson, JSON.stringify(cjson, undefined, 2))
 		consoleSucces("start publishing " + status.toUpperCase() + " - PUBLISH_ID : " + (last_id + 1))
 		command("expo p")
-		tm("#PUBLISH\n" + cjson.config.domain + "\n[ID] : " + (last_id + 1))
+		tm("#PUBLISH\n" + ajson.expo.slug + "\n" + cjson.config.domain + "\n[ID] : " + (last_id + 1))
 	}
 }
 
