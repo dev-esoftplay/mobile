@@ -25,7 +25,7 @@ export default class m {
 }
 
 function cursorBuilder(command: string, array: any, value: any, ...values: any[]): (cursor?: string | number, ...cursors: (string | number)[]) => any {
-  return (cursor?: string | number, ...cursors: (string | number)[]) => {
+  return function (cursor?: string | number, ...cursors: (string | number)[]) {
     let pathToUpdate = [cursor, ...cursors].filter(x => x != undefined).join('.')
     let allValues = [value, ...values].filter(x => x != undefined)
     let spec = {}

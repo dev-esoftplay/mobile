@@ -147,7 +147,8 @@ function createMaster(module_name) {
 			if (fs.existsSync(configPath)) {
 				const exsConf = require(configPath)
 				const conf = require("./config.json")
-				fs.writeFileSync(configPath, JSON.stringify({...merge({ config: conf }, exsConf)}, undefined, 2))
+				let _cf = merge({ config: conf }, exsConf)
+				fs.writeFileSync(configPath, JSON.stringify({..._cf}, undefined, 2))
 			}
 		}
 		
@@ -178,7 +179,8 @@ function createMaster(module_name) {
 			let moduleLang = require("./id.json")
 			if (fs.existsSync("../../assets/locale/id.json")) {
 				let projectLang = require("../../assets/locale/id.json")
-				moduleLang = {...merge(moduleLang, projectLang)}
+				let _lg = merge(moduleLang, projectLang) 
+				moduleLang = {..._lg}
 			}
 			fs.writeFileSync("../../assets/locale/id.json", JSON.stringify(moduleLang, undefined, 2))
 		}

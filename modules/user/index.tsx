@@ -99,9 +99,7 @@ export default function m(props: UserIndexProps): any {
       if (esp.config().notification == 1) {
         if (Platform.OS == 'android')
           Notifications.createChannelAndroidAsync('android', { sound: true, name: esp.appjson().expo.name, badge: true, priority: 'max', vibrate: true })
-        LibNotification.listen((notifObj: any) => {
-          esp.log(notifObj);
-        })
+        LibNotification.listen()
       }
       if (esp.config().hasOwnProperty('firebase')) {
         try {
