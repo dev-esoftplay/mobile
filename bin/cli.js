@@ -110,20 +110,30 @@ function consoleFunc(msg, success) {
 
 function update() {
 	command("npm install -s esoftplay@latest")
+	if (fs.existsSync(packjson)) {
+		let pack = readToJSON(packjson)
+		let esplibs = Object.keys(pack.dependencies).filter((key) => key.includes("esoftplay"))
+		esplibs.forEach((key) => {
+			if (key != 'esoftplay') {
+				command("cd node_modules/" + key + " && node mover.js")
+				consoleSucces(key + " succesfully implemented!")
+			}
+		})
+	}
 	consoleSucces("esoftplay framework sudah diupdate!")
 }
-
 
 function createMaster(module_name) {
 	if (module_name) {
 		const PATH = "../"
-		const index = "export const moduleName = \"" + module_name + "\""
+		const index = `const moduleName = "` + module_name + `"
+		module.exports = { moduleName }`
 		const libs = "[]"
 		const mover = `const fs = require('fs');
 		const shell = require('child_process').execSync;
 		const merge = require('lodash/merge')
-		import { moduleName } from "./index"
-		
+		const { moduleName } = require("./index")
+		const assetsFonts = "assets/fonts"
 		/* copy directory */
 		if (fs.existsSync('../esoftplay/esp.ts')) {
 			if (fs.existsSync('../esoftplay/modules/' + moduleName))
@@ -136,35 +146,66 @@ function createMaster(module_name) {
 		function injectConfig(configPath) {
 			if (fs.existsSync(configPath)) {
 				const exsConf = require(configPath)
-				if (!exsConf.config.hasOwnProperty(moduleName)) {
-					const conf = require("./config.json")
-					fs.writeFileSync(configPath, JSON.stringify(merge(exsConf, { config: conf }), undefined, 2))
-				}
+				const conf = require("./config.json")
+				fs.writeFileSync(configPath, JSON.stringify({...merge({ config: conf }, exsConf)}, undefined, 2))
 			}
 		}
-		/*
-			untuk menambahkan default config["chat"] pada main project otomatis saat install esoftplay-chat
-		*/
+		
+		/* injectConfig */
 		injectConfig("../../config.json")
 		injectConfig("../../config.live.json")
 		injectConfig("../../config.debug.json")
 		
 		/* move assets */
-		if (fs.existsSync("./assets")) {
+		if (fs.existsSync("./assets/")) {
 			if (!fs.existsSync("../../assets/" + moduleName))
 				shell("mkdir -p ../../assets/" + moduleName)
-			shell("cp -r -n ./assets/* ../../assets/" + moduleName + "/")
+			try {
+				shell("cp -r -n ./assets/* ../../assets/" + moduleName + "/")
+			} catch (error) { }
+		}
+		
+		if (fs.existsSync("./fonts/")) {
+			if (!fs.existsSync("../../" + assetsFonts))
+				shell("mkdir -p ../../" + assetsFonts)
+			try {
+				shell("cp -r -n ./fonts/* ../../" + assetsFonts + "/")
+			} catch (error) { }
+		}
+		
+		/* inject lang */
+		if (fs.existsSync("./id.json")) {
+			let moduleLang = require("./id.json")
+			if (fs.existsSync("../../assets/locale/id.json")) {
+				let projectLang = require("../../assets/locale/id.json")
+				moduleLang = {...merge(moduleLang, projectLang)}
+			}
+			fs.writeFileSync("../../assets/locale/id.json", JSON.stringify(moduleLang, undefined, 2))
 		}
 		
 		/* inject libs */
 		if (fs.existsSync("./libs.json")) {
-			const libs = require("./libs.json")
-			// shell()
-			// console.log("mohon tunggu ..")
-			console.log("installing: \\n" + libs.join("\\n"))
-			shell("cd ../../ && expo install " + libs.join(" && expo install "))
-		}
-		`
+			let libs = require("./libs.json")
+			let libsToSkip = []
+			libs.forEach((element, index) => {
+				console.log(element.split("@")[0])
+				if (fs.existsSync("../../node_modules/" + element.split("@")[0])) {
+					libsToSkip.push(element)
+				}
+			})
+			if (libsToSkip.length > 0) {
+				libsToSkip.forEach((lib) => {
+					libs = libs.filter((x) => x != lib)
+					console.log(lib + " is exist, Skipped")
+				})
+			}
+			if (libs.length > 0) {
+				console.log("mohon tunggu ..")
+				console.log("installing \\n" + libs.join("\\n"))
+				shell("cd ../../ && expo install " + libs.join(" && expo install "))
+			}
+			console.log("Success..!")
+		}`
 		const packjson = `{
 			"name": "esoftplay-`+ module_name + `",
 			"version": "0.0.1",
@@ -181,12 +222,13 @@ function createMaster(module_name) {
 			"author": "kholil@fisip.net",
 			"license": "GPL-3.0"
 		}`
-		const publisher = `// publisher
+		const publisher = `// publsiher
 
-		import { moduleName } from "./index"
+		const { moduleName } = require("./index")
 		const fs = require('fs');
 		const shell = require('child_process').execSync;
-		const assets = "assets/" + moduleName
+		const assetsModule = "assets/" + moduleName
+		const assetsFonts = "assets/fonts"
 		
 		/* copy module */
 		if (fs.existsSync("./" + moduleName))
@@ -197,8 +239,20 @@ function createMaster(module_name) {
 		if (fs.existsSync("./assets"))
 			shell("rm -r ./assets")
 		shell("mkdir -p assets")
-		if (fs.existsSync("../mobile/" + assets))
-			shell("cp -r ../mobile/" + assets + "/* ./assets/")
+		shell("cp -r ../mobile/" + assetsModule + "/* ./assets/")
+		
+		/* copy fonts */
+		if (fs.existsSync("./fonts"))
+			shell("rm -r ./fonts")
+		shell("mkdir -p fonts")
+		shell("cp -r ../mobile/" + assetsFonts + "/* ./fonts/")
+		
+		/* copy lang */
+		if (fs.existsSync("../mobile/assets/locale/id.json")) {
+			if (fs.existsSync("./id.json"))
+				shell("rm ./id.json")
+			shell("cp ../mobile/assets/locale/id.json .")
+		}
 		
 		/* copy config */
 		if (fs.existsSync("../mobile/config.json")) {
@@ -233,7 +287,7 @@ function createMaster(module_name) {
 			const newPackJson = { ...packJson, version: nextVersion }
 			fs.writeFileSync("./package.json", JSON.stringify(newPackJson, undefined, 2))
 			shell("npm publish")
-			console.log("\\nnpm install --save esoftplay-" + moduleName + "@" + nextVersion+"\\n")
+			console.log("\\nnpm install --save esoftplay-" + moduleName + "@" + nextVersion + "\\n")
 		}`
 		if (!fs.existsSync(PATH + "master/")) {
 			fs.mkdirSync(PATH + "master")
