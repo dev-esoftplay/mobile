@@ -46,6 +46,7 @@ class net_status extends LibComponent<LibNet_statusProps, LibNet_statusState> {
     }
   }
 
+  timeout
   unsubscribe: any
   constructor(props: LibNet_statusProps) {
     super(props)
@@ -56,10 +57,6 @@ class net_status extends LibComponent<LibNet_statusProps, LibNet_statusState> {
 
   componentDidMount(): void {
     super.componentDidMount()
-    NetInfo.fetch().then((state) => {
-      this.setState({ animHeight: state.isConnected ? 1 : 2 })
-      net_status.setOnline(state.isConnected)
-    });
     this.unsubscribe = NetInfo.addEventListener(state => {
       this.onChangeConnectivityStatus(state.isConnected)
     });
@@ -73,11 +70,12 @@ class net_status extends LibComponent<LibNet_statusProps, LibNet_statusState> {
   onChangeConnectivityStatus(isConnected: boolean): void {
     net_status.setOnline(isConnected)
     if (isConnected) {
-      setTimeout(() => {
+      this.timeout = setTimeout(() => {
         this.setState({ animHeight: 1 })
       }, 1500)
     } else {
       this.setState({ animHeight: 2 })
+      clearTimeout(this.timeout)
     }
   }
 

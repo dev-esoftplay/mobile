@@ -263,6 +263,7 @@ import { Provider } from 'react-redux'
 import { esp, _global } from 'esoftplay';
 import * as ErrorReport from 'esoftplay/error'
 import * as ErrorRecovery from 'expo-error-recovery';
+import './node_modules/esoftplay/timeout_fix'
 // import { enableScreens } from 'react-native-screens';
 
 // enableScreens();

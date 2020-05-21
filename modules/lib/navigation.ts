@@ -6,6 +6,10 @@ import { StackActions, NavigationActions } from 'react-navigation';
 // var _navigation: any
 // var _backResult: any = {}
 // var _task: any = {}
+export interface LibNavigationInjector {
+  args: any,
+  children?: any
+}
 
 export default class m {
   static setRef(ref: any): void {
@@ -135,4 +139,8 @@ export default class m {
     _global._navigator.dispatch(StackActions.popToTop());
   }
 
+  static Injector(props: LibNavigationInjector): any {
+    if (!props.children) return null
+    return React.cloneElement(props.children, { navigation: { state: { params: props.args } } })
+  }
 }

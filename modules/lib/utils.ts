@@ -169,7 +169,7 @@ export default class eutils {
       val = parseInt(value).toFixed(0).replace(/(\d)(?=(\d{3})+$)/g, "$1,")
     }
     if ((typeof value == "string" ? parseInt(value) : value) < 0) {
-      return "0"
+      val = "0"
     }
     if (!currency) {
       currency = "Rp"
