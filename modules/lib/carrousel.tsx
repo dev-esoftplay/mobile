@@ -156,7 +156,9 @@ export default class m extends LibComponent<LibCarrouselProps, LibCarrouselState
     }
     return pages.map((page, i) => (
       <TouchableWithoutFeedback style={[{ ...size }, pageStyle]} key={`page${i}`}>
-        {page}
+        <>
+          {page}
+        </>
       </TouchableWithoutFeedback>
     ));
   }
