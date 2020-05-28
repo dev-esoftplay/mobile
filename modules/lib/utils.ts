@@ -171,6 +171,9 @@ export default class eutils {
     if ((typeof value == "string" ? parseInt(value) : value) < 0) {
       val = "0"
     }
+    if (!eval(val)) {
+      val = "0"
+    }
     if (!currency) {
       currency = "Rp"
     }
