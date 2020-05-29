@@ -13,7 +13,7 @@ export default class ecurl {
   uri: any;
   fetchConf: any = ''
   maxTimeout = 120000 // 2 menit
-  timeout
+  timeout: any
 
   constructor(uri?: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number) {
     this.setUri = this.setUri.bind(this);
@@ -72,7 +72,8 @@ export default class ecurl {
 
   async custom(uri: string, post?: any, onDone?: (res: any, timeout: boolean) => void, debug?: number): Promise<void> {
     this.timeout = setTimeout(() => {
-      onDone("Request Timed Out", true)
+      if (onDone)
+        onDone("Request Timed Out", true)
       LibProgress.hide()
     }, this.maxTimeout);
     const str: any = _global.store.getState()
@@ -105,14 +106,13 @@ export default class ecurl {
       var res
       this.fetchConf = { url: this.url + this.uri, options: options }
       res = await fetch(this.url + this.uri, options)
+      clearTimeout(this.timeout)
       var resText = await res.text()
       var resJson = (resText.startsWith("{") || resText.startsWith("[")) ? JSON.parse(resText) : null
       if (resJson) {
         if (onDone) onDone(resJson, false)
         this.onDone(resJson)
-        clearTimeout(this.timeout)
       } else {
-        clearTimeout(this.timeout)
         LibProgress.hide()
         if (debug == 1) this.onError(resText)
       }
@@ -123,7 +123,8 @@ export default class ecurl {
     this.setMaxTimeout(this.maxTimeout)
     this.timeout = setTimeout(() => {
       this.onFailed("Request Timed Out", true)
-      onFailed("Request Timed Out", true)
+      if (onFailed)
+        onFailed("Request Timed Out", true)
       LibProgress.hide()
     }, this.maxTimeout);
     if (post) {
@@ -153,11 +154,14 @@ export default class ecurl {
     this.fetchConf = { url: this.url + this.uri, options: options }
     if (!upload) {
       LibWorker.curl(this.url + this.uri, options, async (resText) => {
-        if (typeof resText == 'string')
+        clearTimeout(this.timeout)
+        if (typeof resText == 'string') {
           this.onFetched(resText, onDone, onFailed, debug)
+        }
       })
     } else {
       var res = await fetch(this.url + this.uri, options);
+      clearTimeout(this.timeout)
       let resText = await res.text()
       this.onFetched(resText, onDone, onFailed, debug)
     }
@@ -169,11 +173,9 @@ export default class ecurl {
       if (resJson.ok === 1) {
         if (onDone) onDone(resJson.result, resJson.message)
         this.onDone(resJson.result, resJson.message)
-        clearTimeout(this.timeout)
       } else {
         if (onFailed) onFailed(resJson.message, false)
         this.onFailed(resJson.message, false)
-        clearTimeout(this.timeout)
       }
     } else {
       if (debug == 1) this.onError(resText)
@@ -191,7 +193,7 @@ export default class ecurl {
     var mytimes = [86400, 3600, 60, 1]
     var date1 = [], date2 = []
     var dateFormat = "H-m-s"
-    var dt1 = momentTimeZone.tz(new Date(), timeZone)
+    var dt1: any = momentTimeZone.tz(new Date(), timeZone)
     var dt2 = moment(new Date())
     date1.push(this.getDayOfYear(dt1))
     date2.push(this.getDayOfYear(dt2))
