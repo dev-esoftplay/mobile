@@ -161,19 +161,16 @@ export default class eutils {
   }
 
   static money(value: string | number, currency?: string, part?: number): string {
-    if (!value) value = -1
+    if (!value) value = 0
     var val;
     if (typeof value === "number") {
       val = value.toFixed(0).replace(/(\d)(?=(\d{3})+$)/g, "$1,")
     } else {
       val = parseInt(value).toFixed(0).replace(/(\d)(?=(\d{3})+$)/g, "$1,")
     }
-    if ((typeof value == "string" ? parseInt(value) : value) < 0) {
+    if ((typeof value == "string" ? parseInt(value) : value) <= 0) {
       val = "0"
-    }
-    if (!eval(val)) {
-      val = "0"
-    }
+    }    
     if (!currency) {
       currency = "Rp"
     }
@@ -183,6 +180,7 @@ export default class eutils {
       return currency.replace(/\./g, "") + " " + val.replace(/,/g, ".");
     }
   }
+
 
   static number(toNumber: string | number): string {
     var toNumb = typeof toNumber === "number" ? toNumber.toFixed(0).replace(/(\d)(?=(\d{3})+$)/g, "$1,") : parseInt(toNumber).toFixed(0).replace(/(\d)(?=(\d{3})+$)/g, "$1,")
