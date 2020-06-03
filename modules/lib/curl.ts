@@ -71,9 +71,10 @@ export default class ecurl {
   }
 
   async custom(uri: string, post?: any, onDone?: (res: any, timeout: boolean) => void, debug?: number): Promise<void> {
+    this.setMaxTimeout(this.maxTimeout)
     this.timeout = setTimeout(() => {
-      if (onDone)
-        onDone("Request Timed Out", true)
+      // if (onDone)
+        // onDone("Request Timed Out", true)
       LibProgress.hide()
     }, this.maxTimeout);
     const str: any = _global.store.getState()
@@ -122,9 +123,9 @@ export default class ecurl {
   async init(uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number, upload?: boolean): Promise<void> {
     this.setMaxTimeout(this.maxTimeout)
     this.timeout = setTimeout(() => {
-      this.onFailed("Request Timed Out", true)
-      if (onFailed)
-        onFailed("Request Timed Out", true)
+      // this.onFailed("Request Timed Out", true)
+      // if (onFailed)
+        // onFailed("Request Timed Out", true)
       LibProgress.hide()
     }, this.maxTimeout);
     if (post) {
