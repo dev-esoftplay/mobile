@@ -386,7 +386,7 @@ function publish() {
 		fs.writeFileSync(confjson, JSON.stringify(cjson, undefined, 2))
 		consoleSucces("start publishing " + status.toUpperCase() + " - PUBLISH_ID : " + (last_id + 1))
 		command("expo p")
-		tm("#PUBLISH\n" + ajson.expo.slug + "\n" + cjson.config.domain + "\n[ID] : " + (last_id + 1))
+		tm("#" + ajson.expo.slug + "\n" + cjson.config.domain + "\n[ID] : " + (last_id + 1))
 	}
 }
 
@@ -568,7 +568,7 @@ function switchStatus(status) {
 }
 
 function tm(message) {
-	command("curl -d \"text=" + message + "&disable_web_page_preview=true&chat_id=-1001212227631\" 'https://api.telegram.org/bot112133589:AAFFyztZh79OsHRCxJ9rGCGpnxkcjWBP8kU/sendMessage'")
+	command("curl -d \"text=" + message + "&disable_web_page_preview=true&chat_id=-1001227788828\" 'https://api.telegram.org/bot112133589:AAFFyztZh79OsHRCxJ9rGCGpnxkcjWBP8kU/sendMessage'")
 }
 
 function help() {

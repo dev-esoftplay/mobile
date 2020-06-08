@@ -19,7 +19,7 @@ export interface LibPictureProps {
 const CACHE_DIR = `${FileSystem.cacheDirectory}lib-picture-cache/`;
 
 const getCacheEntry = async (uri: string, toSize: number): Promise<{ exists: boolean; path: string }> => {
-  const path = `${CACHE_DIR}${sh.unique(uri)}-${toSize}.txt`;
+  const path = `${CACHE_DIR}${sh.unique(uri)}-${toSize}.png`;
   try {
     await FileSystem.makeDirectoryAsync(CACHE_DIR);
   } catch (e) {
@@ -47,12 +47,11 @@ export default function m(props: LibPictureProps): any {
         toSize = isNaN(toSize) ? LibStyle.width * 0.5 : toSize
         const { path, exists } = await getCacheEntry(props.source.uri, toSize)
         if (exists) {
-          let uri = await FileSystem.readAsStringAsync(path)
-          setUri(uri)
+          setUri(path)
         } else {
           LibWorker.image(props.source.uri, toSize, async (uri) => {
-            await FileSystem.writeAsStringAsync(path, uri);
-            setUri(uri)
+            await FileSystem.writeAsStringAsync(path, uri.replace("data:image/png;base64,", ""), { encoding: "base64" });
+            setUri(path)
           })
         }
       }

@@ -79,7 +79,7 @@ function mask(name: string, text: string): string {
     if (maskFrom == 'end') {
       maskedText = maskedText.split('').reverse().join('')
     }
-    _global['inputRef'][name].current!.setNativeProps({ text: maskedText })
+    // _global['inputRef'][name].current!.setNativeProps({ text: maskedText })
     return maskedText
   }
   return _text
@@ -124,8 +124,10 @@ export default function m(props: LibInput_baseProps): any {
   const setups = {
     ...props,
     onChangeText: (t: string) => {
-      setText(props.name)(t)
-      props.onChangeText(unmask(props.name, t), mask(props.name, t))
+      const maskedText = mask(props.name, t)
+      const unmaskedText = unmask(props.name, t)
+      _global['inputRef'][props.name].current!.setNativeProps({ text: maskedText })
+      props.onChangeText(unmaskedText, maskedText)
     },
     maxLength: props.mask ? props.mask.length : undefined,
     ref: _global['inputRef'][props.name]

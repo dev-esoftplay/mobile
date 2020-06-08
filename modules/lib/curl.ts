@@ -13,7 +13,7 @@ export default class ecurl {
   uri: any;
   fetchConf: any = ''
   maxTimeout = 120000 // 2 menit
-  timeout: any
+  // timeout: any
 
   constructor(uri?: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number) {
     this.setUri = this.setUri.bind(this);
@@ -71,12 +71,12 @@ export default class ecurl {
   }
 
   async custom(uri: string, post?: any, onDone?: (res: any, timeout: boolean) => void, debug?: number): Promise<void> {
-    this.setMaxTimeout(this.maxTimeout)
-    this.timeout = setTimeout(() => {
-      // if (onDone)
-        // onDone("Request Timed Out", true)
-      LibProgress.hide()
-    }, this.maxTimeout);
+    // this.setMaxTimeout(this.maxTimeout)
+    // this.timeout = setTimeout(() => {
+    //   // if (onDone)
+    //     // onDone("Request Timed Out", true)
+    //   LibProgress.hide()
+    // }, this.maxTimeout);
     const str: any = _global.store.getState()
     if (str.lib_net_status.isOnline) {
       if (post) {
@@ -107,7 +107,7 @@ export default class ecurl {
       var res
       this.fetchConf = { url: this.url + this.uri, options: options }
       res = await fetch(this.url + this.uri, options)
-      clearTimeout(this.timeout)
+      // clearTimeout(this.timeout)
       var resText = await res.text()
       var resJson = (resText.startsWith("{") || resText.startsWith("[")) ? JSON.parse(resText) : null
       if (resJson) {
@@ -121,13 +121,13 @@ export default class ecurl {
   }
 
   async init(uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number, upload?: boolean): Promise<void> {
-    this.setMaxTimeout(this.maxTimeout)
-    this.timeout = setTimeout(() => {
-      // this.onFailed("Request Timed Out", true)
-      // if (onFailed)
-        // onFailed("Request Timed Out", true)
-      LibProgress.hide()
-    }, this.maxTimeout);
+    // this.setMaxTimeout(this.maxTimeout)
+    // this.timeout = setTimeout(() => {
+    //   // this.onFailed("Request Timed Out", true)
+    //   // if (onFailed)
+    //     // onFailed("Request Timed Out", true)
+    //   LibProgress.hide()
+    // }, this.maxTimeout);
     if (post) {
       let fd = new FormData();
       Object.keys(post).map(function (key) {
@@ -155,14 +155,14 @@ export default class ecurl {
     this.fetchConf = { url: this.url + this.uri, options: options }
     if (!upload) {
       LibWorker.curl(this.url + this.uri, options, async (resText) => {
-        clearTimeout(this.timeout)
+        // clearTimeout(this.timeout)
         if (typeof resText == 'string') {
           this.onFetched(resText, onDone, onFailed, debug)
         }
       })
     } else {
       var res = await fetch(this.url + this.uri, options);
-      clearTimeout(this.timeout)
+      // clearTimeout(this.timeout)
       let resText = await res.text()
       this.onFetched(resText, onDone, onFailed, debug)
     }

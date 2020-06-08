@@ -321,6 +321,7 @@ function createIndex() {
     "\n" +
     "declare module \"esoftplay\" {\n" +
     "  var _global: any;\n" +
+    "  function useGlobalState<S>(initialState?: S, option?: useGlobalOption): useGlobalReturn;\n" +
     "  function useSafeState<S>(initialState?: S | (() => S)): [S, (a: S) => void];\n" +
     "  function usePersistState<S>(key: string, initialState?: S | (() => S)): [S, (a: S) => void, (a?: (x: S)=> void) => void, () => void];\n" +
     "  namespace esp {\n" +
@@ -340,7 +341,15 @@ function createIndex() {
     "    function routes(): any;\n" +
     "    function getTokenAsync(callback: (token: string) => void): void;\n" +
     "    function notif(): any;\n" +
-    "  }";
+    "  }\n" +
+    `  interface useGlobalReturn {
+    useState: () => [any, (newState: any) => any, () => void],
+    get: () => any,
+    set: (x: any) => void
+  }\n
+  interface useGlobalOption {
+    persistKey?: string
+  }`;
   for (clsName in tmpTask) {
     if (tmpTask[clsName]["class"]) {
       // Text += "\n";
@@ -493,6 +502,7 @@ function createRouter() {
 
   staticImport.push("import { isEqual } from 'lodash';\n")
   staticImport.push("export { default as _global } from '../../../node_modules/esoftplay/_global';\n")
+  staticImport.push("export { default as useGlobalState } from '../../../node_modules/esoftplay/global';\n")
   staticImport.push("export { default as useSafeState } from '../../../node_modules/esoftplay/state';\n")
   staticImport.push("export { default as usePersistState } from '../../../node_modules/esoftplay/persist';\n")
   staticImport.push("export { default as esp } from '../../../node_modules/esoftplay/esp';\n")
