@@ -217,7 +217,7 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
           javaScriptEnabled={true}
           injectedJavaScript={injectedJavaScript + `\nwindow.ReactNativeWebView.postMessage("BaseWorkerIsReady")`}
           originWhitelist={["*"]}
-          source={{ uri: esp.config("protocol") + "://" + esp.config("domain") + esp.config("uri") }}
+          source={{ uri: esp.config("protocol") + "://" + esp.config("domain") + esp.config("uri") + "dummyPageToBypassCORS" }}
           onMessage={(e) => onMessage(e)('BaseWorkerIsReady')}
         />
         <WebView
@@ -226,7 +226,7 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
           javaScriptEnabled={true}
           injectedJavaScript={injectedJavaScript + `\nwindow.ReactNativeWebView.postMessage("ApiWorkerIsReady")`}
           originWhitelist={["*"]}
-          source={{ uri: esp.config("protocol") + "://api." + esp.config("domain") + esp.config("uri") }}
+          source={{ uri: esp.config("protocol") + "://api." + esp.config("domain") + esp.config("uri") + "dummyPageToBypassCORS" }}
           onMessage={(e) => onMessage(e)('ApiWorkerIsReady')}
         />
         <WebView
@@ -235,7 +235,7 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
           javaScriptEnabled={true}
           injectedJavaScript={injectedJavaScript + `\nwindow.ReactNativeWebView.postMessage("DataWorkerIsReady")`}
           originWhitelist={["*"]}
-          source={{ uri: esp.config("protocol") + "://data." + esp.config("domain") + esp.config("uri") }}
+          source={{ uri: esp.config("protocol") + "://data." + esp.config("domain") + esp.config("uri") + "dummyPageToBypassCORS" }}
           onMessage={(e) => onMessage(e)('DataWorkerIsReady')}
         />
       </>

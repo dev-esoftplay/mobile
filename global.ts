@@ -2,19 +2,19 @@ import * as R from 'react'
 import { useSafeState } from 'esoftplay';
 import { AsyncStorage } from 'react-native';
 
-type SubscriberFunc<T> = (newState: T) => any;
+type SubscriberFunc<T> = (newState: T) => void;
 
-export interface UseGlobal_return {
-  useState: () => [any, (newState: any) => any, () => void],
-  get: () => any,
-  set: (x: any) => void
+export interface UseGlobal_return<T> {
+  useState: () => [T, (newState: T) => void, () => void],
+  get: () => T,
+  set: (x: T) => void
 }
 
 export interface UseGlobal_options {
   persistKey?: string
 }
 
-export default function useGlobalState<T>(iv: T, o?: UseGlobal_options): UseGlobal_return {
+export default function useGlobalState<T>(iv: T, o?: UseGlobal_options): UseGlobal_return<T> {
   let sb: SubscriberFunc<T>[] = [];
   let v: T = iv;
   let set = (ns: T | ((prev: T) => T), ac?: (ns: T) => any, ca?: (ns: T) => any) => {
@@ -30,7 +30,7 @@ export default function useGlobalState<T>(iv: T, o?: UseGlobal_options): UseGlob
     });
   };
 
-  let useState = (): [T, (newState: T) => any, () => void] => {
+  let useState = (): [T, (newState: T) => void, () => void] => {
     let [l, sl] = useSafeState<T>(v);
 
     function del() {

@@ -321,7 +321,7 @@ function createIndex() {
     "\n" +
     "declare module \"esoftplay\" {\n" +
     "  var _global: any;\n" +
-    "  function useGlobalState<S>(initialState?: S, option?: useGlobalOption): useGlobalReturn;\n" +
+    "  function useGlobalState<S>(initialState?: S, option?: useGlobalOption): useGlobalReturn<S>;\n" +
     "  function useSafeState<S>(initialState?: S | (() => S)): [S, (a: S) => void];\n" +
     "  function usePersistState<S>(key: string, initialState?: S | (() => S)): [S, (a: S) => void, (a?: (x: S)=> void) => void, () => void];\n" +
     "  namespace esp {\n" +
@@ -342,11 +342,11 @@ function createIndex() {
     "    function getTokenAsync(callback: (token: string) => void): void;\n" +
     "    function notif(): any;\n" +
     "  }\n" +
-    `  interface useGlobalReturn {
-    useState: () => [any, (newState: any) => any, () => void],
-    get: () => any,
-    set: (x: any) => void
-  }\n
+    `  interface useGlobalReturn<S> {
+      useState: () => [S, (newState: S) => void, () => void],
+      get: () => S,
+      set: (x: S) => void
+    }\n
   interface useGlobalOption {
     persistKey?: string
   }`;
