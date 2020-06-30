@@ -63,7 +63,6 @@ class ewebview extends LibComponent<LibWebviewProps, LibWebviewState> {
     this.getMessageFromWebView = this.getMessageFromWebView.bind(this)
     this.resetHeight = this.resetHeight.bind(this)
     this.resetSmallHeight = this.resetSmallHeight.bind(this)
-    this._updateWebViewHeight = this._updateWebViewHeight.bind(this);
   }
 
   componentDidUpdate(prevProps: LibWebviewProps, prevState: LibWebviewState): void {
@@ -82,7 +81,8 @@ class ewebview extends LibComponent<LibWebviewProps, LibWebviewState> {
     if (this.props.needAnimate) this._animatedValue.setValue(0);
     Animated.timing(this._animatedValue, {
       toValue: 1,
-      duration: this.props.AnimationDuration
+      duration: this.props.AnimationDuration,
+      useNativeDriver: true
     }).start();
   }
 
@@ -121,42 +121,30 @@ class ewebview extends LibComponent<LibWebviewProps, LibWebviewState> {
     this.gotoShow();
   }
 
-  /* work onli onIos */
-  _updateWebViewHeight(event: any): void {
-    if (event.hasOwnProperty('jsEvaluationValue')) {
-      this.setState({ height: parseInt(event.jsEvaluationValue || 0) + 50 }, () => {
-        if (this.props.onFinishLoad !== undefined)
-          setTimeout(() => {
-            this.props.onFinishLoad()
-          }, 1000)
-      });
-    }
-  }
   /*change hex to rgb, hex not supported in latest android system webview [v72.0.3626.76 28-Jan-2019] in playstore*/
   static fixHtml(html: string): string {
-    var regex = /\#([0-9a-fA-F]+)/g;
-    var matches = html.match(regex) || [];
-    for (let i = 0; i < matches.length; i++) {
-      var e = matches[i];
-      if (e.length >= 6 && e.length <= 7) {
-        var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-        e = e.replace(shorthandRegex, function (m, r, g, b) {
-          return r + r + g + g + b + b;
-        });
-        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(e);
-        if (result) {
-          var rgb = "rgb(" + parseInt(result[1], 16) + "," + parseInt(result[2], 16) + "," + parseInt(result[3], 16) + ")"
-        } else {
-          rgb = "rgb(0,0,0)"
-        }
-        html = html.replace(e, rgb)
-      }
-    }
+    // var regex = /\#([0-9a-fA-F]+)/g;
+    // var matches = html.match(regex) || [];
+    // for (let i = 0; i < matches.length; i++) {
+    //   var e = matches[i];
+    //   if (e.length >= 6 && e.length <= 7) {
+    //     var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    //     e = e.replace(shorthandRegex, function (m, r, g, b) {
+    //       return r + r + g + g + b + b;
+    //     });
+    //     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(e);
+    //     if (result) {
+    //       var rgb = "rgb(" + parseInt(result[1], 16) + "," + parseInt(result[2], 16) + "," + parseInt(result[3], 16) + ")"
+    //     } else {
+    //       rgb = "rgb(0,0,0)"
+    //     }
+    //     html = html.replace(e, rgb)
+    //   }
+    // }
     return html
   }
 
   render(): any {
-    let isIos = Platform.OS == "ios"
     let { bounces, onLoadEnd, style, scrollEnabled, automaticallyAdjustContentInsets, scalesPageToFit, onMessage, ...otherprops } = this.props;
     return (
       <Animated.View style={{ height: this.state.height, overflow: "hidden" }}>
@@ -167,21 +155,18 @@ class ewebview extends LibComponent<LibWebviewProps, LibWebviewState> {
           bounces={bounces !== undefined ? bounces : true}
           javaScriptEnabled
           useWebKit={true}
-          injectedJavaScript={isIos ? "document.body.scrollHeight;" : 'window.ReactNativeWebView.postMessage(document.body.scrollHeight)'}
+          injectedJavaScript={'window.ReactNativeWebView.postMessage(document.body.scrollHeight)'}
           onLoadEnd={() => {
-            if (!isIos) {
-              if (this.props.onFinishLoad !== undefined)
-                setTimeout(() => {
-                  this.props.onFinishLoad()
-                }, 1000)
-            }
+            if (this.props.onFinishLoad !== undefined)
+              setTimeout(() => {
+                this.props.onFinishLoad()
+              }, 1000)
           }}
-          onNavigationStateChange={(event: any) => { if (isIos) this._updateWebViewHeight(event) }}
           style={[{ width: width, height: this.state.height }, style !== undefined ? style : {}]}
           scrollEnabled={scrollEnabled !== undefined ? scrollEnabled : false}
           automaticallyAdjustContentInsets={automaticallyAdjustContentInsets !== undefined ? automaticallyAdjustContentInsets : true}
           scalesPageToFit={scalesPageToFit !== undefined ? scalesPageToFit : true}
-          onMessage={!isIos && this.getMessageFromWebView.bind(this)}>
+          onMessage={this.getMessageFromWebView.bind(this)}>
         </WebView>
       </Animated.View>
     );

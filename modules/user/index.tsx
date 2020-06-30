@@ -1,16 +1,16 @@
 // withHooks
 
-import React, { useEffect, useState, useCallback, useMemo } from "react";
+import React, { useEffect } from "react";
+//@ts-ignore
 import navs from "../../cache/navigations";
 import { View, Platform } from "react-native";
 import { createAppContainer } from "react-navigation";
-import { createStackNavigator } from 'react-navigation-stack';
+import { createStackNavigator, TransitionPresets } from 'react-navigation-stack';
 import * as Font from "expo-font";
 import { AsyncStorage } from 'react-native';
 import {
   esp,
   _global,
-  LibNotification,
   UserClass,
   LibWorker,
   LibNet_status,
@@ -25,10 +25,12 @@ import {
   LibToast,
   useSafeState,
   LibUpdaterProperty,
+  LibNotification,
 } from 'esoftplay';
 import firebase from 'firebase'
-import { Notifications } from "expo";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import * as Notifications from 'expo-notifications'
+
 
 export interface UserIndexProps {
 
@@ -66,29 +68,31 @@ const persistenceFunctions = (() => {
     : {};
 })();
 
+function setFonts(): Promise<void> {
+  let fonts: any = {
+    "Roboto": require("../../assets/Roboto.ttf"),
+    "Roboto_medium": require("../../assets/Roboto_medium.ttf"),
+    "digital": require("../../assets/digital.ttf")
+  }
+  let fontsConfig = esp.config("fonts")
+  if (fontsConfig) {
+    Object.keys(esp.config("fonts")).forEach((key) => {
+      fonts[key] = esp.assets('fonts/' + fontsConfig[key])
+    })
+  }
+  return new Promise((r, j) => {
+    Font.loadAsync(fonts).then(() => r())
+  })
+}
+
+
 _global.Router
 export default function m(props: UserIndexProps): any {
   const dispatch = useDispatch()
   const [loading, setLoading] = useSafeState(true)
+
   function handler(prevState: any, currentState: any): void {
     dispatch({ type: "user_nav_change", payload: currentState })
-  }
-
-  function setFonts(): Promise<void> {
-    let fonts: any = {
-      "Roboto": require("../../assets/Roboto.ttf"),
-      "Roboto_medium": require("../../assets/Roboto_medium.ttf"),
-      "digital": require("../../assets/digital.ttf")
-    }
-    let fontsConfig = esp.config("fonts")
-    if (fontsConfig) {
-      Object.keys(esp.config("fonts")).forEach((key) => {
-        fonts[key] = esp.assets('fonts/' + fontsConfig[key])
-      })
-    }
-    return new Promise((r, j) => {
-      Font.loadAsync(fonts).then(() => r())
-    })
   }
 
   useEffect(() => {
@@ -96,42 +100,58 @@ export default function m(props: UserIndexProps): any {
       LibUpdaterProperty.checkAlertInstall()
       LibTheme.getTheme()
       LibLocale.getLanguage()
-      if (esp.config().notification == 1) {
+      await setFonts()
+      try {
         if (Platform.OS == 'android')
-          Notifications.createChannelAndroidAsync('android', { sound: true, name: esp.appjson().expo.name, badge: true, priority: 'max', vibrate: true })
+          Notifications.removeAllNotificationListeners()
+      } catch (error) {
+
+      }
+      if (esp.config("notification") == 1) {
         LibNotification.listen()
+        if (Platform.OS == 'android')
+          Notifications.setNotificationChannelAsync(
+            'android',
+            {
+              sound: 'default',
+              enableLights: true,
+              description: "this is description",
+              name: esp.appjson().expo.name,
+              importance: Notifications.AndroidImportance.MAX,
+              showBadge: true,
+              enableVibrate: true,
+              lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC
+            }
+          )
+        let push_id = await AsyncStorage.getItem("push_id");
+        if (!push_id) {
+          UserClass.pushToken();
+        }
       }
       if (esp.config().hasOwnProperty('firebase')) {
         try {
           firebase.initializeApp(esp.config('firebase'));
           firebase.auth().signInAnonymously();
-        } catch (error) {
+        } catch (error) { }
+      }
 
-        }
-      }
-      var push_id = await AsyncStorage.getItem("push_id");
-      if (!push_id) {
-        UserClass.pushToken();
-      }
       let econf = esp.config()
-      var navigations: any = {}
+      let navigations: any = {}
       for (let i = 0; i < navs.length; i++) {
         const nav = navs[i];
         navigations[nav] = esp.mod(nav);
       }
       UserClass.isLogin(async (user) => {
         const initRoute = (user && (user.id || user.user_id)) ? econf.home.member : econf.home.public
-        var config: any = {
+        let config: any = {
           headerMode: "none",
           initialRouteName: String(initRoute),
-          defaultNavigationOption: {
-            cardStyle: {
-              backgroundColor: "white"
-            }
-          }
+          defaultNavigationOptions: {
+            animationEnabled: true,
+            cardStyle: { backgroundColor: 'white' }
+          },
         }
         _global.Router = createAppContainer(createStackNavigator(navigations, config))
-        await setFonts()
         setLoading(false)
       })
     }, 0);
@@ -139,9 +159,9 @@ export default function m(props: UserIndexProps): any {
 
   if (loading) return null
   return (
-    <View style={{ flex: 1, paddingBottom: LibStyle.isIphoneX ? 30 : 0 }}>
+    <View style={{ flex: 1, paddingBottom: LibStyle.isIphoneX ? 35 : 0 }}>
       <LibWorker />
-      <_global.Router {...persistenceFunctions} ref={(r) => LibNavigation.setRef(r)} onNavigationStateChange={handler} />
+      <_global.Router {...persistenceFunctions} ref={(r: any) => LibNavigation.setRef(r)} onNavigationStateChange={handler} />
       <LibNet_status />
       <LibDialog style={'default'} />
       <LibImage />

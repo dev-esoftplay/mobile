@@ -2,8 +2,8 @@
 
 import { LibCurl, useSafeState, LibProgress } from 'esoftplay';
 
-export default function m(withProgressText?: string): [(uri: string, post: any, onDone: (res: any, msg: string) => void, debug?: 0 | 1) => void, boolean, string] {
-  const [loading, setLoading] = useSafeState(true)
+export default function m(initialWithLoading?: boolean, withProgressText?: string): [(uri: string, post: any, onDone: (res: any, msg: string) => void, debug?: 0 | 1) => void, boolean, string] {
+  const [loading, setLoading] = useSafeState(initialWithLoading)
   const [error, setError] = useSafeState("")
   function curl(uri: string, post: any, onDone: (res: any, msg: string) => void, debug?: 0 | 1) {
     setLoading(true)

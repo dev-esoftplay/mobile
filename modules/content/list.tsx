@@ -23,8 +23,9 @@ import {
   LibComponent,
   LibStyle
 } from "esoftplay";
-import { StatusBar, Animated } from "react-native";
+import {  Animated } from "react-native";
 import { connect } from "react-redux";
+import { StatusBar } from 'expo-status-bar';
 const { defaultStyle, colorPrimaryDark, colorAccent, width, STATUSBAR_HEIGHT_MASTER } = LibStyle;
 const config = esp.config();
 
@@ -226,7 +227,8 @@ class elist extends LibComponent<ContentListProps, ContentListState>{
     this.setState({ searchView: true }, () => {
       Animated.timing(this.state.animSearch, {
         toValue: 1,
-        duration: 300
+        duration: 300,
+        useNativeDriver: true
       }).start()
     })
   }
@@ -234,7 +236,8 @@ class elist extends LibComponent<ContentListProps, ContentListState>{
   closeSearch(): void {
     Animated.timing(this.state.animSearch, {
       toValue: 0,
-      duration: 300
+      duration: 300,
+      useNativeDriver: true
     }).start(() => {
       this.setState({ searchView: false })
     })
@@ -283,7 +286,7 @@ class elist extends LibComponent<ContentListProps, ContentListState>{
           <View
             style={styles.statusBar}>
             <StatusBar translucent
-              barStyle="light-content" />
+              style="light" />
           </View>
           <View style={{
             backgroundColor: colorPrimaryDark,

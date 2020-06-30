@@ -7,6 +7,7 @@ export interface LibInfiniteProps {
   post?: any,
   initialData?: any[],
   onDataChange?: (data: any, page: number) => void
+  onResult?: (res: any, uri: string) => void,
   error?: string,
   errorView?: ((msg: string) => any) | any,
   mainIndex?: string,
@@ -88,6 +89,7 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
       this.pages.push(page)
       new LibCurl(url, post,
         (res, msg) => {
+          this.props.onResult && this.props.onResult(res, url)
           const update = () => {
             this.props.onDataChange && this.props.onDataChange(this.state.data, this.page)
           }

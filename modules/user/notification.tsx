@@ -1,7 +1,7 @@
 //
 
 import React from "react";
-import { TouchableOpacity, View, StatusBar, Platform } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import {
   esp,
   LibCrypt,
@@ -12,9 +12,11 @@ import {
   LibStyle,
   LibUtils,
   UserNotification_item,
+  LibStatusbar,
 } from "esoftplay";
-import { Notifications } from 'expo'
+import * as Notifications from 'expo-notifications'
 import { connect } from "react-redux"
+//@ts-ignore
 import moment from "moment/min/moment-with-locales"
 import update from "immutability-helper"
 import { Text, Button, Icon } from "native-base";
@@ -48,10 +50,8 @@ class m extends LibComponent<UserNotificationProps, UserNotificationState> {
           urls: []
         }
       case "user_notification_parseData":
-        if (Platform.OS == 'ios') {
-          let unreadedCount = [...state.data, ...action.payload.data].filter((item: any) => item.status != 2).length
-          Notifications.setBadgeNumberAsync(unreadedCount)
-        }
+        let unreadedCount = [...state.data, ...action.payload.data].filter((item: any) => item.status != 2).length
+        Notifications.setBadgeCountAsync(unreadedCount)
         return {
           ...state,
           data: [...state.data, ...action.payload.data],
@@ -112,10 +112,8 @@ class m extends LibComponent<UserNotificationProps, UserNotificationState> {
       post["user_id"] = user.id || user.user_id
       post["group_id"] = esp.config('group_id')
     }
-    if (Platform.OS == 'ios') {
-      let unreadedCount = data.filter((item: any) => item.status != 2).length
-      Notifications.setBadgeNumberAsync(unreadedCount)
-    }
+    let unreadedCount = data.filter((item: any) => item.status != 2).length
+    Notifications.setBadgeCountAsync(unreadedCount)
     m.user_notification_fetchData(_uri, post);
   }
 
@@ -177,7 +175,7 @@ class m extends LibComponent<UserNotificationProps, UserNotificationState> {
     const data = [...this.props.data].reverse()
     return (
       <View style={{ flex: 1, backgroundColor: "white" }}>
-        <StatusBar barStyle={"light-content"} />
+        <LibStatusbar style={"light"} />
         <View
           style={{ flexDirection: "row", height: (STATUSBAR_HEIGHT) + 50, paddingTop: STATUSBAR_HEIGHT, paddingHorizontal: 0, alignItems: "center", backgroundColor: colorPrimary }}>
           <Button transparent
@@ -187,14 +185,7 @@ class m extends LibComponent<UserNotificationProps, UserNotificationState> {
               style={{ color: colorAccent }}
               name="md-arrow-back" />
           </Button>
-          <Text
-            style={{
-              marginHorizontal: 10,
-              fontSize: 18,
-              textAlign: "left",
-              flex: 1,
-              color: colorAccent
-            }}>Notifikasi</Text>
+          <Text style={{ marginHorizontal: 10, fontSize: 18, textAlign: "left", flex: 1, color: colorAccent }}>Notifikasi</Text>
         </View>
         <LibList
           data={data}

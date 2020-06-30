@@ -1,5 +1,4 @@
 import * as R from 'react'
-import { useSafeState } from 'esoftplay';
 import { AsyncStorage } from 'react-native';
 
 type SubscriberFunc<T> = (newState: T) => void;
@@ -31,7 +30,7 @@ export default function useGlobalState<T>(iv: T, o?: UseGlobal_options): UseGlob
   };
 
   let useState = (): [T, (newState: T) => void, () => void] => {
-    let [l, sl] = useSafeState<T>(v);
+    let [l, sl] = R.useState<T>(v);
 
     function del() {
       if (o?.persistKey) {

@@ -1,7 +1,7 @@
 //
 import React from "react"
 import { AsyncStorage, Platform } from 'react-native';
-import { Notifications } from 'expo'
+import * as Notifications from 'expo-notifications'
 import { LibNotification, esp, UserClass, LibCrypt, LibCurl } from "esoftplay";
 import moment from "moment";
 import Constants from 'expo-constants';
@@ -38,7 +38,10 @@ export default class eclass {
       AsyncStorage.getItem("user").then((user: any) => {
         if (user) {
           r(JSON.parse(user));
-          esp.dispatch({ type: "user_class_create", payload: JSON.parse(user) });
+          esp.dispatch({
+            type: "user_class_create",
+            payload: JSON.parse(user)
+          });
           if (callback) callback(JSON.parse(user))
         } else {
           j()
@@ -62,8 +65,7 @@ export default class eclass {
 
   static delete(): Promise<any> {
     return new Promise((r) => {
-      if (Platform.OS == 'ios')
-        Notifications.setBadgeNumberAsync(0)
+      Notifications.setBadgeCountAsync(0)
       esp.dispatch({ type: "user_class_delete" });
       AsyncStorage.removeItem("user");
       if (esp.config('notification') == 1) {
@@ -84,6 +86,7 @@ export default class eclass {
             username: "",
             token: token,
             push_id: "",
+            os: Platform.OS,
             device: Constants.deviceName,
             secretkey: new LibCrypt().encode(config.salt + "|" + moment().format("YYYY-MM-DD hh:mm:ss"))
           }
@@ -92,7 +95,7 @@ export default class eclass {
               user["user_id"] = user.id
               Object.keys(user).forEach((userfield) => {
                 Object.keys(post).forEach((postfield) => {
-                  if (postfield == userfield && postfield != "token" && postfield != "secretkey" && postfield != "push_id" && postfield != "device" && postfield != 'group_id') {
+                  if (postfield == userfield && postfield != "os" && postfield != "token" && postfield != "secretkey" && postfield != "push_id" && postfield != "device" && postfield != 'group_id') {
                     post[postfield] = user[userfield]
                   }
                 })

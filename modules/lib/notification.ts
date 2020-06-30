@@ -1,5 +1,5 @@
 //
-import { Notifications } from 'expo';
+import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions'
 import { Platform, Alert, Linking, Keyboard } from "react-native";
 import { esp, UserNotification, LibCurl, LibCrypt, LibNavigation } from "esoftplay";
@@ -25,65 +25,75 @@ import Constants from 'expo-constants';
   badge:
 } */
 
-export default class enotification {
-  static listen(callback?: (obj: any) => void): Promise<any> {
-    return new Promise((r) => {
-      Notifications.addListener(async (obj: any) => {
-        if (obj) {
-          if (obj.remote == true && obj.origin == 'received') {
-            UserNotification.user_notification_loadData()
-            if (Platform.OS == 'ios') {
-              Keyboard.dismiss()
-              Alert.alert(obj && obj.data && obj.data.title || 'Notification', obj && obj.data && obj.data.message || 'New notification has been received', [
-                {
-                  text: 'Open',
-                  onPress: () => enotification.openPushNotif(obj.data),
-                  style: 'default'
-                },
-                {
-                  text: 'Close',
-                  onPress: () => { },
-                  style: 'cancel'
-                }
-              ])
-            }
-          } else if (obj.remote == true && obj.origin == 'selected') {
-            enotification.openPushNotif(obj.data)
-            UserNotification.user_notification_loadData()
-          }
-          if (callback) callback(obj);
-          r(obj);
-        } else {
-          // j();
-        }
-      })
+
+Notifications.setNotificationHandler({
+  handleNotification: async (notif) => {
+    UserNotification.user_notification_loadData();
+    return ({
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: true,
+      priority: Notifications.AndroidNotificationPriority.MAX
     })
+  },
+});
+
+export default class m {
+
+  static listen(callback?: (obj: any) => void): void {
+    Notifications.addNotificationReceivedListener((x) => onReceive(x))
+    Notifications.addNotificationResponseReceivedListener(x => onAction(x))
+
+    function getData(x: any) {
+      if (Platform.OS == 'ios') {
+        return x.notification.request.content.data.body
+      } else if (Platform.OS == 'android') {
+        return x.notification.request.content.data
+      }
+      return x
+    }
+
+    function onReceive(notification: any) {
+      UserNotification.user_notification_loadData()
+    }
+
+    function onAction(notification: any) {
+      UserNotification.user_notification_loadData()
+      const data = getData(notification)
+      m.openPushNotif(data)
+    }
   }
 
   static requestPermission(callback?: (token: any) => void): Promise<any> {
     return new Promise(async (r) => {
-      const { status } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
-      let finalStatus = status;
-      if (status !== "granted") {
-        const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
-        finalStatus = status;
+      let settings = await Notifications.getPermissionsAsync();
+      if (!settings.granted) {
+        settings = await Notifications.requestPermissionsAsync({
+          ios: {
+            allowAlert: true,
+            allowBadge: true,
+            allowSound: true,
+            allowAnnouncements: true,
+          },
+          android: {}
+        });
       }
-      if (finalStatus !== "granted") {
-        // j();
-        return;
-      }
-      let defaultToken = setTimeout(() => {
-        callback('undetermined')
-      }, 15000);
 
-      let expoToken
-      if (Constants.isDevice)
-        expoToken = await Notifications.getExpoPushTokenAsync()
-      if (expoToken) {
-        clearTimeout(defaultToken)
+      let defaultToken = setTimeout(() => {
+        if (callback)
+          callback('undetermined')
+      }, 15000);
+      //@ts-ignore
+      if (settings.granted || settings.ios?.status === Notifications.IosAuthorizationStatus.PROVISIONAL) {
+        let expoToken
+        if (Constants.isDevice)
+          expoToken = await Notifications.getExpoPushTokenAsync()
+        if (expoToken) {
+          clearTimeout(defaultToken)
+          r(expoToken.data);
+          if (callback) callback(expoToken.data);
+        }
       }
-      r(expoToken);
-      if (callback) callback(expoToken);
     })
   }
 
@@ -95,7 +105,7 @@ export default class enotification {
     const crypt = new LibCrypt();
     const salt = esp.config("salt");
     const config = esp.config();
-    var uri = config.protocol + "://" + config.domain + config.uri + "user/push-read"
+    let uri = config.protocol + "://" + config.domain + config.uri + "user/push-read"
     new LibCurl(uri, {
       notif_id: data.id,
       secretkey: crypt.encode(salt + "|" + moment().format("YYYY-MM-DD hh:mm:ss"))
@@ -104,27 +114,31 @@ export default class enotification {
     }, () => {
 
     })
-    var param = data;
+    let param = data;
     if (param.action)
       switch (param.action) {
         case "alert":
-          var hasLink = param.params && param.params.hasOwnProperty("url") && param.params.url != ""
-          var btns: any = []
+          let hasLink = param.params && param.params.hasOwnProperty("url") && param.params.url != ""
+          let btns: any = []
           if (hasLink) {
             btns.push({ text: "OK", onPress: () => Linking.openURL(param.params.url) })
           } else {
             btns.push({ text: "OK", onPress: () => { }, style: "cancel" })
           }
-          Alert.alert(
-            param.title,
-            param.message,
-            btns, { cancelable: false }
-          )
+          setTimeout(() => {
+            Alert.alert(
+              param.title,
+              param.message,
+              btns, { cancelable: false }
+            )
+          }, 1)
           break;
         case "default":
           if (param.module && param.module != "") {
             if (!String(param.module).includes("/")) param.module = param.module + "/index"
-            LibNavigation.navigate(param.module, param.params)
+            setTimeout(() => {
+              LibNavigation.navigate(param.module, param.params)
+            }, 1);
           }
           break;
         default:
@@ -135,7 +149,7 @@ export default class enotification {
   static openNotif(data: any): void {
     const salt = esp.config("salt");
     const config = esp.config();
-    var uri = config.protocol + "://" + config.domain + config.uri + "user/push-read"
+    let uri = config.protocol + "://" + config.domain + config.uri + "user/push-read"
     new LibCurl(uri, {
       notif_id: data.id,
       secretkey: new LibCrypt().encode(salt + "|" + moment().format("YYYY-MM-DD hh:mm:ss"))
@@ -144,27 +158,31 @@ export default class enotification {
     }, () => {
       // esp.log(msg)
     }, 1)
-    var param = JSON.parse(data.params)
+    let param = JSON.parse(data.params)
     switch (param.action) {
       case "alert":
-        var hasLink = param.arguments.hasOwnProperty("url") && param.arguments.url != ""
-        var btns = []
+        let hasLink = param.arguments.hasOwnProperty("url") && param.arguments.url != ""
+        let btns: any = []
         if (hasLink) {
           btns.push({ text: "OK", onPress: () => Linking.openURL(param.arguments.url) })
         } else {
           btns.push({ text: "OK", onPress: () => { }, style: "cancel" })
         }
-        Alert.alert(
-          data.title,
-          data.message,
-          btns,
-          { cancelable: false }
-        )
+        setTimeout(() => {
+          Alert.alert(
+            data.title,
+            data.message,
+            btns,
+            { cancelable: false }
+          )
+        }, 1);
         break;
       case "default":
         if (param.module != "") {
           if (!String(param.module).includes("/")) param.module = param.module + "/index"
-          LibNavigation.navigate(param.module, param.arguments)
+          setTimeout(() => {
+            LibNavigation.navigate(param.module, param.arguments)
+          }, 1);
         }
         break;
       default:

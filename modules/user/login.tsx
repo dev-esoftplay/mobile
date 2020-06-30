@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Component } from "react"
-import { View, TextInput, ScrollView, Share, TouchableOpacity, StatusBar, Image, KeyboardAvoidingView } from "react-native";
+import { View, TextInput, ScrollView, Share, TouchableOpacity,  Image, KeyboardAvoidingView } from "react-native";
 import { Text, Button } from "native-base";
 import { Ionicons } from "@expo/vector-icons"
 import Modal from "react-native-modal";
@@ -17,6 +17,10 @@ import {
   LibStyle
 } from "esoftplay";
 const config = esp.config();
+import { StatusBar } from 'expo-status-bar';
+
+
+
 /*
 
   <euserLogin
@@ -109,7 +113,7 @@ export default class euserLogin extends LibComponent<UserLoginProps, UserLoginSt
     const { colorPrimary, STATUSBAR_HEIGHT, isIphoneX, width } = LibStyle
     return (
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" keyboardVerticalOffset={20} >
-        <StatusBar barStyle={"dark-content"} />
+        <StatusBar style={"dark"} />
         <View style={{ flex: 1, backgroundColor: "white", paddingTop: STATUSBAR_HEIGHT, paddingBottom: isIphoneX ? 30 : 0, alignItems: "center", justifyContent: "center" }} >
           <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1, alignItems: "center", justifyContent: "center" }} >
             <Image source={esp.assets("logo.png")} style={{ width: 130, height: 130, resizeMode: "contain", marginVertical: 30 }} />

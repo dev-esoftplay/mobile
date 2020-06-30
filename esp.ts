@@ -5,6 +5,7 @@ import navs from './cache/navigations';
 import routers from './cache/routers';
 var app = require('../../app.json');
 var conf = require('../../config.json');
+var lconf = require('../../config.live.json');
 import { connect as _connect } from 'react-redux';
 import { _global, esp } from 'esoftplay';
 
@@ -54,6 +55,10 @@ export default (() => {
     return out;
   }
 
+  function isDebug(): boolean {
+    return conf.config.domain != lconf.config.domain
+  }
+
   function readDeepObj(obj: any) {
     return function (param?: string, ...params: string[]): any {
       let out: any = obj
@@ -73,13 +78,26 @@ export default (() => {
     }
   }
 
-  function lang(...strings: string[]): string {
-    let string = readDeepObj(esp.assets("locale/" + langId() + ".json"))(...strings)
+  function lang(moduleTask: string, langName: string, ...stringToBe: string[]): string {
+    let string = readDeepObj(esp.assets("locale/" + langId() + ".json"))(moduleTask, langName)
     if (!string) {
-      string = readDeepObj(esp.assets("locale/id.json"))(...strings)
+      string = readDeepObj(esp.assets("locale/id.json"))(moduleTask, langName)
+    }
+    function sprintf(string: string, index: number) {
+      if (stringToBe[index] != undefined) {
+        string = string.replace("%s", stringToBe[index])
+        if (string.includes("%s")) {
+          return sprintf(string, index + 1)
+        }
+      }
+      return string
+    }
+    if (string.includes("%s")) {
+      string = sprintf(string, 0)
     }
     return string
   }
+
   function langId(): string {
     const _store: any = _global.store.getState()
     return _store.lib_locale.lang_id
@@ -189,7 +207,7 @@ export default (() => {
       console.log(message, ...optionalParams);
     }
   }
-  return { appjson, connect, dispatch, log, home, navigations, reducer, langId, lang, config, assets, routes, mod }
+  return { appjson, connect, dispatch, log, home, isDebug, navigations, reducer, langId, lang, config, assets, routes, mod }
 })()
 
 // var a = esp.assets("bacground")     // mengambil file dari folder images

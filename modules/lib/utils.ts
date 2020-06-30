@@ -1,5 +1,6 @@
 import moment from "moment/min/moment-with-locales"
 import { Linking, Platform, Clipboard, CameraRoll, Share } from "react-native"
+import momentTimeZone from "moment-timezone"
 import * as FileSystem from 'expo-file-system';
 import { esp, LibToastProperty, _global } from "esoftplay"
 import shorthash from "shorthash"
@@ -30,8 +31,9 @@ export default class eutils {
     return Buffer.from(plain, 'ascii').toString('base64')
   }
 
-  static qrGenerate(string: string): string {
-    return 'http://qrcode.kaywa.com/img.php?s=20&d=' + string
+  static qrGenerate(string: string, size?: number): string {
+    size = size || 20
+    return 'http://qrcode.kaywa.com/img.php?s=' + size + '&d=' + string
   }
 
   static uniqueArray(array: any[]): any[] {
@@ -39,13 +41,13 @@ export default class eutils {
   }
 
   static getArgs(props: any, key: string, defOutput?: any): any {
-    if (!defOutput) {
+    if (defOutput == undefined) {
       defOutput = "";
     }
     return props && props.navigation && props.navigation.state && props.navigation.state.params && props.navigation.state.params[key] || defOutput;
   }
   static getArgsAll(props: any, defOutput?: any): any {
-    if (!defOutput) {
+    if (defOutput == undefined) {
       defOutput = "";
     }
     return props && props.navigation && props.navigation.state && props.navigation.state.params || defOutput;
@@ -93,6 +95,15 @@ export default class eutils {
     })
     return params
   }
+
+  static getTimezoneByConfig(datetime?: Date | string): string {
+    let timezone = esp.config("timezone")
+    if (!datetime) {
+      datetime = new Date()
+    }
+    return momentTimeZone.tz(moment(datetime), timezone).format('YYYY-MM-DD HH:mm:ss')
+  }
+
 
   static getKeyBackOf(routeName: string, store?: any): string {
     console.warn('LibUtils.getKeyBackOf is deprecated, use LibUtils.navGetKey instead')
@@ -170,7 +181,7 @@ export default class eutils {
     }
     if ((typeof value == "string" ? parseInt(value) : value) <= 0) {
       val = "0"
-    }    
+    }
     if (!currency) {
       currency = "Rp"
     }
@@ -259,9 +270,13 @@ export default class eutils {
     return moment(input).format(format)
   }
   static telTo(number: string | number): void {
+    if (typeof number == "string")
+      number = number.match(/\d+/g).join('')
     Linking.openURL("tel:" + number)
   }
   static smsTo(number: string | number, message?: string): void {
+    if (typeof number == 'string')
+      number = number.match(/\d+/g).join('')
     if (!message) {
       message = "";
     }
@@ -278,6 +293,7 @@ export default class eutils {
     Linking.openURL("mailto:" + email + "?subject=" + subject + "&body=" + message)
   }
   static waTo(number: string, message?: string): void {
+    number = number.match(/\d+/g).join('')
     if (!message) {
       message = "";
     }
@@ -368,6 +384,10 @@ export default class eutils {
           onDownloaded(fileName + fileExtentions)
         }).catch((error: any) => { });
     })
+  }
+
+  static shorten(string: string): string {
+    return shorthash.unique(string)
   }
 
   static share(message: string): void {

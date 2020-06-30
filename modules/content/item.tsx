@@ -5,7 +5,7 @@ import { Component } from "react";
 import { Image, Linking, TouchableWithoutFeedback, View, StyleSheet } from "react-native";
 import { Text } from "native-base";
 import moment from "moment/min/moment-with-locales";
-import { esp, LibComponent, LibStyle, LibUtils } from "esoftplay";
+import { esp, LibComponent, LibStyle, LibUtils, LibPicture } from "esoftplay";
 const { defaultStyle, width } = LibStyle
 
 export interface ContentItemProps {
@@ -79,7 +79,7 @@ export default class eitem extends LibComponent<ContentItemProps, ContentItemSta
             onPress={() => goToSponsor(url)}>
             <View
               style={styles.containerRow}>
-              <Image
+              <LibPicture
                 style={{ width: width, height: 110, resizeMode: "contain" }}
                 source={{ uri: image }} />
             </View>
@@ -126,7 +126,7 @@ export default class eitem extends LibComponent<ContentItemProps, ContentItemSta
                 <Text
                   style={styles.text11} note>{created}</Text>
               </View>
-              <Image style={{ width: 110, height: 110, resizeMode: "cover" }} source={{ uri: image }} />
+              <LibPicture style={{ width: 110, height: 110, resizeMode: "cover" }} source={{ uri: image }} />
             </View>
           </TouchableWithoutFeedback>
         )
@@ -151,10 +151,9 @@ export default class eitem extends LibComponent<ContentItemProps, ContentItemSta
                     </View>
                   </View>
                   :
-                  <Image
+                  <LibPicture
                     style={{ height: width * 9 / 16, width: width }}
-                    source={{ uri: image }}>
-                  </Image>
+                    source={{ uri: image }}/>
               }
             </View>
             <View style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: 10, backgroundColor: "rgba(3,3,3,0.4)", }} >
@@ -232,7 +231,7 @@ export default class eitem extends LibComponent<ContentItemProps, ContentItemSta
           {
             config.thumbnail == 1 &&
             <View>
-              <Image style={{ width: 110, height: 110, resizeMode: "cover" }} source={{ uri: image }} />
+              <LibPicture style={{ width: 110, height: 110, resizeMode: "cover" }} source={{ uri: image }} />
             </View>
           }
         </View>

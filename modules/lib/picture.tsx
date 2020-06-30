@@ -1,11 +1,10 @@
 // withHooks
 
 import React, { useEffect } from 'react';
-import { View, Image, InteractionManager } from 'react-native';
+import { View, Image } from 'react-native';
 import { useSafeState, LibWorker, LibStyle } from 'esoftplay';
 import * as FileSystem from 'expo-file-system'
 const sh = require("shorthash")
-import _ from "lodash"
 
 export interface LibPictureSource {
   uri: string
@@ -13,7 +12,8 @@ export interface LibPictureSource {
 export interface LibPictureProps {
   source: LibPictureSource | any,
   style: any,
-  resizeMode?: "contain" | "cover"
+  resizeMode?: "contain" | "cover",
+  onError?: () => void,
 }
 
 const CACHE_DIR = `${FileSystem.cacheDirectory}lib-picture-cache/`;
@@ -32,31 +32,33 @@ const getCacheEntry = async (uri: string, toSize: number): Promise<{ exists: boo
 
 export default function m(props: LibPictureProps): any {
   const [uri, setUri] = useSafeState("")
-  const { width, height } = props.style
+  let { width, height } = props.style
 
   if (props.source.hasOwnProperty("uri") && (!width || !height)) {
-    throw "Width and Height is Required"
+    if (width) {
+      height = width
+    } else {
+      width = height
+    }
+    console.warn("Width and Height is Required");
   }
 
-  var timmer: any
-
   useEffect(() => {
-    timmer = InteractionManager.runAfterInteractions(async () => {
-      if (props.source.uri) {
-        let toSize = Math.max(width, height)
-        toSize = isNaN(toSize) ? LibStyle.width * 0.5 : toSize
-        const { path, exists } = await getCacheEntry(props.source.uri, toSize)
+    if (props.source.uri) {
+      let toSize = Math.max(width, height)
+      toSize = isNaN(toSize) ? LibStyle.width * 0.5 : toSize
+      getCacheEntry(props.source.uri, toSize).then(({ path, exists }) => {
         if (exists) {
           setUri(path)
         } else {
-          LibWorker.image(props.source.uri, toSize, async (uri) => {
-            await FileSystem.writeAsStringAsync(path, uri.replace("data:image/png;base64,", ""), { encoding: "base64" });
-            setUri(path)
+          LibWorker.image(props.source.uri, toSize, (uri) => {
+            FileSystem.writeAsStringAsync(path, uri, { encoding: "base64" }).then(() => {
+              setUri(path)
+            })
           })
         }
-      }
-    })
-    return () => timmer.cancel()
+      })
+    }
   }, [props.source])
 
   if (!props.source.hasOwnProperty("uri")) {
@@ -66,5 +68,10 @@ export default function m(props: LibPictureProps): any {
   if (uri == '') {
     return <View style={props.style} />
   }
-  return <Image {...props} source={{ uri }} style={props.style} />
+  return (
+    <Image
+      {...props}
+      source={{ uri }}
+      style={props.style} />
+  )
 }

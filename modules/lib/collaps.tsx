@@ -51,7 +51,8 @@ export default class m extends LibComponent<LibCollapsProps, LibCollapsState> {
     Animated.spring(
       this.state.animation,
       {
-        toValue: finalValue
+        toValue: finalValue,
+        useNativeDriver: true
       }
     ).start();
   }

@@ -30,11 +30,15 @@ export default class m {
     )
   }
 
+  static getResultKey(props: any) {
+    return LibUtils.getArgs(props, "_senderKey", 1)
+  }
+
   static cancelBackResult(key?: number): void {
     if (!key) {
-      key = 1000
+      key = 1
     }
-    _global._backResult[key] = null
+    delete _global._task[key]
   }
 
   static sendBackResult(result: any, key?: number): void {
@@ -62,10 +66,12 @@ export default class m {
       function checkResult() {
         setTimeout(() => {
           if (_global._backResult[key] == undefined) {
-            checkResult()
+            if (_global._task[key])
+              checkResult()
           } else {
-            delete _global._task[key]
             r(_global._backResult[key])
+            delete _global._task[key]
+            _global._backResult[key] = undefined
           }
         }, 300);
       }

@@ -51,7 +51,6 @@ export default class m {
   static _colorPrimary(): string {
     return m.colors([colorPrimary, colorPrimary])
   }
-
   static _colorAccent(): string {
     return m.colors([colorAccent, colorAccent])
   }

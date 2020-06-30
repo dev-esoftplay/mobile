@@ -3,7 +3,7 @@
 import React from 'react';
 import { View, Alert } from 'react-native';
 import { Fab } from 'native-base';
-import { Updates } from 'expo';
+import * as Updates from 'expo-updates';
 import { LibStyle, LibProgress, esp, LibIcon } from 'esoftplay';
 
 export interface LibUpdaterProps {
@@ -46,6 +46,10 @@ export default function m(props: LibUpdaterProps): any {
           position="bottomRight"
           style={{ backgroundColor: LibStyle.colorRed }}
           onPress={() => {
+            if (__DEV__) {
+              Alert.alert('Development Mode', 'Update not working in development mode!')
+              return
+            }
             LibProgress.show('Sedang memeriksa versi terbaru')
             check((isNew) => {
               if (isNew) {

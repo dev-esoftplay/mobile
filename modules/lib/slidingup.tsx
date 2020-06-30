@@ -60,6 +60,7 @@ export default class m extends LibComponent<LibSlidingupProps, LibSlidingupState
         {
           toValue: toValue,
           duration: 200,
+          useNativeDriver: true
         }
       ).start(() => {
         r()

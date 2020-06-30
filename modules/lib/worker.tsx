@@ -1,10 +1,9 @@
 import React from "react";
 import { Component } from "react"
 import { WebView } from 'react-native-webview'
-import { esp, _global, LibEffect } from 'esoftplay'
-import { connect } from "react-redux";
+import { esp, _global } from 'esoftplay'
 import { View } from 'native-base';
-import { PixelRatio, InteractionManager } from 'react-native';
+import { PixelRatio } from 'react-native';
 
 export interface LibWorkerInit {
   task: string,
@@ -102,7 +101,7 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
                 canvas.height = wantedheight;
                 ctx.drawImage(this, 0, 0, wantedwidth, wantedheight);
                 let x = canvas.toDataURL();
-                window.ReactNativeWebView.postMessage(JSON.stringify({ id: id, data: x }))
+                window.ReactNativeWebView.postMessage(JSON.stringify({ id: id, data: x.replace("data:image/png;base64,", "") }))
               }
               img.src = String(reader.result)
             };
@@ -122,7 +121,6 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
       esp.config("protocol") + "://data." + esp.config("domain") + esp.config("uri"),
     ]
     const _dispatcher = () => {
-
       if (_global.LibWorkerReady == 3) {
         _global.LibWorkerCount++
         var _task = task(_global.LibWorkerCount)
@@ -174,7 +172,7 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
                   canvas.height = wantedheight;
                   ctx.drawImage(this, 0, 0, wantedwidth, wantedheight);
                   let x = canvas.toDataURL();
-                  window.ReactNativeWebView.postMessage(JSON.stringify({ id: id, data: x }))
+                  window.ReactNativeWebView.postMessage(JSON.stringify({ id: id, data: x.replace("data:image/png;base64,", "") }))
                 }
                 img.src = String(reader.result)
               };

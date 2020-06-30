@@ -323,6 +323,7 @@ function createIndex() {
     "  var _global: any;\n" +
     "  function useGlobalState<S>(initialState?: S, option?: useGlobalOption): useGlobalReturn<S>;\n" +
     "  function useSafeState<S>(initialState?: S | (() => S)): [S, (a: S) => void];\n" +
+    "  function applyStyle(style: any): any;\n" +
     "  function usePersistState<S>(key: string, initialState?: S | (() => S)): [S, (a: S) => void, (a?: (x: S)=> void) => void, () => void];\n" +
     "  namespace esp {\n" +
     "    function appjson(): any;\n" +
@@ -333,7 +334,8 @@ function createIndex() {
     "    function mod(path: string): any;\n" +
     "    function reducer(): any;\n" +
     "    function navigations(): any;\n" +
-    "    function lang(...string: string[]): string;\n" +
+    "    function isDebug(): boolean;\n" +
+    "    function lang(moduleTask: string, langName: string, ...string: string[]): string;\n" +
     "    function langId(): string;\n" +
     "    function connect(mapStateToProps:any,cls:any): any;\n" +
     "    function home(): any;\n" +
@@ -501,6 +503,7 @@ function createRouter() {
   var staticImport = []
 
   staticImport.push("import { isEqual } from 'lodash';\n")
+  staticImport.push("export function applyStyle(style){ return style };\n")
   staticImport.push("export { default as _global } from '../../../node_modules/esoftplay/_global';\n")
   staticImport.push("export { default as useGlobalState } from '../../../node_modules/esoftplay/global';\n")
   staticImport.push("export { default as useSafeState } from '../../../node_modules/esoftplay/state';\n")

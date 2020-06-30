@@ -81,10 +81,11 @@ export default class escroll extends LibComponent<LibScrollProps, LibScrollState
     return index.toString()
   }
 
-  scrollToIndex(x: number, anim?: boolean): void {
+  scrollToIndex(x: number, anim?: boolean, viewOffset?: number, viewPosition?: number): void {
     if (!anim) anim = true;
-    this.flatscroll.current!.scrollToIndex({ index: x, animated: anim })
+    this.flatscroll.current!.scrollToIndex({ index: x, animated: anim, viewOffset: viewOffset, viewPosition: viewPosition })
   }
+
 
   render(): any {
     return (

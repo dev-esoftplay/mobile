@@ -55,9 +55,9 @@ export default class EList extends LibComponent<LibListProps, LibListState> {
     this.keyExtractor = this.keyExtractor.bind(this);
   }
 
-  scrollToIndex(x: number, anim?: boolean): void {
+  scrollToIndex(x: number, anim?: boolean, viewOffset?: number, viewPosition?: number): void {
     if (!anim) anim = true;
-    this.flatlist.current!.scrollToIndex({ index: x, animated: anim })
+    this.flatlist.current!.scrollToIndex({ index: x, animated: anim, viewOffset: viewOffset, viewPosition: viewPosition })
   }
 
   rowRenderer({ item, index }): any {

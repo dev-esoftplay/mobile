@@ -168,6 +168,7 @@ if (fs.existsSync(packjson)) {
 		if (!$appjson.expo.hasOwnProperty('android')) {
 			rewrite = true;
 			$appjson.expo.android = {
+				"useNextNotificationsApi": true,
 				"package": "com.domain",
 				"versionCode": 1,
 				"intentFilters": [
@@ -264,9 +265,8 @@ import { esp, _global } from 'esoftplay';
 import * as ErrorReport from 'esoftplay/error'
 import * as ErrorRecovery from 'expo-error-recovery';
 import './node_modules/esoftplay/timeout_fix'
-// import { enableScreens } from 'react-native-screens';
-
-// enableScreens();
+import { enableScreens } from 'react-native-screens';
+enableScreens();
 
 _global.store = createStore(esp.reducer())
 _global.persistor = persistStore(_global.store)
@@ -299,6 +299,9 @@ export default class App extends React.Component {
 			"cd ../../ && expo install expo-camera",
 			"cd ../../ && expo install expo-image-picker",
 			"cd ../../ && expo install expo-permissions",
+			"cd ../../ && expo install expo-updates",
+			"cd ../../ && expo install expo-notifications",
+			"cd ../../ && expo install expo-status-bar",
 			"cd ../../ && expo install expo-sqlite",
 			"cd ../../ && expo install lodash",
 			"cd ../../ && expo install expo-file-system",

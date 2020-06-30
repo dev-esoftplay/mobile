@@ -4,7 +4,6 @@ import { Component } from "react";
 import {
   View,
   StyleSheet,
-  StatusBar,
   Animated,
   ScrollView,
   Image,
@@ -30,7 +29,7 @@ import {
 const { colorPrimary, width, colorAccent, colorPrimaryDark } = LibStyle;
 const config = esp.config();
 const { STATUSBAR_HEIGHT_MASTER } = LibStyle;
-
+import { StatusBar } from 'expo-status-bar';
 var HEADER_MAX_HEIGHT = (width * 4 / 5) + STATUSBAR_HEIGHT_MASTER;
 var HEADER_MIN_HEIGHT = 50 + STATUSBAR_HEIGHT_MASTER;
 var HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
@@ -206,7 +205,7 @@ export default class edetail extends LibComponent<ContentDetailProps, ContentDet
     return (
       <View
         style={styles.fill}>
-        <StatusBar barStyle={"light-content"} />
+        <StatusBar style={"light"} />
         {
           isAudio ?
             <ContentAudio
