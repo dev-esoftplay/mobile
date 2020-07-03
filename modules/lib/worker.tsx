@@ -3,7 +3,7 @@ import { Component } from "react"
 import { WebView } from 'react-native-webview'
 import { esp, _global } from 'esoftplay'
 import { View } from 'native-base';
-import { PixelRatio } from 'react-native';
+import { PixelRatio, Platform } from 'react-native';
 
 export interface LibWorkerInit {
   task: string,
@@ -241,6 +241,11 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
   }
 
   render(): any {
+    if (Platform.OS == 'android')
+      if (Platform.Version <= 22) {
+        return null
+      }
+
     return (
       <View style={{ height: 0, width: 0 }} >
         {this.renderWorkers()}

@@ -1,11 +1,11 @@
 {
   "name": "esoftplay",
-  "version": "0.0.86-r",
+  "version": "0.0.86-z",
   "description": "embedding data from esoftplay framework (web based) into mobile app",
   "main": "cache/index.js",
   "types": "../../index.d.ts",
   "scripts": {
-    "postinstall": "node ./bin/build.js install",    
+    "postinstall": "node ./bin/build.js install",
     "test": "node ./bin/build.js install"
   },
   "repository": {

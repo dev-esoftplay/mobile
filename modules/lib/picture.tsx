@@ -1,8 +1,8 @@
 // withHooks
 
 import React, { useEffect } from 'react';
-import { View, Image } from 'react-native';
-import { useSafeState, LibWorker, LibStyle } from 'esoftplay';
+import { View, Image, Platform } from 'react-native';
+import { useSafeState, LibWorker, LibStyle, LibObject } from 'esoftplay';
 import * as FileSystem from 'expo-file-system'
 const sh = require("shorthash")
 
@@ -44,6 +44,9 @@ export default function m(props: LibPictureProps): any {
   }
 
   useEffect(() => {
+    if (Platform.OS == 'android' && Platform.Version <= 22) {
+      return
+    }
     if (props.source.uri) {
       let toSize = Math.max(width, height)
       toSize = isNaN(toSize) ? LibStyle.width * 0.5 : toSize
@@ -61,6 +64,13 @@ export default function m(props: LibPictureProps): any {
     }
   }, [props.source])
 
+  if (Platform.Version <= 22 && Platform.OS == 'android') {
+    if (typeof props.source != 'number' && !props.source.uri) {
+      return <View style={props.style} />
+    }
+    return <Image {...props} />
+  }
+
   if (!props.source.hasOwnProperty("uri")) {
     return <Image {...props} />
   }
@@ -68,6 +78,7 @@ export default function m(props: LibPictureProps): any {
   if (uri == '') {
     return <View style={props.style} />
   }
+
   return (
     <Image
       {...props}

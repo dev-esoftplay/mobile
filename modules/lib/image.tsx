@@ -5,9 +5,11 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Platform,
+  Alert,
+  InteractionManager,
 } from 'react-native';
 import { Icon } from 'native-base';
-import { LibStyle, LibComponent, LibCurl, esp, LibProgress, LibIcon, _global } from 'esoftplay';
+import { LibStyle, LibComponent, LibCurl, esp, LibProgress, LibIcon, _global, LibNavigation, LibUtils } from 'esoftplay';
 import * as ImageManipulator from 'expo-image-manipulator';
 import { Camera } from 'expo-camera';
 import * as Permissions from 'expo-permissions';
@@ -18,7 +20,8 @@ const { height, width } = LibStyle;
 
 export interface LibImageProps {
   show?: boolean,
-  image?: string
+  image?: string,
+  editor?: boolean
 }
 
 export interface LibImageState {
@@ -28,10 +31,21 @@ export interface LibImageState {
   flashLight: 'on' | 'off'
 }
 
+export interface LibImageGalleryOptions {
+  editor?: boolean,
+  multiple?: boolean,
+  max?: number
+}
+
+export interface LibImageCameraOptions {
+  editor?: boolean
+}
+
 class m extends LibComponent<LibImageProps, LibImageState> {
   static initState = {
     show: false,
-    image: undefined
+    image: undefined,
+    editor: false
   }
 
   static reducer(state: any, action: any): any {
@@ -41,21 +55,24 @@ class m extends LibComponent<LibImageProps, LibImageState> {
         return {
           ...state,
           show: true,
-          image: undefined
+          image: undefined,
+          editor: action.payload
         }
         break;
       case "lib_image_camera_hide":
         return {
           ...state,
           show: false,
-          image: undefined
+          image: undefined,
+          editor: false
         }
         break;
       case "lib_image_result":
         return {
           ...state,
           image: action.payload,
-          show: false
+          show: false,
+          editor: false
         }
         break;
       default:
@@ -68,6 +85,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
     return {
       show: state.lib_image.show,
       image: state.lib_image.image,
+      editor: state.lib_image.editor,
     }
   }
 
@@ -79,9 +97,10 @@ class m extends LibComponent<LibImageProps, LibImageState> {
     })
   }
 
-  static show(): void {
+  static show(editor?: boolean): void {
     esp.dispatch({
-      type: 'lib_image_camera_show'
+      type: 'lib_image_camera_show',
+      payload: editor
     })
   }
 
@@ -107,12 +126,23 @@ class m extends LibComponent<LibImageProps, LibImageState> {
   async takePicture(): Promise<void> {
     if (this.camera) {
       this.setState({ loading: true })
-      const result = await this.camera.takePictureAsync({})
+      const { editor } = this.props
+      let result = await this.camera.takePictureAsync({})
       this.setState({ image: result, loading: false })
+      if (editor) {
+        m.showEditor(result.uri, (d) => {
+          this.setState({ image: d, loading: false })
+        })
+      }
     }
   }
 
-  static fromCamera(): Promise<string> {
+  static showEditor(uri: string, result: (x: any) => void): void {
+    LibNavigation.navigateForResult("lib/image_edit", { uri }, 81793).then(result)
+  }
+
+
+  static fromCamera(options?: LibImageCameraOptions): Promise<string> {
     return new Promise((_r) => {
       setTimeout(async () => {
         const cameraPermission = await Permissions.getAsync(Permissions.CAMERA);
@@ -130,35 +160,46 @@ class m extends LibComponent<LibImageProps, LibImageState> {
         if (finalStatus != 'granted') {
           esp.log('PERMISSION DENIED')
         }
-        if (Platform.OS == 'android') {
-          m.show()
-          async function checkImage(): Promise<string> {
-            return new Promise(async (__r) => {
-              setTimeout(async () => {
-                const state: any = _global.store.getState()
-                const image = state.lib_image.image
-                const show = state.lib_image.show
-                if (image) {
-                  __r(image)
-                } else if (show) {
-                  __r(await checkImage())
-                }
-              }, 300);
-            })
+
+        // if (Platform.OS == 'android') {
+        //   m.show(options && options.editor)
+        //   async function checkImage(): Promise<string> {
+        //     return new Promise(async (__r) => {
+        //       setTimeout(async () => {
+        //         const state: any = _global.store.getState()
+        //         const image = state.lib_image.image
+        //         const show = state.lib_image.show
+        //         if (image) {
+        //           __r(image)
+        //         } else if (show) {
+        //           __r(await checkImage())
+        //         }
+        //       }, 300);
+        //     })
+        //   }
+        //   _r(checkImage())
+        // } else {
+        ImagePicker.launchCameraAsync().then(async (result: any) => {
+          if (!result.cancelled) {
+            if (options && options.editor) {
+              m.showEditor(result.uri, async (x) => {
+                let imageUri = await m.processImage(x)
+                m.setResult(imageUri)
+                _r(imageUri)
+              })
+            } else {
+              let imageUri = await m.processImage(result)
+              m.setResult(imageUri)
+              _r(imageUri)
+            }
           }
-          _r(checkImage())
-        } else {
-          ImagePicker.launchCameraAsync().then(async (result: any) => {
-            let imageUri = await m.processImage(result)
-            m.setResult(imageUri)
-            _r(imageUri)
-          })
-        }
+        })
+        // }
       }, 1);
     })
   }
 
-  static fromGallery(): Promise<string> {
+  static fromGallery(options?: LibImageGalleryOptions): Promise<string | string[]> {
     return new Promise((_r) => {
       setTimeout(async () => {
         const { status } = await Permissions.getAsync(Permissions.CAMERA_ROLL);
@@ -168,12 +209,63 @@ class m extends LibComponent<LibImageProps, LibImageState> {
           finalStatus = status
         }
         if (finalStatus != 'granted') {
-          esp.log('PERMISSION DENIED')
+          Alert.alert("Oops..!", "PERMISSION DENIED")
+          return
         }
-        ImagePicker.launchImageLibraryAsync().then(async (result: any) => {
-          let imageUri = await m.processImage(result)
-          m.setResult(imageUri)
-          _r(imageUri)
+        let max = 0
+        if (options?.multiple == true) {
+          max = options?.max || 0
+        } else {
+          max = 1
+        }
+        LibNavigation.navigateForResult("lib/image_multi", { max: max }).then((x: any[]) => {
+          if (max == 1 && x.length == 1 && options?.editor == true) {
+            m.showEditor(x[0].uri, async (x) => {
+              let imageUri = await m.processImage(x)
+              m.setResult(imageUri)
+              _r(imageUri)
+            })
+            return
+          }
+          let a: string[] = []
+          x.forEach(async (t: any, i) => {
+            if (i == 0) {
+              LibProgress.show("Mohon Tunggu, Sedang mengunggah foto")
+            }
+            var wantedMaxSize = 780
+            var rawheight = t.height
+            var rawwidth = t.width
+            var ratio = rawwidth / rawheight
+            if (rawheight > rawwidth) {
+              var wantedwidth = wantedMaxSize * ratio;
+              var wantedheight = wantedMaxSize;
+            } else {
+              var wantedwidth = wantedMaxSize;
+              var wantedheight = wantedMaxSize / ratio;
+            }
+            const manipImage = await ImageManipulator.manipulateAsync(
+              t.uri,
+              [{ resize: { width: wantedwidth, height: wantedheight } }],
+              { format: SaveFormat.JPEG }
+            );
+            new LibCurl().upload('image_upload', "image", String(manipImage.uri), 'image/jpeg',
+              (res: any, msg: string) => {
+                a.push(String(res));
+                if (a.length == x.length) {
+                  if (max == 1) {
+                    _r(res)
+                  } else {
+                    _r(a)
+                  }
+                  LibProgress.hide()
+                }
+              },
+              (msg: string) => {
+                console.log(msg, "NOOO")
+                if (x.length - 1 == i)
+                  LibProgress.hide()
+              }, 1)
+          });
         })
       }, 1)
     })
@@ -182,7 +274,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
   static processImage(result: any): Promise<string> {
     return new Promise((r) => {
       if (!result.cancelled) {
-        LibProgress.show("MOHON TUNGGU, SEDANG MENGUNGGAH FOTO ")
+        LibProgress.show("Mohon Tunggu, Sedang mengunggah foto")
         var wantedMaxSize = 780
         var rawheight = result.height
         var rawwidth = result.width
@@ -217,7 +309,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
 
   render(): any {
     const { image, type, loading, flashLight } = this.state
-    const { show } = this.props
+    const { show, editor } = this.props
     if (!show) return null
     return (
       <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} >
