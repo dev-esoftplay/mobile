@@ -11,7 +11,7 @@ export interface LibUpdaterProps {
 }
 
 export function install(): void {
-  Updates.reload()
+  Updates.reloadAsync()
 }
 
 export function alertInstall(title?: string, msg?: string): void {
