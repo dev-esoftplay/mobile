@@ -38,7 +38,11 @@ export default class m {
     if (!key) {
       key = 1
     }
-    delete _global._task[key]
+    try {
+      delete _global._task[key]
+    } catch (error) {
+      
+    }
   }
 
   static sendBackResult(result: any, key?: number): void {
@@ -70,7 +74,11 @@ export default class m {
               checkResult()
           } else {
             r(_global._backResult[key])
-            delete _global._task[key]
+            try {
+              delete _global._task[key]
+            } catch (error) {
+              
+            }
             _global._backResult[key] = undefined
           }
         }, 300);
