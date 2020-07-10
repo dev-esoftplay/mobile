@@ -43,6 +43,7 @@ export interface LibScrollProps {
   keyboardShouldPersistTaps?: boolean | "always" | "never" | "handled",
   children?: any[],
   extraData?: any,
+  stickyHeaderIndices?: number[],
   pagingEnabled?: boolean,
   horizontal?: boolean,
   initialNumToRender?: number,

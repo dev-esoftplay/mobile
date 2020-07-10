@@ -218,6 +218,25 @@ class m extends LibComponent<LibImageProps, LibImageState> {
         } else {
           max = 1
         }
+        if (max == 1) {
+          ImagePicker.launchImageLibraryAsync().then(async (x: any) => {
+            if (!x.cancelled) {
+              if (options?.editor == true) {
+                m.showEditor(x.uri, async (x) => {
+                  let imageUri = await m.processImage(x)
+                  m.setResult(imageUri)
+                  _r(imageUri)
+                })
+                return
+              } else {
+                let imageUri = await m.processImage(x)
+                m.setResult(imageUri)
+                _r(imageUri)
+              }
+            }
+          })
+          return
+        }
         LibNavigation.navigateForResult("lib/image_multi", { max: max }).then((x: any[]) => {
           if (max == 1 && x.length == 1 && options?.editor == true) {
             m.showEditor(x[0].uri, async (x) => {

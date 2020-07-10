@@ -19,6 +19,7 @@ export interface LibRollProps {
   keyboardShouldPersistTaps?: boolean | "always" | "never" | "handled",
   children?: any[],
   pagingEnabled?: boolean,
+  stickyHeaderIndices?: number[],
   extraData?: any,
   onScroll?: (e: any) => void,
   scrollEventThrottle?: number,

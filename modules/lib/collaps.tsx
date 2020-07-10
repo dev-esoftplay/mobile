@@ -52,7 +52,7 @@ export default class m extends LibComponent<LibCollapsProps, LibCollapsState> {
       this.state.animation,
       {
         toValue: finalValue,
-        useNativeDriver: true
+        useNativeDriver: false
       }
     ).start();
   }

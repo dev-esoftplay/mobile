@@ -11,6 +11,7 @@ export interface LibInfiniteProps {
   error?: string,
   errorView?: ((msg: string) => any) | any,
   mainIndex?: string,
+  stickyHeaderIndices?: number[],
   bounces?: boolean,
   staticHeight?: number,
   ItemSeparatorComponent?: any,

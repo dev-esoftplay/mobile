@@ -86,8 +86,8 @@ export default class EList extends LibComponent<LibListProps, LibListState> {
           maxToRenderPerBatch={10}
           windowSize={10}
           {...this.props}
+          ListFooterComponent={this.props.renderFooter && this.props.renderFooter() || this.props.ListFooterComponent }
           {...isStatic()}
-          ListFooterComponent={this.props.renderFooter && this.props.renderFooter()}
           renderItem={this.rowRenderer}
         />
       </View>

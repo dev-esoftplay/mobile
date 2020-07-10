@@ -77,6 +77,10 @@ export default class eclass {
 
   static pushToken(): Promise<any> {
     return new Promise((resolve, reject) => {
+      if (Constants.appOwnership == 'expo' && !esp.isDebug()) {
+        resolve(undefined)
+        return
+      }
       LibNotification.requestPermission(async (token) => {
         if (token && token.includes("ExponentPushToken")) {
           const config = esp.config();
