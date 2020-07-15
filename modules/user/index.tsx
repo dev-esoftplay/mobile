@@ -26,6 +26,7 @@ import {
   useSafeState,
   LibUpdaterProperty,
   LibNotification,
+  LibVersion
 } from 'esoftplay';
 import firebase from 'firebase'
 import { useDispatch } from 'react-redux';
@@ -156,6 +157,14 @@ export default function m(props: UserIndexProps): any {
       })
     }, 0);
   }, [])
+
+  useEffect(() => {
+    if (!loading) {
+      setTimeout(() => {
+        LibVersion.check()
+      }, 0);
+    }
+  }, [loading])
 
   if (loading) return null
   return (

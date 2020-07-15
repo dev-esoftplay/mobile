@@ -41,6 +41,8 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
     function parseObject(obj: any): string {
       let x = ""
       if (obj._post) {
+        obj.cache = "no-store"
+        obj.mode = "cors"
         obj.headers["Content-Type"] = "application/x-www-form-urlencoded;charset=UTF-8"
         let post = obj._post
         x = Object.keys(post).map((key) => {
@@ -77,7 +79,7 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
       imageCompress("` + id + `","` + url + `", ` + PixelRatio.getPixelSizeForLayoutSize(toSize) + `)
     } else {
       function imageCompress(id, url, toSize) {
-        fetch(url)
+        fetch(url, { mode: 'cors'})
           .then(response => response.blob())
           .then(blob => {
             var reader = new FileReader();
@@ -148,7 +150,7 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
     let injectedJavaScript = ""
     injectedJavaScript += `
       function imageCompress(id, url, toSize) {
-          fetch(url)
+          fetch(url, { mode: 'cors'})
             .then(response => response.blob())
             .then(blob => {
               var reader = new FileReader();

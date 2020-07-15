@@ -38,7 +38,6 @@ export default class ecurl {
     this.uri = uri
   }
 
-
   setMaxTimeout(milisecond: number) {
     this.maxTimeout = milisecond
   }
@@ -71,6 +70,27 @@ export default class ecurl {
     this.init(uri, post, onDone, onFailed, debug, true)
   }
 
+  signatureBuild(): string {
+    let signature = '';
+    let payload = '';
+    let method = '';
+    let _uri = '';
+    const link = this.url + this.uri;
+    if (this.post) {
+      method = 'POST';
+      _uri = link.replace(esp.config('url'), '');
+      // _uri = _uri.includes('?') ? _uri.substring(0, _uri.indexOf('?')) : _uri
+      payload = this.post;
+    } else {
+      method = 'GET';
+      _uri = link.replace(esp.config('url'), '');
+      payload = _uri.includes('?') ? _uri.substring(_uri.indexOf('?') + 1, _uri.length) : '';
+      // _uri = _uri.includes('?') ? _uri.substring(0, _uri.indexOf('?')) : _uri;
+    }
+    signature = method + ':' + _uri + ':' + payload;
+    return signature
+  }
+
   async custom(uri: string, post?: any, onDone?: (res: any, timeout: boolean) => void, debug?: number): Promise<void> {
     // this.setMaxTimeout(this.maxTimeout)
     // this.timeout = setTimeout(() => {
@@ -81,14 +101,10 @@ export default class ecurl {
     const str: any = _global.store.getState()
     if (str.lib_net_status.isOnline) {
       if (post) {
-        let fd = new FormData();
-        Object.keys(post).map((key) => {
-          if (key !== undefined) {
-            fd.append(key, post[key])
-          }
-        })
-        this.post = fd
-        // this.header["Content-Type"] = "application/x-www-form-urlencoded"
+        let ps = Object.keys(post).map((key) => {
+          return encodeURIComponent(key) + '=' + encodeURIComponent(post[key]);
+        }).join('&');
+        this.post = ps
       }
       this.setUri(uri)
       if ((/^[A-z]+:\/\//g).test(uri)) {
@@ -98,10 +114,16 @@ export default class ecurl {
         this.setUrl(esp.config("url"))
       }
       await this.setHeader()
-      var options = {
+      var options: any = {
         method: !this.post ? "GET" : "POST",
-        headers: this.header,
-        body: this.post
+        headers: {
+          ...this.header,
+          ["Content-Type"]: "application/x-www-form-urlencoded;charset=UTF-8"
+        },
+        body: this.post,
+        cache: "no-store",
+        mode: "cors",
+        _post: post
       }
       if (debug == 1)
         esp.log(this.url + this.uri, options)
@@ -130,13 +152,10 @@ export default class ecurl {
     //   LibProgress.hide()
     // }, this.maxTimeout);
     if (post) {
-      let fd = new FormData();
-      Object.keys(post).map(function (key) {
-        if (key !== undefined) {
-          fd.append(key, post[key])
-        }
-      });
-      this.post = fd
+      let ps = Object.keys(post).map((key) => {
+        return encodeURIComponent(key) + '=' + encodeURIComponent(post[key]);
+      }).join('&');
+      this.post = ps
     }
     this.setUri(uri)
     if ((/^[A-z]+:\/\//g).test(uri)) {
@@ -146,10 +165,15 @@ export default class ecurl {
       this.setUrl(esp.config("url"))
     }
     await this.setHeader();
-    var options = {
+    var options: any = {
       method: !this.post ? "GET" : "POST",
-      headers: this.header,
+      headers: {
+        ...this.header,
+        ["Content-Type"]: "application/x-www-form-urlencoded;charset=UTF-8"
+      },
       body: this.post,
+      cache: "no-store",
+      mode: "cors",
       _post: post
     }
     if (debug == 1) esp.log(this.url + this.uri, options)

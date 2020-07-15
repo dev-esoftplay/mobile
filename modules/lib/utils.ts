@@ -5,6 +5,7 @@ import * as FileSystem from 'expo-file-system';
 import { esp, LibToastProperty, _global } from "esoftplay"
 import shorthash from "shorthash"
 import { StackActions, NavigationActions } from 'react-navigation';
+import { type } from "os";
 const Buffer = require('buffer/').Buffer
 
 
@@ -104,7 +105,6 @@ export default class eutils {
     return momentTimeZone.tz(moment(datetime), timezone).format('YYYY-MM-DD HH:mm:ss')
   }
 
-
   static getKeyBackOf(routeName: string, store?: any): string {
     console.warn('LibUtils.getKeyBackOf is deprecated, use LibUtils.navGetKey instead')
     var routes = eutils.getReduxState('user_index', 'routes')
@@ -192,6 +192,10 @@ export default class eutils {
     }
   }
 
+  static numberAbsolute(toNumber: string | number): number {
+    let _toNumber = typeof toNumber == 'string' ? Number(toNumber) : toNumber
+    return Math.abs(_toNumber)
+  }
 
   static number(toNumber: string | number): string {
     var toNumb = typeof toNumber === "number" ? toNumber.toFixed(0).replace(/(\d)(?=(\d{3})+$)/g, "$1,") : parseInt(toNumber).toFixed(0).replace(/(\d)(?=(\d{3})+$)/g, "$1,")
