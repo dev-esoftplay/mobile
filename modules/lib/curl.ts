@@ -22,6 +22,7 @@ export default class ecurl {
     this.onFetched = this.onFetched.bind(this)
     this.header = {}
     this.setHeader = this.setHeader.bind(this);
+    this.signatureBuild = this.signatureBuild.bind(this)
     const str: any = _global.store.getState()
     if (uri && str.lib_net_status.isOnline) {
       this.init(uri, post, onDone, onFailed, debug);
@@ -72,22 +73,24 @@ export default class ecurl {
 
   signatureBuild(): string {
     let signature = '';
-    let payload = '';
-    let method = '';
-    let _uri = '';
-    const link = this.url + this.uri;
-    if (this.post) {
-      method = 'POST';
-      _uri = link.replace(esp.config('url'), '');
-      // _uri = _uri.includes('?') ? _uri.substring(0, _uri.indexOf('?')) : _uri
-      payload = this.post;
-    } else {
-      method = 'GET';
-      _uri = link.replace(esp.config('url'), '');
-      payload = _uri.includes('?') ? _uri.substring(_uri.indexOf('?') + 1, _uri.length) : '';
-      // _uri = _uri.includes('?') ? _uri.substring(0, _uri.indexOf('?')) : _uri;
+    if (this.url.includes(esp.config('url'))) {
+      let payload = '';
+      let method = '';
+      let _uri = '';
+      const link = this.url + this.uri;
+      if (this.post) {
+        method = 'POST';
+        _uri = link.replace(esp.config('url'), '');
+        _uri = _uri.includes('?') ? _uri.substring(0, _uri.indexOf('?')) : _uri
+        payload = this.post;
+      } else {
+        method = 'GET';
+        _uri = link.replace(esp.config('url'), '');
+        payload = _uri.includes('?') ? _uri.substring(_uri.indexOf('?') + 1, _uri.length) : '';
+        _uri = _uri.includes('?') ? _uri.substring(0, _uri.indexOf('?')) : _uri;
+      }
+      signature = method + ':' + _uri + ':' + payload;
     }
-    signature = method + ':' + _uri + ':' + payload;
     return signature
   }
 
@@ -152,10 +155,20 @@ export default class ecurl {
     //   LibProgress.hide()
     // }, this.maxTimeout);
     if (post) {
-      let ps = Object.keys(post).map((key) => {
-        return encodeURIComponent(key) + '=' + encodeURIComponent(post[key]);
-      }).join('&');
-      this.post = ps
+      if (upload) {
+        let fd = new FormData();
+        Object.keys(post).map(function (key) {
+          if (key !== undefined) {
+            fd.append(key, post[key])
+          }
+        });
+        this.post = fd
+      } else {
+        let ps = Object.keys(post).map((key) => {
+          return encodeURIComponent(key) + '=' + encodeURIComponent(post[key]);
+        }).join('&');
+        this.post = ps
+      }
     }
     this.setUri(uri)
     if ((/^[A-z]+:\/\//g).test(uri)) {
@@ -165,12 +178,11 @@ export default class ecurl {
       this.setUrl(esp.config("url"))
     }
     await this.setHeader();
+    if (!upload)
+      this.header["Content-Type"] = "application/x-www-form-urlencoded;charset=UTF-8"
     var options: any = {
       method: !this.post ? "GET" : "POST",
-      headers: {
-        ...this.header,
-        ["Content-Type"]: "application/x-www-form-urlencoded;charset=UTF-8"
-      },
+      headers: this.header,
       body: this.post,
       cache: "no-store",
       mode: "cors",
