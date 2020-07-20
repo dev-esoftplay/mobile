@@ -1,34 +1,27 @@
 // useLibs
 
 import { useEffect } from 'react';
-import { _global, useSafeState } from 'esoftplay';
+import { useSafeState, UseForm_dataProperty } from 'esoftplay';
 
 export default function m<S>(formName: string, def?: S): [S, (a: string) => (v: any) => void, (a?: (x?: S) => void) => void, () => void] {
-  const [a, b] = useSafeState<S>(_global.use_form_state && _global.use_form_state[formName] || def)
+  const [a, b] = useSafeState<S>(UseForm_dataProperty.useFormData && UseForm_dataProperty.useFormData[formName] || def)
+
   function c(field: any) {
-    _global.use_form_state[formName] = {
-      ..._global.use_form_state[formName],
+    UseForm_dataProperty.useFormData[formName] = {
+      ...UseForm_dataProperty.useFormData[formName],
       ...field
     }
     b({
-      ..._global.use_form_state[formName],
+      ...UseForm_dataProperty.useFormData[formName],
     })
   }
 
-  function init() {
-    if (!_global.hasOwnProperty('use_form_state')) {
-      _global.use_form_state = {}
-    }
-  }
-
   useEffect(() => {
-    init()
-    c(_global.use_form_state[formName])
+    c(UseForm_dataProperty.useFormData[formName])
   }, [])
 
   useEffect(() => {
-    init()
-    _global.use_form_state[formName] = { ..._global.use_form_state[formName], ...a }
+    UseForm_dataProperty.useFormData[formName] = { ...UseForm_dataProperty.useFormData[formName], ...a }
   }, [a])
 
   function g(field: string) {
@@ -38,12 +31,12 @@ export default function m<S>(formName: string, def?: S): [S, (a: string) => (v: 
   }
 
   function h() {
-    delete _global.use_form_state[formName]
+    delete UseForm_dataProperty.useFormData[formName]
   }
 
   function f(callback?: (a?: S) => void) {
     const restate = {
-      ..._global.use_form_state[formName],
+      ...UseForm_dataProperty.useFormData[formName],
     }
     if (callback)
       callback(restate)

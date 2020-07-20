@@ -1,11 +1,12 @@
 import React from "react";
-import { esp, LibUtils, _global } from 'esoftplay';
+import { esp, LibUtils, LibNavigation_dataProperty } from 'esoftplay';
 import { StackActions, NavigationActions } from 'react-navigation';
 
 // var _navigator: any = React.createRef()
 // var _navigation: any
 // var _backResult: any = {}
 // var _task: any = {}
+
 export interface LibNavigationInjector {
   args: any,
   children?: any
@@ -13,19 +14,19 @@ export interface LibNavigationInjector {
 
 export default class m {
   static setRef(ref: any): void {
-    _global._navigator = ref
+    LibNavigation_dataProperty.libNavigationRef = ref
   }
 
   static setNavigation(nav: any): void {
-    _global._navigation = nav
+    LibNavigation_dataProperty.libNavigationData._navigation = nav
   }
 
   static navigation(): any {
-    return _global._navigation
+    return LibNavigation_dataProperty.libNavigationData._navigation
   }
 
   static navigate(route: string, params?: any): void {
-    _global._navigator.dispatch(
+    LibNavigation_dataProperty.libNavigationRef.dispatch(
       NavigationActions.navigate({ routeName: route, params: params })
     )
   }
@@ -39,9 +40,9 @@ export default class m {
       key = 1
     }
     try {
-      delete _global._task[key]
+      delete LibNavigation_dataProperty.libNavigationData._task[key]
     } catch (error) {
-      
+
     }
   }
 
@@ -49,8 +50,8 @@ export default class m {
     if (!key) {
       key = 1
     }
-    if (_global._backResult[key] == undefined) {
-      _global._backResult[key] = result
+    if (LibNavigation_dataProperty.libNavigationData._backResult[key] == undefined) {
+      LibNavigation_dataProperty.libNavigationData._backResult[key] = result
     }
     m.back()
   }
@@ -59,27 +60,26 @@ export default class m {
     if (!key) {
       key = 1
     }
-    if (!_global.hasOwnProperty('_backResult')) {
-      _global._backResult = {}
+    if (!LibNavigation_dataProperty.libNavigationData.hasOwnProperty('_backResult')) {
+      LibNavigation_dataProperty.libNavigationData._backResult = {}
     }
-    if (!_global.hasOwnProperty('_task')) {
-      _global._task = {}
+    if (!LibNavigation_dataProperty.libNavigationData.hasOwnProperty('_task')) {
+      LibNavigation_dataProperty.libNavigationData._task = {}
     }
-    _global._backResult[key] = undefined
+    LibNavigation_dataProperty.libNavigationData._backResult[key] = undefined
     return new Promise((r) => {
       function checkResult() {
         setTimeout(() => {
-          if (_global._backResult[key] == undefined) {
-            if (_global._task[key])
-              checkResult()
+          if (LibNavigation_dataProperty.libNavigationData._backResult[key] == undefined) {
+            LibNavigation_dataProperty.libNavigationData._task[key]
+            checkResult()
           } else {
-            r(_global._backResult[key])
+            r(LibNavigation_dataProperty.libNavigationData._backResult[key])
             try {
-              delete _global._task[key]
+              delete LibNavigation_dataProperty.libNavigationData._task[key]
             } catch (error) {
-              
             }
-            _global._backResult[key] = undefined
+            LibNavigation_dataProperty.libNavigationData._backResult[key] = undefined
           }
         }, 300);
       }
@@ -88,15 +88,15 @@ export default class m {
       }
       params['_senderKey'] = key
       m.navigate(route, params)
-      if (!_global._task.hasOwnProperty(key)) {
-        _global._task[key] = 1;
+      if (!LibNavigation_dataProperty.libNavigationData._task.hasOwnProperty(key)) {
+        LibNavigation_dataProperty.libNavigationData._task[key] = 1;
         checkResult()
       }
     })
   }
 
   static replace(routeName: string, params?: any): void {
-    _global._navigator.dispatch(
+    LibNavigation_dataProperty.libNavigationRef.dispatch(
       StackActions.replace({
         routeName,
         params
@@ -105,7 +105,7 @@ export default class m {
   }
 
   static push(routeName: string, params?: any): void {
-    _global._navigator.dispatch(
+    LibNavigation_dataProperty.libNavigationRef.dispatch(
       StackActions.push({
         routeName,
         params
@@ -124,7 +124,7 @@ export default class m {
       index: _routeName.length - 1,
       actions: _routeName.map((rn) => NavigationActions.navigate({ routeName: rn }))
     });
-    _global._navigator.dispatch(resetAction);
+    LibNavigation_dataProperty.libNavigationRef.dispatch(resetAction);
   }
 
   static back(deep?: number): void {
@@ -132,7 +132,7 @@ export default class m {
     const popAction = StackActions.pop({
       n: _deep
     });
-    _global._navigator.dispatch(popAction)
+    LibNavigation_dataProperty.libNavigationRef.dispatch(popAction)
   }
 
   /* return `root` on initialRoute otherwise return the routeName was active  */
@@ -150,7 +150,7 @@ export default class m {
   }
 
   static backToRoot(): void {
-    _global._navigator.dispatch(StackActions.popToTop());
+    LibNavigation_dataProperty.libNavigationRef.dispatch(StackActions.popToTop());
   }
 
   static Injector(props: LibNavigationInjector): any {

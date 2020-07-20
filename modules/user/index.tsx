@@ -10,7 +10,6 @@ import * as Font from "expo-font";
 import { AsyncStorage } from 'react-native';
 import {
   esp,
-  _global,
   UserClass,
   LibWorker,
   LibNet_status,
@@ -26,7 +25,9 @@ import {
   useSafeState,
   LibUpdaterProperty,
   LibNotification,
-  LibVersion
+  LibVersion,
+  _global,
+  UserIndex_dataProperty
 } from 'esoftplay';
 import firebase from 'firebase'
 import { useDispatch } from 'react-redux';
@@ -57,13 +58,13 @@ const persistenceFunctions = (() => {
   return __DEV__
     ? {
       async persistNavigationState(value: any) {
-        _global.__nav__state = value;
+        UserIndex_dataProperty.userIndexData.nav__state = value
       },
       async loadNavigationState() {
-        if (_global.__nav__state == null) {
+        if (UserIndex_dataProperty.userIndexData.nav__state == null) {
           await Promise.reject('no data');
         }
-        return _global.__nav__state;
+        return UserIndex_dataProperty.userIndexData.nav__state;
       },
     }
     : {};
@@ -87,7 +88,6 @@ function setFonts(): Promise<void> {
 }
 
 
-_global.Router
 export default function m(props: UserIndexProps): any {
   const dispatch = useDispatch()
   const [loading, setLoading] = useSafeState(true)
@@ -152,7 +152,7 @@ export default function m(props: UserIndexProps): any {
             cardStyle: { backgroundColor: 'white' }
           },
         }
-        _global.Router = createAppContainer(createStackNavigator(navigations, config))
+        UserIndex_dataProperty.userIndexNav.Router = createAppContainer(createStackNavigator(navigations, config))
         setLoading(false)
       })
     }, 0);
@@ -167,10 +167,11 @@ export default function m(props: UserIndexProps): any {
   }, [loading])
 
   if (loading) return null
+  const R = UserIndex_dataProperty.userIndexNav.Router
   return (
     <View style={{ flex: 1, paddingBottom: LibStyle.isIphoneX ? 35 : 0 }}>
       <LibWorker />
-      <_global.Router {...persistenceFunctions} ref={(r: any) => LibNavigation.setRef(r)} onNavigationStateChange={handler} />
+      <R {...persistenceFunctions} ref={(r: any) => LibNavigation.setRef(r)} onNavigationStateChange={handler} />
       <LibNet_status />
       <LibDialog style={'default'} />
       <LibImage />

@@ -4,7 +4,6 @@ import momentTimeZone from "moment-timezone"
 import moment from "moment/min/moment-with-locales"
 import { esp, LibCrypt, LibProgress, _global, LibWorker } from 'esoftplay';
 import { reportApiError } from "../../error";
-import { Platform } from 'react-native';
 
 export default class ecurl {
   isDebug = esp.config("isDebug");
@@ -191,22 +190,23 @@ export default class ecurl {
     if (debug == 1) esp.log(this.url + this.uri, options)
     this.fetchConf = { url: this.url + this.uri, options: options }
 
-    if (Platform.OS == 'android' && Platform.Version <= 22) {
-      var res = await fetch(this.url + this.uri, options);
-      let resText = await res.text()
-      this.onFetched(resText, onDone, onFailed, debug)
-    } else
-      if (!upload) {
-        LibWorker.curl(this.url + this.uri, options, async (resText) => {
-          if (typeof resText == 'string') {
-            this.onFetched(resText, onDone, onFailed, debug)
-          }
-        })
-      } else {
-        var res = await fetch(this.url + this.uri, options);
-        let resText = await res.text()
-        this.onFetched(resText, onDone, onFailed, debug)
-      }
+    // if (Platform.OS == 'android' && Platform.Version <= 22) {
+    //   var res = await fetch(this.url + this.uri, options);
+    //   let resText = await res.text()
+    //   this.onFetched(resText, onDone, onFailed, debug)
+    // } else
+    // if (!upload) {
+    //   LibWorker.curl(this.url + this.uri, options, async (resText) => {
+    //     if (typeof resText == 'string') {
+    //       this.onFetched(resText, onDone, onFailed, debug)
+    //     }
+    //   })
+    // } else 
+    // {
+    var res = await fetch(this.url + this.uri, options);
+    let resText = await res.text()
+    this.onFetched(resText, onDone, onFailed, debug)
+    // }
   }
 
   onFetched(resText: string, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number): void {

@@ -351,7 +351,15 @@ function createIndex() {
     }\n
   interface useGlobalOption {
     persistKey?: string
-  }`;
+  }\n`+
+    `interface useCacheData {
+    get: () => any,
+    set: (data: any) => any
+  }
+  interface useCacheReturn {
+    useCache: () => useCacheData
+  }
+  function createCache(): useCacheReturn;`;
   for (clsName in tmpTask) {
     if (tmpTask[clsName]["class"]) {
       // Text += "\n";
@@ -518,14 +526,14 @@ function createRouter() {
       var item = "import { default as _" + ucword(module) + ucword(task) + " } from '../../." + Modules[module][task] + "';\n"
       if (HookModules.includes(nav)) {
         item += "" +
-          "import * as " + ucword(module) + ucword(task) + SuffixHooksProperty + " from '../../." + Modules[module][task] + "';\n" +
-          "const " + ucword(module) + ucword(task) + " = React.memo(_" + ucword(module) + ucword(task) + ", isEqual); \n" +
-          "export { " + ucword(module) + ucword(task) + SuffixHooksProperty + ", " + ucword(module) + ucword(task) + " };\n"
+        "import * as " + ucword(module) + ucword(task) + SuffixHooksProperty + " from '../../." + Modules[module][task] + "';\n" +
+        "const " + ucword(module) + ucword(task) + " = React.memo(_" + ucword(module) + ucword(task) + ", isEqual); \n" +
+        "export { " + ucword(module) + ucword(task) + SuffixHooksProperty + ", " + ucword(module) + ucword(task) + " };\n"
       } else if (UseLibs.includes(nav)) {
         item += "" +
-          "import * as " + ucword(module) + ucword(task) + SuffixHooksProperty + " from '../../." + Modules[module][task] + "';\n" +
-          "const " + ucword(module) + ucword(task) + " = _" + ucword(module) + ucword(task) + "; \n" +
-          "export { " + ucword(module) + ucword(task) + SuffixHooksProperty + ", " + ucword(module) + ucword(task) + " };\n"
+        "import * as " + ucword(module) + ucword(task) + SuffixHooksProperty + " from '../../." + Modules[module][task] + "';\n" +
+        "const " + ucword(module) + ucword(task) + " = _" + ucword(module) + ucword(task) + "; \n" +
+        "export { " + ucword(module) + ucword(task) + SuffixHooksProperty + ", " + ucword(module) + ucword(task) + " };\n"
       } else {
         item += "export { _" + ucword(module) + ucword(task) + " as " + ucword(module) + ucword(task) + " };\n"
       }
@@ -540,6 +548,7 @@ function createRouter() {
       }
     }
   }
+  staticImport.splice(0, 0, "export { default as createCache } from '../../../node_modules/esoftplay/_cache';\n")
   staticImport.splice(0, 0, "import React from 'react';\n")
   const x = staticImport.join('')
   if (isChange(tmpDir + 'index.js', x))

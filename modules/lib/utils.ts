@@ -2,7 +2,7 @@ import moment from "moment/min/moment-with-locales"
 import { Linking, Platform, Clipboard, CameraRoll, Share } from "react-native"
 import momentTimeZone from "moment-timezone"
 import * as FileSystem from 'expo-file-system';
-import { esp, LibToastProperty, _global } from "esoftplay"
+import { esp, LibToastProperty, _global, createCache } from "esoftplay"
 import shorthash from "shorthash"
 import { StackActions, NavigationActions } from 'react-navigation';
 import { type } from "os";
@@ -18,11 +18,13 @@ export interface LibUtilsDate {
 
 export type LibUtilsTravelMode = 'driving' | 'walking'
 
+const cache = createCache()
 export default class eutils {
 
   static debounce(func: () => any, delay: number): void {
-    clearTimeout(_global.inDebounce)
-    _global.inDebounce = setTimeout(() => func(), delay)
+    const { get, set } = cache.useCache()
+    clearTimeout(get().inDebounce)
+    set(c => c.inDebounce = setTimeout(() => func(), delay))
   }
 
   static decodeBase64(chipper: string): string {

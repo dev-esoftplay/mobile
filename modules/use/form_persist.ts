@@ -1,28 +1,25 @@
 // useLibs
 
 import React, { useEffect } from 'react';
-import { usePersistState, _global } from 'esoftplay';
+import { usePersistState, UseForm_dataProperty } from 'esoftplay';
 import { AsyncStorage } from 'react-native';
 
 export default function m<S>(formName: string, def?: S): [S, (a: string) => (v: any) => void, (a?: (x?: S) => void) => void, () => void] {
   const [a, b, d, e] = usePersistState<S>('useForm-' + formName, def)
   function c(field: any) {
-    _global.useFormState[formName] = {
-      ..._global.useFormState[formName],
+    UseForm_dataProperty.useFormData[formName] = {
+      ...UseForm_dataProperty.useFormData[formName],
       ...field
     }
     b({
-      ..._global.useFormState[formName],
+      ...UseForm_dataProperty.useFormData[formName],
       ...a,
       ...field
     })
   }
 
   useEffect(() => {
-    if (!_global.hasOwnProperty('useFormState')) {
-      _global.useFormState = {}
-    }
-    _global.useFormState[formName] = { ..._global.useFormState[formName], ...a }
+    UseForm_dataProperty.useFormData[formName] = { ...UseForm_dataProperty.useFormData[formName], ...a }
   }, [a])
 
   function g(field: string) {
@@ -32,7 +29,7 @@ export default function m<S>(formName: string, def?: S): [S, (a: string) => (v: 
   }
 
   function h() {
-    _global.useFormState[formName] = undefined
+    UseForm_dataProperty.useFormData[formName] = undefined
     e()
   }
 

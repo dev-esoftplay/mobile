@@ -2,7 +2,7 @@
 
 import React, { useRef, useEffect } from 'react';
 import { TextInput } from 'react-native';
-import { LibUtils, _global, useSafeState, esp } from 'esoftplay';
+import { LibUtils, LibInput_base_dataProperty } from 'esoftplay';
 
 export interface LibInput_baseProps {
   name: string,
@@ -33,22 +33,22 @@ export interface LibInput_baseProps {
   value?: string,
 }
 
-
 export function focus(name: string): void {
-  _global['inputRef'][name]?.current!.focus()
+  LibInput_base_dataProperty.inputBaseRef[name]?.current!.focus()
 }
 export function blur(name: string): void {
-  _global['inputRef'][name]?.current!.blur()
+  LibInput_base_dataProperty.inputBaseRef[name]?.current!.blur()
 }
 export function setText(name: string): (text: string) => void {
   return (text: string) => {
-    _global['inputRef'][name].current!.setNativeProps({ text: mask(name, text) })
+    LibInput_base_dataProperty.inputBaseRef[name].current!.setNativeProps({ text: mask(name, text) })
   }
 }
 
 function mask(name: string, text: string): string {
+
   let _text = text
-  let { mask, maskFrom } = _global.inputMask[name]
+  let { mask, maskFrom } = LibInput_base_dataProperty.inputBaseData[name]
   if (mask) {
     if (!maskFrom) maskFrom = 'start'
     let rMask = mask.split("")
@@ -79,7 +79,7 @@ function mask(name: string, text: string): string {
     if (maskFrom == 'end') {
       maskedText = maskedText.split('').reverse().join('')
     }
-    // _global['inputRef'][name].current!.setNativeProps({ text: maskedText })
+    // LibInput_base_dataProperty.inputBaseRef[name].current!.setNativeProps({ text: maskedText })
     return maskedText
   }
   return _text
@@ -87,7 +87,7 @@ function mask(name: string, text: string): string {
 
 function unmask(name: string, text: string): string {
   let _text = text
-  let { mask } = _global.inputMask[name]
+  let { mask } = LibInput_base_dataProperty.inputBaseData[name]
   if (mask) {
     let masks = mask.match(/((?!\#).)/g)
     if (masks) {
@@ -101,36 +101,26 @@ function unmask(name: string, text: string): string {
 }
 
 export default function m(props: LibInput_baseProps): any {
-  init()
-  _global['inputRef'][props.name] = useRef<TextInput>(null);
-  _global['inputMask'][props.name] = {
+  LibInput_base_dataProperty.inputBaseRef[props.name] = useRef<TextInput>(null);
+  LibInput_base_dataProperty.inputBaseData[props.name] = {
     mask: props.mask,
     maskFrom: props.maskFrom
   }
 
   useEffect(() => {
-    _global['inputRef'][props.name].current!.blur()
+    LibInput_base_dataProperty.inputBaseRef[props.name].current!.blur()
   }, [])
-
-  function init(): void {
-    if (!_global.hasOwnProperty('inputRef')) {
-      _global.inputRef = {}
-    }
-    if (!_global.hasOwnProperty('inputMask')) {
-      _global.inputMask = {}
-    }
-  }
 
   const setups = {
     ...props,
     onChangeText: (t: string) => {
       const maskedText = mask(props.name, t)
       const unmaskedText = unmask(props.name, t)
-      _global['inputRef'][props.name].current!.setNativeProps({ text: maskedText })
+      LibInput_base_dataProperty.inputBaseRef[props.name].current!.setNativeProps({ text: maskedText })
       props.onChangeText(unmaskedText, maskedText)
     },
     maxLength: props.mask ? props.mask.length : undefined,
-    ref: _global['inputRef'][props.name]
+    ref: LibInput_base_dataProperty.inputBaseRef[props.name]
   }
   return props.children ? React.cloneElement(props.children, { ...setups }) : <TextInput {...setups} />
 }

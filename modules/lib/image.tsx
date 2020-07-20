@@ -9,7 +9,7 @@ import {
   InteractionManager,
 } from 'react-native';
 import { Icon } from 'native-base';
-import { LibStyle, LibComponent, LibCurl, esp, LibProgress, LibIcon, _global, LibNavigation, LibUtils } from 'esoftplay';
+import { LibStyle, LibComponent, LibCurl, esp, LibProgress, LibIcon, LibNavigation, LibUtils } from 'esoftplay';
 import * as ImageManipulator from 'expo-image-manipulator';
 import { Camera } from 'expo-camera';
 import * as Permissions from 'expo-permissions';
