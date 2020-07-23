@@ -132,11 +132,11 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
           result: result
         })
         if (url.indexOf(knownUrl[0]) > -1)
-          LibWorker_dataProperty.libWorkerRef.LibWorkerBase.current!.injectJavaScript(_task)
+          LibWorker_dataProperty.libWorkerData.LibWorkerBase.current!.injectJavaScript(_task)
         else if (url.indexOf(knownUrl[1]) > -1)
-          LibWorker_dataProperty.libWorkerRef.LibWorkerApi.current!.injectJavaScript(_task)
+          LibWorker_dataProperty.libWorkerData.LibWorkerApi.current!.injectJavaScript(_task)
         else
-          LibWorker_dataProperty.libWorkerRef.LibWorkerData.current!.injectJavaScript(_task)
+          LibWorker_dataProperty.libWorkerData.LibWorkerData.current!.injectJavaScript(_task)
       } else {
         setTimeout(() => {
           _dispatcher()
@@ -212,7 +212,7 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
     return (
       <>
         <WebView
-          ref={LibWorker_dataProperty.libWorkerRef.LibWorkerBase}
+          ref={LibWorker_dataProperty.libWorkerData.LibWorkerBase}
           style={{ width: 0, height: 0 }}
           javaScriptEnabled={true}
           injectedJavaScript={injectedJavaScript + `\nwindow.ReactNativeWebView.postMessage("BaseWorkerIsReady")`}
@@ -221,7 +221,7 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
           onMessage={(e) => onMessage(e)('BaseWorkerIsReady')}
         />
         <WebView
-          ref={LibWorker_dataProperty.libWorkerRef.LibWorkerApi}
+          ref={LibWorker_dataProperty.libWorkerData.LibWorkerApi}
           style={{ width: 0, height: 0 }}
           javaScriptEnabled={true}
           injectedJavaScript={injectedJavaScript + `\nwindow.ReactNativeWebView.postMessage("ApiWorkerIsReady")`}
@@ -230,7 +230,7 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
           onMessage={(e) => onMessage(e)('ApiWorkerIsReady')}
         />
         <WebView
-          ref={LibWorker_dataProperty.libWorkerRef.LibWorkerData}
+          ref={LibWorker_dataProperty.libWorkerData.LibWorkerData}
           style={{ width: 0, height: 0 }}
           javaScriptEnabled={true}
           injectedJavaScript={injectedJavaScript + `\nwindow.ReactNativeWebView.postMessage("DataWorkerIsReady")`}

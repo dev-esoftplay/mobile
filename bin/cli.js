@@ -113,8 +113,11 @@ function update() {
 	if (fs.existsSync(packjson)) {
 		let pack = readToJSON(packjson)
 		let esplibs = Object.keys(pack.dependencies).filter((key) => key.includes("esoftplay"))
+
 		esplibs.forEach((key) => {
 			if (key != 'esoftplay') {
+				if (args[1] == 'all')
+					command('npm install -s ' + key + '@latest')
 				command("cd node_modules/" + key + " && node mover.js")
 				consoleSucces(key + " succesfully implemented!")
 			}
@@ -578,6 +581,7 @@ function help() {
 		"\n\n OPTIONS :",
 		"\n - help                        : panduan penggunaan",
 		"\n - u|update                    : untuk update esp module ke versi terakhir",
+		"\n - u|update all                : untuk update semua esp module ke versi terakhir",
 		"\n - start                       : start esoftplay framework",
 		"\n - f|file                      : untuk check status file",
 		"\n - c|check                     : untuk check status",

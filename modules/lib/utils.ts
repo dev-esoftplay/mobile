@@ -21,6 +21,13 @@ export type LibUtilsTravelMode = 'driving' | 'walking'
 const cache = createCache()
 export default class eutils {
 
+  static checkUndefined(obj: any, cursorsAsString: string): boolean {
+    let cursors = cursorsAsString.split('.')
+    if (obj === undefined) return false
+    if (cursors.length == 0 && obj.hasOwnProperty(cursors[0])) return true
+    return eutils.checkUndefined(obj[cursors[0]], cursors.join('.'))
+  }
+
   static debounce(func: () => any, delay: number): void {
     const { get, set } = cache.useCache()
     clearTimeout(get().inDebounce)

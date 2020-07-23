@@ -15,12 +15,14 @@ const myErrorHandler = (e: any, isFatal: any) => {
 export function setError(error?: any) {
   let routes = LibUtils.getReduxState('user_index')
   const user = LibUtils.getReduxState("user_class")
-  let lastIndex = routes.routes.length - 1
-  let _e: any = {}
-  _e['user'] = user
-  _e['error'] = error
-  _e['routes'] = routes.routes[lastIndex].routeName
-  AsyncStorage.setItem(config.config.domain + 'error', JSON.stringify(_e))
+  let lastIndex = routes?.routes?.length - 1 || -1
+  if (lastIndex >= 0) {
+    let _e: any = {}
+    _e['user'] = user
+    _e['error'] = error
+    _e['routes'] = routes?.routes?.[lastIndex]?.routeName
+    AsyncStorage.setItem(config?.config?.domain + 'error', JSON.stringify(_e))
+  }
 }
 
 export function reportApiError(fetch: any, error: any) {

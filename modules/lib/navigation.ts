@@ -71,8 +71,8 @@ export default class m {
       function checkResult() {
         setTimeout(() => {
           if (LibNavigation_dataProperty.libNavigationData._backResult[key] == undefined) {
-            LibNavigation_dataProperty.libNavigationData._task[key]
-            checkResult()
+            if (LibNavigation_dataProperty.libNavigationData._task[key])
+              checkResult()
           } else {
             r(LibNavigation_dataProperty.libNavigationData._backResult[key])
             try {
@@ -81,7 +81,7 @@ export default class m {
             }
             LibNavigation_dataProperty.libNavigationData._backResult[key] = undefined
           }
-        }, 300);
+        }, 500);
       }
       if (!params) {
         params = {}

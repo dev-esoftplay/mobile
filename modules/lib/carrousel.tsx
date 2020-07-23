@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, ScrollView, Text, TouchableWithoutFeedback, Platform, TouchableOpacity, StyleSheet } from 'react-native';
-import { LibComponent, LibFocus } from 'esoftplay';
+import { LibComponent, LibFocus, LibUtils } from 'esoftplay';
 
 export interface LibCarrouselProps {
   children: any,
@@ -218,7 +218,7 @@ export default class m extends LibComponent<LibCarrouselProps, LibCarrouselState
   }
 
   _scrollTo({ offset, animated, nofix }: any): void {
-    if (this.scrollView) {
+    if (LibUtils.checkUndefined(this, 'scrollView.current.scrollTo')) {
       this.scrollView.current!.scrollTo({ y: 0, x: offset, animated });
       if (!nofix && Platform.OS === 'android' && !animated) {
         this.scrollView.current!.scrollTo({ y: 0, x: offset, animated: true });
@@ -229,7 +229,6 @@ export default class m extends LibComponent<LibCarrouselProps, LibCarrouselState
   _animateNextPage(): void {
     const { currentPage } = this.state;
     const nextPage = this._normalizePageNumber(currentPage + 1);
-
     if (!this.props.isLooped && nextPage < currentPage) {
       return;
     }
@@ -239,7 +238,6 @@ export default class m extends LibComponent<LibCarrouselProps, LibCarrouselState
   _animatePreviousPage(): void {
     const { currentPage } = this.state;
     const nextPage = this._normalizePageNumber(currentPage - 1);
-
     if (!this.props.isLooped && nextPage > currentPage) {
       return;
     }
