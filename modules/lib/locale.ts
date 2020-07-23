@@ -1,6 +1,6 @@
 import React from "react";
 import { LibUtils, esp, LibNavigation } from 'esoftplay';
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export default class local {
 

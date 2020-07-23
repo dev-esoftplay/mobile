@@ -466,7 +466,7 @@ function createReducer() {
     }
     Text = "import { combineReducers } from 'redux'" +
       "\nimport { persistReducer } from 'redux-persist'" +
-      "\nimport { AsyncStorage } from 'react-native'" + CodeImporter +
+      "\nimport AsyncStorage from '@react-native-community/async-storage'" + CodeImporter +
       "\n\nconst combiner = combineReducers({" + CodeReducer +
       "\n})\n\n" +
       "\nconst persistConfig = {" +

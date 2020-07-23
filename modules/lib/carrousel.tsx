@@ -218,7 +218,7 @@ export default class m extends LibComponent<LibCarrouselProps, LibCarrouselState
   }
 
   _scrollTo({ offset, animated, nofix }: any): void {
-    if (LibUtils.checkUndefined(this, 'scrollView.current.scrollTo')) {
+    if (LibUtils.checkUndefined(this.scrollView, 'current')) {
       this.scrollView.current!.scrollTo({ y: 0, x: offset, animated });
       if (!nofix && Platform.OS === 'android' && !animated) {
         this.scrollView.current!.scrollTo({ y: 0, x: offset, animated: true });

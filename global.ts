@@ -1,5 +1,5 @@
 import * as R from 'react'
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 
 type SubscriberFunc<T> = (newState: T) => void;
 
@@ -16,7 +16,8 @@ export interface UseGlobal_options {
 export default function useGlobalState<T>(iv: T, o?: UseGlobal_options): UseGlobal_return<T> {
   let sb: SubscriberFunc<T>[] = [];
   let v: T = iv;
-  let set = (ns: T | ((prev: T) => T), ac?: (ns: T) => any, ca?: (ns: T) => any) => {
+
+  function set(ns: T | ((prev: T) => T), ac?: (ns: T) => any, ca?: (ns: T) => any) {
     // @ts-ignore
     v = (v instanceof Function ? ns(v) : ns) as T;
     ca && ca(v);
@@ -29,33 +30,34 @@ export default function useGlobalState<T>(iv: T, o?: UseGlobal_options): UseGlob
     });
   };
 
-  let useState = (): [T, (newState: T) => void, () => void] => {
-    let [l, sl] = R.useState<T>(v);
-
-    function del() {
-      if (o?.persistKey) {
-        AsyncStorage.removeItem(o.persistKey)
-        c(iv)
-      }
-    }
-
-    R.useEffect(() => {
-      if (o?.persistKey) {
-        AsyncStorage.getItem(o.persistKey).then((p) => {
-          if (p)
-            c(JSON.parse(p))
-        })
-      }
-    }, [])
-
+  function subscribe(sl: any) {
     R.useEffect(() => {
       sb.push(sl);
       return () => {
         sb = sb.filter((f) => f !== sl);
       };
-    });
-    let c = R.useCallback((ns) => set(ns, undefined, sl), [sl]);
-    return [l, c, del];
+    }, [sl]);
+  }
+
+  function del() {
+    if (o?.persistKey) {
+      AsyncStorage.removeItem(o.persistKey)
+      set(iv)
+    }
+  }
+  
+  function useState(): [T, (newState: T) => void, () => void] {
+    let [l, sl] = R.useState<T>(v);
+    R.useEffect(() => {
+      if (o?.persistKey) {
+        AsyncStorage.getItem(o.persistKey).then((p) => {
+          if (p)
+            set(JSON.parse(p))
+        })
+      }
+    }, [])
+    subscribe(sl)
+    return [l, set, del];
   };
 
   return { useState, get: () => v, set: set };

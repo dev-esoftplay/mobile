@@ -7,7 +7,7 @@ import { View, Platform } from "react-native";
 import { createAppContainer } from "react-navigation";
 import { createStackNavigator, TransitionPresets } from 'react-navigation-stack';
 import * as Font from "expo-font";
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import {
   esp,
   UserClass,

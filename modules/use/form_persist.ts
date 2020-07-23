@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react';
 import { usePersistState, UseForm_dataProperty } from 'esoftplay';
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export default function m<S>(formName: string, def?: S): [S, (a: string) => (v: any) => void, (a?: (x?: S) => void) => void, () => void] {
   const [a, b, d, e] = usePersistState<S>('useForm-' + formName, def)

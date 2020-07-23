@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from 'react'
-import { AsyncStorage } from 'react-native'
+import AsyncStorage from '@react-native-community/async-storage'
 
 export default function usePersistState(key: string, def?: any): any[] {
   const r = useRef(false)

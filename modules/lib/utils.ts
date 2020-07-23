@@ -22,10 +22,14 @@ const cache = createCache()
 export default class eutils {
 
   static checkUndefined(obj: any, cursorsAsString: string): boolean {
-    let cursors = cursorsAsString.split('.')
-    if (obj === undefined) return false
-    if (cursors.length == 0 && obj.hasOwnProperty(cursors[0])) return true
-    return eutils.checkUndefined(obj[cursors[0]], cursors.join('.'))
+    var args = cursorsAsString.split('.')
+    for (var i = 0; i < args.length; i++) {
+      if (!obj || !obj.hasOwnProperty(args[i])) {
+        return false;
+      }
+      obj = obj[args[i]];
+    }
+    return true;
   }
 
   static debounce(func: () => any, delay: number): void {
