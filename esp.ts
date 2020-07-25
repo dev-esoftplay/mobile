@@ -3,11 +3,11 @@ import _assets from './cache/assets';
 import reducers from './cache/reducers';
 import navs from './cache/navigations';
 import routers from './cache/routers';
-var app = require('../../app.json');
-var conf = require('../../config.json');
-var lconf = require('../../config.live.json');
 import { connect as _connect } from 'react-redux';
 import { _global, esp } from 'esoftplay';
+let app = require('../../app.json');
+let conf = require('../../config.json');
+let lconf = require('../../config.live.json');
 
 export default (() => {
   function mergeDeep(target: any, source: any): any {
@@ -56,7 +56,11 @@ export default (() => {
   }
 
   function isDebug(): boolean {
+    if (!lconf) {
+      return false
+    }
     return conf.config.domain != lconf.config.domain
+
   }
 
   function readDeepObj(obj: any) {

@@ -39,19 +39,16 @@ export default class m {
     if (!key) {
       key = 1
     }
-    try {
-      delete LibNavigation_dataProperty.libNavigationData._task[key]
-    } catch (error) {
-
-    }
+    try { delete LibNavigation_dataProperty.libNavigationData[key] } catch (error) { }
   }
 
   static sendBackResult(result: any, key?: number): void {
     if (!key) {
       key = 1
     }
-    if (LibNavigation_dataProperty.libNavigationData._backResult[key] == undefined) {
-      LibNavigation_dataProperty.libNavigationData._backResult[key] = result
+    if (LibNavigation_dataProperty.libNavigationData[key] != undefined) {
+      LibNavigation_dataProperty.libNavigationData[key](result)
+      delete LibNavigation_dataProperty.libNavigationData[key]
     }
     m.back()
   }
@@ -60,38 +57,17 @@ export default class m {
     if (!key) {
       key = 1
     }
-    if (!LibNavigation_dataProperty.libNavigationData.hasOwnProperty('_backResult')) {
-      LibNavigation_dataProperty.libNavigationData._backResult = {}
-    }
-    if (!LibNavigation_dataProperty.libNavigationData.hasOwnProperty('_task')) {
-      LibNavigation_dataProperty.libNavigationData._task = {}
-    }
-    LibNavigation_dataProperty.libNavigationData._backResult[key] = undefined
     return new Promise((r) => {
-      function checkResult() {
-        setTimeout(() => {
-          if (LibNavigation_dataProperty.libNavigationData._backResult[key] == undefined) {
-            if (LibNavigation_dataProperty.libNavigationData._task[key])
-              checkResult()
-          } else {
-            r(LibNavigation_dataProperty.libNavigationData._backResult[key])
-            try {
-              delete LibNavigation_dataProperty.libNavigationData._task[key]
-            } catch (error) {
-            }
-            LibNavigation_dataProperty.libNavigationData._backResult[key] = undefined
-          }
-        }, 500);
-      }
       if (!params) {
         params = {}
       }
       params['_senderKey'] = key
-      m.navigate(route, params)
-      if (!LibNavigation_dataProperty.libNavigationData._task.hasOwnProperty(key)) {
-        LibNavigation_dataProperty.libNavigationData._task[key] = 1;
-        checkResult()
+      if (!LibNavigation_dataProperty.libNavigationData.hasOwnProperty(key)) {
+        LibNavigation_dataProperty.libNavigationData[key] = (value: any) => {
+          r(value)
+        };
       }
+      m.navigate(route, params)
     })
   }
 

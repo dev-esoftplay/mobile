@@ -109,13 +109,19 @@ export default function m(props: LibInput_baseProps): any {
 
   useEffect(() => {
     LibInput_base_dataProperty.inputBaseRef[props.name].current!.blur()
+    if (props.defaultValue) {
+      setTimeout(() => {
+        const maskedText = mask(props.name, props.defaultValue)
+        LibInput_base_dataProperty.inputBaseRef[props.name].current!.setNativeProps({ text: maskedText })
+      }, 300);
+    }
   }, [])
 
   const setups = {
     ...props,
     onChangeText: (t: string) => {
-      const maskedText = mask(props.name, t)
       const unmaskedText = unmask(props.name, t)
+      const maskedText = mask(props.name, t)
       LibInput_base_dataProperty.inputBaseRef[props.name].current!.setNativeProps({ text: maskedText })
       props.onChangeText(unmaskedText, maskedText)
     },

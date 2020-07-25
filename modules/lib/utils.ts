@@ -5,7 +5,7 @@ import * as FileSystem from 'expo-file-system';
 import { esp, LibToastProperty, _global, createCache } from "esoftplay"
 import shorthash from "shorthash"
 import { StackActions, NavigationActions } from 'react-navigation';
-import { type } from "os";
+import { isEqual, uniqWith } from "lodash";
 const Buffer = require('buffer/').Buffer
 
 
@@ -51,7 +51,7 @@ export default class eutils {
   }
 
   static uniqueArray(array: any[]): any[] {
-    return [...new Set(array)]
+    return uniqWith(array, isEqual)
   }
 
   static getArgs(props: any, key: string, defOutput?: any): any {
