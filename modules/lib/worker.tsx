@@ -37,6 +37,44 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
     LibWorker_dataProperty.libWorkerData.LibWorkerTasks = LibWorker_dataProperty.libWorkerData.LibWorkerTasks.filter((value: any) => value.taskId != taskId)
   }
 
+  static registerJob(name: string, func: Function): (params: any[], res: (data: string) => void) => void {
+    return (params: (string | number | boolean)[], res: (data: string) => void) => {
+      m.dispatch(
+        (id: string) => {
+          const nameFunction = func.toString().replace('function', 'function ' + name)
+          let _params = params.map((param) => {
+            if (typeof param == 'string')
+              return `"` + param + `"`
+            return param
+          })
+          return (
+            `if (!` + name + `){\n` +
+            nameFunction + `\nwindow.ReactNativeWebView.postMessage(JSON.stringify({ data: ` + name + `(` + _params.join(",") + `), id: ` + id + ` }))` +
+            `} else {
+               window.ReactNativeWebView.postMessage(JSON.stringify({ data: ` + name + `(` + _params.join(", ") + `), id: ` + id + ` }))` +
+            `}`
+          )
+        }
+        , '', res)
+    }
+  }
+
+  static job(func: Function, params: (string | number | boolean)[], res: (data: string) => void): void {
+    m.dispatch(
+      (id: string) => {
+        const nameFunction = func.toString().replace('function', 'function x250716')
+        let _params = params.map((param) => {
+          if (typeof param == 'string')
+            return `"` + param + `"`
+          return param
+        })
+        return (
+          nameFunction + `\nwindow.ReactNativeWebView.postMessage(JSON.stringify({ data: x250716` + `(` + _params.join(",") + `), id: ` + id + ` }))`
+        )
+      }
+      , '', res)
+  }
+
   static curl(url: string, options: any, result: (r: any) => void): void {
     function parseObject(obj: any): string {
       let x = ""

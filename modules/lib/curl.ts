@@ -2,7 +2,7 @@
 import react from "react";
 import momentTimeZone from "moment-timezone"
 import moment from "moment/min/moment-with-locales"
-import { esp, LibCrypt, LibProgress, _global, LibWorker } from 'esoftplay';
+import { esp, LibCrypt, LibProgress, _global, LibWorker, LibUtils } from 'esoftplay';
 import { reportApiError } from "../../error";
 
 export default class ecurl {
@@ -71,6 +71,16 @@ export default class ecurl {
   }
 
   signatureBuild(): string {
+    function urlEncode(str: string) {
+      return str
+        .replace(/\!/g, '%21')
+        .replace(/\'/g, '%27')
+        .replace(/\(/g, '%28')
+        .replace(/\)/g, '%29')
+        .replace(/\*/g, '%2A')
+        .replace(/%20/g, '+');
+    }
+
     let signature = '';
     if (this.url.includes(esp.config('url'))) {
       let payload = '';
@@ -88,7 +98,7 @@ export default class ecurl {
         payload = _uri.includes('?') ? _uri.substring(_uri.indexOf('?') + 1, _uri.length) : '';
         _uri = _uri.includes('?') ? _uri.substring(0, _uri.indexOf('?')) : _uri;
       }
-      signature = method + ':' + _uri + ':' + payload;
+      signature = method + ':' + _uri + ':' + LibUtils.shorten(typeof payload == 'string' ? urlEncode(payload) : payload);
     }
     return signature
   }
