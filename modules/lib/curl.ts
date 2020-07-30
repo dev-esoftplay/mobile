@@ -76,31 +76,35 @@ export default class ecurl {
   urlEncode(str: string) {
     return str
       .replace(/\!/g, '%21')
+      .replace(/\&/g, '%26')
       .replace(/\'/g, '%27')
       .replace(/\(/g, '%28')
       .replace(/\)/g, '%29')
       .replace(/\*/g, '%2A')
-      .replace(/%20/g, '+');
+      .replace(/%20/g, '+')
   }
 
   encodeGetValue(_get: string): string {
     if (_get != '') {
-      let hashes = _get.slice(_get.indexOf('?') + 1).split('&')
-      let params = {}
+      let hashes = _get.split('&')
+      let params: any = {}
       hashes.map(hash => {
-        let [key, val] = hash.split('=')
-        params[key] = encodeURIComponent(decodeURIComponent(val))
+        if (hash && hash.includes('=')) {
+          let [key, val] = hash.split('=')
+          params[key] = encodeURIComponent(decodeURIComponent(val.trim()))
+        }
       })
       return Object.keys(params).map((key, index) => {
         let out = ''
-        out += index == 0 ? '' : '&'
-        out += [key] + '=' + params[key]
+        if (key) {
+          out += index == 0 ? '' : '&'
+          out += [key] + '=' + params[key]
+        }
         return out
       }).join('')
     }
     return _get
   }
-
 
   signatureBuild(): string {
     let signature = '';
@@ -120,7 +124,7 @@ export default class ecurl {
         payload = this.encodeGetValue(_uri.includes('?') ? _uri.substring(_uri.indexOf('?') + 1, _uri.length) : '');
         _uri = _uri.includes('?') ? _uri.substring(0, _uri.indexOf('?')) : _uri;
       }
-      console.log("HASH", method, _uri, payload, typeof payload == 'string' ? this.urlEncode(payload) : payload)
+      // console.log("HASH", method, _uri, payload, typeof payload == 'string' ? this.urlEncode(payload) : payload)
       signature = method + ':' + _uri + ':' + LibUtils.shorten(typeof payload == 'string' ? this.urlEncode(payload) : payload);
     }
     return signature
