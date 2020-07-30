@@ -105,7 +105,7 @@ export default class eutils {
     let params = {}
     hashes.map(hash => {
       let [key, val] = hash.split('=')
-      params[key] = decodeURI(val)
+      params[key] = decodeURIComponent(val)
     })
     return params
   }

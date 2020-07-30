@@ -16,12 +16,14 @@ export default class ecurl {
   // timeout: any
 
   constructor(uri?: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number) {
+    this.header = {}
     this.setUri = this.setUri.bind(this);
     this.setUrl = this.setUrl.bind(this);
     this.onFetched = this.onFetched.bind(this)
-    this.header = {}
     this.setHeader = this.setHeader.bind(this);
     this.signatureBuild = this.signatureBuild.bind(this)
+    this.encodeGetValue = this.encodeGetValue.bind(this)
+    this.urlEncode = this.urlEncode.bind(this)
     const str: any = _global.store.getState()
     if (uri && str.lib_net_status.isOnline) {
       this.init(uri, post, onDone, onFailed, debug);
@@ -70,17 +72,36 @@ export default class ecurl {
     this.init(uri, post, onDone, onFailed, debug, true)
   }
 
-  signatureBuild(): string {
-    function urlEncode(str: string) {
-      return str
-        .replace(/\!/g, '%21')
-        .replace(/\'/g, '%27')
-        .replace(/\(/g, '%28')
-        .replace(/\)/g, '%29')
-        .replace(/\*/g, '%2A')
-        .replace(/%20/g, '+');
-    }
+  urlEncode(str: string) {
+    return str
+      .replace(/\!/g, '%21')
+      .replace(/\'/g, '%27')
+      .replace(/\(/g, '%28')
+      .replace(/\)/g, '%29')
+      .replace(/\*/g, '%2A')
+      .replace(/%20/g, '+');
+  }
 
+  encodeGetValue(_get: string): string {
+    if (_get != '') {
+      let hashes = _get.slice(_get.indexOf('?') + 1).split('&')
+      let params = {}
+      hashes.map(hash => {
+        let [key, val] = hash.split('=')
+        params[key] = encodeURIComponent(decodeURIComponent(val))
+      })
+      return Object.keys(params).map((key, index) => {
+        let out = ''
+        out += index == 0 ? '' : '&'
+        out += [key] + '=' + params[key]
+        return out
+      }).join('')
+    }
+    return _get
+  }
+
+
+  signatureBuild(): string {
     let signature = '';
     if (this.url.includes(esp.config('url'))) {
       let payload = '';
@@ -95,10 +116,11 @@ export default class ecurl {
       } else {
         method = 'GET';
         _uri = link.replace(esp.config('url'), '');
-        payload = _uri.includes('?') ? _uri.substring(_uri.indexOf('?') + 1, _uri.length) : '';
+        payload = this.encodeGetValue(_uri.includes('?') ? _uri.substring(_uri.indexOf('?') + 1, _uri.length) : '');
         _uri = _uri.includes('?') ? _uri.substring(0, _uri.indexOf('?')) : _uri;
       }
-      signature = method + ':' + _uri + ':' + LibUtils.shorten(typeof payload == 'string' ? urlEncode(payload) : payload);
+      console.log("HASH", method, _uri, payload, typeof payload == 'string' ? this.urlEncode(payload) : payload)
+      signature = method + ':' + _uri + ':' + LibUtils.shorten(typeof payload == 'string' ? this.urlEncode(payload) : payload);
     }
     return signature
   }
