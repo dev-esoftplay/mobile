@@ -55,6 +55,7 @@ export function reducer(state: any, action: any): any {
 }
 
 const persistenceFunctions = (() => {
+  //@ts-ignore
   return __DEV__
     ? {
       async persistNavigationState(value: any) {
@@ -97,7 +98,7 @@ export default function m(props: UserIndexProps): any {
   }
 
   useEffect(() => {
-    setTimeout(async () => {
+    requestAnimationFrame(async () => {
       LibUpdaterProperty.checkAlertInstall()
       LibTheme.getTheme()
       LibLocale.getLanguage()
@@ -155,7 +156,7 @@ export default function m(props: UserIndexProps): any {
         UserIndex_dataProperty.userIndexNav.Router = createAppContainer(createStackNavigator(navigations, config))
         setLoading(false)
       })
-    }, 0);
+    });
   }, [])
 
   useEffect(() => {

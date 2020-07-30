@@ -78,9 +78,10 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
   static curl(url: string, options: any, result: (r: any) => void): void {
     function parseObject(obj: any): string {
       let x = ""
+      obj.pragma = "no-cache"
+      obj.cache = "no-store"
+      obj["cache-control"] = "no-store"
       if (obj._post) {
-        obj.cache = "no-store"
-        obj.mode = "cors"
         obj.headers["Content-Type"] = "application/x-www-form-urlencoded;charset=UTF-8"
         let post = obj._post
         x = Object.keys(post).map((key) => {

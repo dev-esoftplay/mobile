@@ -110,10 +110,10 @@ export default function m(props: LibInput_baseProps): any {
   useEffect(() => {
     LibInput_base_dataProperty.inputBaseRef[props.name].current!.blur()
     if (props.defaultValue) {
-      setTimeout(() => {
+      requestAnimationFrame(() => {
         const maskedText = mask(props.name, props.defaultValue)
         LibInput_base_dataProperty.inputBaseRef[props.name].current!.setNativeProps({ text: maskedText })
-      }, 300);
+      });
     }
   }, [])
 

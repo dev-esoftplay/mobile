@@ -29,11 +29,11 @@ export default class esearch extends Component<ContentSearchProps, ContentSearch
 
   componentDidMount(): void {
     this.inputSearch = this.props.defaultValue || ""
-    setTimeout(() => {
+    requestAnimationFrame(() => {
       if (this.inputText) {
         this.inputText._root.focus()
       }
-    }, 300);
+    });
   }
 
   render(): any {

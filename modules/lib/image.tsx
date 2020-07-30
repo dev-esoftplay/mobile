@@ -381,22 +381,22 @@ class m extends LibComponent<LibImageProps, LibImageState> {
                 {
                   image ?
                     <TouchableOpacity onPress={() => {
-                      setTimeout(
+                      requestAnimationFrame(
                         async () => {
                           let imageUri = await m.processImage(image)
                           m.setResult(imageUri)
                           this.setState({ image: null })
-                        }, 1);
+                        });
                     }} >
                       <Icon name='ios-checkmark-circle' style={{ fontSize: 40, color: 'white' }} />
                     </TouchableOpacity>
                     :
                     <TouchableOpacity onPress={() => {
-                      setTimeout(
+                      requestAnimationFrame(
                         async () => {
                           m.hide()
                           this.setState({ image: null })
-                        }, 1);
+                        });
                     }} >
                       <Icon name='ios-close-circle' style={{ fontSize: 40, color: 'white' }} />
                     </TouchableOpacity>

@@ -159,11 +159,11 @@ export default class m extends LibComponent<LibInputProps, LibInputState>{
 
   componentDidMount(): void {
     super.componentDidMount()
-    setTimeout(() => {
+    requestAnimationFrame(() => {
       if (this.props.defaultValue) {
         this.setText(this.props.defaultValue)
       }
-    }, 300);
+    });
   }
 
   render(): any {
