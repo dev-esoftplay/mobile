@@ -125,20 +125,20 @@ export default class m {
           } else {
             btns.push({ text: "OK", onPress: () => { }, style: "cancel" })
           }
-          requestAnimationFrame(() => {
+          setTimeout(() => {
             Alert.alert(
               param.title,
               param.message,
               btns, { cancelable: false }
             )
-          })
+          }, 2)
           break;
         case "default":
           if (param.module && param.module != "") {
             if (!String(param.module).includes("/")) param.module = param.module + "/index"
-            requestAnimationFrame(() => {
+            setTimeout(() => {
               LibNavigation.navigate(param.module, param.params)
-            });
+            }, 2)
           }
           break;
         default:
@@ -168,21 +168,21 @@ export default class m {
         } else {
           btns.push({ text: "OK", onPress: () => { }, style: "cancel" })
         }
-        requestAnimationFrame(() => {
+        setTimeout(() => {
           Alert.alert(
             data.title,
             data.message,
             btns,
             { cancelable: false }
           )
-        });
+        }, 2)
         break;
       case "default":
         if (param.module != "") {
           if (!String(param.module).includes("/")) param.module = param.module + "/index"
-          requestAnimationFrame(() => {
+          setTimeout(() => {
             LibNavigation.navigate(param.module, param.arguments)
-          });
+          }, 2)
         }
         break;
       default:

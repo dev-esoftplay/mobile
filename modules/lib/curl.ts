@@ -76,7 +76,6 @@ export default class ecurl {
   urlEncode(str: string) {
     return str
       .replace(/\!/g, '%21')
-      .replace(/\&/g, '%26')
       .replace(/\'/g, '%27')
       .replace(/\(/g, '%28')
       .replace(/\)/g, '%29')
