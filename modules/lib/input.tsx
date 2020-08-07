@@ -4,10 +4,12 @@ import { LibComponent, LibTextstyle, LibTheme, LibStyle, LibUtils } from 'esoftp
 
 export interface LibInputProps {
   icon?: (color: string) => any,
-  label: string,
+  label?: string,
   placeholder?: string,
   mask?: string,
   maskFrom?: 'start' | 'end',
+  base?: boolean,
+  children?: any,
   suffix?: string,
   onPress?: () => void,
   helper?: string
@@ -25,7 +27,7 @@ export interface LibInputProps {
   maxLength?: number,
   multiline?: boolean,
   onSubmitEditing?: () => void,
-  onChangeText?: (text: string) => void,
+  onChangeText?: (text: string, maskedText?: string) => void,
   placeholderTextColor?: string,
   returnKeyType?: "done" | "go" | "next" | "search" | "send",
   secureTextEntry?: boolean,
@@ -167,10 +169,24 @@ export default class m extends LibComponent<LibInputProps, LibInputState>{
   }
 
   render(): any {
+    if (this.props.base) {
+      const setups = {
+        ref: (x) => this.ref = x,
+        ...this.props,
+        onChangeText: (t: string) => {
+          this.text = this.mask(t)
+          const unmaskedText = this.unmask(t)
+          this.props.onChangeText(unmaskedText, this.text)
+        },
+        maxLength: this.props.mask ? this.props.mask.length : undefined,
+      }
+      return this.props.children ? React.cloneElement(this.props.children, { ...setups }) : <TextInput {...setups} />
+    }
     const { label, placeholder, defaultValue, helper, editable, inactive, mask, suffix, icon, onPress } = this.props
     const { hasFocus, error } = this.state
     const stateHelper = this.state.helper
     let errorFocusOrIdle = error ? 'red' : hasFocus ? LibTheme._colorPrimary() : LibTheme._colorTextTertiary()
+
     let inputView = () => (
       <View style={{ marginTop: 3, paddingHorizontal: 16, paddingVertical: 1 }} >
         <LibTextstyle text={label || ''} textStyle={'caption1'} style={{ color: errorFocusOrIdle }} />

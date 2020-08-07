@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useSafeState, UseForm_dataProperty } from 'esoftplay';
 
-export default function m<S>(formName: string, def?: S): [S, (a: string) => (v: any) => void, (a?: (x?: S) => void) => void, () => void] {
+export default function m<S>(formName: string, def?: S): [S, (a: string) => (v: any) => void, (a?: (x?: S) => void) => void, () => void, (x: S) => void] {
   const [a, b] = useSafeState<S>(UseForm_dataProperty.useFormData && UseForm_dataProperty.useFormData[formName] || def)
 
   function c(field: any) {
@@ -41,5 +41,5 @@ export default function m<S>(formName: string, def?: S): [S, (a: string) => (v: 
     if (callback)
       callback(restate)
   }
-  return [a, g, f, h]
+  return [a, g, f, h, b]
 }

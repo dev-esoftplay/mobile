@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import { usePersistState, UseForm_dataProperty } from 'esoftplay';
 import AsyncStorage from '@react-native-community/async-storage';
 
-export default function m<S>(formName: string, def?: S): [S, (a: string) => (v: any) => void, (a?: (x?: S) => void) => void, () => void] {
+export default function m<S>(formName: string, def?: S): [S, (a: string) => (v: any) => void, (a?: (x?: S) => void) => void, () => void, (x: S) => void] {
   const [a, b, d, e] = usePersistState<S>('useForm-' + formName, def)
   function c(field: any) {
     UseForm_dataProperty.useFormData[formName] = {
@@ -45,5 +45,5 @@ export default function m<S>(formName: string, def?: S): [S, (a: string) => (v: 
       })
     }
   }
-  return [a, g, f, h]
+  return [a, g, f, h, b]
 }
