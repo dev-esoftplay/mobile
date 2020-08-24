@@ -265,8 +265,8 @@ import { esp, _global } from 'esoftplay';
 import * as ErrorReport from 'esoftplay/error'
 import * as ErrorRecovery from 'expo-error-recovery';
 import './node_modules/esoftplay/timeout_fix'
-import { enableScreens } from 'react-native-screens';
-enableScreens();
+//import { enableScreens } from 'react-native-screens';
+//enableScreens();
 
 _global.store = createStore(esp.reducer())
 _global.persistor = persistStore(_global.store)

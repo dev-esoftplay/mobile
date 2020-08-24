@@ -82,6 +82,7 @@ export default class EList extends LibComponent<LibListProps, LibListState> {
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
           refreshing={false}
+          nestedScrollEnabled
           initialNumToRender={5}
           maxToRenderPerBatch={10}
           windowSize={10}

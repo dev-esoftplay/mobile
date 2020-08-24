@@ -10,7 +10,8 @@ export interface LibDatepickerProps {
   maxDate: string,
   monthsDisplay?: string[],
   selectedDate: string,
-  onDateChange: (date: string) => void
+  onDateChange: (date: string) => void,
+  type?: "date" | "month" | "year"
 }
 
 export default function m(props: LibDatepickerProps): any {
@@ -71,7 +72,9 @@ export default function m(props: LibDatepickerProps): any {
     }
     setMonths(_months)
     if (reset) {
-      refMonth.current!.scrollToIndex(0)
+      setTimeout(() => {
+        refMonth.current!.scrollToIndex(0)
+      }, 200);
       setMonth(allMonths[0])
     }
   }
@@ -96,7 +99,9 @@ export default function m(props: LibDatepickerProps): any {
     }
     setDates(_dates)
     if (reset) {
-      refDate.current!.scrollToIndex(0)
+      setTimeout(() => {
+        refDate.current!.scrollToIndex(0)
+      }, 200);
       setDate(_dates[0])
     }
   }
@@ -143,6 +148,13 @@ export default function m(props: LibDatepickerProps): any {
     return <LibLoading />
   }
 
+
+  let { type } = props
+  if (!type) type = 'date'
+  const showDateView = type == 'date'
+  const showMonthView = type == 'date' || type == 'month'
+  const showYearView = type == 'date' || type == 'month' || type == 'year'
+
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }} >
       <View style={{ height: 44, alignItems: 'flex-end', backgroundColor: '#fafafa' }} >
@@ -151,42 +163,45 @@ export default function m(props: LibDatepickerProps): any {
         </TouchableOpacity>
       </View>
       <View style={{ height: 175, flexDirection: 'row' }} >
-        <ScrollPicker
-          ref={refYear}
-          style={{ flex: 1, backgroundColor: 'white' }}
-          dataSource={years}
-          selectedIndex={years.indexOf(year)}
-          itemHeight={35}
-          wrapperHeight={175}
-          wrapperColor={'#ffffff'}
-          highlightColor={'#c8c7cc'}
-          renderItem={itemRenderer}
-          onValueChange={onYearChange}
-        />
-        <ScrollPicker
-          ref={refMonth}
-          style={{ flex: 1, backgroundColor: 'white' }}
-          dataSource={months}
-          selectedIndex={months.indexOf(month)}
-          itemHeight={35}
-          wrapperHeight={175}
-          wrapperColor={'#ffffff'}
-          highlightColor={'#c8c7cc'}
-          renderItem={itemRenderer}
-          onValueChange={onMonthChange}
-        />
-        <ScrollPicker
-          ref={refDate}
-          style={{ flex: 1, backgroundColor: 'white' }}
-          dataSource={dates}
-          selectedIndex={dates.indexOf(date)}
-          itemHeight={35}
-          wrapperHeight={175}
-          wrapperColor={'#ffffff'}
-          highlightColor={'#c8c7cc'}
-          renderItem={itemRenderer}
-          onValueChange={onDateChange}
-        />
+        <View style={{ width: showYearView ? undefined : 0, flex: showYearView ? 1 : 0, }} >
+          <ScrollPicker
+            ref={refYear}
+            dataSource={years}
+            selectedIndex={years.indexOf(year)}
+            itemHeight={35}
+            wrapperHeight={175}
+            wrapperColor={'#ffffff'}
+            highlightColor={'#c8c7cc'}
+            renderItem={itemRenderer}
+            onValueChange={onYearChange}
+          />
+        </View>
+        <View style={{ width: showMonthView ? undefined : 0, flex: showMonthView ? 1 : 0, }} >
+          <ScrollPicker
+            ref={refMonth}
+            dataSource={months}
+            selectedIndex={months.indexOf(month)}
+            itemHeight={35}
+            wrapperHeight={175}
+            wrapperColor={'#ffffff'}
+            highlightColor={'#c8c7cc'}
+            renderItem={itemRenderer}
+            onValueChange={onMonthChange}
+          />
+        </View>
+        <View style={{ width: showDateView ? undefined : 0, flex: showDateView ? 1 : 0, }} >
+          <ScrollPicker
+            ref={refDate}
+            dataSource={dates}
+            selectedIndex={dates.indexOf(date)}
+            itemHeight={35}
+            wrapperHeight={175}
+            wrapperColor={'#ffffff'}
+            highlightColor={'#c8c7cc'}
+            renderItem={itemRenderer}
+            onValueChange={onDateChange}
+          />
+        </View>
       </View>
     </View>
   )

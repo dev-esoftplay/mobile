@@ -5,6 +5,7 @@ import { LibComponent, LibLoading, LibCurl, LibTextstyle, esp, LibListItemLayout
 export interface LibInfiniteProps {
   url: string,
   post?: any,
+  debug?: 0 | 1,
   initialData?: any[],
   onDataChange?: (data: any, page: number) => void
   onResult?: (res: any, uri: string) => void,
@@ -121,7 +122,7 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
           this.setState({
             error: msg,
           })
-        }
+        }, this.props.debug
       )
     }
   }
@@ -154,6 +155,7 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
               onRefresh={() => this.loadData()}
               refreshing={false}
               keyExtractor={this._keyExtractor}
+              nestedScrollEnabled
               ListEmptyComponent={
                 errorView
                   ? typeof errorView == 'function'

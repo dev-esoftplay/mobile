@@ -212,6 +212,7 @@ export default function m(props: LibCarrousel_snapProps): any {
         bounces={false}
         ref={sRef}
         horizontal
+        nestedScrollEnabled
         {...props}
         showsHorizontalScrollIndicator={false}
         onMomentumScrollEnd={onChangePage}

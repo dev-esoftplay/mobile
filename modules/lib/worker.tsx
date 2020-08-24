@@ -37,8 +37,12 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
     LibWorker_dataProperty.libWorkerData.LibWorkerTasks = LibWorker_dataProperty.libWorkerData.LibWorkerTasks.filter((value: any) => value.taskId != taskId)
   }
 
-  static registerJob(name: string, func: Function): (params: any[], res: (data: string) => void) => void {
+  static registerJob(name: string, func: Function): (params: any[], res: (data: any) => void) => void {
     return (params: (string | number | boolean)[], res: (data: string) => void) => {
+      if (Platform.OS == 'android')
+        if (Platform.Version <= 22) {
+          return res(func(...params))
+        }
       m.dispatch(
         (id: string) => {
           const nameFunction = func.toString().replace('function', 'function ' + name)
@@ -59,18 +63,26 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
     }
   }
 
-  static job(func: Function, params: (string | number | boolean)[], res: (data: string) => void): void {
+  static objToString(data: any): string {
+    return JSON.stringify(JSON.stringify(data)).slice(1, -1);
+  }
+
+  static job(func: Function, params: (string | number | boolean)[], res: (data: any) => void): void {
+    if (Platform.OS == 'android')
+      if (Platform.Version <= 22) {
+        return res(func(...params))
+      }
     m.dispatch(
       (id: string) => {
-        const nameFunction = func.toString().replace('function', 'function x250716')
+        const nameFunction = func.toString().replace('function', 'function tempFunction')
         let _params = params.map((param) => {
           if (typeof param == 'string')
             return `"` + param + `"`
           return param
         })
-        return (
-          nameFunction + `\nwindow.ReactNativeWebView.postMessage(JSON.stringify({ data: x250716` + `(` + _params.join(",") + `), id: ` + id + ` }))`
-        )
+
+        const out = nameFunction + `\nwindow.ReactNativeWebView.postMessage(JSON.stringify({ data: tempFunction` + `(` + _params.join(",") + `), id: ` + id + ` }))`
+        return out
       }
       , '', res)
   }
@@ -170,6 +182,14 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
           task: _task,
           result: result
         })
+        if (url == '') {
+          let x = [
+            LibWorker_dataProperty.libWorkerData.LibWorkerBase.current!,
+            LibWorker_dataProperty.libWorkerData.LibWorkerApi.current!,
+            LibWorker_dataProperty.libWorkerData.LibWorkerData.current!
+          ]
+          x[Math.floor(Math.random() * 3)].injectJavaScript(_task)
+        }
         if (url.indexOf(knownUrl[0]) > -1)
           LibWorker_dataProperty.libWorkerData.LibWorkerBase.current!.injectJavaScript(_task)
         else if (url.indexOf(knownUrl[1]) > -1)

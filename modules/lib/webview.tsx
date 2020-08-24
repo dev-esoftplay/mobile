@@ -154,7 +154,7 @@ class ewebview extends LibComponent<LibWebviewProps, LibWebviewState> {
           source={this.state.source}
           bounces={bounces !== undefined ? bounces : true}
           javaScriptEnabled
-          androidHardwareAccelerationDisabled={true}
+          // androidHardwareAccelerationDisabled={true}
           useWebKit={true}
           injectedJavaScript={'window.ReactNativeWebView.postMessage(document.body.scrollHeight)'}
           onLoadEnd={() => {

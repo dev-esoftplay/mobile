@@ -95,6 +95,7 @@ export default class escroll extends LibComponent<LibScrollProps, LibScrollState
           ref={this.flatscroll}
           data={this.props.children}
           refreshing={false}
+          nestedScrollEnabled
           initialNumToRender={5}
           maxToRenderPerBatch={10}
           windowSize={10}

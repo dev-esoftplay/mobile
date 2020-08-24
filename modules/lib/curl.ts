@@ -255,7 +255,7 @@ export default class ecurl {
         this.onFailed(resJson.message, false)
       }
     } else {
-      if (debug == 1) this.onError(resText)
+      this.onError(resText)
     }
   }
 

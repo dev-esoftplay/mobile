@@ -392,6 +392,7 @@ export default class m extends LibComponent<LibCarrouselProps, LibCarrouselState
           onMomentumScrollEnd={this._onScrollEnd}
           onScroll={this._onScroll}
           alwaysBounceHorizontal={false}
+          nestedScrollEnabled
           alwaysBounceVertical={false}
           contentInset={{ top: 0 }}
           automaticallyAdjustContentInsets={false}

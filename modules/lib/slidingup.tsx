@@ -1,5 +1,5 @@
 import React from 'react';
-import { LibComponent, LibStyle } from 'esoftplay';
+import { LibComponent, LibStyle, LibKeyboard_avoid } from 'esoftplay';
 import { View, KeyboardAvoidingView, Animated, TouchableOpacity, BackHandler } from 'react-native';
 
 export interface LibSlidingupProps {
@@ -72,15 +72,15 @@ export default class m extends LibComponent<LibSlidingupProps, LibSlidingupState
     const { show } = this.state
     if (!show) return null
     return (
-      <KeyboardAvoidingView style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} behavior="padding" >
+      <LibKeyboard_avoid style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
         <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end', zIndex: 999999 }}>
           <TouchableOpacity style={{ flex: 1 }} activeOpacity={1} onPress={() => this.hide()} />
           <Animated.View style={{ transform: [{ translateY: this.animValue }] }} >
             {this.props.children}
-            <View style={{ paddingBottom: LibStyle.isIphoneX ? 30 : 0, backgroundColor: 'white' }} />
+            {/* <View style={{ paddingBottom: LibStyle.isIphoneX ? 30 : 0, backgroundColor: 'white' }} /> */}
           </Animated.View>
         </View>
-      </KeyboardAvoidingView>
+      </LibKeyboard_avoid>
     )
   }
 }
