@@ -1,7 +1,8 @@
 #!/usr/bin/env node
-
+// @ts-check
 const { spawn } = require('child_process');
 const fs = require('fs');
+const { stdout } = require('process');
 
 const DIR = "../../"
 const packjson = DIR + "package.json"
@@ -15,26 +16,26 @@ const appts = DIR + "App.tsx"
 const store = DIR + "store.ts"
 const pathScript = DIR + "node_modules/react-native-scripts/build/bin/react-native-scripts.js"
 if (fs.existsSync(packjson)) {
-	var txt = fs.readFileSync(packjson, 'utf8');
-	var $package = JSON.parse(txt);
-	var rewrite = false;
-	var args = process.argv.slice(2);
+	let txt = fs.readFileSync(packjson, 'utf8');
+	let $package = JSON.parse(txt);
+	let rewrite = false;
+	let args = process.argv.slice(2);
 
 
 	/* ADD SCRIPTS.PRESTART AND SCRIPTS.POSTSTOP */
 	if (fs.existsSync(pathScript)) {
-		var $script = fs.readFileSync(pathScript, 'utf8');
+		let $script = fs.readFileSync(pathScript, 'utf8');
 
 		/* Update react-native-scripts */
-		var code1 = "// the command is valid"
-		var code2 = "";
-		var match = $script.match(new RegExp(code1 + "(\s{0,}\n\s{0,}[^\n]+)\n")); // mengambil 1 baris setelah code1
-		var $script2 = $script;
-		var espCode = false;
+		let code1 = "// the command is valid"
+		let code2 = "";
+		let match = $script.match(new RegExp(code1 + "(\s{0,}\n\s{0,}[^\n]+)\n")); // mengambil 1 baris setelah code1
+		let $script2 = $script;
+		let espCode = false;
 		if (match) {
 			if (args[0] == "install") {
-				var reg = new RegExp(/(\[.*?\),)/g) // mengambil argument ke 2 dari .sync()
-				var tag = match[1].match(reg)
+				let reg = new RegExp(/(\[.*?\),)/g) // mengambil argument ke 2 dari .sync()
+				let tag = match[1].match(reg)
 				if (tag) {
 					if (!tag[0].match(/esoftplay/)) {
 						espCode = match[1].replace(reg, "['./node_modules/.bin/esoftplay', script],") // ganti argument ke 2 menjadi milik esoftplay
@@ -97,7 +98,7 @@ if (fs.existsSync(packjson)) {
 				if (err) {
 					return console.log(err);
 				}
-				var result = data.replace(stringExist, stringToBe);
+				let result = data.replace(stringExist, stringToBe);
 
 				fs.writeFile(packjson, result, 'utf8', function (err) {
 					if (err) return console.log(err);
@@ -135,7 +136,7 @@ if (fs.existsSync(packjson)) {
 
 	/* Update app.json */
 	if (args[0] == "install") {
-		var $config = {}
+		let $config = {}
 		if (fs.existsSync(confjson))
 			$config = JSON.parse(fs.readFileSync(confjson, 'utf8')) || {};
 		rewrite = false;
@@ -161,7 +162,7 @@ if (fs.existsSync(packjson)) {
 				console.log('config.json has been created');
 			});
 		}
-		var $appjson = {}
+		let $appjson = {}
 		if (fs.existsSync(appjson))
 			$appjson = JSON.parse(fs.readFileSync(appjson, 'utf8')) || {};
 		rewrite = false;
@@ -264,9 +265,8 @@ import { Provider } from 'react-redux'
 import { esp, _global } from 'esoftplay';
 import * as ErrorReport from 'esoftplay/error'
 import * as ErrorRecovery from 'expo-error-recovery';
-import './node_modules/esoftplay/timeout_fix'
-//import { enableScreens } from 'react-native-screens';
-//enableScreens();
+// import { enableScreens } from 'react-native-screens';
+// enableScreens();
 
 _global.store = createStore(esp.reducer())
 _global.persistor = persistStore(_global.store)
@@ -289,88 +289,95 @@ export default class App extends React.Component {
 			</Provider>
 		)
 	}
-}`
-			;
-		var expoLib = [
-			"cd ../../ && expo install expo-av",
-			"cd ../../ && expo install expo-linear-gradient",
-			"cd ../../ && expo install expo-blur",
-			"cd ../../ && expo install expo-image-manipulator",
-			"cd ../../ && expo install expo-camera",
-			"cd ../../ && expo install @react-native-community/async-storage",
-			"cd ../../ && expo install expo-image-picker",
-			"cd ../../ && expo install expo-permissions",
-			"cd ../../ && expo install expo-updates",
-			"cd ../../ && expo install expo-notifications",
-			"cd ../../ && expo install expo-status-bar",
-			"cd ../../ && expo install expo-sqlite",
-			"cd ../../ && expo install lodash",
-			"cd ../../ && expo install expo-file-system",
-			"cd ../../ && expo install expo-constants",
-			"cd ../../ && expo install expo-font",
-			"cd ../../ && expo install expo-error-recovery",
-			"cd ../../ && expo install @react-native-community/netinfo",
-			"cd ../../ && expo install react-native-gesture-handler",
-			"cd ../../ && expo install react-native-reanimated",
-			"cd ../../ && expo install expo-document-picker",
-			'cd ../../ && expo install react-native-webview',
-			"cd ../../ && expo install @expo/vector-icons",
-			"cd ../../ && expo install buffer",
-			"cd ../../ && expo install firebase",
-			"cd ../../ && expo install immutability-helper",
-			"cd ../../ && expo install expo-secure-store",
-			"cd ../../ && expo install immhelper",
-			"cd ../../ && expo install moment",
-			"cd ../../ && expo install expo-image-crop",
-			"cd ../../ && expo install moment-timezone",
-			"cd ../../ && expo install expo-media-library",
-			"cd ../../ && expo install native-base",
-			"cd ../../ && expo install react-native-modal",
-			"cd ../../ && expo install react-navigation",
-			"cd ../../ && expo install react-native-screens",
-			"cd ../../ && expo install react-navigation-stack",
-			"cd ../../ && expo install @react-native-community/masked-view",
-			"cd ../../ && expo install react-native-safe-area-context",
-			"cd ../../ && expo install react-redux",
-			"cd ../../ && expo install recyclerlistview",
-			"cd ../../ && expo install redux",
-			"cd ../../ && expo install redux-persist",
-			"cd ../../ && expo install shorthash",
-			"cd ../../ && expo install react-native-picker-scrollview",
-			"cd ../../ && npm install --save-dev @types/expo__vector-icons",
-			"cd ../../ && npm install --save-dev @types/node",
-			"cd ../../ && npm install --save-dev @types/react",
-			"cd ../../ && npm install --save-dev @types/react-native",
-			"cd ../../ && npm install --save-dev @types/react-redux",
-			"cd ../../ && npm install --save-dev babel-preset-expo",
-			"cd ../../ && npm install --save-dev react-native-typescript-transformer",
-			"cd ../../ && npm install --save-dev tslib",
-			"cd ../../ && npm install --save-dev typescript",
+}`;
+		let expoLib = [
+			"expo-av",
+			"expo-linear-gradient",
+			"expo-blur",
+			"expo-image-manipulator",
+			"expo-camera",
+			"expo-image-picker",
+			"expo-permissions",
+			"expo-updates",
+			"expo-notifications",
+			"expo-status-bar",
+			"expo-sqlite",
+			"lodash",
+			"expo-file-system",
+			"expo-constants",
+			"expo-font",
+			"expo-error-recovery",
+			"@expo/vector-icons",
+			"@react-native-community/async-storage",
+			"@react-native-community/netinfo",
+			"@react-native-community/masked-view",
+			"react-native-gesture-handler",
+			"react-native-reanimated",
+			"expo-document-picker",
+			'react-native-webview',
+			"buffer",
+			"firebase",
+			"immutability-helper",
+			"expo-secure-store",
+			"immhelper",
+			"moment",
+			"expo-image-crop",
+			"moment-timezone",
+			"expo-media-library",
+			"native-base",
+			"react-native-modal",
+			"react-navigation",
+			"react-native-screens",
+			"react-navigation-stack",
+			"react-native-safe-area-context",
+			"react-redux",
+			"recyclerlistview",
+			"redux",
+			"redux-persist",
+			"shorthash",
+			"react-native-picker-scrollview",
+		]
+		let devLibs = [
+			"@babel/core",
+			"@types/react",
+			"@types/react-native",
+			"typescript"
 		]
 
-		const execSync = require('child_process').execSync;
+		const exec = require('child_process').exec;
 		fs.writeFile(appts, AppJS, (err) => {
 			if (err) throw err;
 			fs.unlink(appjs, (err) => { })
-			for (let i = 0; i < expoLib.length; i++) {
-				const element = expoLib[i];
-				if (fs.existsSync("../../node_modules/" + element.substring(element.lastIndexOf(" ") + 1))) {
-					console.log(element.substring(element.lastIndexOf(" ") + 1) + " is Exist, Skipped")
+			let installExpoLibs = []
+			let installDevLibs = []
+			expoLib.forEach((exlib) => {
+				if (fs.existsSync("../../node_modules/" + exlib)) {
+					console.log(exlib + " is Exist, Skipped")
 				} else {
-					console.log("Execute " + element)
-					execSync(
-						element,
-						(error, stdout, stderr) => {
-							console.log(stdout);
-							console.log(stderr);
-							if (error !== null) {
-								console.log(`exec error: ${error}`);
-							}
-						});
+					console.log("❱❱❱ INSTALLING ... " + exlib)
+					installExpoLibs.push(exlib)
 				}
-			}
-			console.log('App.js has been replace to App.tsx');
-			console.log('Please wait until process finished...');
+			})
+			devLibs.forEach((devlib) => {
+				if (fs.existsSync("../../node_modules/" + devlib)) {
+					console.log(devlib + " is Exist, Skipped")
+				} else {
+					console.log("❱❱❱ INSTALLING ... " + devlib)
+					installDevLibs.push(devlib)
+				}
+			})
+			if (!fs.existsSync(DIR + 'modules'))
+				fs.mkdirSync(DIR + 'modules')
+			let cmd = "cd ../../ "
+			if (installDevLibs.length > 0)
+				cmd += "&& npm install --save-dev " + installDevLibs.join(" ") + " "
+			if (installExpoLibs.length > 0)
+				cmd += "&& expo install " + installExpoLibs.join(" ")
+			exec(cmd, (err, stdout, stderr) => {
+				stdout.toString()
+				console.log('App.js has been replace to App.tsx');
+			})
+			console.log('Please wait until processes has finished...');
 		});
 	}
 } else {

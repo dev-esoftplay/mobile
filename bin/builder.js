@@ -201,16 +201,15 @@ function help() {
     "\n - version              : untuk increment version",
     "\n - version [visible]    : untuk increment version dengan tampilan custom. misal 2.0beta",
     "\n - publish [message]    : untuk mempublish dan menambahkan pesan",
-    "\n - build                : untuk build app .ipa .apk .aab",
-    "\n - build debug          : untuk build app .ipa .apk .aab status DEBUG",
-    "\n - build debug offline  : untuk build app .ipa .apk .aab status DEBUG mode OFFLINE",
-    "\n - build debug online   : untuk build app .ipa .apk .aab status DEBUG mode ONLINE",
-    "\n - build live           : untuk build app .ipa .apk .aab status LIVE",
-    "\n - build live offline   : untuk build app .ipa .apk .aab status LIVE mode OFFLINE",
-    "\n - build live online    : untuk build app .ipa .apk .aab status LIVE mode ONLINE",
+    // "\n - build                : untuk build app .ipa .apk .aab",
+    // "\n - build debug          : untuk build app .ipa .apk .aab status DEBUG",
+    // "\n - build debug offline  : untuk build app .ipa .apk .aab status DEBUG mode OFFLINE",
+    // "\n - build debug online   : untuk build app .ipa .apk .aab status DEBUG mode ONLINE",
+    // "\n - build live           : untuk build app .ipa .apk .aab status LIVE",
+    // "\n - build live offline   : untuk build app .ipa .apk .aab status LIVE mode OFFLINE",
+    // "\n - build live online    : untuk build app .ipa .apk .aab status LIVE mode ONLINE",
   )
 }
-
 
 if (args.length == 0) {
   help()

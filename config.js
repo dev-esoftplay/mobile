@@ -28,7 +28,6 @@
     "iosClientId":"Ios Client id untuk keperluan google login",
     "facebookAppId":"APP ID dari Aplikasi yang didaftarkan di Facebook Developer",
     "theme":[],                                // untuk custom theme jika diperlukan,silahkan lihat module LibTheme untuk cara peggunaannya
-    "langIds":[],                              // untuk custom language jika diperlukan, silahkan lihatmodule LibLocale untuk cara penggunaanya
     "fonts":{
       "fontName":"fontName.ttf or .otf",       //  taruh file font di assets/fonts/ jika ingin custom fonts. bisa lebih dari 1
       "fontName2":"fontName2.ttf or .otf"

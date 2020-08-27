@@ -176,7 +176,7 @@ export default class ecurl {
         this.onDone(resJson)
       } else {
         LibProgress.hide()
-        if (debug == 1) this.onError(resText)
+        this.onError(resText)
       }
     }
   }
