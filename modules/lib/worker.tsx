@@ -3,7 +3,7 @@ import { Component } from "react"
 import { WebView } from 'react-native-webview'
 import { esp, LibWorker_dataProperty } from 'esoftplay'
 import { View } from 'native-base';
-import { PixelRatio, Platform } from 'react-native';
+import { PixelRatio, Platform, InteractionManager } from 'react-native';
 
 export interface LibWorkerInit {
   task: string,
@@ -20,21 +20,19 @@ export interface LibWorkerState {
 
 
 class m extends Component<LibWorkerProps, LibWorkerState> {
-
-
   constructor(props: LibWorkerProps) {
     super(props)
     LibWorker_dataProperty.libWorkerData.LibWorkerBase = React.createRef<WebView>()
     LibWorker_dataProperty.libWorkerData.LibWorkerApi = React.createRef<WebView>()
     LibWorker_dataProperty.libWorkerData.LibWorkerData = React.createRef<WebView>()
-    LibWorker_dataProperty.libWorkerData.LibWorkerTasks = []
+    LibWorker_dataProperty.libWorkerData.LibWorkerTasks = {}
     LibWorker_dataProperty.libWorkerData.LibWorkerReady = 0
     LibWorker_dataProperty.libWorkerData.LibWorkerCount = 0
     this.renderWorkers = this.renderWorkers.bind(this);
   }
 
   static delete(taskId: string): void {
-    LibWorker_dataProperty.libWorkerData.LibWorkerTasks = LibWorker_dataProperty.libWorkerData.LibWorkerTasks.filter((value: any) => value.taskId != taskId)
+    delete LibWorker_dataProperty.libWorkerData.LibWorkerTasks[taskId]
   }
 
   static registerJob(name: string, func: Function): (params: any[], res: (data: any) => void) => void {
@@ -177,11 +175,10 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
       if (LibWorker_dataProperty.libWorkerData.LibWorkerReady == 3) {
         LibWorker_dataProperty.libWorkerData.LibWorkerCount++
         var _task = task(LibWorker_dataProperty.libWorkerData.LibWorkerCount)
-        LibWorker_dataProperty.libWorkerData.LibWorkerTasks.push({
-          taskId: LibWorker_dataProperty.libWorkerData.LibWorkerCount,
+        LibWorker_dataProperty.libWorkerData.LibWorkerTasks[LibWorker_dataProperty.libWorkerData.LibWorkerCount] = {
           task: _task,
           result: result
-        })
+        }
         if (url == '') {
           let x = [
             LibWorker_dataProperty.libWorkerData.LibWorkerBase.current!,
@@ -259,12 +256,12 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
         return
       }
       if (tasks) {
-        const x = JSON.parse(e.nativeEvent.data)
-        const index = tasks.findIndex((item: LibWorkerInit) => item.taskId == x.id)
-        // if (!x.data.includes("data:image/png;base64"))
-        if (tasks && index > -1) {
-          tasks[index].result(x.data)
-          m.delete(tasks[index].taskId)
+        const dt = e.nativeEvent.data
+        const x = JSON.parse(dt)
+        const itemTask = tasks[x.id]
+        if (itemTask) {
+          itemTask.result(x.data)
+          m.delete(x.id)
         }
       }
     }

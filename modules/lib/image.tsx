@@ -18,10 +18,16 @@ import { connect } from 'react-redux';
 import { SaveFormat } from 'expo-image-manipulator';
 const { height, width } = LibStyle;
 
+
+export interface LibImageCrop {
+  ratio: string,
+  forceCrop: boolean
+}
+
 export interface LibImageProps {
   show?: boolean,
   image?: string,
-  editor?: boolean
+  editor?: boolean,
 }
 
 export interface LibImageState {
@@ -32,12 +38,14 @@ export interface LibImageState {
 }
 
 export interface LibImageGalleryOptions {
+  crop?: LibImageCrop
   editor?: boolean,
   multiple?: boolean,
   max?: number
 }
 
 export interface LibImageCameraOptions {
+  crop?: LibImageCrop
   editor?: boolean
 }
 
@@ -140,6 +148,9 @@ class m extends LibComponent<LibImageProps, LibImageState> {
   static showEditor(uri: string, result: (x: any) => void): void {
     LibNavigation.navigateForResult("lib/image_edit", { uri }, 81793).then(result)
   }
+  static showCropper(uri: string, forceCrop: boolean, ratio: string, result: (x: any) => void): void {
+    LibNavigation.navigateForResult("lib/image_crop", { image: uri, forceCrop, ratio }, 81793).then(result)
+  }
 
 
   static fromCamera(options?: LibImageCameraOptions): Promise<string> {
@@ -181,17 +192,24 @@ class m extends LibComponent<LibImageProps, LibImageState> {
         // } else {
         ImagePicker.launchCameraAsync().then(async (result: any) => {
           if (!result.cancelled) {
-            if (options && options.editor) {
-              m.showEditor(result.uri, async (x) => {
+            if (options && options.crop) {
+              m.showCropper(result.uri, options.crop.forceCrop, options.crop.ratio, async (x) => {
                 let imageUri = await m.processImage(x)
                 m.setResult(imageUri)
                 _r(imageUri)
               })
-            } else {
-              let imageUri = await m.processImage(result)
-              m.setResult(imageUri)
-              _r(imageUri)
-            }
+            } else
+              if (options && options.editor) {
+                m.showEditor(result.uri, async (x) => {
+                  let imageUri = await m.processImage(x)
+                  m.setResult(imageUri)
+                  _r(imageUri)
+                })
+              } else {
+                let imageUri = await m.processImage(result)
+                m.setResult(imageUri)
+                _r(imageUri)
+              }
           }
         })
         // }
@@ -221,29 +239,43 @@ class m extends LibComponent<LibImageProps, LibImageState> {
         if (max == 1) {
           ImagePicker.launchImageLibraryAsync().then(async (x: any) => {
             if (!x.cancelled) {
-              if (options?.editor == true) {
-                m.showEditor(x.uri, async (x) => {
+              if (options && options.crop) {
+                m.showCropper(x.uri, options.crop.forceCrop, options.crop.ratio, async (x) => {
                   let imageUri = await m.processImage(x)
                   m.setResult(imageUri)
                   _r(imageUri)
                 })
-                return
-              } else {
-                let imageUri = await m.processImage(x)
-                m.setResult(imageUri)
-                _r(imageUri)
-              }
+              } else
+                if (options?.editor == true) {
+                  m.showEditor(x.uri, async (x) => {
+                    let imageUri = await m.processImage(x)
+                    m.setResult(imageUri)
+                    _r(imageUri)
+                  })
+                  return
+                } else {
+                  let imageUri = await m.processImage(x)
+                  m.setResult(imageUri)
+                  _r(imageUri)
+                }
             }
           })
           return
         }
         LibNavigation.navigateForResult("lib/image_multi", { max: max }).then((x: any[]) => {
-          if (max == 1 && x.length == 1 && options?.editor == true) {
-            m.showEditor(x[0].uri, async (x) => {
-              let imageUri = await m.processImage(x)
-              m.setResult(imageUri)
-              _r(imageUri)
-            })
+          if (max == 1 && x.length == 1) {
+            if (options && options.crop) {
+              m.showCropper(x[0].uri, options.crop.forceCrop, options.crop.ratio, async (x) => {
+                let imageUri = await m.processImage(x)
+                m.setResult(imageUri)
+                _r(imageUri)
+              })
+            } else if (options?.editor == true)
+              m.showEditor(x[0].uri, async (x) => {
+                let imageUri = await m.processImage(x)
+                m.setResult(imageUri)
+                _r(imageUri)
+              })
             return
           }
           let a: string[] = []

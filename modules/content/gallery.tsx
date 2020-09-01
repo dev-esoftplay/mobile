@@ -44,7 +44,7 @@ export default class ezoom extends LibComponent<ContentGalleryProps, ContentGall
           data={images}
           horizontal
           style={styles.container}
-          keyExtractor={(item: any, i: number) => item.image + i}
+          keyExtractor={(item: any, i: number) => i}
           pagingEnabled
           renderItem={({ item }: any) => {
             return (

@@ -327,6 +327,7 @@ export default class App extends React.Component {
 			"native-base",
 			"react-native-modal",
 			"react-navigation",
+			"react-native-pinch-zoom-view-movable",
 			"react-native-screens",
 			"react-navigation-stack",
 			"react-native-safe-area-context",
