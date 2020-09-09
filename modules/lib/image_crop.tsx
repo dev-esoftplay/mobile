@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import { View, Image, TouchableOpacity, PixelRatio, Dimensions } from 'react-native';
-import { LibNavigation, LibStyle, LibUtils, LibZom, LibIcon, LibStatusbar, useSafeState, esp, LibTextstyle } from 'esoftplay';
+import { LibNavigation, LibStyle, LibUtils, LibZom, LibIcon, LibStatusbar, useSafeState, esp, LibTextstyle, LibProgress } from 'esoftplay';
 import * as ImageManipulator from "expo-image-manipulator";
 // @ts-ignore
 import PinchZoomView from 'react-native-pinch-zoom-view-movable';
@@ -35,24 +35,53 @@ export default function m(props: LibImage_cropProps): any {
     ratioSize[1] = _ratio[1] / _ratio[0] * minimalRatioSize
   }
 
+  function resize(image: string) {
+    LibProgress.show("Sedang menyiapkan...")
+    Image.getSize(image, async (actualWidth, actualHeight) => {
+      var wantedMaxSize = 900
+      var rawheight = actualHeight
+      var rawwidth = actualWidth
+      var ratio = rawwidth / rawheight
+      if (rawheight > rawwidth) {
+        var wantedwidth = wantedMaxSize * ratio;
+        var wantedheight = wantedMaxSize;
+      } else {
+        var wantedwidth = wantedMaxSize;
+        var wantedheight = wantedMaxSize / ratio;
+      }
+      const manipImage = await ImageManipulator.manipulateAsync(
+        image,
+        [{ resize: { width: wantedwidth, height: wantedheight } }],
+        { format: ImageManipulator.SaveFormat.JPEG }
+      );
+      setImage(manipImage.uri)
+      LibProgress.hide()
+    }, () => { LibProgress.hide() })
+  }
+
   useEffect(() => {
-    Image.getSize(_image, (actualWidth, actualHeight) => {
+    resize(_image)
+  }, [])
+
+  useEffect(() => {
+    Image.getSize(_image, async (actualWidth, actualHeight) => {
       const h = actualHeight * LibStyle.width / actualWidth
       setSize(h)
     }, () => { })
   }, [_image])
-
 
   useEffect(() => {
     return () => LibNavigation.cancelBackResult(LibNavigation.getResultKey(props))
   }, [])
 
   function reset() {
-    setImage(image)
+    resize(image)
     setCounter(counter + 1)
+    setCropCount(0)
   }
 
   function capture() {
+    LibProgress.show("Sedang memotong gambar..")
     let crop = {
       x: 0,
       y: 0,
@@ -112,10 +141,13 @@ export default function m(props: LibImage_cropProps): any {
               setImage(x.uri)
               setCropCount(cropCount + 1)
             }
+            LibProgress.hide()
           })
         })
       })
-    }, () => { })
+    }, () => {
+      LibProgress.hide()
+    })
   }
   return (
     <View style={{ flex: 1, backgroundColor: "#000" }} key={counter}  >

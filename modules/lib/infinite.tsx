@@ -1,12 +1,15 @@
 import React from 'react';
 import { View, FlatList } from 'react-native';
 import { LibComponent, LibLoading, LibCurl, LibTextstyle, esp, LibListItemLayout, LibStyle } from 'esoftplay';
+import isEqual from 'lodash/isEqual'
+
 
 export interface LibInfiniteProps {
   url: string,
   post?: any,
-  debug?: 0 | 1,
+  isDebug?: 0 | 1,
   initialData?: any[],
+  injectData?: any,
   onDataChange?: (data: any, page: number) => void
   onResult?: (res: any, uri: string) => void,
   error?: string,
@@ -91,9 +94,12 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
       this.pages.push(page)
       new LibCurl(url, post,
         (res, msg) => {
+          if (this.props.isDebug) {
+            esp.log(res);
+          }
           this.props.onResult && this.props.onResult(res, url)
           const update = () => {
-            this.props.onDataChange && this.props.onDataChange(this.state.data, this.page)
+            this.props.onDataChange && this.props.onDataChange(this.state.data || [], this.page)
           }
           let mainIndex: any = this.props.mainIndex && res[this.props.mainIndex] || res
           if (mainIndex.list.length == 0 || res.list == '') {
@@ -107,7 +113,7 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
             }, update)
           } else {
             this.page = page
-            this.isStop = ([...this.state.data, ...mainIndex.list].length >= parseInt(mainIndex.total) || (this.page >= (mainIndex.pages || mainIndex.total_pages) - 1))
+            this.isStop = ([...this.state.data, ...mainIndex.list].length >= parseInt(mainIndex.total) || (this.page >= (mainIndex.pages || mainIndex.total_page) - 1))
             this.setState((state: LibInfiniteState, props: LibInfiniteProps) => {
               const latestData = [...state.data, ...mainIndex.list]
               return {
@@ -117,12 +123,15 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
           }
         },
         (msg) => {
+          if (this.props.isDebug) {
+            esp.log(msg)
+          }
           this.page = page
           this.isStop = true
           this.setState({
             error: msg,
           })
-        }, this.props.debug
+        }, this.props.isDebug
       )
     }
   }
@@ -130,6 +139,9 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
   componentDidUpdate(prevProps: LibInfiniteProps, prevState: LibInfiniteState): void {
     if (this.props.initialData != undefined && prevProps.initialData != this.props.initialData && this.props.initialData.length != 0 && this.state.data.length == 0) {
       this.setState({ data: this.props.initialData })
+    }
+    if (this.props.injectData !== undefined && !isEqual(this.props.injectData, this.state.data)) {
+      this.setState({ data: this.props.injectData })
     }
   }
 
@@ -151,7 +163,7 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
             <LibLoading />
             :
             <FlatList
-              data={data}
+              data={data || []}
               onRefresh={() => this.loadData()}
               refreshing={false}
               keyExtractor={this._keyExtractor}

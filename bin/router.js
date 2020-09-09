@@ -510,7 +510,7 @@ function createRouter() {
   var Navigations = [];
   var staticImport = []
 
-  staticImport.push("import { isEqual } from 'lodash';\n")
+  staticImport.push("const isEqual = require('fast-deep-equal');\n")
   staticImport.push("export function applyStyle(style){ return style };\n")
   staticImport.push("export { default as _global } from '../../../node_modules/esoftplay/_global';\n")
   staticImport.push("export { default as useGlobalState } from '../../../node_modules/esoftplay/global';\n")

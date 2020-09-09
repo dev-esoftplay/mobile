@@ -3,7 +3,7 @@ import { Component } from "react"
 import { WebView } from 'react-native-webview'
 import { esp, LibWorker_dataProperty } from 'esoftplay'
 import { View } from 'native-base';
-import { PixelRatio, Platform, InteractionManager } from 'react-native';
+import { PixelRatio, Platform } from 'react-native';
 
 export interface LibWorkerInit {
   task: string,
@@ -62,7 +62,37 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
   }
 
   static objToString(data: any): string {
+    if (Platform.OS == 'android')
+      if (Platform.Version <= 22) {
+        return JSON.stringify(data)
+      }
     return JSON.stringify(JSON.stringify(data)).slice(1, -1);
+  }
+
+  static jobOutput(data: any): void {
+    return data
+  }
+
+  static jobAsync(func: Function, params: (string | number | boolean)[], res: (data: any) => void): void {
+    if (Platform.OS == 'android')
+      if (Platform.Version <= 22) {
+        return res(func(...params))
+      }
+    m.dispatch(
+      (id: string) => {
+        const nameFunction = func.toString().replace('function', 'function tempFunction')
+        let _params = params.map((param) => {
+          if (typeof param == 'string')
+            return `"` + param + `"`
+          return param
+        })
+
+        const out = nameFunction.replace('\n', `\n\tconst _esoftplay = { LibWorker: { jobOutput: (data) => { window.ReactNativeWebView.postMessage(JSON.stringify({ data: data,id: ` + id + `}))}}}\n`)
+          + `\n` +
+          `tempFunction` + `(` + _params.join(",") + `)`
+        return out
+      }
+      , '', res)
   }
 
   static job(func: Function, params: (string | number | boolean)[], res: (data: any) => void): void {

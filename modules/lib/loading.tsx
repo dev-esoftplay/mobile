@@ -16,7 +16,7 @@ export default class m extends LibComponent<LibLoadingProps, LibLoadingState>{
 
   render(): any {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: LibTheme._colorBackgroundPrimary() }} >
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} >
         <ActivityIndicator color={LibTheme._colorPrimary()} size={'large'} />
       </View>
     )

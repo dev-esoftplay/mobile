@@ -320,6 +320,7 @@ export default class App extends React.Component {
 			"immutability-helper",
 			"expo-secure-store",
 			"immhelper",
+			"fast-deep-equal",
 			"moment",
 			"expo-image-crop",
 			"moment-timezone",

@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { isEqual } from 'lodash'
+const isEqual = require("fast-deep-equal");
 
 export default class SaveComponent <K, S, U = any> extends Component<K, S, U>{
   _isMounted: boolean = false
