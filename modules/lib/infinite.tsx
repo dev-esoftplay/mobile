@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, FlatList } from 'react-native';
 import { LibComponent, LibLoading, LibCurl, LibTextstyle, esp, LibListItemLayout, LibStyle } from 'esoftplay';
-import isEqual from 'lodash/isEqual'
+import isEqual from 'react-fast-compare'
 
 
 export interface LibInfiniteProps {

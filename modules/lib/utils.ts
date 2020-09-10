@@ -5,10 +5,7 @@ import * as FileSystem from 'expo-file-system';
 import { esp, LibToastProperty, _global, createCache } from "esoftplay"
 import shorthash from "shorthash"
 import { StackActions, NavigationActions } from 'react-navigation';
-import { isEqual, uniqWith } from "lodash";
 const Buffer = require('buffer/').Buffer
-
-
 
 export interface LibUtilsDate {
   year: string,
@@ -51,7 +48,10 @@ export default class eutils {
   }
 
   static uniqueArray(array: any[]): any[] {
-    return uniqWith(array, isEqual)
+    function onlyUnique(value, index, self) {
+      return self.indexOf(value) === index;
+    }
+    return array.filter(onlyUnique)
   }
 
   static getArgs(props: any, key: string, defOutput?: any): any {

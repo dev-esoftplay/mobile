@@ -13,12 +13,12 @@ import {
   LibUtils,
   UserNotification_item,
   LibStatusbar,
+  LibObject
 } from "esoftplay";
 import * as Notifications from 'expo-notifications'
 import { connect } from "react-redux"
 //@ts-ignore
 import moment from "moment/min/moment-with-locales"
-import update from "immutability-helper"
 import { Text, Button, Icon } from "native-base";
 
 export interface UserNotificationProps {
@@ -60,14 +60,9 @@ class m extends LibComponent<UserNotificationProps, UserNotificationState> {
       case "user_notification_setRead":
         var data: any[] = state.data
         var index = data.findIndex((item: any) => item.id == action.payload)
-        var query = {
-          [index]: {
-            status: { $set: 2 }
-          }
-        }
         return {
           ...state,
-          data: update(data, query)
+          data: LibObject.set(data, 2)(index, 'status')
         }
       case "user_notification_add":
         return {
