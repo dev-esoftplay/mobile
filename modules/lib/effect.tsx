@@ -1,6 +1,6 @@
 import React from 'react';
 import { LibComponent } from 'esoftplay';
-import isEqual from 'lodash/isEqual'
+import isEqual from 'react-fast-compare'
 
 export interface LibEffectProps {
   deps?: any[]

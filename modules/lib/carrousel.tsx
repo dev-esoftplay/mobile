@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView, Text, TouchableWithoutFeedback, Platform, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, ScrollView, Text, TouchableWithoutFeedback, Platform, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { LibComponent, LibFocus, LibUtils } from 'esoftplay';
 
 export interface LibCarrouselProps {
@@ -37,7 +37,7 @@ export interface LibCarrouselState {
   childrenLength: number,
 }
 
-export default class m extends LibComponent<LibCarrouselProps, LibCarrouselState> {
+export default class m extends React.Component<LibCarrouselProps, LibCarrouselState> {
 
   static defaultProps = {
     delay: 4000,
@@ -109,7 +109,7 @@ export default class m extends LibComponent<LibCarrouselProps, LibCarrouselState
   }
 
   componentDidMount(): void {
-    super.componentDidMount();
+    // super.componentDidMount();
     if (this.state.childrenLength) {
       this._setUpTimer();
     }
@@ -117,7 +117,9 @@ export default class m extends LibComponent<LibCarrouselProps, LibCarrouselState
 
   componentDidUpdate(prevProps: LibCarrouselProps, prevState: LibCarrouselState): void {
     const { children } = prevProps
-    if (this.props.children != children) {
+    const childrenLength = React.Children.count(this.props.children) || 1;
+    const oldChildrenLength = React.Children.count(children) || 1;
+    if (childrenLength != oldChildrenLength) {
       const { currentPage } = this.state;
       this._clearTimer();
       let childrenLength = 0;
@@ -125,15 +127,16 @@ export default class m extends LibComponent<LibCarrouselProps, LibCarrouselState
         childrenLength = React.Children.count(children) || 1;
       }
       const nextPage = currentPage >= childrenLength ? childrenLength - 1 : currentPage;
-      this.setState({ childrenLength }, () => {
-        this.animateToPage(nextPage);
-        this._setUpTimer();
-      });
+      if (React.Children.count(children) != React.Children.count(this.props.children))
+        this.setState({ childrenLength }, () => {
+          this.animateToPage(nextPage);
+          this._setUpTimer();
+        });
     }
   }
 
   componentWillUnmount(): void {
-    super.componentWillUnmount()
+    // super.componentWillUnmount()
     this._clearTimer();
   }
 

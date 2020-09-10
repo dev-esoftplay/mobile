@@ -118,22 +118,41 @@ export default function m(props: LibImage_cropProps): any {
             pageY: vls[5]
           }
 
-          const fixPageY = crop.pageY - marginTop
-          const scale = actualWidth / img.width
-          const totalCropWidth = (crop.pageX + crop.width)
-          const totalCropHeight = (fixPageY + crop.height)
-          const cropWidth = totalCropWidth > img.width ? img.width - crop.pageX : crop.width
-          const cropHeight = totalCropHeight > img.height ? img.height - fixPageY : crop.height
+          let fixPageY = crop.pageY - marginTop
+
+          if (crop.pageX < 0) {
+            // cropWidth = cropWidth + crop.pageX
+            crop.pageX = 0
+          }
+          if (fixPageY < 0) {
+            // cropHeight = cropHeight + fixPageY
+            fixPageY = 0
+          }
+          let scale = actualWidth / img.width
+          let totalCropWidth = (crop.pageX + crop.width)
+          let totalCropHeight = (fixPageY + crop.height)
+          let cropWidth = totalCropWidth > img.width ? img.width - crop.pageX : crop.width
+          let cropHeight = totalCropHeight > img.height ? img.height - fixPageY : crop.height
+          // if (totalCropHeight > img.height) {
+          //   fixPageY = img.height - fixPageY
+          // }
+          // if (totalCropWidth > img.width) {
+          //   crop.pageX = img.width - crop.width
+          // }
+
+          const cropOption = {
+            originX: scale * (crop.pageX > img.width ? 0 : crop.pageX),
+            originY: scale * ((fixPageY) > img.height ? 0 : (fixPageY)),
+            width: (scale * cropWidth) > 0 ? (scale * cropWidth) : 0,
+            height: (scale * cropHeight) > 0 ? (scale * cropHeight) : 0,
+          }
+
+          console.log(cropOption, actualWidth, actualHeight)
 
           ImageManipulator.manipulateAsync(
             _image,
             [{
-              crop: {
-                originX: scale * (crop.pageX > img.width ? 0 : crop.pageX),
-                originY: scale * ((fixPageY) > img.height ? 0 : (fixPageY)),
-                width: (scale * cropWidth) > 0 ? (scale * cropWidth) : 0,
-                height: (scale * cropHeight) > 0 ? (scale * cropHeight) : 0,
-              }
+              crop: cropOption
             }],
             { compress: 1, format: ImageManipulator.SaveFormat.PNG }
           ).then((x) => {

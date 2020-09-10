@@ -1,5 +1,5 @@
 import { Component } from "react";
-const isEqual = require("fast-deep-equal");
+const isEqual = require("react-fast-compare");
 
 export default class SaveComponent <K, S, U = any> extends Component<K, S, U>{
   _isMounted: boolean = false
