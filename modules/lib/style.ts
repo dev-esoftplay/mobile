@@ -14,6 +14,7 @@ const colorTextPrimary = "#353535"
 const colorTextBody = "#353535"
 const colorTextCaption = "#686868"
 const colorLightGrey = "#fbfbfb"
+const colorNavigationBar = "#257B24"
 
 function elevation(value: any): any {
   if (Platform.OS === "ios") {
@@ -70,6 +71,7 @@ export default class Style {
   static STATUSBAR_HEIGHT_MASTER: number = STATUSBAR_HEIGHT_MASTER;
   static colorPrimary: string = colorPrimary;
   static colorPrimaryDark: string = colorPrimaryDark;
+  static colorNavigationBar: string = colorNavigationBar;
   static colorAccent: string = colorAccent;
   static colorGrey: string = colorGrey;
   static colorRed: string = colorRed;

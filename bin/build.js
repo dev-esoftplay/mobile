@@ -317,6 +317,7 @@ export default class App extends React.Component {
 			"buffer",
 			"firebase",
 			"immhelper",
+			"lodash.uniqwith",
 			"react-fast-compare",
 			"moment",
 			"expo-image-crop",

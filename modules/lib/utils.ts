@@ -6,6 +6,9 @@ import { esp, LibToastProperty, _global, createCache } from "esoftplay"
 import shorthash from "shorthash"
 import { StackActions, NavigationActions } from 'react-navigation';
 const Buffer = require('buffer/').Buffer
+const isEqual = require("react-fast-compare");
+const uniqWith = require('lodash.uniqwith');
+
 
 export interface LibUtilsDate {
   year: string,
@@ -48,10 +51,7 @@ export default class eutils {
   }
 
   static uniqueArray(array: any[]): any[] {
-    function onlyUnique(value, index, self) {
-      return self.indexOf(value) === index;
-    }
-    return array.filter(onlyUnique)
+    return uniqWith(array, isEqual);
   }
 
   static getArgs(props: any, key: string, defOutput?: any): any {

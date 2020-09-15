@@ -19,9 +19,34 @@ export default class m {
   static update(obj: any, callback: (lastValue: any) => any): (cursor?: string | number, ...cursors: (string | number)[]) => any {
     return cursorBuilder("batch", obj, callback)
   }
-  // static assign(obj: any, obj1: any): (cursor?: string | number, ...cursors: (string | number)[]) => any {
-  //   return cursorBuilder("assign", obj, obj1)
-  // }
+  static assign(obj: any, obj1: any): (cursor?: string | number, ...cursors: (string | number)[]) => any {
+    return cursorBuilder("assign", obj, obj1)
+  }
+  //   static deepMerge(obj: any, obj1: any) {
+  //     return (cursor?: string | number, ...cursors: (string | number)[]) => {
+  //       function mergeDeep(target: any, source: any): any {
+  //         const isObject = (obj) => obj && typeof obj === 'object';
+  //         if (!isObject(target) || !isObject(source)) {
+  //           return source;
+  //         }
+  //         Object.keys(source).forEach(key => {
+  //           const targetValue = target[key];
+  //           const sourceValue = source[key];
+  //           if (Array.isArray(targetValue) && Array.isArray(sourceValue)) {
+  //             target[key] = targetValue.concat(sourceValue);
+  //           } else if (isObject(targetValue) && isObject(sourceValue)) {
+  //             target[key] = mergeDeep(Object.assign({}, targetValue), sourceValue);
+  //           } else {
+  //             target[key] = sourceValue;
+  //           }
+  //         });
+  //         return target;
+  //       }
+  //       const allCursors = [cursor, ...cursors].filter((x) => x != undefined)
+  //       let addressedObj = obj[cursor]
+  //       return mergeDeep(addressedObj, obj1)
+  //     }
+  //   }
 }
 
 function cursorBuilder(command: string, array: any, value: any, ...values: any[]): (cursor?: string | number, ...cursors: (string | number)[]) => any {

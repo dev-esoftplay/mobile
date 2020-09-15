@@ -98,7 +98,7 @@ export default function m(props: UserIndexProps): any {
   }
 
   useEffect(() => {
-    requestAnimationFrame(async () => {
+    setTimeout(async () => {
       LibUpdaterProperty.checkAlertInstall()
       LibTheme.getTheme()
       LibLocale.getLanguage()
@@ -170,15 +170,18 @@ export default function m(props: UserIndexProps): any {
   if (loading) return null
   const R = UserIndex_dataProperty.userIndexNav.Router
   return (
-    <View style={{ flex: 1, paddingBottom: LibStyle.isIphoneX ? 35 : 0 }}>
-      <LibWorker />
-      <R {...persistenceFunctions} ref={(r: any) => LibNavigation.setRef(r)} onNavigationStateChange={handler} />
-      <LibNet_status />
-      <LibDialog style={'default'} />
-      <LibImage />
-      <LibProgress />
-      <UserMain />
-      <LibToast />
-    </View>
+    <>
+      <View style={{ flex: 1 }}>
+        <LibWorker />
+        <R {...persistenceFunctions} ref={(r: any) => LibNavigation.setRef(r)} onNavigationStateChange={handler} />
+        <LibNet_status />
+        <LibDialog style={'default'} />
+        <LibImage />
+        <LibProgress />
+        <UserMain />
+        <LibToast />
+      </View>
+      <View style={{ backgroundColor: LibStyle.colorNavigationBar || 'white', height: LibStyle.isIphoneX ? 35 : 0 }} />
+    </>
   )
 }

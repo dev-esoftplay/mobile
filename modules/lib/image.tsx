@@ -413,7 +413,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
                 {
                   image ?
                     <TouchableOpacity onPress={() => {
-                      requestAnimationFrame(
+                      setTimeout(
                         async () => {
                           let imageUri = await m.processImage(image)
                           m.setResult(imageUri)
@@ -424,7 +424,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
                     </TouchableOpacity>
                     :
                     <TouchableOpacity onPress={() => {
-                      requestAnimationFrame(
+                      setTimeout(
                         async () => {
                           m.hide()
                           this.setState({ image: null })
