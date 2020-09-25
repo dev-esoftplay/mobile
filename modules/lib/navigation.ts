@@ -1,6 +1,8 @@
 import React from "react";
 import { esp, LibUtils, LibNavigation_dataProperty } from 'esoftplay';
-import { StackActions, NavigationActions } from 'react-navigation';
+import { CommonActions, StackActions } from '@react-navigation/native';
+
+
 
 // var _navigator: any = React.createRef()
 // var _navigation: any
@@ -26,9 +28,7 @@ export default class m {
   }
 
   static navigate(route: string, params?: any): void {
-    LibNavigation_dataProperty.libNavigationRef.dispatch(
-      NavigationActions.navigate({ routeName: route, params: params })
-    )
+    LibNavigation_dataProperty.libNavigationRef.navigate(route, params)
   }
 
   static getResultKey(props: any) {
@@ -73,19 +73,16 @@ export default class m {
 
   static replace(routeName: string, params?: any): void {
     LibNavigation_dataProperty.libNavigationRef.dispatch(
-      StackActions.replace({
-        routeName,
-        params
-      })
+      StackActions.replace(routeName, params)
     )
   }
 
   static push(routeName: string, params?: any): void {
     LibNavigation_dataProperty.libNavigationRef.dispatch(
-      StackActions.push({
+      StackActions.push(
         routeName,
         params
-      })
+      )
     )
   }
 
@@ -96,18 +93,16 @@ export default class m {
       _routeName = [..._routeName, ...routeNames]
     }
 
-    const resetAction = StackActions.reset({
+    const resetAction = CommonActions.reset({
       index: _routeName.length - 1,
-      actions: _routeName.map((rn) => NavigationActions.navigate({ routeName: rn }))
+      routes: _routeName.map((rn) => ({ name: rn }))
     });
     LibNavigation_dataProperty.libNavigationRef.dispatch(resetAction);
   }
 
   static back(deep?: number): void {
     let _deep = deep || 1
-    const popAction = StackActions.pop({
-      n: _deep
-    });
+    const popAction = StackActions.pop(_deep);
     LibNavigation_dataProperty.libNavigationRef.dispatch(popAction)
   }
 
@@ -126,7 +121,10 @@ export default class m {
   }
 
   static backToRoot(): void {
-    LibNavigation_dataProperty.libNavigationRef.dispatch(StackActions.popToTop());
+    try {
+      LibNavigation_dataProperty.libNavigationRef.dispatch(StackActions.popToTop());
+    } catch (error) {
+    }
   }
 
   static Injector(props: LibNavigationInjector): any {

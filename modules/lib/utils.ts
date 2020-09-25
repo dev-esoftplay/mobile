@@ -4,7 +4,6 @@ import momentTimeZone from "moment-timezone"
 import * as FileSystem from 'expo-file-system';
 import { esp, LibToastProperty, _global, createCache } from "esoftplay"
 import shorthash from "shorthash"
-import { StackActions, NavigationActions } from 'react-navigation';
 const Buffer = require('buffer/').Buffer
 const isEqual = require("react-fast-compare");
 const uniqWith = require('lodash.uniqwith');
@@ -58,13 +57,13 @@ export default class eutils {
     if (defOutput == undefined) {
       defOutput = "";
     }
-    return props && props.navigation && props.navigation.state && props.navigation.state.params && props.navigation.state.params[key] || defOutput;
+    return props && props && props.route && props.route.params && props.route.params[key] || defOutput;
   }
   static getArgsAll(props: any, defOutput?: any): any {
     if (defOutput == undefined) {
       defOutput = "";
     }
-    return props && props.navigation && props.navigation.state && props.navigation.state.params || defOutput;
+    return props && props && props.route && props.route.params || defOutput;
   }
 
   static getReduxState(key: string, ...keys: string[]): any {
@@ -161,22 +160,22 @@ export default class eutils {
   }
 
   static navReset(navigation: any, isLogin?: boolean): void {
-    console.warn('LibUtils.navReset is deprecated, use LibNavigation.reset instead')
-    const home = esp.config('home')
-    const resetAction = StackActions.reset({
-      index: 0,
-      actions: [NavigationActions.navigate({ routeName: isLogin ? home.member : home.public })],
-    });
-    navigation.dispatch(resetAction);
+    console.warn('LibUtils.navReset is deleted, use LibNavigation.reset instead')
+    // const home = esp.config('home')
+    // const resetAction = StackActions.reset({
+    //   index: 0,
+    //   actions: [StackActions.navigate({ routeName: isLogin ? home.member : home.public })],
+    // });
+    // navigation.dispatch(resetAction);
   }
 
   static navResetCustom(navigation: any, routeName: string): void {
-    console.warn('LibUtils.navResetCustom is deprecated, use LibNavigation.reset(\'customRouteName\') instead')
-    const resetAction = StackActions.reset({
-      index: 0,
-      actions: [NavigationActions.navigate({ routeName })],
-    });
-    navigation.dispatch(resetAction);
+    console.warn('LibUtils.navResetCustom is deleted, use LibNavigation.reset(\'customRouteName\') instead')
+    // const resetAction = StackActions.reset({
+    //   index: 0,
+    //   actions: [StackActions.navigate({ routeName })],
+    // });
+    // navigation.dispatch(resetAction);
   }
 
   static navReplace(store: any, navigation: any, routeName: string, params?: any): void {

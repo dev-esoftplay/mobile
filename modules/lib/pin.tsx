@@ -7,6 +7,8 @@ import { View, Text, TextInput } from 'react-native';
 export interface LibPinProps {
   length: number,
   onChangePin: (pin: string) => void
+  boxStyle?: any,
+  pinStyle?: any
 }
 export default function m(props: LibPinProps): any {
   const [pin, setPin] = useState<string[]>([])
@@ -22,10 +24,10 @@ export default function m(props: LibPinProps): any {
               ))
             }
           </View>
-          <View style={{ flexDirection: 'row', width: 60 * props.length, alignSelf: 'center', marginLeft: 60 }} >
+          <View style={{ flexDirection: 'row', width: 60 * props.length, alignSelf: 'center', marginLeft: 60, ...props.boxStyle }} >
             {
               pin && pin.map((item: any, i: number) => (
-                <Text key={i} style={{ textAlign: 'center', width: 40, height: 40, marginTop: -40, fontFamily: 'digital', fontSize: 40, margin: 5 }} >•</Text>
+                <Text key={i} style={{ textAlign: 'center', width: 40, height: 40, marginTop: -40, fontFamily: 'digital', fontSize: 40, margin: 5, ...props.pinStyle }} >•</Text>
               ))
             }
           </View>

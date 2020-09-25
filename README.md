@@ -10,7 +10,7 @@ simplify the way to create react-native project from scratch
 ## How to install
 
 All you need to do is installing esoftplay package after you create new project, or use following example commands:
-* ``create-react-native-app myApp``
+* ``expo init myApp``
 * ``cd myApp``
 * ``npm install esoftplay``
 

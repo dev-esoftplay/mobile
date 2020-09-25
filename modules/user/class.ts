@@ -68,6 +68,7 @@ export default class eclass {
       Notifications.setBadgeCountAsync(0)
       esp.dispatch({ type: "user_class_delete" });
       AsyncStorage.removeItem("user");
+      AsyncStorage.removeItem("user_notification");
       new UserData().deleteAll()
       if (esp.config('notification') == 1) {
         UserClass.pushToken()

@@ -1,38 +1,18 @@
 // withHooks
 
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 //@ts-ignore
 import navs from "../../cache/navigations";
 import { View, Platform } from "react-native";
-import { createAppContainer } from "react-navigation";
-import { createStackNavigator, TransitionPresets } from 'react-navigation-stack';
 import * as Font from "expo-font";
 import AsyncStorage from '@react-native-community/async-storage';
-import {
-  esp,
-  UserClass,
-  LibWorker,
-  LibNet_status,
-  LibTheme,
-  LibLocale,
-  LibDialog,
-  LibStyle,
-  LibImage,
-  LibProgress,
-  UserMain,
-  LibNavigation,
-  LibToast,
-  useSafeState,
-  LibUpdaterProperty,
-  LibNotification,
-  LibVersion,
-  _global,
-  UserIndex_dataProperty
-} from 'esoftplay';
+import { esp, UserClass, LibWorker, LibNet_status, LibTheme, LibLocale, LibDialog, LibStyle, LibImage, LibProgress, UserMain, LibNavigation, LibToast, useSafeState, LibUpdaterProperty, LibNotification, LibVersion, _global, UserIndex_dataProperty, UseSelector } from 'esoftplay';
 import firebase from 'firebase'
 import { useDispatch } from 'react-redux';
 import * as Notifications from 'expo-notifications'
-
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+const Stack = createStackNavigator();
 
 export interface UserIndexProps {
 
@@ -54,23 +34,6 @@ export function reducer(state: any, action: any): any {
   return _action ? _action : state
 }
 
-const persistenceFunctions = (() => {
-  //@ts-ignore
-  return __DEV__
-    ? {
-      async persistNavigationState(value: any) {
-        UserIndex_dataProperty.userIndexData.nav__state = value
-      },
-      async loadNavigationState() {
-        if (UserIndex_dataProperty.userIndexData.nav__state == null) {
-          await Promise.reject('no data');
-        }
-        return UserIndex_dataProperty.userIndexData.nav__state;
-      },
-    }
-    : {};
-})();
-
 function setFonts(): Promise<void> {
   let fonts: any = {
     "Roboto": require("../../assets/Roboto.ttf"),
@@ -88,13 +51,23 @@ function setFonts(): Promise<void> {
   })
 }
 
-
+const renderComponent = (s: [string, any]) => <Stack.Screen key={s[0]} name={s[0]} component={s[1]} />
 export default function m(props: UserIndexProps): any {
   const dispatch = useDispatch()
   const [loading, setLoading] = useSafeState(true)
+  const user = UseSelector((s) => s.user_class)
+  //@ts-ignore
+  const initialState = __DEV__ ? UserIndex_dataProperty.userIndexData.nav__state : undefined
+  let configRouter = useRef<any>().current
+  let econf = useRef(esp.config()).current
+  let navigations: any = useRef({}).current
 
-  function handler(prevState: any, currentState: any): void {
+  function handler(currentState: any): void {
     dispatch({ type: "user_nav_change", payload: currentState })
+    //@ts-ignore
+    if (__DEV__) {
+      UserIndex_dataProperty.userIndexData.nav__state = currentState
+    }
   }
 
   useEffect(() => {
@@ -136,26 +109,11 @@ export default function m(props: UserIndexProps): any {
           firebase.auth().signInAnonymously();
         } catch (error) { }
       }
-
-      let econf = esp.config()
-      let navigations: any = {}
       for (let i = 0; i < navs.length; i++) {
         const nav = navs[i];
         navigations[nav] = esp.mod(nav);
       }
-      UserClass.isLogin(async (user) => {
-        const initRoute = (user && (user.id || user.user_id)) ? econf.home.member : econf.home.public
-        let config: any = {
-          headerMode: "none",
-          initialRouteName: String(initRoute),
-          defaultNavigationOptions: {
-            animationEnabled: true,
-            cardStyle: { backgroundColor: 'white' }
-          },
-        }
-        UserIndex_dataProperty.userIndexNav.Router = createAppContainer(createStackNavigator(navigations, config))
-        setLoading(false)
-      })
+      UserClass.isLogin(async (user) => { setLoading(false) })
     });
   }, [])
 
@@ -168,12 +126,21 @@ export default function m(props: UserIndexProps): any {
   }, [loading])
 
   if (loading) return null
-  const R = UserIndex_dataProperty.userIndexNav.Router
   return (
     <>
       <View style={{ flex: 1 }}>
         <LibWorker />
-        <R {...persistenceFunctions} ref={(r: any) => LibNavigation.setRef(r)} onNavigationStateChange={handler} />
+        <NavigationContainer
+          ref={(r) => LibNavigation.setRef(r)}
+          initialState={initialState}
+          onStateChange={handler} >
+          <Stack.Navigator
+            headerMode="none"
+            initialRouteName={(user?.id || user?.user_id) ? econf.home.member : econf.home.public}
+            screenOptions={{ animationEnabled: true, cardStyle: { backgroundColor: 'white' } }}>
+            {Object.entries(navigations).map(renderComponent)}
+          </Stack.Navigator>
+        </NavigationContainer>
         <LibNet_status />
         <LibDialog style={'default'} />
         <LibImage />
