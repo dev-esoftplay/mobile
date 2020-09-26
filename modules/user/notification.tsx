@@ -35,6 +35,7 @@ class m extends LibComponent<UserNotificationProps, UserNotificationState> {
 
   props: UserNotificationProps
 
+  static persist = true;
   static reducer(state: any, action: any): any {
     if (!state)
       state = {

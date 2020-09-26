@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef } from "react";
 //@ts-ignore
-import navs from "../../cache/navigations";
+import Navs from "../../cache/navs";
 import { View, Platform } from "react-native";
 import * as Font from "expo-font";
 import AsyncStorage from '@react-native-community/async-storage';
@@ -10,9 +10,6 @@ import { esp, UserClass, LibWorker, LibNet_status, LibTheme, LibLocale, LibDialo
 import firebase from 'firebase'
 import { useDispatch } from 'react-redux';
 import * as Notifications from 'expo-notifications'
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-const Stack = createStackNavigator();
 
 export interface UserIndexProps {
 
@@ -51,16 +48,12 @@ function setFonts(): Promise<void> {
   })
 }
 
-const renderComponent = (s: [string, any]) => <Stack.Screen key={s[0]} name={s[0]} component={s[1]} />
 export default function m(props: UserIndexProps): any {
   const dispatch = useDispatch()
   const [loading, setLoading] = useSafeState(true)
   const user = UseSelector((s) => s.user_class)
   //@ts-ignore
   const initialState = __DEV__ ? UserIndex_dataProperty.userIndexData.nav__state : undefined
-  let configRouter = useRef<any>().current
-  let econf = useRef(esp.config()).current
-  let navigations: any = useRef({}).current
 
   function handler(currentState: any): void {
     dispatch({ type: "user_nav_change", payload: currentState })
@@ -109,10 +102,6 @@ export default function m(props: UserIndexProps): any {
           firebase.auth().signInAnonymously();
         } catch (error) { }
       }
-      for (let i = 0; i < navs.length; i++) {
-        const nav = navs[i];
-        navigations[nav] = esp.mod(nav);
-      }
       UserClass.isLogin(async (user) => { setLoading(false) })
     });
   }, [])
@@ -130,17 +119,10 @@ export default function m(props: UserIndexProps): any {
     <>
       <View style={{ flex: 1 }}>
         <LibWorker />
-        <NavigationContainer
-          ref={(r) => LibNavigation.setRef(r)}
+        <Navs
+          user={user}
           initialState={initialState}
-          onStateChange={handler} >
-          <Stack.Navigator
-            headerMode="none"
-            initialRouteName={(user?.id || user?.user_id) ? econf.home.member : econf.home.public}
-            screenOptions={{ animationEnabled: true, cardStyle: { backgroundColor: 'white' } }}>
-            {Object.entries(navigations).map(renderComponent)}
-          </Stack.Navigator>
-        </NavigationContainer>
+          handler={handler} />
         <LibNet_status />
         <LibDialog style={'default'} />
         <LibImage />

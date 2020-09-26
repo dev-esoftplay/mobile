@@ -157,6 +157,11 @@ export default class m extends LibComponent<LibInputProps, LibInputState>{
     if (this.ref) {
       this.ref.setNativeProps({ text: this.mask(this.text) })
     }
+    if (this.props.base && this.text == '') {
+      if (this.props.defaultValue != prevProps.defaultValue) {
+        this.ref.setNativeProps({ text: this.mask(this.props.defaultValue) })
+      }
+    }
   }
 
   componentDidMount(): void {

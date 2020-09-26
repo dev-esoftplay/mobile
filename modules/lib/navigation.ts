@@ -3,7 +3,6 @@ import { esp, LibUtils, LibNavigation_dataProperty } from 'esoftplay';
 import { CommonActions, StackActions } from '@react-navigation/native';
 
 
-
 // var _navigator: any = React.createRef()
 // var _navigation: any
 // var _backResult: any = {}

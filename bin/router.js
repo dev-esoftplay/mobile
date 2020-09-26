@@ -36,6 +36,34 @@ var countLoop = 0; // jumlah file yang telah dihitung
 var countRead = 0; // jumlah file yang telah di baca
 var tmpTask = {}; // template ModuleTaks yang akan dimasukkan ke index.d.ts
 var tmpExp = ["LibCrypt"]; // nama2 class yang tidak perlu dibuat
+var Nav5 = (importer, navs) => {
+  return (`
+// @ts-nocheck
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+\nimport { `+ importer + `, esp } from "esoftplay";\n
+const Stack = createStackNavigator();
+
+export default function m(props): any{
+  const { user, initialState, handler } = props
+  const econf = esp.config()
+  return(
+    <NavigationContainer
+      ref={(r) => LibNavigation.setRef(r)}
+      initialState={initialState}
+      onStateChange={handler} >
+      <Stack.Navigator
+        headerMode="none"
+        initialRouteName={(user?.id || user?.user_id) ? econf.home.member : econf.home.public}
+        screenOptions={{ animationEnabled: true, cardStyle: { backgroundColor: 'white' } }}>
+`+ navs + `
+      </Stack.Navigator>
+    </NavigationContainer>
+  )
+}
+`)
+}
 
 checks.forEach(modules => {
   if (fs.existsSync(modules)) {
@@ -526,14 +554,14 @@ function createRouter() {
       var item = "import { default as _" + ucword(module) + ucword(task) + " } from '../../." + Modules[module][task] + "';\n"
       if (HookModules.includes(nav)) {
         item += "" +
-        "import * as " + ucword(module) + ucword(task) + SuffixHooksProperty + " from '../../." + Modules[module][task] + "';\n" +
-        "const " + ucword(module) + ucword(task) + " = React.memo(_" + ucword(module) + ucword(task) + ", isEqual); \n" +
-        "export { " + ucword(module) + ucword(task) + SuffixHooksProperty + ", " + ucword(module) + ucword(task) + " };\n"
+          "import * as " + ucword(module) + ucword(task) + SuffixHooksProperty + " from '../../." + Modules[module][task] + "';\n" +
+          "const " + ucword(module) + ucword(task) + " = React.memo(_" + ucword(module) + ucword(task) + ", isEqual); \n" +
+          "export { " + ucword(module) + ucword(task) + SuffixHooksProperty + ", " + ucword(module) + ucword(task) + " };\n"
       } else if (UseLibs.includes(nav)) {
         item += "" +
-        "import * as " + ucword(module) + ucword(task) + SuffixHooksProperty + " from '../../." + Modules[module][task] + "';\n" +
-        "const " + ucword(module) + ucword(task) + " = _" + ucword(module) + ucword(task) + "; \n" +
-        "export { " + ucword(module) + ucword(task) + SuffixHooksProperty + ", " + ucword(module) + ucword(task) + " };\n"
+          "import * as " + ucword(module) + ucword(task) + SuffixHooksProperty + " from '../../." + Modules[module][task] + "';\n" +
+          "const " + ucword(module) + ucword(task) + " = _" + ucword(module) + ucword(task) + "; \n" +
+          "export { " + ucword(module) + ucword(task) + SuffixHooksProperty + ", " + ucword(module) + ucword(task) + " };\n"
       } else {
         item += "export { _" + ucword(module) + ucword(task) + " as " + ucword(module) + ucword(task) + " };\n"
       }
@@ -578,7 +606,22 @@ function createRouter() {
       if (err) {
         return console.log(err);
       }
+    });    
+    let importer = []
+    let screens = []
+    Navigations.forEach((nav) => {
+      const [module, task] = nav.split('/')
+      const comp = ucword(module) + ucword(task)
+      importer.push(comp)
+      screens.push("\t\t\t\t<Stack.Screen name={\"" + nav + "\"} component={" + comp + "} />")
+    })
+    
+    let N = Nav5(importer.join(", "), screens.join("\n"))
+    
+    fs.writeFile(tmpDir + "navs.tsx", N, { flag: 'w' }, function (err) {
+      if (err) {
+        return console.log(err);
+      }
     });
   }
-
 }
