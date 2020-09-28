@@ -60,7 +60,6 @@ export default (() => {
       return false
     }
     return conf.config.domain != lconf.config.domain
-
   }
 
   function readDeepObj(obj: any) {

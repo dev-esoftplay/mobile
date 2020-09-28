@@ -16,7 +16,7 @@ const getItemLayout = (data: any, index: number) => {
   return { length, offset: length * index, index }
 }
 
-function ImageItem(props: any): any {
+function Imageitem(props: any): any {
   return (
     <TouchableOpacity onPress={props.onPress} >
       <Image source={{ uri: props.uri }} style={{ height: w, width: w, margin: 0.5, resizeMode: "cover" }} />
@@ -61,13 +61,15 @@ export default function m(props: LibImage_multiProps): any {
     })
   }
 
-  const rowRenderer = ({ item, index }: any) => (<ImageItem {...item} onPress={() => {
-    if (max == 0) {
-      setPhotos(LibObject.set(photos, item.selected == 1 ? 0 : 1)(index, "selected"))
-    } else
-      if (photos.filter((x: any) => x.selected).length < max || item.selected == 1)
+  const rowRenderer = ({ item, index }: any) => (
+    <Imageitem {...item} onPress={() => {
+      if (max == 0) {
         setPhotos(LibObject.set(photos, item.selected == 1 ? 0 : 1)(index, "selected"))
-  }} />)
+      } else
+        if (photos.filter((x: any) => x.selected).length < max || item.selected == 1)
+          setPhotos(LibObject.set(photos, item.selected == 1 ? 0 : 1)(index, "selected"))
+    }} />
+  )
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }} >

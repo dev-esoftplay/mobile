@@ -120,10 +120,7 @@ export default function m(props: UserIndexProps): any {
     <>
       <View style={{ flex: 1 }}>
         <LibWorker />
-        <Navs
-          user={user}
-          initialState={initialState}
-          handler={handler} />
+        <Navs user={user} initialState={initialState} handler={handler} />
         <LibNet_status />
         <LibDialog style={'default'} />
         <LibImage />

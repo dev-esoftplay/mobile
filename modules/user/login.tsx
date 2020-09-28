@@ -6,7 +6,6 @@ import { View, TextInput, ScrollView, Share, TouchableOpacity,  Image, KeyboardA
 import { Text, Button } from "native-base";
 import { Ionicons } from "@expo/vector-icons"
 import Modal from "react-native-modal";
-import { CameraRoll } from "react-native";
 import {
   esp,
   UserClass,
