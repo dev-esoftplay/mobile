@@ -1,8 +1,8 @@
 // withHooks
 
-import React, { useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { View, Image, Platform } from 'react-native';
-import { useSafeState, LibWorker, LibStyle, LibObject } from 'esoftplay';
+import { useSafeState, LibWorker, LibStyle } from 'esoftplay';
 import * as FileSystem from 'expo-file-system'
 const sh = require("shorthash")
 
@@ -18,13 +18,16 @@ export interface LibPictureProps {
 
 const CACHE_DIR = `${FileSystem.cacheDirectory}lib-picture-cache/`;
 
-const getCacheEntry = async (uri: string, toSize: number): Promise<{ exists: boolean; path: string }> => {
-  const path = `${CACHE_DIR}${sh.unique(uri)}-${toSize}.png`;
+export function createCacheDir(): void {
   try {
-    await FileSystem.makeDirectoryAsync(CACHE_DIR);
+    FileSystem.makeDirectoryAsync(CACHE_DIR);
   } catch (e) {
     // do nothing
   }
+}
+
+const getCacheEntry = async (uri: string, toSize: number): Promise<{ exists: boolean; path: string }> => {
+  const path = `${CACHE_DIR}${sh.unique(uri)}-${toSize}.png`;
   const info = await FileSystem.getInfoAsync(path);
   const { exists } = info;
   return { exists, path };
@@ -43,7 +46,7 @@ export default function m(props: LibPictureProps): any {
     console.warn("Width and Height is Required");
   }
 
-  useEffect(() => {
+  useMemo(() => {
     if (Platform.OS == 'android' && Platform.Version <= 22) {
       return
     }

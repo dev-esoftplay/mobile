@@ -6,7 +6,7 @@ import Navs from "../../cache/navs";
 import { View, Platform } from "react-native";
 import * as Font from "expo-font";
 import AsyncStorage from '@react-native-community/async-storage';
-import { esp, UserClass, LibWorker, LibNet_status, LibTheme, LibLocale, LibDialog, LibStyle, LibImage, LibProgress, UserMain, LibNavigation, LibToast, useSafeState, LibUpdaterProperty, LibNotification, LibVersion, _global, UserIndex_dataProperty, UseSelector } from 'esoftplay';
+import { esp, UserClass, LibWorker, LibNet_status, LibTheme, LibLocale, LibDialog, LibStyle, LibImage, LibProgress, UserMain, LibNavigation, LibToast, useSafeState, LibUpdaterProperty, LibNotification, LibVersion, _global, UserIndex_dataProperty, UseSelector, LibPictureProperty } from 'esoftplay';
 import firebase from 'firebase'
 import { useDispatch } from 'react-redux';
 import * as Notifications from 'expo-notifications'
@@ -68,6 +68,7 @@ export default function m(props: UserIndexProps): any {
       LibUpdaterProperty.checkAlertInstall()
       LibTheme.getTheme()
       LibLocale.getLanguage()
+      LibPictureProperty.createCacheDir()
       await setFonts()
       try {
         if (Platform.OS == 'android')
