@@ -343,7 +343,8 @@ export default class App extends React.Component {
 			"@babel/core",
 			"@types/react",
 			"@types/react-native",
-			"typescript"
+			"typescript",
+			"@types/react-redux"
 		]
 
 		const exec = require('child_process').exec;

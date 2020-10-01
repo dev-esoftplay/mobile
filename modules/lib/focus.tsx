@@ -16,7 +16,7 @@ export interface LibFocusState {
 
 }
 
-export default function m(props: LibFocusProps) {
+export default function m(props: LibFocusProps): any {
 
   const isFocused = useIsFocused()
 

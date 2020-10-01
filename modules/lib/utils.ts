@@ -59,7 +59,7 @@ export default class eutils {
     }
     return props && props && props.route && props.route.params && props.route.params[key] || defOutput;
   }
-  static getArgsAll(props: any, defOutput?: any): any {
+  static getArgsAll<S>(props: any, defOutput?: any): S {
     if (defOutput == undefined) {
       defOutput = "";
     }

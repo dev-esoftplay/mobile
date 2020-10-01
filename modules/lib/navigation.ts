@@ -1,5 +1,7 @@
+//@ts-nocheck
+
 import React from "react";
-import { esp, LibUtils, LibNavigation_dataProperty } from 'esoftplay';
+import { esp, LibUtils, LibNavigation_dataProperty, LibNavigationRoutes } from 'esoftplay';
 import { CommonActions, StackActions } from '@react-navigation/native';
 
 
@@ -7,6 +9,7 @@ import { CommonActions, StackActions } from '@react-navigation/native';
 // var _navigation: any
 // var _backResult: any = {}
 // var _task: any = {}
+
 
 export interface LibNavigationInjector {
   args: any,
@@ -26,11 +29,11 @@ export default class m {
     return LibNavigation_dataProperty.libNavigationData._navigation
   }
 
-  static navigate(route: string, params?: any): void {
+  static navigate<S>(route: LibNavigationRoutes, params?: S): void {
     LibNavigation_dataProperty.libNavigationRef.navigate(route, params)
   }
 
-  static getResultKey(props: any) {
+  static getResultKey(props: any): number {
     return LibUtils.getArgs(props, "_senderKey", 1)
   }
 
@@ -52,7 +55,7 @@ export default class m {
     m.back()
   }
 
-  static navigateForResult(route: string, params?: any, key?: number): Promise<any> {
+  static navigateForResult<S>(route: LibNavigationRoutes, params?: S, key?: number): Promise<any> {
     if (!key) {
       key = 1
     }
@@ -70,13 +73,13 @@ export default class m {
     })
   }
 
-  static replace(routeName: string, params?: any): void {
+  static replace<S>(routeName: LibNavigationRoutes, params?: S): void {
     LibNavigation_dataProperty.libNavigationRef.dispatch(
       StackActions.replace(routeName, params)
     )
   }
 
-  static push(routeName: string, params?: any): void {
+  static push<S>(routeName: LibNavigationRoutes, params?: S): void {
     LibNavigation_dataProperty.libNavigationRef.dispatch(
       StackActions.push(
         routeName,
@@ -85,7 +88,7 @@ export default class m {
     )
   }
 
-  static reset(routeName?: string, ...routeNames: string[]): void {
+  static reset(routeName?: LibNavigationRoutes, ...routeNames: LibNavigationRoutes[]): void {
     const user = LibUtils.getReduxState('user_class')
     let _routeName = [routeName || esp.config('home', (user && (user.id || user.user_id)) ? 'member' : 'public')]
     if (routeNames && routeNames.length > 0) {

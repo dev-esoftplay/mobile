@@ -41,7 +41,7 @@ export default class ecurl {
     this.uri = uri
   }
 
-  setMaxTimeout(milisecond: number) {
+  setMaxTimeout(milisecond: number): void {
     this.maxTimeout = milisecond
   }
 
@@ -73,7 +73,7 @@ export default class ecurl {
     this.init(uri, post, onDone, onFailed, debug, true)
   }
 
-  urlEncode(str: string) {
+  urlEncode(str: string): string {
     return str
       .replace(/\!/g, '%21')
       .replace(/\'/g, '%27')

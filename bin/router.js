@@ -233,7 +233,7 @@ checks.forEach(modules => {
                   }
                   /* REGEX All Functions */
                   if (!isHooks && !isUseLibs) {
-                    var r = /\n(\s+)((?:(?:static|public|private|async)\s+)?[a-zA-Z0-9_]{3,}\s{0,}(?:=\s{0,})?\([^{\n]+)/g; // 1=spaces 2=FunctionObject
+                    var r = /\n(\s+)((?:(?:static|public|private|async)\s+)?[a-zA-Z0-9_]{3,}\s{0,}(?:<S>|)(?:=\s{0,})?\([^{\n]+)/g; // 1=spaces 2=FunctionObject
                     if (s = r.exec(data)) {
                       if (m = data.match(r)) {
                         /* check jika class tersebut nge replace bukan nge extends maka hapus semua fungsi bawaan dari supernya */
@@ -455,6 +455,7 @@ function createIndex() {
       Text += "}";
     }
   }
+  Text += "\n\ttype LibNavigationRoutes = \"" + Navigations.join("\" | \"") + "\"\n"
   Text += "}"
 
   if (isChange(typesDir + "index.d.ts", Text)) {
@@ -531,11 +532,11 @@ function ucword(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 /* CREATE ROUTER LIST */
+var Navigations = [];
 
 function createRouter() {
   var Task = "";
   var nav = "";
-  var Navigations = [];
   var staticImport = []
 
   staticImport.push("const isEqual = require('react-fast-compare');\n")
@@ -606,7 +607,7 @@ function createRouter() {
       if (err) {
         return console.log(err);
       }
-    });    
+    });
     let importer = []
     let screens = []
     Navigations.forEach((nav) => {
@@ -615,9 +616,9 @@ function createRouter() {
       importer.push(comp)
       screens.push("\t\t\t\t<Stack.Screen name={\"" + nav + "\"} component={" + comp + "} />")
     })
-    
+
     let N = Nav5(importer.join(", "), screens.join("\n"))
-    
+
     fs.writeFile(tmpDir + "navs.tsx", N, { flag: 'w' }, function (err) {
       if (err) {
         return console.log(err);

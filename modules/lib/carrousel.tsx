@@ -37,7 +37,7 @@ export interface LibCarrouselState {
   childrenLength: number,
 }
 
-export default class m extends React.Component<LibCarrouselProps, LibCarrouselState> {
+export default class m extends LibComponent<LibCarrouselProps, LibCarrouselState> {
 
   static defaultProps = {
     delay: 4000,
@@ -109,7 +109,7 @@ export default class m extends React.Component<LibCarrouselProps, LibCarrouselSt
   }
 
   componentDidMount(): void {
-    // super.componentDidMount();
+    super.componentDidMount();
     if (this.state.childrenLength) {
       this._setUpTimer();
     }
@@ -136,7 +136,7 @@ export default class m extends React.Component<LibCarrouselProps, LibCarrouselSt
   }
 
   componentWillUnmount(): void {
-    // super.componentWillUnmount()
+    super.componentWillUnmount()
     this._clearTimer();
   }
 

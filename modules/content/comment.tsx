@@ -10,6 +10,7 @@ const config = esp.config();
 
 export interface ContentCommentProps {
   navigation: any,
+  route?: any,
   url?: string,
   id: string,
   url_post?: string,
@@ -30,7 +31,7 @@ export default class ecomment extends LibComponent<ContentCommentProps, ContentC
   constructor(props: ContentCommentProps) {
     super(props)
     this.props = props;
-    props = props.hasOwnProperty("id") || props.hasOwnProperty("url") ? props : props.navigation.state.params;
+    props = props.hasOwnProperty("id") || props.hasOwnProperty("url") ? props : props.route.params;
     moment.locale(esp.langId());
     this.state = {
       url: props.hasOwnProperty("url") ? props.url : config.content + "user/commentlist/" + props.id,
