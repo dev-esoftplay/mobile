@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect, useState, useMemo } from 'react'
 import AsyncStorage from '@react-native-community/async-storage'
 
 export default function usePersistState(key: string, def?: any): any[] {
@@ -29,8 +29,7 @@ export default function usePersistState(key: string, def?: any): any[] {
     AsyncStorage.removeItem(key)
   }
 
-  useEffect(() => {
-    r.current = true
+  useMemo(() => {
     AsyncStorage.getItem(key).then((x) => {
       if (x) {
         c(JSON.parse(x))
@@ -38,6 +37,10 @@ export default function usePersistState(key: string, def?: any): any[] {
         c(def)
       }
     })
+  }, [])
+
+  useEffect(() => {
+    r.current = true
     return () => { r.current = false }
   }, [])
 
