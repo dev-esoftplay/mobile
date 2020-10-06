@@ -267,7 +267,7 @@ import * as ErrorReport from 'esoftplay/error'
 import * as ErrorRecovery from 'expo-error-recovery';
 import { enableScreens } from 'react-native-screens';
 import { Platform } from 'react-native';
-// if (Platform.OS == 'ios')
+if (Platform.OS == 'ios')
 	enableScreens();
 
 _global.store = createStore(esp.reducer())
