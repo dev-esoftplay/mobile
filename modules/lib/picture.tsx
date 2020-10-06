@@ -20,7 +20,7 @@ const CACHE_DIR = `${FileSystem.cacheDirectory}lib-picture-cache/`;
 
 export function createCacheDir(): void {
   try {
-    FileSystem.makeDirectoryAsync(CACHE_DIR);
+    FileSystem.makeDirectoryAsync(CACHE_DIR).then().catch(e => { });
   } catch (e) {
     // do nothing
   }
