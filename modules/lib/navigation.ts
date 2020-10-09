@@ -34,7 +34,7 @@ export default class m {
   }
 
   static getResultKey(props: any): number {
-    return LibUtils.getArgs(props, "_senderKey", 1)
+    return LibUtils.getArgs(props, "_senderKey", 0)
   }
 
   static cancelBackResult(key?: number): void {
