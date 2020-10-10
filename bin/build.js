@@ -326,6 +326,7 @@ export default class App extends React.Component {
 			"moment",
 			"expo-image-crop",
 			"moment-timezone",
+			"react-native-image-view",
 			"expo-media-library",
 			"native-base",
 			"react-native-modal",

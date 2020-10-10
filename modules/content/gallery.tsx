@@ -1,77 +1,78 @@
-import React from "react";
-import { Component } from "react";
-import { View, StyleSheet, Image, FlatList } from "react-native";
-import { Button, Icon } from "native-base";
-const { width, STATUSBAR_HEIGHT_MASTER } = LibStyle;
-import { esp, LibUtils, LibComponent, LibStyle } from "esoftplay";
-import { StatusBar } from 'expo-status-bar';
+// withHooks
 
+import React, { useEffect } from 'react';
+import { View, Text, Image } from 'react-native';
+import ImageView from 'react-native-image-view';
+import { LibLoading, LibNavigation, LibUtils, useSafeState } from 'esoftplay'
+
+export interface ContentGalleryArgs {
+
+}
 export interface ContentGalleryProps {
-  navigation: any
+
 }
+export default function m(props: ContentGalleryProps): any {
+  let images = LibUtils.getArgs(props, "images", [])
+  let image = LibUtils.getArgs(props, "image", "")
+  const index = LibUtils.getArgs(props, "index", 0)
+  const [show, setShow] = useSafeState(false)
+  const [IMG, SETIMGS] = useSafeState([])
 
-export interface ContentGalleryState {
-  scroll: number
-}
-
-// create a component
-export default class ezoom extends LibComponent<ContentGalleryProps, ContentGalleryState> {
-  state: ContentGalleryState;
-  props: ContentGalleryProps;
-
-  constructor(props: ContentGalleryProps) {
-    super(props);
-    this.props = props
-    this.state = { scroll: 0 };
+  if (images.length == 0) {
+    images.push({
+      image: image,
+      title: "",
+      description: ""
+    })
   }
 
-  render(): any {
-    const images = LibUtils.getArgs(this.props, "images", [])
-    const image = LibUtils.getArgs(this.props, "image", "")
-    if (images.length == 0) {
-      images.push({
-        image: image,
-        title: "",
-        description: ""
-      })
-    }
+  async function getSizes(images: any[]): Promise<any[]> {
+    return new Promise((r) => {
+      let _images = images
+      let idx = 0
+      function size() {
+        Image.getSize(_images[idx].image, (width, height) => {
+          const x = _images[idx]
+          _images[idx] = { ...x, width, height, source: { uri: x.image } }
+          idx++
+          if (idx < _images.length) {
+            size()
+          } else {
+            r(_images)
+          }
+        });
+      }
+      size()
+    })
+  }
 
-    return (
-      <View
-        style={styles.container}>
-        <StatusBar style="light" />
-        <FlatList
-          data={images}
-          horizontal
-          style={styles.container}
-          keyExtractor={(item: any, i: number) => i}
-          pagingEnabled
-          renderItem={({ item }: any) => {
-            return (
-              <View
-                style={styles.container} >
-                <Image
-                  source={{ uri: item.image }}
-                  style={styles.image} />
-              </View>
-            )
+  useEffect(() => {
+    getSizes(images).then((imgs) => {
+      SETIMGS(imgs)
+      setShow(true)
+    })
+  }, [])
+
+
+  return (
+    <View style={{ flex: 1, backgroundColor: 'black' }} >
+      {
+        !show &&
+        <LibLoading />
+      }
+      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} >
+        <ImageView
+          images={IMG}
+          imageIndex={index}
+          animationType="fade"
+          isVisible={show}
+          renderFooter={(currentImage) => (null)}
+          onClose={() => {
+            setShow(false)
+            LibNavigation.back()
           }}
-          showsHorizontalScrollIndicator={false} />
-        <Button transparent
-          style={{ position: "absolute", top: STATUSBAR_HEIGHT_MASTER, left: 0, alignSelf: "center", justifyContent: "center", height: 50 }}
-          onPress={() => this.props.navigation.goBack(null)}>
-          <Icon
-            style={{ color: "white" }}
-            name="md-close" />
-        </Button>
-      </View >
-    );
-  }
+        />
+      </View>
+    </View>
+  )
 }
-
-// define your styles
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "black" },
-  footerOverlay: { position: "absolute", padding: 16, bottom: 0, left: 0, right: 0, backgroundColor: "rgba(255, 255, 255, .6)" },
-  image: { flex: 1, width: width, resizeMode: "contain" }
-});

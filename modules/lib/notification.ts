@@ -118,7 +118,7 @@ export default class m {
     if (param.action)
       switch (param.action) {
         case "alert":
-          let hasLink = param.params && param.params.hasOwnProperty("url") && param.params.url != ""
+          let hasLink = param?.params?.url
           let btns: any = []
           if (hasLink) {
             btns.push({ text: "OK", onPress: () => Linking.openURL(param.params.url) })
@@ -131,14 +131,14 @@ export default class m {
               param.message,
               btns, { cancelable: false }
             )
-          }, 2)
+          }, 1000)
           break;
         case "default":
           if (param.module && param.module != "") {
             if (!String(param.module).includes("/")) param.module = param.module + "/index"
             setTimeout(() => {
               LibNavigation.navigate(param.module, param.params)
-            }, 2)
+            }, 1000)
           }
           break;
         default:
@@ -175,14 +175,14 @@ export default class m {
             btns,
             { cancelable: false }
           )
-        }, 2)
+        }, 10)
         break;
       case "default":
         if (param.module != "") {
           if (!String(param.module).includes("/")) param.module = param.module + "/index"
           setTimeout(() => {
             LibNavigation.navigate(param.module, param.arguments)
-          }, 2)
+          }, 10)
         }
         break;
       default:
