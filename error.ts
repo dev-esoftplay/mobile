@@ -8,7 +8,6 @@ let app = require('../../app.json');
 
 const defaultErrorHandler = ErrorUtils.getGlobalHandler()
 const myErrorHandler = (e: any, isFatal: any) => {
-  console.log(e)
   setError(e)
   defaultErrorHandler(e, isFatal)
 }
@@ -20,23 +19,24 @@ export function setError(error?: any) {
   if (lastIndex >= 0) {
     let _e: any = {}
     _e['user'] = user
-    _e['error'] = error
+    _e['error'] = JSON.stringify(error, undefined, 2)
     _e['routes'] = JSON.stringify(routes?.routes?.[lastIndex]?.name)
     AsyncStorage.setItem(config?.config?.domain + 'error', JSON.stringify(_e))
   }
 }
 
 export function reportApiError(fetch: any, error: any) {
-  config.config && config.config.errorReport && config.config.errorReport.telegramIds && config.config.errorReport.telegramIds.forEach((id: string) => {
+  config?.config?.errorReport?.telegramIds?.forEach?.((id: string) => {
     const user = LibUtils.getReduxState("user_class")
     const msg = [
       'slug: ' + "#" + app.expo.slug,
+      'dev: ' + Platform.OS + ' - ' + Constants.deviceName,
+      'app/pub_id: ' + Constants.appOwnership + '/' + (config?.config?.publish_id || '-'),
       'user_id: ' + user?.id || user?.user_id || '-',
       'username: ' + user?.username || '-',
-      'fetch: ' + fetch,
-      'error: ' + error,
-      'app/pub_id: ' + Constants.appOwnership + '/' + (config?.config?.publish_id || '-'),
-      'dev: ' + Platform.OS + ' - ' + Constants.deviceName
+      'publish_id: ' + config?.config?.publish_id || "-",
+      'fetch: ' + JSON.stringify(fetch, undefined, 2),
+      'error: ' + error
     ].join('\n')
     let post = {
       text: msg,
@@ -55,15 +55,15 @@ export function getError(adder: any) {
         'slug: ' + "#" + app.expo.slug,
         'name: ' + app.expo.name + ' - sdk' + pack.dependencies.expo,
         'domain: ' + config.config.domain + config.config.uri,
-        'module: ' + _e.routes,
         'package: ' + (Platform.OS == 'ios' ? app.expo.ios.bundleIdentifier : app.expo.android.package) + ' - v' + (Platform.OS == 'ios' ? app.expo.ios.buildNumber : app.expo.android.versionCode),
-        'device: ' + Platform.OS + ' : ' + Constants.deviceName,
-        'error: ' + (JSON.stringify(adder?.exp?.errorRecovery, undefined, 2) || '-'),
+        'device: ' + Platform.OS + ' | ' + Constants.deviceName,
         'publish_id: ' + config?.config?.publish_id || "-",
         'user_id: ' + _e?.user?.id || _e?.user?.user_id || '-',
-        'username: ' + _e?.user?.username || '-'
+        'username: ' + _e?.user?.username || '-',
+        'module: ' + _e.routes,
+        'error: ' + (JSON.stringify(adder?.exp?.lastErrors || '-', undefined, 2)),
       ].join('\n')
-      config.config && config.config.errorReport && config.config.errorReport.telegramIds && config.config.errorReport.telegramIds.forEach((id: string) => {
+      config?.config?.errorReport?.telegramIds?.forEach?.((id: string) => {
         let post = {
           text: msg,
           chat_id: id,

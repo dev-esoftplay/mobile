@@ -14,7 +14,7 @@ const colorTextPrimary = "#353535"
 const colorTextBody = "#353535"
 const colorTextCaption = "#686868"
 const colorLightGrey = "#fbfbfb"
-const colorNavigationBar = "#257B24"
+const colorNavigationBar = "white"
 
 function elevation(value: any): any {
   if (Platform.OS === "ios") {

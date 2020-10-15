@@ -1,9 +1,11 @@
 import { useRef, useEffect, useState, useMemo } from 'react'
 import AsyncStorage from '@react-native-community/async-storage'
+import { useIsFocused } from '@react-navigation/native';
 
 export default function usePersistState(key: string, def?: any): any[] {
   const r = useRef(false)
   const [a, b] = useState(def)
+  const isFocused = useIsFocused()
 
   function c(value: any) {
     if (r.current && value != undefined) {
@@ -37,7 +39,7 @@ export default function usePersistState(key: string, def?: any): any[] {
         c(def)
       }
     })
-  }, [])
+  }, [isFocused])
 
   useEffect(() => {
     r.current = true
