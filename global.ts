@@ -1,6 +1,9 @@
 import * as R from 'react'
 import AsyncStorage from '@react-native-community/async-storage';
+let _global: any = require('./_global').default
 
+_global.useGlobalIdx = 0
+_global.useGlobalHooks = []
 type SubscriberFunc<T> = (newState: T) => void;
 
 export interface UseGlobal_return<T> {
@@ -12,29 +15,28 @@ export interface UseGlobal_return<T> {
 export interface UseGlobal_options {
   persistKey?: string
 }
-
 export default function useGlobalState<T>(iv: T, o?: UseGlobal_options): UseGlobal_return<T> {
-  let sb: SubscriberFunc<T>[] = [];
+  const _idx = _global.useGlobalIdx
+  if (!_global.useGlobalHooks[_idx])
+    _global.useGlobalHooks[_idx] = [];
   let v: T = iv;
 
   function set(ns: T | ((prev: T) => T), ac?: (ns: T) => any, ca?: (ns: T) => any) {
     // @ts-ignore
     v = (v instanceof Function ? ns(v) : ns) as T;
     ca && ca(v);
-    setTimeout(() => {
-      sb.forEach((c: any) => c !== ca && c(v));
-      ac && ac(v);
-      if (o?.persistKey) {
-        AsyncStorage.setItem(o.persistKey, JSON.stringify(v))
-      }
-    });
+    _global.useGlobalHooks[_idx].forEach((c: any) => c !== ca && c(v));
+    ac && ac(v);
+    if (o?.persistKey) {
+      AsyncStorage.setItem(o.persistKey, JSON.stringify(v))
+    }
   };
 
   function subscribe(sl: any) {
     R.useEffect(() => {
-      sb.push(sl);
+      _global.useGlobalHooks[_idx].push(sl);
       return () => {
-        sb = sb.filter((f) => f !== sl);
+        _global.useGlobalHooks[_idx] = _global.useGlobalHooks[_idx].filter((f) => f !== sl);
       };
     }, [sl]);
   }
@@ -45,7 +47,7 @@ export default function useGlobalState<T>(iv: T, o?: UseGlobal_options): UseGlob
       set(iv)
     }
   }
-  
+
   function useState(): [T, (newState: T) => void, () => void] {
     let [l, sl] = R.useState<T>(v);
     R.useEffect(() => {
@@ -60,5 +62,7 @@ export default function useGlobalState<T>(iv: T, o?: UseGlobal_options): UseGlob
     return [l, set, del];
   };
 
+  _global.useGlobalIdx++
   return { useState, get: () => v, set: set };
 }
+

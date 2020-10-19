@@ -280,6 +280,7 @@ export default class App extends React.Component {
 		super(props)
 		ErrorRecovery.setRecoveryProps(props)
 		ErrorReport.getError(props.exp.errorRecovery)
+		_global.useGlobalIdx = 0
 	}
 
 	render() {

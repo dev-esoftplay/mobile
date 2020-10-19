@@ -64,47 +64,43 @@ export default function m(props: UserIndexProps): any {
   }
 
   useEffect(() => {
-    setTimeout(async () => {
-      LibUpdaterProperty.checkAlertInstall()
-      LibTheme.getTheme()
-      LibLocale.getLanguage()
-      LibPictureProperty.createCacheDir()
-      await setFonts()
-      try {
-        if (Platform.OS == 'android')
-          Notifications.removeAllNotificationListeners()
-      } catch (error) {
-
-      }
-      if (esp.config("notification") == 1) {
-        LibNotification.listen()
-        if (Platform.OS == 'android')
-          Notifications.setNotificationChannelAsync(
-            'android',
-            {
-              sound: 'default',
-              enableLights: true,
-              description: "this is description",
-              name: esp.appjson().expo.name,
-              importance: Notifications.AndroidImportance.MAX,
-              showBadge: true,
-              enableVibrate: true,
-              lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC
-            }
-          )
-        let push_id = await AsyncStorage.getItem("push_id");
+    LibTheme.getTheme()
+    LibLocale.getLanguage()
+    LibPictureProperty.createCacheDir()
+    LibUpdaterProperty.checkAlertInstall()
+    try { if (Platform.OS == 'android') Notifications.removeAllNotificationListeners() } catch (error) { }
+    if (esp.config("notification") == 1) {
+      LibNotification.listen()
+      if (Platform.OS == 'android')
+        Notifications.setNotificationChannelAsync(
+          'android',
+          {
+            sound: 'default',
+            enableLights: true,
+            description: "this is description",
+            name: esp.appjson().expo.name,
+            importance: Notifications.AndroidImportance.MAX,
+            showBadge: true,
+            enableVibrate: true,
+            lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC
+          }
+        )
+      AsyncStorage.getItem("push_id").then((push_id) => {
         if (!push_id) {
           UserClass.pushToken();
         }
-      }
-      if (esp.config().hasOwnProperty('firebase')) {
-        try {
-          firebase.initializeApp(esp.config('firebase'));
-          firebase.auth().signInAnonymously();
-        } catch (error) { }
-      }
-      UserClass.isLogin(async (user) => { setLoading(false) })
-    });
+      })
+    }
+    if (esp.config('firebase')) {
+      try {
+        firebase.initializeApp(esp.config('firebase'));
+        firebase.auth().signInAnonymously();
+      } catch (error) { }
+    }
+    UserClass.isLogin(async () => {
+      await setFonts()
+      setLoading(false)
+    })
   }, [])
 
   useEffect(() => {
