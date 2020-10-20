@@ -5,7 +5,7 @@ import { View, StyleSheet, KeyboardAvoidingView } from "react-native";
 import { Text, Button, Container, Icon } from "native-base";
 import moment from "moment/min/moment-with-locales"
 const { colorPrimaryDark, colorAccent, STATUSBAR_HEIGHT_MASTER } = LibStyle;
-import { esp, LibSociallogin, ContentComment_list, LibComponent, LibStyle } from "esoftplay";
+import { esp, LibSociallogin, ContentComment_list, LibComponent, LibStyle, LibKeyboard_avoid } from "esoftplay";
 const config = esp.config();
 
 export interface ContentCommentProps {
@@ -52,9 +52,7 @@ export default class ecomment extends LibComponent<ContentCommentProps, ContentC
   render(): any {
     const { goBack } = this.props.navigation
     return (
-      <KeyboardAvoidingView
-        behavior={"padding"}
-        keyboardVerticalOffset={LibStyle.isIphoneX ? 50 : 20}
+      <LibKeyboard_avoid
         style={styles.container}>
         <Container>
           <View
@@ -83,7 +81,7 @@ export default class ecomment extends LibComponent<ContentCommentProps, ContentC
             url={this.state.url} url_post={this.state.url_post}
             user={this.state.user} par_id={0} />
         </Container>
-      </KeyboardAvoidingView>
+      </LibKeyboard_avoid>
     )
   }
 }

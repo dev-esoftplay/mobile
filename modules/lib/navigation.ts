@@ -89,17 +89,18 @@ export default class m {
   }
 
   static reset(routeName?: LibNavigationRoutes, ...routeNames: LibNavigationRoutes[]): void {
-    const user = LibUtils.getReduxState('user_class')
-    let _routeName = [routeName || esp.config('home', (user && (user.id || user.user_id)) ? 'member' : 'public')]
-    if (routeNames && routeNames.length > 0) {
-      _routeName = [..._routeName, ...routeNames]
-    }
-
-    const resetAction = CommonActions.reset({
-      index: _routeName.length - 1,
-      routes: _routeName.map((rn) => ({ name: rn }))
-    });
-    LibNavigation_dataProperty.libNavigationRef.dispatch(resetAction);
+    setTimeout(() => {
+      const user = LibUtils.getReduxState('user_class')
+      let _routeName = [routeName || esp.config('home', (user && (user.id || user.user_id)) ? 'member' : 'public')]
+      if (routeNames && routeNames.length > 0) {
+        _routeName = [..._routeName, ...routeNames]
+      }
+      const resetAction = CommonActions.reset({
+        index: _routeName.length - 1,
+        routes: _routeName.map((rn) => ({ name: rn }))
+      });
+      LibNavigation_dataProperty.libNavigationRef.dispatch(resetAction);
+    }, 0);
   }
 
   static back(deep?: number): void {
