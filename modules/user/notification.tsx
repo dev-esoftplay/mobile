@@ -105,7 +105,7 @@ class m extends LibComponent<UserNotificationProps, UserNotificationState> {
     }
     if (user) {
       post["user_id"] = user.id || user.user_id
-      post["group_id"] = esp.config('group_id')
+      post["group_id"] = esp.config('group_id') || user.group_id
     }
     let unreadedCount = data.filter((item: any) => item.status != 2).length
     Notifications.setBadgeCountAsync(unreadedCount)

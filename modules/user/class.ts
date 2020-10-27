@@ -1,10 +1,11 @@
 //
 import React from "react"
-import { AsyncStorage, Platform } from 'react-native';
+import { Platform } from 'react-native';
 import * as Notifications from 'expo-notifications'
 import { LibNotification, esp, UserClass, LibCrypt, LibCurl, UserData } from "esoftplay";
 import moment from "moment";
 import Constants from 'expo-constants';
+import AsyncStorage from '@react-native-community/async-storage'
 
 export default class eclass {
 
@@ -101,8 +102,13 @@ export default class eclass {
               user["user_id"] = user.id
               Object.keys(user).forEach((userfield) => {
                 Object.keys(post).forEach((postfield) => {
-                  if (postfield == userfield && postfield != "os" && postfield != "token" && postfield != "secretkey" && postfield != "push_id" && postfield != "device" && postfield != 'group_id') {
-                    post[postfield] = user[userfield]
+                  if (postfield == userfield && postfield != "os" && postfield != "token" && postfield != "secretkey" && postfield != "push_id" && postfield != "device") {
+                    if (postfield == 'group_id') {
+                      if (!esp.config('group_id'))
+                        post[postfield] = user[userfield]
+                    } else {
+                      post[postfield] = user[userfield]
+                    }
                   }
                 })
               })
