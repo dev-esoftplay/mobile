@@ -45,7 +45,11 @@ switch (args[0]) {
 		break;
 	case "p":
 	case "publish":
-		publish()
+		let notes = ''
+		if (args[1]) {
+			notes = args.slice(1, args.length)
+		}
+		publish(notes)
 		break;
 	case "f":
 	case "file":
@@ -344,7 +348,7 @@ function readToJSON(path) {
 	return isJSON ? JSON.parse(txt) : txt
 }
 
-function publish() {
+function publish(notes) {
 	let status = "-"
 	let ajson = readToJSON(appjson)
 	let pack = readToJSON(packjson)
@@ -390,7 +394,7 @@ function publish() {
 		fs.writeFileSync(confjson, JSON.stringify(cjson, undefined, 2))
 		consoleSucces("start publishing " + status.toUpperCase() + " - PUBLISH_ID : " + (last_id + 1))
 		command("expo p")
-		tm("#" + ajson.expo.slug + "\n" + cjson.config.domain + "\n[SDK]: " + pack.dependencies.expo + "\n[ID]: " + (last_id + 1))
+		tm("#" + ajson.expo.slug + "\n" + cjson.config.domain + (notes != '' ? ("\n" + notes) : '') + "\n[SDK]: " + pack.dependencies.expo + "\n[ID]: " + (last_id + 1))
 	}
 }
 
@@ -560,7 +564,7 @@ function switchStatus(status) {
 		valid = copyFromTo(status.includes("l") ? applive : appdebug, appjson)
 	if (valid)
 		valid = copyFromTo(status.includes("l") ? conflive : confdebug, confjson)
-	if (valid)
+	if (valid && fs.existsSync(gplist))
 		valid = copyFromTo(status.includes("l") ? gplistlive : gplistdebug, gplistlive)
 	if (!valid) {
 		consoleError('TERJADI KESALAHAN')

@@ -10,8 +10,9 @@ export default class ecurl {
   isDebug = esp.config("isDebug");
   post: any;
   header: any;
-  url: any;
-  uri: any;
+  url: any = esp.config('url')
+  apiKey: any = 0
+  uri: any = '';
   fetchConf: any = ''
   maxTimeout = 120000 // 2 menit
   // timeout: any
@@ -41,6 +42,10 @@ export default class ecurl {
     this.uri = uri
   }
 
+  setApiKey(apiKey: string): void {
+    this.apiKey = apiKey
+  }
+
   setMaxTimeout(milisecond: number): void {
     this.maxTimeout = milisecond
   }
@@ -62,6 +67,44 @@ export default class ecurl {
 
   }
 
+  secure(token_uri?: string): (apiKey?: string) => (uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number) => void {
+    return (apiKey?: string): (uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number) => void => {
+      return async (uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number) => {
+        await this.setHeader();
+        const _apiKey = apiKey || this.apiKey
+        Object.keys(post).forEach((key) => {
+          const postkey = post[key]
+          post[key] = (typeof postkey == 'string') && postkey.includes('\\') && (postkey.startsWith("{") || postkey.startsWith("[")) ? JSON.parse(postkey) : postkey
+        })
+        let _post: any = { payload: JSON.stringify(post) }
+        if (_apiKey) {
+          _post.api_key = _apiKey
+          post.api_key = _apiKey
+        }
+        let ps = Object.keys(_post).map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(_post[key])).join('&');
+        var options: any = {
+          method: "POST",
+          headers: {
+            ...this.header,
+            ["Content-Type"]: "application/x-www-form-urlencoded;charset=UTF-8"
+          },
+          body: ps,
+          cache: "no-store",
+          _post: _post
+        }
+        var res = await fetch(this.url + this.uri + (token_uri || 'get_token'), options);
+        let resText = await res.text()
+        this.onFetched(resText,
+          (res, msg) => {
+            this.init(uri, { ...post, access_token: res }, onDone, onFailed, debug);
+          }, (msg) => {
+            if (onFailed)
+              onFailed(msg, false)
+          }, debug)
+      }
+    }
+  }
+  
   upload(uri: string, postKey: string, fileUri: string, mimeType: string, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number): void {
     postKey = postKey || "image";
     var uName = fileUri.substring(fileUri.lastIndexOf("/") + 1, fileUri.length);

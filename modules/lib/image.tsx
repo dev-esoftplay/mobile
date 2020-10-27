@@ -169,27 +169,8 @@ class m extends LibComponent<LibImageProps, LibImageState> {
           finalStatus = status
         }
         if (finalStatus != 'granted') {
-          esp.log('PERMISSION DENIED')
+          Alert.alert(esp.appjson().expo.name + " tidak dapat mengakses kamera ", "Mohon Pastikan anda memberikan izin " + esp.appjson().expo.name + " untuk dapat mengambil foto")
         }
-
-        // if (Platform.OS == 'android') {
-        //   m.show(options && options.editor)
-        //   async function checkImage(): Promise<string> {
-        //     return new Promise(async (__r) => {
-        //       setTimeout(async () => {
-        //         const state: any = _global.store.getState()
-        //         const image = state.lib_image.image
-        //         const show = state.lib_image.show
-        //         if (image) {
-        //           __r(image)
-        //         } else if (show) {
-        //           __r(await checkImage())
-        //         }
-        //       }, 300);
-        //     })
-        //   }
-        //   _r(checkImage())
-        // } else {
         ImagePicker.launchCameraAsync().then(async (result: any) => {
           if (!result.cancelled) {
             if (options && options.crop) {
@@ -227,7 +208,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
           finalStatus = status
         }
         if (finalStatus != 'granted') {
-          Alert.alert("Oops..!", "PERMISSION DENIED")
+          Alert.alert(esp.appjson().expo.name + " tidak dapat mengakses galeri ", "Mohon Pastikan anda memberikan izin " + esp.appjson().expo.name + " untuk dapat mengambil foto")
           return
         }
         let max = 0

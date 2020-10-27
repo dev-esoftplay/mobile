@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 let _global: any = require('./_global').default
 
 _global.useGlobalIdx = 0
-_global.useGlobalHooks = []
+_global.useGlobalSubscriber = []
 type SubscriberFunc<T> = (newState: T) => void;
 
 export interface UseGlobal_return<T> {
@@ -15,41 +15,30 @@ export interface UseGlobal_return<T> {
 export interface UseGlobal_options {
   persistKey?: string
 }
-export default function useGlobalState<T>(iv: T, o?: UseGlobal_options): UseGlobal_return<T> {
+export default function useGlobalState<T>(initValue: T, o?: UseGlobal_options): UseGlobal_return<T> {
   const _idx = _global.useGlobalIdx
-  if (!_global.useGlobalHooks[_idx])
-    _global.useGlobalHooks[_idx] = [];
-  let v: T = iv;
+  if (!_global.useGlobalSubscriber[_idx])
+    _global.useGlobalSubscriber[_idx] = [];
+  let value: T = initValue;
 
-  function set(ns: T | ((prev: T) => T), ac?: (ns: T) => any, ca?: (ns: T) => any) {
-    // @ts-ignore
-    v = (v instanceof Function ? ns(v) : ns) as T;
-    ca && ca(v);
-    _global.useGlobalHooks[_idx].forEach((c: any) => c !== ca && c(v));
-    ac && ac(v);
+  function set(ns: T) {
+    value = ns
+    _global.useGlobalSubscriber[_idx].forEach((c: any) => c?.(value));
     if (o?.persistKey) {
-      AsyncStorage.setItem(o.persistKey, JSON.stringify(v))
+      AsyncStorage.setItem(o.persistKey, JSON.stringify(value))
     }
   };
-
-  function subscribe(sl: any) {
-    R.useEffect(() => {
-      _global.useGlobalHooks[_idx].push(sl);
-      return () => {
-        _global.useGlobalHooks[_idx] = _global.useGlobalHooks[_idx].filter((f) => f !== sl);
-      };
-    }, [sl]);
-  }
 
   function del() {
     if (o?.persistKey) {
       AsyncStorage.removeItem(o.persistKey)
-      set(iv)
+      set(initValue)
     }
   }
 
   function useState(): [T, (newState: T) => void, () => void] {
-    let [l, sl] = R.useState<T>(v);
+    let [l, sl] = R.useState<T>(value);
+
     R.useEffect(() => {
       if (o?.persistKey) {
         AsyncStorage.getItem(o.persistKey).then((p) => {
@@ -58,11 +47,18 @@ export default function useGlobalState<T>(iv: T, o?: UseGlobal_options): UseGlob
         })
       }
     }, [])
-    subscribe(sl)
+
+    R.useEffect(() => {
+      _global.useGlobalSubscriber[_idx].push(sl);
+      return () => {
+        _global.useGlobalSubscriber[_idx] = _global.useGlobalSubscriber[_idx].filter((f) => f !== sl);
+      };
+    }, [sl]);
+
     return [l, set, del];
   };
 
   _global.useGlobalIdx++
-  return { useState, get: () => v, set: set };
+  return { useState, get: () => value, set: set };
 }
 
