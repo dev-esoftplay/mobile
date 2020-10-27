@@ -394,7 +394,7 @@ function publish(notes) {
 		fs.writeFileSync(confjson, JSON.stringify(cjson, undefined, 2))
 		consoleSucces("start publishing " + status.toUpperCase() + " - PUBLISH_ID : " + (last_id + 1))
 		command("expo p")
-		tm("#" + ajson.expo.slug + "\n" + cjson.config.domain + (notes != '' ? ("\n-" + notes) : '') + "\n[SDK]: " + pack.dependencies.expo + "\n[ID]: " + (last_id + 1))
+		tm("#" + ajson.expo.slug + "\n" + cjson.config.domain + "\n[SDK]: " + pack.dependencies.expo + "\n[ID]: " + (last_id + 1) + (notes != '' ? ("\n\n- " + notes) : ''))
 	}
 }
 
