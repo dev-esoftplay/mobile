@@ -47,7 +47,7 @@ switch (args[0]) {
 	case "publish":
 		let notes = ''
 		if (args[1]) {
-			notes = args.slice(1, args.length)
+			notes = args.slice(1, args.length).join(' ')
 		}
 		publish(notes)
 		break;
@@ -394,7 +394,7 @@ function publish(notes) {
 		fs.writeFileSync(confjson, JSON.stringify(cjson, undefined, 2))
 		consoleSucces("start publishing " + status.toUpperCase() + " - PUBLISH_ID : " + (last_id + 1))
 		command("expo p")
-		tm("#" + ajson.expo.slug + "\n" + cjson.config.domain + (notes != '' ? ("\n" + notes) : '') + "\n[SDK]: " + pack.dependencies.expo + "\n[ID]: " + (last_id + 1))
+		tm("#" + ajson.expo.slug + "\n" + cjson.config.domain + (notes != '' ? ("\n-" + notes) : '') + "\n[SDK]: " + pack.dependencies.expo + "\n[ID]: " + (last_id + 1))
 	}
 }
 
@@ -597,7 +597,7 @@ function help() {
 		"\n - on|online                   : untuk ubah mode ONLINE",
 		"\n - vn|version-new              : untuk increment version",
 		"\n - vn|version-new [visible]    : untuk increment version dengan tampilan custom. misal 2.0beta",
-		"\n - p|publish                   : untuk mempublish dan menambahkan id",
+		"\n - p|publish [notes]           : untuk mempublish dan menambahkan id",
 		// "\n - b|build                     : untuk build app .ipa .apk .aab",
 		// "\n - build debug                 : untuk build app .ipa .apk .aab status DEBUG",
 		// "\n - build debug offline         : untuk build app .ipa .apk .aab status DEBUG mode OFFLINE",
