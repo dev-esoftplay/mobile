@@ -131,14 +131,14 @@ export default class m {
               param.message,
               btns, { cancelable: false }
             )
-          }, 1000)
+          }, 5000)
           break;
         case "default":
           if (param.module && param.module != "") {
             if (!String(param.module).includes("/")) param.module = param.module + "/index"
             setTimeout(() => {
               LibNavigation.navigate(param.module, param.params)
-            }, 1000)
+            }, 5000)
           }
           break;
         default:

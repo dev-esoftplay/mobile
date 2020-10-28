@@ -103,12 +103,7 @@ export default class eclass {
               Object.keys(user).forEach((userfield) => {
                 Object.keys(post).forEach((postfield) => {
                   if (postfield == userfield && postfield != "os" && postfield != "token" && postfield != "secretkey" && postfield != "push_id" && postfield != "device") {
-                    if (postfield == 'group_id') {
-                      if (!esp.config('group_id'))
-                        post[postfield] = user[userfield]
-                    } else {
-                      post[postfield] = user[userfield]
-                    }
+                    post[postfield] = user[userfield]
                   }
                 })
               })

@@ -76,7 +76,11 @@ export default class ecurl {
           const postkey = post[key]
           post[key] = (typeof postkey == 'string') && postkey.includes('\\') && (postkey.startsWith("{") || postkey.startsWith("[")) ? JSON.parse(postkey) : postkey
         })
-        let _post: any = { payload: JSON.stringify(post) }
+        let _payload: any = {}
+        Object.keys(post).map((key) => {
+          _payload[decodeURIComponent(encodeURIComponent(key))] = decodeURIComponent(encodeURIComponent(post[key]))
+        })
+        let _post: any = { payload: JSON.stringify(_payload) }
         if (_apiKey) {
           _post.api_key = _apiKey
           post.api_key = _apiKey
