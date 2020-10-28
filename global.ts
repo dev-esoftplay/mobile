@@ -1,6 +1,7 @@
 import * as R from 'react'
 import AsyncStorage from '@react-native-community/async-storage';
 let _global: any = require('./_global').default
+let useSaveState = require('./state').default
 
 _global.useGlobalIdx = 0
 _global.useGlobalSubscriber = []
@@ -37,7 +38,7 @@ export default function useGlobalState<T>(initValue: T, o?: UseGlobal_options): 
   }
 
   function useState(): [T, (newState: T) => void, () => void] {
-    let [l, sl] = R.useState<T>(value);
+    let [l, sl] = useSaveState<T>(value);
 
     R.useEffect(() => {
       if (o?.persistKey) {
