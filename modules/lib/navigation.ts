@@ -30,7 +30,9 @@ export default class m {
   }
 
   static navigate<S>(route: LibNavigationRoutes, params?: S): void {
-    LibNavigation_dataProperty.libNavigationRef.navigate(route, params)
+    setTimeout(() => {
+      LibNavigation_dataProperty.libNavigationRef.navigate(route, params)
+    });
   }
 
   static getResultKey(props: any): number {
@@ -45,47 +47,55 @@ export default class m {
   }
 
   static sendBackResult(result: any, key?: number): void {
-    if (!key) {
-      key = 1
-    }
-    if (LibNavigation_dataProperty.libNavigationData[key] != undefined) {
-      LibNavigation_dataProperty.libNavigationData[key](result)
-      delete LibNavigation_dataProperty.libNavigationData[key]
-    }
-    m.back()
+    setTimeout(() => {
+      if (!key) {
+        key = 1
+      }
+      if (LibNavigation_dataProperty.libNavigationData[key] != undefined) {
+        LibNavigation_dataProperty.libNavigationData[key](result)
+        delete LibNavigation_dataProperty.libNavigationData[key]
+      }
+      m.back()
+    });
   }
 
   static navigateForResult<S>(route: LibNavigationRoutes, params?: S, key?: number): Promise<any> {
-    if (!key) {
-      key = 1
-    }
-    return new Promise((r) => {
-      if (!params) {
-        params = {}
+    setTimeout(() => {
+      if (!key) {
+        key = 1
       }
-      params['_senderKey'] = key
-      if (!LibNavigation_dataProperty.libNavigationData.hasOwnProperty(key)) {
-        LibNavigation_dataProperty.libNavigationData[key] = (value: any) => {
-          r(value)
-        };
-      }
-      m.navigate(route, params)
-    })
+      return new Promise((r) => {
+        if (!params) {
+          params = {}
+        }
+        params['_senderKey'] = key
+        if (!LibNavigation_dataProperty.libNavigationData.hasOwnProperty(key)) {
+          LibNavigation_dataProperty.libNavigationData[key] = (value: any) => {
+            r(value)
+          };
+        }
+        m.navigate(route, params)
+      })
+    });
   }
 
   static replace<S>(routeName: LibNavigationRoutes, params?: S): void {
-    LibNavigation_dataProperty.libNavigationRef.dispatch(
-      StackActions.replace(routeName, params)
-    )
+    setTimeout(() => {
+      LibNavigation_dataProperty.libNavigationRef.dispatch(
+        StackActions.replace(routeName, params)
+      )
+    })
   }
 
   static push<S>(routeName: LibNavigationRoutes, params?: S): void {
-    LibNavigation_dataProperty.libNavigationRef.dispatch(
-      StackActions.push(
-        routeName,
-        params
+    setTimeout(() => {
+      LibNavigation_dataProperty.libNavigationRef.dispatch(
+        StackActions.push(
+          routeName,
+          params
+        )
       )
-    )
+    })
   }
 
   static reset(routeName?: LibNavigationRoutes, ...routeNames: LibNavigationRoutes[]): void {
@@ -100,13 +110,15 @@ export default class m {
         routes: _routeName.map((rn) => ({ name: rn }))
       });
       LibNavigation_dataProperty.libNavigationRef.dispatch(resetAction);
-    }, 0);
+    });
   }
 
   static back(deep?: number): void {
-    let _deep = deep || 1
-    const popAction = StackActions.pop(_deep);
-    LibNavigation_dataProperty.libNavigationRef.dispatch(popAction)
+    setTimeout(() => {
+      let _deep = deep || 1
+      const popAction = StackActions.pop(_deep);
+      LibNavigation_dataProperty.libNavigationRef.dispatch(popAction)
+    });
   }
 
   /* return `root` on initialRoute otherwise return the routeName was active  */
@@ -124,10 +136,12 @@ export default class m {
   }
 
   static backToRoot(): void {
-    try {
-      LibNavigation_dataProperty.libNavigationRef.dispatch(StackActions.popToTop());
-    } catch (error) {
-    }
+    setTimeout(() => {
+      try {
+        LibNavigation_dataProperty.libNavigationRef.dispatch(StackActions.popToTop());
+      } catch (error) {
+      }
+    });
   }
 
   static Injector(props: LibNavigationInjector): any {
