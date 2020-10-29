@@ -4,6 +4,7 @@ import { WebView } from 'react-native-webview'
 import { esp, LibWorker_dataProperty } from 'esoftplay'
 import { View } from 'native-base';
 import { PixelRatio, Platform } from 'react-native';
+import Constants from 'expo-constants';
 
 export interface LibWorkerInit {
   task: string,
@@ -37,7 +38,7 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
 
   static registerJob(name: string, func: Function): (params: any[], res: (data: any) => void) => void {
     return (params: (string | number | boolean)[], res: (data: string) => void) => {
-      if (Platform.OS == 'android')
+      if (Platform.OS == 'android' && Constants.appOwnership == 'expo')
         if (Platform.Version <= 22) {
           return res(func(...params))
         }
@@ -62,7 +63,7 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
   }
 
   static objToString(data: any): string {
-    if (Platform.OS == 'android')
+    if (Platform.OS == 'android' && Constants.appOwnership == 'expo')
       if (Platform.Version <= 22) {
         return JSON.stringify(data)
       }
@@ -74,7 +75,7 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
   }
 
   static jobAsync(func: Function, params: (string | number | boolean)[], res: (data: any) => void): void {
-    if (Platform.OS == 'android')
+    if (Platform.OS == 'android' && Constants.appOwnership == 'expo')
       if (Platform.Version <= 22) {
         return res(func(...params))
       }
@@ -96,7 +97,7 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
   }
 
   static job(func: Function, params: (string | number | boolean)[], res: (data: any) => void): void {
-    if (Platform.OS == 'android')
+    if (Platform.OS == 'android' && Constants.appOwnership == 'expo')
       if (Platform.Version <= 22) {
         return res(func(...params))
       }
@@ -329,7 +330,7 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
   }
 
   render(): any {
-    if (Platform.OS == 'android')
+    if (Platform.OS == 'android' && Constants.appOwnership == 'expo')
       if (Platform.Version <= 22) {
         return null
       }

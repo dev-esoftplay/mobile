@@ -2,8 +2,9 @@
 import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions'
 import { Platform, Alert, Linking, Keyboard } from "react-native";
-import { esp, UserNotification, LibCurl, LibCrypt, LibNavigation } from "esoftplay";
+import { esp, UserNotification, LibCurl, LibCrypt, LibNavigation, UserClass, _global } from "esoftplay";
 import moment from 'moment';
+import AsyncStorage from '@react-native-community/async-storage'
 import Constants from 'expo-constants';
 /*
 {
@@ -40,28 +41,59 @@ Notifications.setNotificationHandler({
 
 export default class m {
 
-  static listen(callback?: (obj: any) => void): void {
-    Notifications.addNotificationReceivedListener((x) => onReceive(x))
-    Notifications.addNotificationResponseReceivedListener(x => onAction(x))
+  static listen(dataRef: any): () => void {
+    if (esp.config('notification') == 1) {
+      if (Platform.OS == 'android')
+        Notifications.setNotificationChannelAsync(
+          'android',
+          {
+            sound: 'default',
+            enableLights: true,
+            description: "this is description",
+            name: esp.appjson().expo.name,
+            importance: Notifications.AndroidImportance.MAX,
+            showBadge: true,
+            enableVibrate: true,
+            lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC
+          }
+        )
+      AsyncStorage.getItem("push_id").then((push_id) => {
+        if (!push_id) {
+          UserClass.pushToken();
+        }
+      })
+      return () => {
+        dataRef.receive = Notifications.addNotificationReceivedListener((x) => onReceive(x))
+        dataRef.response = Notifications.addNotificationResponseReceivedListener(x => onAction(x))
+        function getData(x: any) {
+          if (Platform.OS == 'ios') {
+            return x.notification.request.content.data.body
+          } else if (Platform.OS == 'android') {
+            return x.notification.request.content.data
+          }
+          return x
+        }
 
-    function getData(x: any) {
-      if (Platform.OS == 'ios') {
-        return x.notification.request.content.data.body
-      } else if (Platform.OS == 'android') {
-        return x.notification.request.content.data
+        function onReceive(notification: any) {
+          UserNotification.user_notification_loadData()
+        }
+
+        function onAction(notification: any) {
+          UserNotification.user_notification_loadData()
+          const data = getData(notification)
+          if (!_global.NavsIsReady) {
+            onAction(notification)
+            return
+          }
+          m.openPushNotif(data)
+        }
+        return () => {
+          dataRef.receive.remove()
+          dataRef.response.remove()
+        }
       }
-      return x
     }
-
-    function onReceive(notification: any) {
-      UserNotification.user_notification_loadData()
-    }
-
-    function onAction(notification: any) {
-      UserNotification.user_notification_loadData()
-      const data = getData(notification)
-      m.openPushNotif(data)
-    }
+    else return () => { }
   }
 
   static requestPermission(callback?: (token: any) => void): Promise<any> {
@@ -131,14 +163,14 @@ export default class m {
               param.message,
               btns, { cancelable: false }
             )
-          }, 5000)
+          }, 10)
           break;
         case "default":
           if (param.module && param.module != "") {
             if (!String(param.module).includes("/")) param.module = param.module + "/index"
             setTimeout(() => {
               LibNavigation.navigate(param.module, param.params)
-            }, 5000)
+            }, 10)
           }
           break;
         default:

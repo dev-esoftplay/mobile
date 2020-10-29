@@ -5,6 +5,7 @@ import momentTimeZone from "moment-timezone"
 import moment from "moment/min/moment-with-locales"
 import { esp, LibCrypt, LibProgress, _global, LibWorker, LibUtils } from 'esoftplay';
 import { reportApiError } from "../../error";
+import Constants from 'expo-constants';
 
 export default class ecurl {
   isDebug = esp.config("isDebug");
@@ -108,7 +109,7 @@ export default class ecurl {
       }
     }
   }
-  
+
   upload(uri: string, postKey: string, fileUri: string, mimeType: string, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number): void {
     postKey = postKey || "image";
     var uName = fileUri.substring(fileUri.lastIndexOf("/") + 1, fileUri.length);
@@ -273,7 +274,7 @@ export default class ecurl {
     if (debug == 1) esp.log(this.url + this.uri, options)
     this.fetchConf = { url: this.url + this.uri, options: options }
 
-    if (Platform.OS == 'android' && Platform.Version <= 22) {
+    if (Platform.OS == 'android' && Platform.Version <= 22 && Constants.appOwnership == 'expo') {
       var res = await fetch(this.url + this.uri, options);
       let resText = await res.text()
       this.onFetched(resText, onDone, onFailed, debug)

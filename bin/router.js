@@ -42,6 +42,7 @@ var Nav5 = (importer, navs) => {
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import _global from '../_global'
 \nimport { `+ importer + `, esp } from "esoftplay";\n
 const Stack = createStackNavigator();
 
@@ -52,6 +53,7 @@ export default function m(props): any{
     <NavigationContainer
       ref={(r) => LibNavigation.setRef(r)}
       initialState={initialState}
+      onReady={() => { _global.NavsIsReady = true }}
       onStateChange={handler} >
       <Stack.Navigator
         headerMode="none"

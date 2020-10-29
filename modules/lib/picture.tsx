@@ -5,6 +5,7 @@ import { View, Image, Platform } from 'react-native';
 import { useSafeState, LibWorker, LibStyle } from 'esoftplay';
 import * as FileSystem from 'expo-file-system'
 const sh = require("shorthash")
+import Constants from 'expo-constants';
 
 export interface LibPictureSource {
   uri: string
@@ -47,7 +48,7 @@ export default function m(props: LibPictureProps): any {
   }
 
   useMemo(() => {
-    if (Platform.OS == 'android' && Platform.Version <= 22) {
+    if (Platform.OS == 'android' && Platform.Version <= 22 && Constants.appOwnership == 'expo') {
       return
     }
     if (props.source.uri) {
@@ -67,7 +68,7 @@ export default function m(props: LibPictureProps): any {
     }
   }, [props.source])
 
-  if (Platform.Version <= 22 && Platform.OS == 'android') {
+  if (Platform.Version <= 22 && Platform.OS == 'android' && Constants.appOwnership == 'expo') {
     if (typeof props.source != 'number' && !props.source.uri) {
       return <View style={props.style} />
     }

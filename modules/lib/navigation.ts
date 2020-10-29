@@ -47,36 +47,32 @@ export default class m {
   }
 
   static sendBackResult(result: any, key?: number): void {
-    setTimeout(() => {
-      if (!key) {
-        key = 1
-      }
-      if (LibNavigation_dataProperty.libNavigationData[key] != undefined) {
-        LibNavigation_dataProperty.libNavigationData[key](result)
-        delete LibNavigation_dataProperty.libNavigationData[key]
-      }
-      m.back()
-    });
+    if (!key) {
+      key = 1
+    }
+    if (LibNavigation_dataProperty.libNavigationData[key] != undefined) {
+      LibNavigation_dataProperty.libNavigationData[key](result)
+      delete LibNavigation_dataProperty.libNavigationData[key]
+    }
+    m.back()
   }
 
   static navigateForResult<S>(route: LibNavigationRoutes, params?: S, key?: number): Promise<any> {
-    setTimeout(() => {
-      if (!key) {
-        key = 1
+    if (!key) {
+      key = 1
+    }
+    return new Promise((r) => {
+      if (!params) {
+        params = {}
       }
-      return new Promise((r) => {
-        if (!params) {
-          params = {}
-        }
-        params['_senderKey'] = key
-        if (!LibNavigation_dataProperty.libNavigationData.hasOwnProperty(key)) {
-          LibNavigation_dataProperty.libNavigationData[key] = (value: any) => {
-            r(value)
-          };
-        }
-        m.navigate(route, params)
-      })
-    });
+      params['_senderKey'] = key
+      if (!LibNavigation_dataProperty.libNavigationData.hasOwnProperty(key)) {
+        LibNavigation_dataProperty.libNavigationData[key] = (value: any) => {
+          r(value)
+        };
+      }
+      m.navigate(route, params)
+    })
   }
 
   static replace<S>(routeName: LibNavigationRoutes, params?: S): void {

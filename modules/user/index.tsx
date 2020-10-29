@@ -3,14 +3,11 @@
 import React, { useEffect, useRef } from "react";
 //@ts-ignore
 import Navs from "../../cache/navs";
-import { View, Platform } from "react-native";
+import { View } from "react-native";
 import * as Font from "expo-font";
-import AsyncStorage from '@react-native-community/async-storage';
 import { esp, UserClass, LibWorker, LibNet_status, LibTheme, LibLocale, LibDialog, LibStyle, LibImage, LibProgress, UserMain, LibNavigation, LibToast, useSafeState, LibUpdaterProperty, LibNotification, LibVersion, _global, UserIndex_dataProperty, UseSelector, LibPictureProperty } from 'esoftplay';
 import firebase from 'firebase'
 import { useDispatch } from 'react-redux';
-import * as Notifications from 'expo-notifications'
-
 export interface UserIndexProps {
 
 }
@@ -52,6 +49,7 @@ export default function m(props: UserIndexProps): any {
   const dispatch = useDispatch()
   const [loading, setLoading] = useSafeState(true)
   const user = UseSelector((s) => s.user_class)
+  let notificationData = useRef({}).current
   //@ts-ignore
   const initialState = __DEV__ ? UserIndex_dataProperty.userIndexData.nav__state : undefined
 
@@ -63,34 +61,13 @@ export default function m(props: UserIndexProps): any {
     }
   }
 
+  useEffect(LibNotification.listen(notificationData), [])
+
   useEffect(() => {
     LibTheme.getTheme()
     LibLocale.getLanguage()
     LibPictureProperty.createCacheDir()
     LibUpdaterProperty.checkAlertInstall()
-    try { if (Platform.OS == 'android') Notifications.removeAllNotificationListeners() } catch (error) { }
-    if (esp.config("notification") == 1) {
-      LibNotification.listen()
-      if (Platform.OS == 'android')
-        Notifications.setNotificationChannelAsync(
-          'android',
-          {
-            sound: 'default',
-            enableLights: true,
-            description: "this is description",
-            name: esp.appjson().expo.name,
-            importance: Notifications.AndroidImportance.MAX,
-            showBadge: true,
-            enableVibrate: true,
-            lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC
-          }
-        )
-      AsyncStorage.getItem("push_id").then((push_id) => {
-        if (!push_id) {
-          UserClass.pushToken();
-        }
-      })
-    }
     if (esp.config('firebase')) {
       try {
         firebase.initializeApp(esp.config('firebase'));
