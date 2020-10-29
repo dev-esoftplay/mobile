@@ -79,13 +79,19 @@ export default class m {
         }
 
         function onAction(notification: any) {
+          function doOpen(data: any) {
+            if (!_global.NavsIsReady) {
+              setTimeout(() => {
+                doOpen(data)
+              }, 300);
+              return
+            } else {
+              m.openPushNotif(data)
+            }
+          }
           UserNotification.user_notification_loadData()
           const data = getData(notification)
-          if (!_global.NavsIsReady) {
-            onAction(notification)
-            return
-          }
-          m.openPushNotif(data)
+          doOpen(data)
         }
         return () => {
           dataRef.receive.remove()
