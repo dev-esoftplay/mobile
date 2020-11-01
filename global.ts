@@ -4,6 +4,7 @@ let _global: any = require('./_global').default
 
 _global.useGlobalIdx = 0
 _global.useGlobalSubscriber = []
+type SubscriberFunc<T> = (newState: T) => void;
 
 export interface UseGlobal_return<T> {
   useState: () => [T, (newState: T) => void, () => void],
@@ -44,7 +45,16 @@ export default function useGlobalState<T>(initValue: T, o?: UseGlobal_options): 
   }
 
   function useState(): [T, (newState: T) => void, () => void] {
-    const [l, sl] = R.useState<T>(value);
+    let [l, sl] = R.useState<T>(value);
+
+    R.useEffect(() => {
+      if (o?.persistKey) {
+        AsyncStorage.getItem(o.persistKey).then((p) => {
+          if (p)
+            set(JSON.parse(p))
+        })
+      }
+    }, [])
 
     R.useEffect(() => {
       _global.useGlobalSubscriber[_idx].push(sl);
