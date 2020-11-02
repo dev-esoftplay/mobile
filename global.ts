@@ -1,11 +1,9 @@
 import * as R from 'react'
 import AsyncStorage from '@react-native-community/async-storage';
 let _global: any = require('./_global').default
-let useSaveState = require('./state').default
 
 _global.useGlobalIdx = 0
 _global.useGlobalSubscriber = []
-type SubscriberFunc<T> = (newState: T) => void;
 
 export interface UseGlobal_return<T> {
   useState: () => [T, (newState: T) => void, () => void],
@@ -21,6 +19,14 @@ export default function useGlobalState<T>(initValue: T, o?: UseGlobal_options): 
   if (!_global.useGlobalSubscriber[_idx])
     _global.useGlobalSubscriber[_idx] = [];
   let value: T = initValue;
+
+  // rehidryte instant
+  if (o?.persistKey) {
+    AsyncStorage.getItem(o.persistKey).then((p) => {
+      if (p)
+        set(JSON.parse(p))
+    })
+  }
 
   function set(ns: T) {
     value = ns
@@ -38,16 +44,7 @@ export default function useGlobalState<T>(initValue: T, o?: UseGlobal_options): 
   }
 
   function useState(): [T, (newState: T) => void, () => void] {
-    let [l, sl] = useSaveState<T>(value);
-
-    R.useEffect(() => {
-      if (o?.persistKey) {
-        AsyncStorage.getItem(o.persistKey).then((p) => {
-          if (p)
-            set(JSON.parse(p))
-        })
-      }
-    }, [])
+    const [l, sl] = R.useState<T>(value);
 
     R.useEffect(() => {
       _global.useGlobalSubscriber[_idx].push(sl);
@@ -62,4 +59,3 @@ export default function useGlobalState<T>(initValue: T, o?: UseGlobal_options): 
   _global.useGlobalIdx++
   return { useState, get: () => value, set: set };
 }
-
