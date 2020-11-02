@@ -56,6 +56,8 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
   isStop: boolean = false
   page: number = 0
   pages: number[]
+  flatlist = React.createRef<FlatList<View>>()
+
   constructor(props: LibInfiniteProps) {
     super(props);
     this.state = {
@@ -66,6 +68,7 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
     this.loadData = this.loadData.bind(this);
     this._renderItem = this._renderItem.bind(this);
     this._keyExtractor = this._keyExtractor.bind(this);
+    this.scrollToIndex = this.scrollToIndex.bind(this);
   }
 
   componentDidMount(): void {
@@ -153,6 +156,11 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
     return item.hasOwnProperty('id') && item.id || index.toString()
   }
 
+  scrollToIndex(x: number, anim?: boolean, viewOffset?: number, viewPosition?: number): void {
+    if (!anim) anim = true;
+    this.flatlist.current!.scrollToIndex({ index: x, animated: anim, viewOffset: viewOffset, viewPosition: viewPosition })
+  }
+
   render(): any {
     const { data, error } = this.state
     const { errorView } = this.props
@@ -163,6 +171,7 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
             <LibLoading />
             :
             <FlatList
+              ref={this.flatlist}
               data={data || []}
               onRefresh={() => this.loadData()}
               refreshing={false}
