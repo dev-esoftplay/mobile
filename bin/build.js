@@ -149,6 +149,8 @@ if (fs.existsSync(packjson)) {
 						"-1001212227631",
 					]
 				},
+				"isDebug": 0,
+				"group_id": 4,
 				"salt": "CHANGE_INTO_YOUR_OWN_SALT",
 				"home": {
 					"public": "content/index",

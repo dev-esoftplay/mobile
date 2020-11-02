@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { useIsFocused } from '@react-navigation/native';
 
 export default function usePersistState(key: string, def?: any): any[] {
-  const r = useRef(false)
+  const r = useRef(true)
   const [a, b] = useState(def)
   const isFocused = useIsFocused()
 
@@ -32,17 +32,17 @@ export default function usePersistState(key: string, def?: any): any[] {
   }
 
   useMemo(() => {
-    AsyncStorage.getItem(key).then((x) => {
-      if (x) {
-        c(JSON.parse(x))
-      } else {
-        c(def)
-      }
-    })
+    if (isFocused)
+      AsyncStorage.getItem(key).then((x) => {
+        if (x) {
+          c(JSON.parse(x))
+        } else {
+          c(def)
+        }
+      })
   }, [isFocused])
 
   useEffect(() => {
-    r.current = true
     return () => { r.current = false }
   }, [])
 
