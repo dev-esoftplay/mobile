@@ -5,14 +5,15 @@ import { LibComponent } from 'esoftplay';
 export interface LibDirect_imageProps {
   style?: any
   defaultUri?: string,
-  defaultLocalUri?: number
 }
+// defaultLocalUri?: number
 export interface LibDirect_imageState {
 
 }
 
 export default class m extends LibComponent<LibDirect_imageProps, LibDirect_imageState> {
   ref: React.RefObject<Image> = React.createRef()
+  uri = this.props.defaultUri
 
   constructor(props: LibDirect_imageProps) {
     super(props)
@@ -21,6 +22,7 @@ export default class m extends LibComponent<LibDirect_imageProps, LibDirect_imag
   }
 
   setUri(uri: string | any): void {
+    this.uri = uri
     this.ref.current?.setNativeProps({
       [Platform.OS == 'ios' ? 'source' : 'src']: [{ uri: uri }]
     })
@@ -33,7 +35,7 @@ export default class m extends LibComponent<LibDirect_imageProps, LibDirect_imag
 
   render(): any {
     return (
-      <Image ref={this.ref} source={this.props.defaultLocalUri || { uri: this.props.defaultUri }} style={this.props.style} />
+      <Image ref={this.ref} source={/* this.props.defaultLocalUri || */ { uri: this.uri }} style={this.props.style} />
     )
   }
 }
