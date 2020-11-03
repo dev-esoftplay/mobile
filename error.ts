@@ -36,7 +36,7 @@ export function reportApiError(fetch: any, error: any) {
       'user_id: ' + user?.id || user?.user_id || '-',
       'username: ' + user?.username || '-',
       'publish_id: ' + config?.config?.publish_id || "-",
-      'fetch: ' + JSON.stringify(fetch, undefined, 2).replace(/[\[\]\{\}\"]+/g, ''),
+      'fetch: ' + String(JSON.stringify(fetch, undefined, 2)).replace(/[\[\]\{\}\"]+/g, ''),
       'error: ' + error
     ].join('\n')
     let post = {
@@ -62,7 +62,7 @@ export function getError(adder: any) {
         'user_id: ' + _e?.user?.id || _e?.user?.user_id || '-',
         'username: ' + _e?.user?.username || '-',
         'module: ' + _e.routes,
-        'error: \n' + JSON.stringify(adder?.exp?.lastErrors || {}, undefined, 2).replace(/[\[\]\{\}\"]+/g, ''),
+        'error: \n' + String(JSON.stringify(adder?.exp?.lastErrors, undefined, 2)).replace(/[\[\]\{\}\"]+/g, ''),
       ].join('\n')
       config?.config?.errorReport?.telegramIds?.forEach?.((id: string) => {
         let post = {
