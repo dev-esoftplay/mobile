@@ -22,10 +22,10 @@ export default class m extends LibComponent<LibDirect_imageProps, LibDirect_imag
     this.setSource = this.setSource.bind(this);
   }
 
-  setSource(uri: any): void {
-    this.source = uri
+  setSource(source: any): void {
+    this.source = source
     this.ref.current?.setNativeProps({
-      [Platform.OS == 'ios' ? 'source' : 'src']: [uri]
+      [Platform.OS == 'ios' ? 'source' : 'src']: [source]
     })
   }
 
