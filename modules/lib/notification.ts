@@ -62,41 +62,35 @@ export default class m {
           UserClass.pushToken();
         }
       })
-      return () => {
-        dataRef.receive = Notifications.addNotificationReceivedListener((x) => onReceive(x))
-        dataRef.response = Notifications.addNotificationResponseReceivedListener(x => onAction(x))
-        function getData(x: any) {
-          if (Platform.OS == 'ios') {
-            return x.notification.request.content.data.body
-          } else if (Platform.OS == 'android') {
-            return x.notification.request.content.data
-          }
-          return x
+      dataRef.receive = Notifications.addNotificationReceivedListener((x) => onReceive(x))
+      dataRef.response = Notifications.addNotificationResponseReceivedListener(x => onAction(x))
+      function getData(x: any) {
+        if (Platform.OS == 'ios') {
+          return x.notification.request.content.data.body
+        } else if (Platform.OS == 'android') {
+          return x.notification.request.content.data
         }
+        return x
+      }
 
-        function onReceive(notification: any) {
-          UserNotification.user_notification_loadData()
-        }
+      function onReceive(notification: any) {
+        UserNotification.user_notification_loadData()
+      }
 
-        function onAction(notification: any) {
-          function doOpen(data: any) {
-            if (!_global.NavsIsReady) {
-              setTimeout(() => {
-                doOpen(data)
-              }, 300);
-              return
-            } else {
-              m.openPushNotif(data)
-            }
+      function onAction(notification: any) {
+        function doOpen(data: any) {
+          if (!_global.NavsIsReady) {
+            setTimeout(() => {
+              doOpen(data)
+            }, 300);
+            return
+          } else {
+            m.openPushNotif(data)
           }
-          UserNotification.user_notification_loadData()
-          const data = getData(notification)
-          doOpen(data)
         }
-        return () => {
-          dataRef.receive.remove()
-          dataRef.response.remove()
-        }
+        UserNotification.user_notification_loadData()
+        const data = getData(notification)
+        doOpen(data)
       }
     }
     else return () => { }

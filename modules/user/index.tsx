@@ -49,7 +49,6 @@ export default function m(props: UserIndexProps): any {
   const dispatch = useDispatch()
   const [loading, setLoading] = useSafeState(true)
   const user = UseSelector((s) => s.user_class)
-  let notificationData = useRef({}).current
   //@ts-ignore
   const initialState = __DEV__ ? UserIndex_dataProperty.userIndexData.nav__state : undefined
 
@@ -60,8 +59,6 @@ export default function m(props: UserIndexProps): any {
       UserIndex_dataProperty.userIndexData.nav__state = currentState
     }
   }
-
-  useEffect(LibNotification.listen(notificationData), [])
 
   useEffect(() => {
     LibTheme.getTheme()
