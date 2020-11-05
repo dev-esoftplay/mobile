@@ -93,6 +93,7 @@ export default class eclass {
             username: "",
             token: token,
             push_id: "",
+            is_app: Constants.appOwnership == 'expo' ? 0 : 1,
             os: Platform.OS,
             device: Constants.deviceName,
             secretkey: new LibCrypt().encode(config.salt + "|" + moment().format("YYYY-MM-DD hh:mm:ss"))
