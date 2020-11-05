@@ -7,7 +7,9 @@ export interface LibDirect_imageSource {
 }
 export interface LibDirect_imageProps {
   style?: any
-  defaultSource?: LibDirect_imageSource | any
+  defaultSource?: LibDirect_imageSource | any,
+  resizeMode?: "contain" | "cover",
+  onError?: () => void,
 }
 export interface LibDirect_imageState {
 
@@ -31,7 +33,7 @@ export default class m extends LibComponent<LibDirect_imageProps, LibDirect_imag
 
   render(): any {
     return (
-      <Image ref={this.ref} source={this.source} style={this.props.style} />
+      <Image ref={this.ref} {...this.props} source={this.source} style={this.props.style} />
     )
   }
 }
