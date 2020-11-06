@@ -24,6 +24,12 @@ export default class m extends LibComponent<LibDirect_imageProps, LibDirect_imag
     this.setSource = this.setSource.bind(this);
   }
 
+  componentDidUpdate(prevProps: LibDirect_imageProps, prevState: LibDirect_imageState): void {
+    if (prevProps.defaultSource != this.props.defaultSource) {
+      this.setSource(this.props.defaultSource)
+    }
+  }
+
   setSource(source: any): void {
     this.source = source
     this.ref.current?.setNativeProps({
