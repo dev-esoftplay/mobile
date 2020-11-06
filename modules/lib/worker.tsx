@@ -4,7 +4,6 @@ import { WebView } from 'react-native-webview'
 import { esp, LibWorker_dataProperty } from 'esoftplay'
 import { View } from 'native-base';
 import { PixelRatio, Platform } from 'react-native';
-import Constants from 'expo-constants';
 
 export interface LibWorkerInit {
   task: string,
@@ -26,19 +25,19 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
     LibWorker_dataProperty.libWorkerData.LibWorkerBase = React.createRef<WebView>()
     LibWorker_dataProperty.libWorkerData.LibWorkerApi = React.createRef<WebView>()
     LibWorker_dataProperty.libWorkerData.LibWorkerData = React.createRef<WebView>()
-    LibWorker_dataProperty.libWorkerData.LibWorkerTasks = {}
+    LibWorker_dataProperty.libWorkerData.LibWorkerTasks = new Map()
     LibWorker_dataProperty.libWorkerData.LibWorkerReady = 0
     LibWorker_dataProperty.libWorkerData.LibWorkerCount = 0
     this.renderWorkers = this.renderWorkers.bind(this);
   }
 
   static delete(taskId: string): void {
-    delete LibWorker_dataProperty.libWorkerData.LibWorkerTasks[taskId]
+    LibWorker_dataProperty.libWorkerData.LibWorkerTasks.delete(taskId)
   }
 
   static registerJob(name: string, func: Function): (params: any[], res: (data: any) => void) => void {
     return (params: (string | number | boolean)[], res: (data: string) => void) => {
-      if (Platform.OS == 'android' )
+      if (Platform.OS == 'android')
         if (Platform.Version <= 22) {
           return res(func(...params))
         }
@@ -63,7 +62,7 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
   }
 
   static objToString(data: any): string {
-    if (Platform.OS == 'android' )
+    if (Platform.OS == 'android')
       if (Platform.Version <= 22) {
         return JSON.stringify(data)
       }
@@ -75,7 +74,7 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
   }
 
   static jobAsync(func: Function, params: (string | number | boolean)[], res: (data: any) => void): void {
-    if (Platform.OS == 'android' )
+    if (Platform.OS == 'android')
       if (Platform.Version <= 22) {
         return res(func(...params))
       }
@@ -97,7 +96,7 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
   }
 
   static job(func: Function, params: (string | number | boolean)[], res: (data: any) => void): void {
-    if (Platform.OS == 'android' )
+    if (Platform.OS == 'android')
       if (Platform.Version <= 22) {
         return res(func(...params))
       }
@@ -206,10 +205,10 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
       if (LibWorker_dataProperty.libWorkerData.LibWorkerReady == 3) {
         LibWorker_dataProperty.libWorkerData.LibWorkerCount++
         var _task = task(LibWorker_dataProperty.libWorkerData.LibWorkerCount)
-        LibWorker_dataProperty.libWorkerData.LibWorkerTasks[LibWorker_dataProperty.libWorkerData.LibWorkerCount] = {
+        LibWorker_dataProperty.libWorkerData.LibWorkerTasks.set(LibWorker_dataProperty.libWorkerData.LibWorkerCount, {
           task: _task,
           result: result
-        }
+        })
         if (url == '') {
           let x = [
             LibWorker_dataProperty.libWorkerData.LibWorkerBase.current!,
@@ -281,20 +280,18 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
           }
       `
     const onMessage = (e: any) => (withRefName: string) => {
-      const tasks = LibWorker_dataProperty.libWorkerData.LibWorkerTasks
       if (e.nativeEvent.data == withRefName) {
         LibWorker_dataProperty.libWorkerData.LibWorkerReady += 1
         return
       }
-      if (tasks) {
-        const dt = e.nativeEvent.data
-        const x = JSON.parse(dt)
-        const itemTask = tasks[x.id]
-        if (itemTask) {
-          itemTask.result(x.data)
-          m.delete(x.id)
-        }
+      const dt = e.nativeEvent.data
+      const x = JSON.parse(dt)
+      const itemTask = LibWorker_dataProperty.libWorkerData.LibWorkerTasks.get(x.id)
+      if (itemTask) {
+        itemTask.result(x.data)
+        m.delete(x.id)
       }
+
     }
     return (
       <>
@@ -330,7 +327,7 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
   }
 
   render(): any {
-    if (Platform.OS == 'android' )
+    if (Platform.OS == 'android')
       if (Platform.Version <= 22) {
         return null
       }
