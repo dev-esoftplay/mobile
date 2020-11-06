@@ -25,7 +25,7 @@ export default class m extends LibComponent<LibDirect_imageProps, LibDirect_imag
   }
 
   componentDidUpdate(prevProps: LibDirect_imageProps, prevState: LibDirect_imageState): void {
-    if (prevProps.defaultSource != this.props.defaultSource) {
+    if (prevProps.defaultSource != this.props.defaultSource && prevProps.defaultSource == this.source) {
       this.setSource(this.props.defaultSource)
     }
   }
@@ -33,7 +33,7 @@ export default class m extends LibComponent<LibDirect_imageProps, LibDirect_imag
   setSource(source: any): void {
     this.source = source
     this.ref.current?.setNativeProps({
-      [Platform.OS == 'ios' ? 'source' : 'src']: [source]
+      [Platform.OS == 'ios' ? 'source' : 'src']: [source.uri ? source : Image.resolveAssetSource(source)]
     })
   }
 
