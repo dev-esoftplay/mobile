@@ -22,7 +22,6 @@ export default (() => {
       useCacheSubscriber[_idx] = [];
     }
     value = initValue
-
     // rehidryte instant
     if (o?.persistKey) {
       AsyncStorage.getItem(o.persistKey).then((p) => {

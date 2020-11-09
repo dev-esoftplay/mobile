@@ -380,16 +380,17 @@ function createIndex() {
       set: (x: S) => void
     }\n
   interface useGlobalOption {
-    persistKey?: string
-  }\n`+
-    `interface useCacheData {
-    get: () => any,
-    set: (data: any) => any
+    persistKey?: string,
+    listener?: (s:any)=> void
+  }\ninterface createCacheOption {
+    persistKey?: string,
+    listener?: (s:any)=> void
+  }\ninterface createCacheReturn {
+    useCache: () => [S, (newCache: S) => void, () => void],
+    get: () => S,
+    set: (x: S) => void
   }
-  interface useCacheReturn {
-    useCache: () => useCacheData
-  }
-  function createCache(): useCacheReturn;`;
+  function createCache<S>(initialCache?: S, option?: createCacheOption): createCacheReturn<S>;\n" +`;
   for (clsName in tmpTask) {
     if (tmpTask[clsName]["class"]) {
       // Text += "\n";
@@ -504,7 +505,8 @@ function createReducer() {
       "\n\tkey: 'root'," +
       "\n\tstorage: AsyncStorage," +
       "\n\twhitelist: ['" + Object.keys(Persistor).join('\',\'') + "']" +
-      "\n}" +
+      "\n}" +useGlobalState
+Cache useGlobalState
       "\nconst reducers = (state, action) => {" +
       "\n\tif (action.type === 'user_class_delete') {" +
       "\n\t\tstate = undefined" +
