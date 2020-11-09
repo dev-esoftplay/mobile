@@ -205,7 +205,7 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
       if (LibWorker_dataProperty.libWorkerData.LibWorkerReady == 3) {
         LibWorker_dataProperty.libWorkerData.LibWorkerCount++
         var _task = task(LibWorker_dataProperty.libWorkerData.LibWorkerCount)
-        LibWorker_dataProperty.libWorkerData.LibWorkerTasks.set(LibWorker_dataProperty.libWorkerData.LibWorkerCount, {
+        LibWorker_dataProperty.libWorkerData.LibWorkerTasks.set(String(LibWorker_dataProperty.libWorkerData.LibWorkerCount), {
           task: _task,
           result: result
         })
@@ -286,7 +286,7 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
       }
       const dt = e.nativeEvent.data
       const x = JSON.parse(dt)
-      const itemTask = LibWorker_dataProperty.libWorkerData.LibWorkerTasks.get(x.id)
+      const itemTask = LibWorker_dataProperty.libWorkerData.LibWorkerTasks.get(String(x.id))
       if (itemTask) {
         itemTask.result(x.data)
         m.delete(x.id)
