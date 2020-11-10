@@ -17,7 +17,7 @@ export interface LibUtilsDate {
 
 export type LibUtilsTravelMode = 'driving' | 'walking'
 
-const cache = createCache()
+const cache = createCache<any>({ inDebounce: undefined })
 export default class eutils {
 
   static checkUndefined(obj: any, cursorsAsString: string): boolean {
@@ -32,9 +32,8 @@ export default class eutils {
   }
 
   static debounce(func: () => any, delay: number): void {
-    const { get, set } = cache.useCache()
-    clearTimeout(get().inDebounce)
-    set(c => c.inDebounce = setTimeout(() => func(), delay))
+    clearTimeout(cache.get()?.inDebounce)
+    cache.set({ ...cache.get(), inDebounce: setTimeout(() => func(), delay) })
   }
 
   static decodeBase64(chipper: string): string {
