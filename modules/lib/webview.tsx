@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Component } from "react";
-import { StyleSheet, View, Animated, Dimensions, Platform } from "react-native";
+import { StyleSheet, View, Animated, Dimensions, Platform, Linking } from "react-native";
 import { WebView } from 'react-native-webview'
 import { esp, LibComponent } from "esoftplay";
 let { width, height } = Dimensions.get("window");
@@ -33,7 +33,8 @@ export interface LibWebviewProps {
 
 export interface LibWebviewState {
   height: number | undefined,
-  source: any
+  source: any,
+  isFinish: boolean
 }
 
 class ewebview extends LibComponent<LibWebviewProps, LibWebviewState> {
@@ -55,6 +56,7 @@ class ewebview extends LibComponent<LibWebviewProps, LibWebviewState> {
     this.props = props
     this.state = {
       height: props.defaultHeight,
+      isFinish: false,
       source: props.source && props.source.hasOwnProperty("html") ? { html: config.webviewOpen + ewebview.fixHtml(props.source.html) + config.webviewClose } : props.source,
     };
     this._animatedValue = new Animated.Value(1);
@@ -155,11 +157,17 @@ class ewebview extends LibComponent<LibWebviewProps, LibWebviewState> {
           bounces={bounces !== undefined ? bounces : true}
           javaScriptEnabled
           // androidHardwareAccelerationDisabled={true}
-          useWebKit={true}
+          onNavigationStateChange={(event) => {
+            if (this.state.isFinish) {
+              this.webview.stopLoading();
+              Linking.openURL(event.url);
+            }
+          }}
           injectedJavaScript={'window.ReactNativeWebView.postMessage(document.body.scrollHeight)'}
           onLoadEnd={() => {
             if (this.props.onFinishLoad !== undefined)
               setTimeout(() => {
+                this.setState({ isFinish: true })
                 this.props.onFinishLoad()
               }, 1000)
           }}

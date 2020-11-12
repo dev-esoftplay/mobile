@@ -1,6 +1,6 @@
 import * as R from 'react'
 import AsyncStorage from '@react-native-community/async-storage';
-let _global: any = require('./_global').default
+const isEqual = require('react-fast-compare');
 
 export interface UseCache_return<T> {
   useCache: () => [T, (newCache: T) => void, () => void],
@@ -31,13 +31,13 @@ export default (() => {
     }
 
     function set(ns: T) {
+      if (o?.listener && !isEqual(value, ns)) {
+        o.listener(ns)
+      }
       value = ns
       useCacheSubscriber[_idx].forEach((c: any) => c?.(value));
       if (o?.persistKey) {
         AsyncStorage.setItem(o.persistKey, JSON.stringify(value))
-      }
-      if (o?.listener) {
-        o.listener(ns)
       }
     };
 
