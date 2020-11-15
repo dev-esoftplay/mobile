@@ -9,7 +9,8 @@ _global.useGlobalSubscriber = []
 export interface UseGlobal_return<T> {
   useState: () => [T, (newState: T) => void, () => void],
   get: () => T,
-  set: (x: T) => void
+  set: (x: T) => void,
+  useSelector: (selector: (state: T) => any, equalityFn?: (left: any, right: any) => boolean) => any;
 }
 
 export interface UseGlobal_options {
@@ -48,6 +49,32 @@ export default function useGlobalState<T>(initValue: T, o?: UseGlobal_options): 
     }
   }
 
+  function useSelector(se: (state: T) => any): void {
+    let [l, s] = R.useState<any>(se(value));
+
+    let sl = R.useCallback(
+      (ns: T) => {
+        let n = se(ns);
+        !isEqual(l, n) && s(n);
+      },
+      [l]
+    );
+    
+    subscribe(sl)
+
+    return l;
+  }
+
+  function subscribe(func: any) {
+    R.useEffect(() => {
+      _global.useGlobalSubscriber[_idx].push(func);
+      return () => {
+        _global.useGlobalSubscriber[_idx] = _global.useGlobalSubscriber[_idx].filter((f) => f !== func);
+      };
+    }, [func]);
+  }
+
+
   function useState(): [T, (newState: T) => void, () => void] {
     let [l, sl] = R.useState<T>(value);
 
@@ -60,16 +87,11 @@ export default function useGlobalState<T>(initValue: T, o?: UseGlobal_options): 
       }
     }, [])
 
-    R.useEffect(() => {
-      _global.useGlobalSubscriber[_idx].push(sl);
-      return () => {
-        _global.useGlobalSubscriber[_idx] = _global.useGlobalSubscriber[_idx].filter((f) => f !== sl);
-      };
-    }, [sl]);
+    subscribe(sl)
 
     return [l, set, del];
   };
 
   _global.useGlobalIdx++
-  return { useState, get: () => value, set: set };
+  return { useState, get: () => value, set, useSelector };
 }

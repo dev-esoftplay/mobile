@@ -48,6 +48,17 @@ export default (() => {
       }
     }
 
+
+    function subscribe(sl: any) {
+      R.useEffect(() => {
+        useCacheSubscriber[_idx].push(sl);
+        return () => {
+          useCacheSubscriber[_idx] = useCacheSubscriber[_idx].filter((f) => f !== sl);
+        };
+      }, [sl]);
+    }
+
+
     function useCache(): [T, (newState: T) => void, () => void] {
       let l = R.useRef<T>(value).current;
 
@@ -61,13 +72,8 @@ export default (() => {
           })
         }
       }, [])
-
-      R.useEffect(() => {
-        useCacheSubscriber[_idx].push(sl);
-        return () => {
-          useCacheSubscriber[_idx] = useCacheSubscriber[_idx].filter((f) => f !== sl);
-        };
-      }, [sl]);
+      
+      subscribe(sl)
 
       return [l, set, del];
     };
