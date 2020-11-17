@@ -376,7 +376,7 @@ function createIndex() {
     "  }\n" +
     `  interface useGlobalReturn<S> {
       useState: () => [S, (newState: S) => void, () => void],
-      get: () => S,
+      get: (param?: string, ...params: string[]) => S,
       set: (x: S) => void,
       useSelector: (selector: (state: T) => any) => any;
     }\n
@@ -388,7 +388,7 @@ function createIndex() {
     listener?: (s:any)=> void
   }\ninterface createCacheReturn<S> {
     useCache: () => [S, (newCache: S) => void, () => void],
-    get: () => S,
+    get: () => any,
     set: (x: S) => void
   }
   function createCache<S>(initialCache?: S, option?: createCacheOption): createCacheReturn<S>;`;

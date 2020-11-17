@@ -59,7 +59,7 @@ export default function useGlobalState<T>(initValue: T, o?: UseGlobal_options): 
       },
       [l]
     );
-    
+
     subscribe(sl)
 
     return l;
@@ -72,6 +72,23 @@ export default function useGlobalState<T>(initValue: T, o?: UseGlobal_options): 
         _global.useGlobalSubscriber[_idx] = _global.useGlobalSubscriber[_idx].filter((f) => f !== func);
       };
     }, [func]);
+  }
+
+  function get(param?: string, ...params: string[]): any {
+    let out: any = value;
+    if (param) {
+      var _params = [param, ...params]
+      if (_params.length > 0)
+        for (let i = 0; i < _params.length; i++) {
+          const key = _params[i];
+          if (out.hasOwnProperty(key)) {
+            out = out[key];
+          } else {
+            out = {};
+          }
+        }
+    }
+    return out;
   }
 
 
@@ -93,5 +110,5 @@ export default function useGlobalState<T>(initValue: T, o?: UseGlobal_options): 
   };
 
   _global.useGlobalIdx++
-  return { useState, get: () => value, set, useSelector };
+  return { useState, get, set, useSelector };
 }
