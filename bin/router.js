@@ -377,7 +377,8 @@ function createIndex() {
     `  interface useGlobalReturn<S> {
       useState: () => [S, (newState: S) => void, () => void],
       get: () => S,
-      set: (x: S) => void
+      set: (x: S) => void,
+      useSelector: (selector: (state: T) => any) => any;
     }\n
   interface useGlobalOption {
     persistKey?: string,

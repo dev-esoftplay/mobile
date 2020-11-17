@@ -10,7 +10,7 @@ export interface UseGlobal_return<T> {
   useState: () => [T, (newState: T) => void, () => void],
   get: () => T,
   set: (x: T) => void,
-  useSelector: (selector: (state: T) => any, equalityFn?: (left: any, right: any) => boolean) => any;
+  useSelector: (selector: (state: T) => any) => any;
 }
 
 export interface UseGlobal_options {
