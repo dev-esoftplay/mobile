@@ -378,6 +378,7 @@ function createIndex() {
       useState: () => [S, (newState: S) => void, () => void],
       get: (param?: string, ...params: string[]) => S,
       set: (x: S) => void,
+      reset: () => void,
       useSelector: (selector: (state: T) => any) => any;
     }\n
   interface useGlobalOption {

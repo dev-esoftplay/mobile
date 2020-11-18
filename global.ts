@@ -10,6 +10,7 @@ export interface UseGlobal_return<T> {
   useState: () => [T, (newState: T) => void, () => void],
   get: () => T,
   set: (x: T) => void,
+  reset: () => void,
   useSelector: (selector: (state: T) => any) => any;
 }
 
@@ -45,8 +46,8 @@ export default function useGlobalState<T>(initValue: T, o?: UseGlobal_options): 
   function del() {
     if (o?.persistKey) {
       AsyncStorage.removeItem(o.persistKey)
-      set(initValue)
     }
+    set(initValue)
   }
 
   function useSelector(se: (state: T) => any): void {
@@ -95,20 +96,11 @@ export default function useGlobalState<T>(initValue: T, o?: UseGlobal_options): 
   function useState(): [T, (newState: T) => void, () => void] {
     let [l, sl] = R.useState<T>(value);
 
-    R.useEffect(() => {
-      if (o?.persistKey) {
-        AsyncStorage.getItem(o.persistKey).then((p) => {
-          if (p)
-            set(JSON.parse(p))
-        })
-      }
-    }, [])
-
     subscribe(sl)
 
     return [l, set, del];
   };
 
   _global.useGlobalIdx++
-  return { useState, get, set, useSelector };
+  return { useState, get, set, useSelector, reset: del };
 }
