@@ -44,8 +44,8 @@ export default (() => {
     function del() {
       if (o?.persistKey) {
         AsyncStorage.removeItem(o.persistKey)
-        set(initValue)
       }
+      set(initValue)
     }
 
 
@@ -61,20 +61,11 @@ export default (() => {
 
     function useCache(): [T, (newState: T) => void, () => void] {
       let l = R.useRef<T>(value).current;
-
-      const sl = R.useCallback((newl: T) => { l = newl }, [])
-
-      R.useEffect(() => {
-        if (o?.persistKey) {
-          AsyncStorage.getItem(o.persistKey).then((p) => {
-            if (p)
-              set(JSON.parse(p))
-          })
-        }
-      }, [])
+      
+      const sl = (newl: T) => { l = newl }
       
       subscribe(sl)
-
+      
       return [l, set, del];
     };
     useCacheIdx++
