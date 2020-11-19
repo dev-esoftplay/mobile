@@ -205,7 +205,7 @@ export default class eutils {
 
   static numberAbsolute(toNumber: string | number): number {
     let _toNumber = typeof toNumber == 'string' ? Number(toNumber) : toNumber
-    return Math.abs(_toNumber)
+    return Math.abs(_toNumber || 0)
   }
 
   static number(toNumber: string | number): string {
@@ -235,8 +235,8 @@ export default class eutils {
   }
 
   static ucwords(str: string): string {
-    return str.replace(/\w\S*/g, function (txt) {
-      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    return str?.replace?.(/\w\S*/g, function (txt) {
+      return txt?.charAt?.(0)?.toUpperCase?.() + txt?.substr?.(1)?.toLowerCase?.();
     });
   }
   static getCurrentDateTime(format?: string): string {
