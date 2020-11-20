@@ -58,7 +58,7 @@ export function getError(adder: any) {
         'domain: ' + config.config.domain + config.config.uri,
         'package: ' + (Platform.OS == 'ios' ? app.expo.ios.bundleIdentifier : app.expo.android.package) + ' - v' + (Platform.OS == 'ios' ? app.expo.ios.buildNumber : app.expo.android.versionCode),
         'device: ' + Platform.OS + ' | ' + Constants.deviceName,
-        'publish_id: ' + config?.config?.publish_id || "-",
+        'app/pub_id: ' + Constants.appOwnership + '/' + (config?.config?.publish_id || '-'),
         'user_id: ' + _e?.user?.id || _e?.user?.user_id || '-',
         'username: ' + _e?.user?.username || '-',
         'module: ' + _e.routes,

@@ -33,15 +33,26 @@ export default function useGlobalState<T>(initValue: T, o?: UseGlobal_options): 
   }
 
   function set(ns: T) {
+    let isChange = false
     if (o?.listener && !isEqual(value, ns)) {
-      o.listener(ns)
+      isChange = true
     }
     value = ns
     _global.useGlobalSubscriber[_idx].forEach((c: any) => c?.(value));
     if (o?.persistKey) {
       AsyncStorage.setItem(o.persistKey, JSON.stringify(value))
     }
+    if (isChange)
+      o.listener(ns)
   };
+
+  // function connect<T>(state: UseGlobal_return<T>): (cls: any) => void {
+  //   const [x] = state.useState()
+  //   return (cls: any) => {
+  //     const CLS = cls
+  //     (<CLS {...x} />)
+  //   }
+  // }
 
   function del() {
     if (o?.persistKey) {

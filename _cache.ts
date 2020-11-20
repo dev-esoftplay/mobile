@@ -31,14 +31,17 @@ export default (() => {
     }
 
     function set(ns: T) {
+      let isChange = false
       if (o?.listener && !isEqual(value, ns)) {
-        o.listener(ns)
+        isChange = true
       }
       value = ns
       useCacheSubscriber[_idx].forEach((c: any) => c?.(value));
       if (o?.persistKey) {
         AsyncStorage.setItem(o.persistKey, JSON.stringify(value))
       }
+      if (isChange)
+        o.listener(ns)
     };
 
     function del() {
@@ -61,7 +64,7 @@ export default (() => {
 
     function useCache(): [T, (newState: T) => void, () => void] {
       let l = R.useRef<T>(value).current;
-      
+
       const sl = (newl: T) => { l = newl }
       
       subscribe(sl)
