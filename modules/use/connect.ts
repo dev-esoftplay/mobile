@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { UseDataProperty } from 'esoftplay'
 
 export function set(id: string, x: any) {
-  if (UseDataProperty.c?.a?.[id] && UseDataProperty.c?.b?.[id]) {
+  if (UseDataProperty.c?.a && UseDataProperty.c?.b?.[id]) {
     UseDataProperty.c.a[id] = x
     UseDataProperty.c.b[id].forEach(d => {
       d(x)
