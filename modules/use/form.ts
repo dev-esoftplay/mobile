@@ -11,18 +11,21 @@ export default function m<S>(formName: string, def?: S): [S, (a: string) => (v: 
       ...UseForm_dataProperty.useFormData[formName],
       ...field
     }
-    b({
-      ...UseForm_dataProperty.useFormData[formName],
-    })
+    UseForm_dataProperty.useFormData['setter-' + formName].forEach(set => {
+      set(UseForm_dataProperty.useFormData[formName])
+    });
   }
 
   useEffect(() => {
+    if (!UseForm_dataProperty.useFormData['setter-' + formName]) {
+      UseForm_dataProperty.useFormData['setter-' + formName] = []
+    }
+    UseForm_dataProperty.useFormData['setter-' + formName].push(b)
     c(UseForm_dataProperty.useFormData[formName])
+    return () => {
+      UseForm_dataProperty.useFormData['setter-' + formName].filter((x) => x !== b)
+    }
   }, [])
-
-  useEffect(() => {
-    UseForm_dataProperty.useFormData[formName] = { ...UseForm_dataProperty.useFormData[formName], ...a }
-  }, [a])
 
   function g(field: string) {
     return (value: any) => {
@@ -35,11 +38,8 @@ export default function m<S>(formName: string, def?: S): [S, (a: string) => (v: 
   }
 
   function f(callback?: (a?: S) => void) {
-    const restate = {
-      ...UseForm_dataProperty.useFormData[formName],
-    }
-    if (callback)
-      callback(restate)
+    callback?.(UseForm_dataProperty.useFormData[formName])
   }
+  
   return [a, g, f, h, b]
 }
