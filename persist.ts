@@ -1,16 +1,17 @@
 import { useRef, useEffect, useState, useMemo } from 'react'
 import AsyncStorage from '@react-native-community/async-storage'
-import { useIsFocused } from '@react-navigation/native';
+const _global = require('./_global')
 
 export default function usePersistState(key: string, def?: any): any[] {
   const r = useRef(true)
   const [a, b] = useState(def)
-  const isFocused = useIsFocused()
 
   function c(value: any) {
-    if (r.current && value != undefined) {
-      AsyncStorage.setItem(key, JSON.stringify(value))
-      b(value)
+    if (r.current) {
+      if (value != undefined) AsyncStorage.setItem(key, JSON.stringify(value)); else d()
+      _global.usePersistState_Setter[key].forEach(cc => {
+        cc(value)
+      })
     }
   }
 
@@ -32,18 +33,26 @@ export default function usePersistState(key: string, def?: any): any[] {
   }
 
   useMemo(() => {
-    if (isFocused)
-      AsyncStorage.getItem(key).then((x) => {
-        if (x) {
-          c(JSON.parse(x))
-        } else {
-          c(def)
-        }
-      })
-  }, [isFocused])
+    if (!_global.usePersistState_Setter) {
+      _global.usePersistState_Setter = {}
+    }
+    if (!_global.usePersistState_Setter[key])
+      _global.usePersistState_Setter[key] = []
+    _global.usePersistState_Setter[key].push(b)
+    AsyncStorage.getItem(key).then((x) => {
+      if (x) {
+        c(JSON.parse(x))
+      } else {
+        c(def)
+      }
+    })
+  }, [])
 
   useEffect(() => {
-    return () => { r.current = false }
+    return () => {
+      r.current = false
+      _global.usePersistState_Setter[key] = _global.usePersistState_Setter[key].filter((x) => x !== b)
+    }
   }, [])
 
   return [a, c, e, d]
