@@ -395,8 +395,7 @@ function publish(notes) {
 		consoleSucces("start publishing " + status.toUpperCase() + " - PUBLISH_ID : " + (last_id + 1))
 		command("expo p")
 		const os = require('os')
-		let stringBuilder = "\n" + os.userInfo().username + '@' + os.hostname()
-		stringBuilder += "#" + ajson.expo.slug + "\n" + cjson.config.domain + "\nsdk: " + pack.dependencies.expo
+		let stringBuilder = "#" + ajson.expo.slug + "\n" + cjson.config.domain + "\n" + os.userInfo().username + '@' + os.hostname() + "\nsdk: " + pack.dependencies.expo
 		stringBuilder += "\nid: " + (last_id + 1)
 		let esplibs = Object.keys(pack.dependencies).filter((key) => key.includes("esoftplay"))
 		esplibs.forEach((key) => {
