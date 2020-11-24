@@ -394,9 +394,9 @@ function publish(notes) {
 		fs.writeFileSync(confjson, JSON.stringify(cjson, undefined, 2))
 		consoleSucces("start publishing " + status.toUpperCase() + " - PUBLISH_ID : " + (last_id + 1))
 		command("expo p")
-		let stringBuilder = "#" + ajson.expo.slug + "\n" + cjson.config.domain + "\nsdk: " + pack.dependencies.expo
+		let stringBuilder = "\n" + os.userInfo().username + '@' + os.hostname()
 		const os = require('os')
-		stringBuilder += os.userInfo().username + '@' + os.hostname()
+		stringBuilder += "#" + ajson.expo.slug + "\n" + cjson.config.domain + "\nsdk: " + pack.dependencies.expo
 		stringBuilder += "\nid: " + (last_id + 1)
 		let esplibs = Object.keys(pack.dependencies).filter((key) => key.includes("esoftplay"))
 		esplibs.forEach((key) => {
