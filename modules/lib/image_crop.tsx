@@ -1,8 +1,8 @@
 // withHooks
 
 import React, { useEffect, useRef } from 'react';
-import { View, Image, TouchableOpacity, PixelRatio, Dimensions } from 'react-native';
-import { LibNavigation, LibStyle, LibUtils, LibZom, LibIcon, LibStatusbar, useSafeState, esp, LibTextstyle, LibProgress } from 'esoftplay';
+import { View, Image, TouchableOpacity, PixelRatio, Dimensions, Text, TouchableWithoutFeedback } from 'react-native';
+import { LibNavigation, LibStyle, LibUtils, LibZom, LibIcon, LibStatusbar, useSafeState, esp, LibTextstyle, LibProgress, LibToastProperty } from 'esoftplay';
 import * as ImageManipulator from "expo-image-manipulator";
 // @ts-ignore
 import PinchZoomView from 'react-native-pinch-zoom-view-movable';
@@ -13,10 +13,11 @@ export interface LibImage_cropProps {
 
 }
 export default function m(props: LibImage_cropProps): any {
-  const { image, ratio, forceCrop } = LibUtils.getArgsAll(props)
+  const { image, ratio, forceCrop, message } = LibUtils.getArgsAll(props)
   const [_image, setImage] = useSafeState(image)
   const [counter, setCounter] = useSafeState(0)
   const [size, setSize] = useSafeState(LibStyle.width)
+  const [hint, setHint] = useSafeState(true)
   const [cropCount, setCropCount] = useSafeState(0)
 
   const _ratio = ratio && ratio.includes(":") ? ratio.split(":") : [3, 2]
@@ -161,6 +162,9 @@ export default function m(props: LibImage_cropProps): any {
               setCropCount(cropCount + 1)
             }
             LibProgress.hide()
+          }).catch(() => {
+            LibProgress.hide()
+            LibToastProperty.show("Garis putus-putus tidak boleh keluar dari gambar")
           })
         })
       })
@@ -184,7 +188,7 @@ export default function m(props: LibImage_cropProps): any {
             <View style={{ backgroundColor: "rgba(0,0,0,0.5 )", flex: 1 }} />
             <View style={{ flexDirection: "row" }} >
               <View style={{ backgroundColor: "rgba(0,0,0,0.5 )", flex: 1 }} />
-              <View ref={viewRef} style={{ height: ratioSize[1], width: ratioSize[0], backgroundColor: 'transparent', borderWidth: 1, borderColor: "white" }} />
+              <View ref={viewRef} style={{ height: ratioSize[1], width: ratioSize[0], backgroundColor: 'transparent', borderWidth: 1, borderColor: "white", borderStyle: 'dashed' }} />
               <View style={{ backgroundColor: "rgba(0,0,0,0.5 )", flex: 1 }} />
             </View>
             <View style={{ backgroundColor: "rgba(0,0,0,0.5 )", flex: 1 }} />
@@ -201,7 +205,7 @@ export default function m(props: LibImage_cropProps): any {
           <TouchableOpacity
             onPress={reset}
             style={{ height: 50, width: 50, alignItems: 'center', justifyContent: 'center' }} >
-            <LibIcon name="reload" color={'white'} />
+            <LibIcon name="undo" color={'white'} />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={capture}
@@ -211,6 +215,15 @@ export default function m(props: LibImage_cropProps): any {
         </View>
       </View>
       {
+        // hint &
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={() => setHint(!hint)}
+          style={{ opacity: hint ? 1 : 0, position: 'absolute', left: 0, right: 0, bottom: 50, backgroundColor: 'rgba(0,0,0,0.5)', alignItems: 'center', justifyContent: 'center', padding: 30 }} >
+          <Text style={{ color: "white", textAlign: 'center' }} >{message || "Geser dan cubit layar untuk menyesuaikan bagian foto yang ingin dipakai (pastikan bagian foto berada di dalam garis putus-putus) lalu crop jika sudah sesuai"}</Text>
+        </TouchableOpacity>
+      }
+      {
         (!forceCrop || cropCount > 0) &&
         <View style={{ position: "absolute", bottom: 10, left: 0, right: 0 }} >
           <TouchableOpacity
@@ -219,7 +232,7 @@ export default function m(props: LibImage_cropProps): any {
                 LibNavigation.sendBackResult({ uri: _image, width, height }, LibNavigation.getResultKey(props))
               }, () => { })
             }}
-            style={{ height: 50, alignItems: 'center', justifyContent: 'center' }} >
+            style={{ height: 50, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(255,255,255,0.3)' }} >
             <LibTextstyle textStyle="body" text="SIMPAN" style={{ color: "white" }} />
           </TouchableOpacity>
         </View>

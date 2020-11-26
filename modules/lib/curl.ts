@@ -5,7 +5,6 @@ import momentTimeZone from "moment-timezone"
 import moment from "moment/min/moment-with-locales"
 import { esp, LibCrypt, LibProgress, _global, LibWorker, LibUtils } from 'esoftplay';
 import { reportApiError } from "../../error";
-import Constants from 'expo-constants';
 
 export default class ecurl {
   isDebug = esp.config("isDebug");

@@ -21,7 +21,8 @@ const { height, width } = LibStyle;
 
 export interface LibImageCrop {
   ratio: string,
-  forceCrop: boolean
+  forceCrop: boolean,
+  message: string
 }
 
 export interface LibImageProps {
@@ -148,7 +149,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
   static showEditor(uri: string, result: (x: any) => void): void {
     LibNavigation.navigateForResult("lib/image_edit", { uri }, 81793).then(result)
   }
-  static showCropper(uri: string, forceCrop: boolean, ratio: string, result: (x: any) => void): void {
+  static showCropper(uri: string, forceCrop: boolean, ratio: string, message: string, result: (x: any) => void): void {
     LibNavigation.navigateForResult("lib/image_crop", { image: uri, forceCrop, ratio }, 81793).then(result)
   }
 
@@ -174,7 +175,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
         ImagePicker.launchCameraAsync().then(async (result: any) => {
           if (!result.cancelled) {
             if (options && options.crop) {
-              m.showCropper(result.uri, options.crop.forceCrop, options.crop.ratio, async (x) => {
+              m.showCropper(result?.uri, options?.crop?.forceCrop, options?.crop?.ratio, options?.crop?.message, async (x) => {
                 let imageUri = await m.processImage(x)
                 m.setResult(imageUri)
                 _r(imageUri)
@@ -221,7 +222,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
           ImagePicker.launchImageLibraryAsync().then(async (x: any) => {
             if (!x.cancelled) {
               if (options && options.crop) {
-                m.showCropper(x.uri, options.crop.forceCrop, options.crop.ratio, async (x) => {
+                m.showCropper(x.uri, options.crop.forceCrop, options.crop.ratio, options.crop?.message, async (x) => {
                   let imageUri = await m.processImage(x)
                   m.setResult(imageUri)
                   _r(imageUri)
@@ -246,7 +247,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
         LibNavigation.navigateForResult("lib/image_multi", { max: max }).then((x: any[]) => {
           if (max == 1 && x.length == 1) {
             if (options && options.crop) {
-              m.showCropper(x[0].uri, options.crop.forceCrop, options.crop.ratio, async (x) => {
+              m.showCropper(x[0].uri, options.crop.forceCrop, options.crop.ratio, options.crop?.message, async (x) => {
                 let imageUri = await m.processImage(x)
                 m.setResult(imageUri)
                 _r(imageUri)
