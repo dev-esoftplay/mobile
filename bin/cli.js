@@ -393,9 +393,13 @@ function publish(notes) {
 		cjson.config.publish_id = last_id + 1
 		fs.writeFileSync(confjson, JSON.stringify(cjson, undefined, 2))
 		consoleSucces("start publishing " + status.toUpperCase() + " - PUBLISH_ID : " + (last_id + 1))
+
 		command("expo p")
 		const os = require('os')
-		let stringBuilder = "#" + ajson.expo.slug + "\n" + cjson.config.domain + "\n" + os.userInfo().username + '@' + os.hostname() + "\nsdk: " + pack.dependencies.expo
+		var d = new Date();
+		d = new Date(d.getTime() - 3000000);
+		var date_format_str = d.getFullYear().toString() + "-" + ((d.getMonth() + 1).toString().length == 2 ? (d.getMonth() + 1).toString() : "0" + (d.getMonth() + 1).toString()) + "-" + (d.getDate().toString().length == 2 ? d.getDate().toString() : "0" + d.getDate().toString()) + " " + (d.getHours().toString().length == 2 ? d.getHours().toString() : "0" + d.getHours().toString()) + ":" + ((parseInt(d.getMinutes() / 5) * 5).toString().length == 2 ? (parseInt(d.getMinutes() / 5) * 5).toString() : "0" + (parseInt(d.getMinutes() / 5) * 5).toString()) + ":00";
+		let stringBuilder = "#" + ajson.expo.slug + "\n" + cjson.config.domain + "\n" + os.userInfo().username + '@' + os.hostname() + ":" + date_format_str + "\nsdk: " + pack.dependencies.expo
 		stringBuilder += "\nid: " + (last_id + 1)
 		let esplibs = Object.keys(pack.dependencies).filter((key) => key.includes("esoftplay"))
 		esplibs.forEach((key) => {
