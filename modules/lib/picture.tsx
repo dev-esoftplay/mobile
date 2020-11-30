@@ -59,9 +59,8 @@ export default function m(props: LibPictureProps): any {
           setUri(path)
         } else {
           LibWorker.image(props.source.uri, toSize, (uri) => {
-            FileSystem.writeAsStringAsync(path, uri, { encoding: "base64" }).then(() => {
-              setUri(path)
-            })
+            setUri("data:image/png;base64," + uri)
+            FileSystem.writeAsStringAsync(path, uri, { encoding: "base64" })
           })
         }
       })
