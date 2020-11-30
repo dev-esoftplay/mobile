@@ -18,7 +18,6 @@ export interface LibWorkerState {
 
 }
 
-const pixelRatio = PixelRatio.getPixelSizeForLayoutSize(1)
 class m extends Component<LibWorkerProps, LibWorkerState> {
   constructor(props: LibWorkerProps) {
     super(props)
@@ -155,7 +154,7 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
   static image(url: string, toSize: number, result: (r: string) => void): void {
     m.dispatch((id) => `
     if (imageCompress != undefined){
-      imageCompress("` + id + `","` + url + `", ` + (toSize * pixelRatio) + `)
+      imageCompress("` + id + `","` + url + `", ` + PixelRatio.getPixelSizeForLayoutSize(toSize) + `)
     } else {
       function imageCompress(id, url, toSize) {
         fetch(url, { mode: 'cors'})
@@ -190,7 +189,7 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
         });
       }
       
-      imageCompress("` + id + `","` + url + `", ` + (toSize * pixelRatio) + `)
+      imageCompress("` + id + `","` + url + `", ` + PixelRatio.getPixelSizeForLayoutSize(toSize) + `)
     }
     `, url, result)
   }
