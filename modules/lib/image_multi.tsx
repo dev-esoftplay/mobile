@@ -41,7 +41,7 @@ export default function m(props: LibImage_multiProps): any {
   }, [])
 
   function getPhotos(): void {
-    let params: any = { first: 50 }
+    let params: any = { first: 50, sortBy: MediaLibrary.SortBy.modificationTime }
     if (after) params.after = after
     if (!hasNextPage) return
     MediaLibrary.getAssetsAsync(params).then((assets: any) => {
