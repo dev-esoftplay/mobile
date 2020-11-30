@@ -5,7 +5,7 @@ import React, { useEffect, useRef } from "react";
 import Navs from "../../cache/navs";
 import { View } from "react-native";
 import * as Font from "expo-font";
-import { esp, UserClass, LibWorker, LibNet_status, LibTheme, LibLocale, LibDialog, LibStyle, LibImage, LibProgress, UserMain, LibNavigation, LibToast, useSafeState, LibUpdaterProperty, LibNotification, LibVersion, _global, UserIndex_dataProperty, UseSelector, LibPictureProperty } from 'esoftplay';
+import { esp, UserClass, LibWorker, LibWorkloop, LibNet_status, LibTheme, LibLocale, LibDialog, LibStyle, LibImage, LibProgress, UserMain, LibNavigation, LibToast, useSafeState, LibUpdaterProperty, LibNotification, LibVersion, _global, UserIndex_dataProperty, UseSelector, LibPictureProperty } from 'esoftplay';
 import firebase from 'firebase'
 import { useDispatch } from 'react-redux';
 export interface UserIndexProps {
@@ -90,6 +90,7 @@ export default function m(props: UserIndexProps): any {
     <>
       <View style={{ flex: 1 }}>
         <LibWorker />
+        <LibWorkloop />
         <Navs user={user} initialState={initialState} handler={handler} />
         <LibNet_status />
         <LibDialog style={'default'} />

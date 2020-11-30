@@ -2,10 +2,9 @@
 
 import React, { useMemo } from 'react';
 import { View, Image, Platform } from 'react-native';
-import { useSafeState, LibWorker, LibStyle } from 'esoftplay';
+import { useSafeState, LibWorker, LibStyle, LibWorkloop } from 'esoftplay';
 import * as FileSystem from 'expo-file-system'
 const sh = require("shorthash")
-import Constants from 'expo-constants';
 
 export interface LibPictureSource {
   uri: string
@@ -60,7 +59,7 @@ export default function m(props: LibPictureProps): any {
         } else {
           LibWorker.image(props.source.uri, toSize, (uri) => {
             setUri("data:image/png;base64," + uri)
-            FileSystem.writeAsStringAsync(path, uri, { encoding: "base64" })
+            LibWorkloop.execNextTix(FileSystem.writeAsStringAsync, [path, uri, { encoding: "base64" }])
           })
         }
       })
