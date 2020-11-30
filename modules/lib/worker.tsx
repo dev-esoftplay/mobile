@@ -19,7 +19,6 @@ export interface LibWorkerState {
 }
 
 const pixelRatio = PixelRatio.getPixelSizeForLayoutSize(1)
-
 class m extends Component<LibWorkerProps, LibWorkerState> {
   constructor(props: LibWorkerProps) {
     super(props)
@@ -141,7 +140,7 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
       function doCurl(id, url, params){
         fetch(url, params)
         .then(async (e) => {
-          let r = await e.text();
+          var r = await e.text();
           window.ReactNativeWebView.postMessage(JSON.stringify({ data: r, id: id }))
         })
         .catch((e) => {
@@ -156,40 +155,42 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
   static image(url: string, toSize: number, result: (r: string) => void): void {
     m.dispatch((id) => `
     if (imageCompress != undefined){
-      imageCompress("` + id + `","` + url + `", ` + (pixelRatio * toSize) + `)
+      imageCompress("` + id + `","` + url + `", ` + (toSize * pixelRatio) + `)
     } else {
       function imageCompress(id, url, toSize) {
         fetch(url, { mode: 'cors'})
         .then(response => response.blob())
         .then(blob => {
-          let reader = new FileReader();
+          var reader = new FileReader();
           reader.onload = function () {
-            let img = document.createElement('img');
+            var img = document.createElement('img');
             img.onload = function () {
-              let wantedMaxSize = toSize
-              let rawheight = img.height
-              let rawwidth = img.width
-              let ratio = rawwidth / rawheight
+              var wantedMaxSize = toSize
+              var rawheight = img.height
+              var rawwidth = img.width
+              var ratio = rawwidth / rawheight
               if (rawheight > rawwidth) {
-                let wantedwidth = wantedMaxSize * ratio;
-                let wantedheight = wantedMaxSize;
+                var wantedwidth = wantedMaxSize * ratio;
+                var wantedheight = wantedMaxSize;
               } else {
-                let wantedwidth = wantedMaxSize;
-                let wantedheight = wantedMaxSize / ratio;
+                var wantedwidth = wantedMaxSize;
+                var wantedheight = wantedMaxSize / ratio;
               }
-              let canvas = document.createElement('canvas');
-              let ctx = canvas.getContext('2d');
+              var canvas = document.createElement('canvas');
+              var ctx = canvas.getContext('2d');
               canvas.width = wantedwidth;
               canvas.height = wantedheight;
               ctx.drawImage(this, 0, 0, wantedwidth, wantedheight);
               let x = canvas.toDataURL();
               window.ReactNativeWebView.postMessage(JSON.stringify({ id: id, data: x.replace("data:image/png;base64,", "") }))
             }
+            img.src = String(reader.result)
           };
+          reader.readAsDataURL(blob);
         });
       }
       
-      imageCompress("` + id + `","` + url + `", ` + (pixelRatio * toSize) + `)
+      imageCompress("` + id + `","` + url + `", ` + (toSize * pixelRatio) + `)
     }
     `, url, result)
   }
@@ -200,21 +201,21 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
       esp.config("protocol") + "://api." + esp.config("domain") + esp.config("uri"),
       esp.config("protocol") + "://data." + esp.config("domain") + esp.config("uri"),
     ]
-    let allWorkers = [
-      LibWorker_dataProperty.libWorkerData.LibWorkerBase.current!,
-      LibWorker_dataProperty.libWorkerData.LibWorkerApi.current!,
-      LibWorker_dataProperty.libWorkerData.LibWorkerData.current!
-    ]
     const _dispatcher = () => {
       if (LibWorker_dataProperty.libWorkerData.LibWorkerReady == 3) {
         LibWorker_dataProperty.libWorkerData.LibWorkerCount++
-        let _task = task(LibWorker_dataProperty.libWorkerData.LibWorkerCount)
+        var _task = task(LibWorker_dataProperty.libWorkerData.LibWorkerCount)
         LibWorker_dataProperty.libWorkerData.LibWorkerTasks.set(String(LibWorker_dataProperty.libWorkerData.LibWorkerCount), {
           task: _task,
           result: result
         })
         if (url == '') {
-          allWorkers[Math.floor(Math.random() * 3)].injectJavaScript(_task)
+          let x = [
+            LibWorker_dataProperty.libWorkerData.LibWorkerBase.current!,
+            LibWorker_dataProperty.libWorkerData.LibWorkerApi.current!,
+            LibWorker_dataProperty.libWorkerData.LibWorkerData.current!
+          ]
+          x[Math.floor(Math.random() * 3)].injectJavaScript(_task)
         }
         if (url.indexOf(knownUrl[0]) > -1)
           LibWorker_dataProperty.libWorkerData.LibWorkerBase.current!.injectJavaScript(_task)
@@ -238,36 +239,38 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
           fetch(url, { mode: 'cors'})
             .then(response => response.blob())
             .then(blob => {
-              let reader = new FileReader();
+              var reader = new FileReader();
               reader.onload = function () {
-                let img = document.createElement('img');
+                var img = document.createElement('img');
                 img.onload = function () {
-                  let wantedMaxSize = toSize
-                  let rawheight = img.height
-                  let rawwidth = img.width
-                  let ratio = rawwidth / rawheight
+                  var wantedMaxSize = toSize
+                  var rawheight = img.height
+                  var rawwidth = img.width
+                  var ratio = rawwidth / rawheight
                   if (rawheight > rawwidth) {
-                    let wantedwidth = wantedMaxSize * ratio;
-                    let wantedheight = wantedMaxSize;
+                    var wantedwidth = wantedMaxSize * ratio;
+                    var wantedheight = wantedMaxSize;
                   } else {
-                    let wantedwidth = wantedMaxSize;
-                    let wantedheight = wantedMaxSize / ratio;
+                    var wantedwidth = wantedMaxSize;
+                    var wantedheight = wantedMaxSize / ratio;
                   }
-                  let canvas = document.createElement('canvas');
-                  let ctx = canvas.getContext('2d');
+                  var canvas = document.createElement('canvas');
+                  var ctx = canvas.getContext('2d');
                   canvas.width = wantedwidth;
                   canvas.height = wantedheight;
                   ctx.drawImage(this, 0, 0, wantedwidth, wantedheight);
                   let x = canvas.toDataURL();
                   window.ReactNativeWebView.postMessage(JSON.stringify({ id: id, data: x.replace("data:image/png;base64,", "") }))
                 }
+                img.src = String(reader.result)
               };
+              reader.readAsDataURL(blob);
           });
         }
         function doCurl(id, url, params){
             fetch(url, params)
               .then(async (e) => {
-                let r = await e.text();
+                var r = await e.text();
                 alert(r);
                 window.ReactNativeWebView.postMessage(JSON.stringify({ data: r, id: id }))
               })
