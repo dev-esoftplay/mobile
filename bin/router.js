@@ -391,7 +391,11 @@ function createIndex() {
     useCache: () => [S, (newCache: S) => void, () => void],
     get: () => any,
     set: (x: S) => void
-  }
+  }\n
+  class LibCrypt {
+    encode(string: string): string
+    decode(string: string): string
+  }\n
   function createCache<S>(initialCache?: S, option?: createCacheOption): createCacheReturn<S>;`;
   for (clsName in tmpTask) {
     if (tmpTask[clsName]["class"]) {

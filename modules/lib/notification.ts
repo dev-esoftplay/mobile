@@ -57,11 +57,9 @@ export default class m {
             lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC
           }
         )
-      AsyncStorage.getItem("push_id").then((push_id) => {
-        if (!push_id) {
-          UserClass.pushToken();
-        }
-      })
+      // AsyncStorage.getItem("push_id").then((push_id) => {
+      UserClass.pushToken();
+      // })
       dataRef.receive = Notifications.addNotificationReceivedListener((x) => onReceive(x))
       dataRef.response = Notifications.addNotificationResponseReceivedListener(x => onAction(x))
       function getData(x: any) {
