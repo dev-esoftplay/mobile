@@ -5,9 +5,11 @@ import React, { useEffect, useRef } from "react";
 import Navs from "../../cache/navs";
 import { View } from "react-native";
 import * as Font from "expo-font";
+import { AppLoading } from 'expo';
 import { esp, UserClass, LibWorker, LibWorkloop, LibNet_status, LibTheme, LibLocale, LibDialog, LibStyle, LibImage, LibProgress, UserMain, LibNavigation, LibToast, useSafeState, LibUpdaterProperty, LibNotification, LibVersion, _global, UserIndex_dataProperty, UseSelector, LibPictureProperty } from 'esoftplay';
 import firebase from 'firebase'
 import { useDispatch } from 'react-redux';
+
 export interface UserIndexProps {
 
 }
@@ -49,6 +51,7 @@ export default function m(props: UserIndexProps): any {
   const dispatch = useDispatch()
   const [loading, setLoading] = useSafeState(true)
   const user = UseSelector((s) => s.user_class)
+  const apploading = useRef<AppLoading>()
   //@ts-ignore
   const initialState = __DEV__ ? UserIndex_dataProperty.userIndexData.nav__state : undefined
 
@@ -64,7 +67,8 @@ export default function m(props: UserIndexProps): any {
     LibTheme.getTheme()
     LibLocale.getLanguage()
     LibPictureProperty.createCacheDir()
-    LibUpdaterProperty.checkAlertInstall()
+
+    // LibUpdaterProperty.checkAlertInstall()
     if (esp.config('firebase')) {
       try {
         firebase.initializeApp(esp.config('firebase'));
@@ -85,7 +89,24 @@ export default function m(props: UserIndexProps): any {
     }
   }, [loading])
 
-  if (loading) return null
+  if (loading)
+    return (
+      <AppLoading
+        startAsync={() => new Promise((r) => {
+          LibUpdaterProperty.check((isNew) => {
+            if (isNew) {
+              r()
+              LibUpdaterProperty.install()
+            } else {
+              r()
+            }
+          })
+        })}
+        onFinish={() => setLoading(false)}
+        onError={console.warn}
+      />
+    )
+
   return (
     <>
       <View style={{ flex: 1 }}>

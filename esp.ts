@@ -3,6 +3,7 @@ import _assets from './cache/assets';
 import reducers from './cache/reducers';
 import navs from './cache/navigations';
 import routers from './cache/routers';
+import { Platform } from 'react-native';
 import { connect as _connect } from 'react-redux';
 import { _global, esp } from 'esoftplay';
 let app = require('../../app.json');
@@ -36,6 +37,10 @@ export default (() => {
 
   function assets(path: string): any {
     return _assets(path)
+  }
+
+  function versionName(): string {
+    return (Platform.OS == 'android' ? appjson().expo?.android?.versionCode : appjson()?.expo?.ios?.buildNumber) + '-' + config('publish_id')
   }
 
   function config(param?: string, ...params: string[]): any {
@@ -210,7 +215,7 @@ export default (() => {
       console.log(message, ...optionalParams);
     }
   }
-  return { appjson, connect, dispatch, log, home, isDebug, navigations, reducer, langId, lang, config, assets, routes, mod }
+  return { appjson, connect, dispatch, log, home, isDebug, navigations, reducer, langId, lang, config, assets, routes, mod, versionName }
 })()
 
 // var a = esp.assets("bacground")     // mengambil file dari folder images

@@ -363,6 +363,7 @@ function createIndex() {
     "    function _config(): string | number | boolean;\n" +
     "    function mod(path: string): any;\n" +
     "    function reducer(): any;\n" +
+    "    function versionName(): string;\n" +
     "    function navigations(): any;\n" +
     "    function isDebug(): boolean;\n" +
     "    function lang(moduleTask: string, langName: string, ...string: string[]): string;\n" +

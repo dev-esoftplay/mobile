@@ -1,8 +1,8 @@
 // withHooks
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { View, Image, Platform } from 'react-native';
-import { useSafeState, LibWorker, LibStyle, LibWorkloop } from 'esoftplay';
+import { useSafeState, LibWorker, LibStyle, LibWorkloop, LibDirect_image } from 'esoftplay';
 import * as FileSystem from 'expo-file-system'
 const sh = require("shorthash")
 
@@ -34,7 +34,7 @@ const getCacheEntry = async (uri: string, toSize: number): Promise<{ exists: boo
 };
 
 export default function m(props: LibPictureProps): any {
-  const [uri, setUri] = useSafeState("")
+  const direct_image = useRef<LibDirect_image>(null)
   let { width, height } = props.style
 
   if (props.source.hasOwnProperty("uri") && (!width || !height)) {
@@ -55,10 +55,10 @@ export default function m(props: LibPictureProps): any {
       toSize = isNaN(toSize) ? LibStyle.width * 0.5 : toSize
       getCacheEntry(props.source.uri, toSize).then(({ path, exists }) => {
         if (exists) {
-          setUri(path)
+          direct_image.current?.setSource({ uri: path })
         } else {
           LibWorker.image(props.source.uri, toSize, (uri) => {
-            setUri("data:image/png;base64," + uri)
+            direct_image.current?.setSource({ uri: "data:image/png;base64," + uri })
             LibWorkloop.execNextTix(FileSystem.writeAsStringAsync, [path, uri, { encoding: "base64" }])
           })
         }
@@ -77,14 +77,14 @@ export default function m(props: LibPictureProps): any {
     return <Image {...props} />
   }
 
-  if (uri == '') {
-    return <View style={props.style} />
-  }
+  // if (uri == '') {
+  //   return <View style={props.style} />
+  // }
 
   return (
-    <Image
+    <LibDirect_image
       {...props}
-      source={{ uri }}
+      ref={direct_image}
       style={props.style} />
   )
 }
