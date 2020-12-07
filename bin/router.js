@@ -41,10 +41,10 @@ var Nav5 = (importer, navs) => {
 // @ts-nocheck
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from 'react-native-screens/native-stack';
 import _global from '../_global'
 \nimport { `+ importer + `, esp } from "esoftplay";\n
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 export default function m(props): any{
   const { user, initialState, handler } = props
@@ -58,7 +58,7 @@ export default function m(props): any{
       <Stack.Navigator
         headerMode="none"
         initialRouteName={(user?.id || user?.user_id) ? econf.home.member : econf.home.public}
-        screenOptions={{ animationEnabled: true, cardStyle: { backgroundColor: 'white' } }}>
+        screenOptions={{ headerShown: false, contentStyle: { backgroundColor: 'white' }, stackAnimation: 'default', stackPresentation: 'push' }}>
 `+ navs + `
       </Stack.Navigator>
     </NavigationContainer>
