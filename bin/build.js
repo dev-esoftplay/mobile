@@ -269,11 +269,16 @@ import * as ErrorReport from 'esoftplay/error'
 import * as ErrorRecovery from 'expo-error-recovery';
 import { enableScreens } from 'react-native-screens';
 import { Platform } from 'react-native';
+import { Notifications as LegacyNotification } from 'expo';
+import * as Notifications from 'expo-notifications';
 // if (Platform.OS == 'ios')
 enableScreens();
 
 _global.store = createStore(esp.reducer())
 _global.persistor = persistStore(_global.store)
+
+if (Platform.OS == 'android')
+	Notifications.addNotificationResponseReceivedListener(x => LibNotification.onAction(x))
 
 export default class App extends React.Component {
 	Home = esp.home()
@@ -284,6 +289,8 @@ export default class App extends React.Component {
 		ErrorRecovery.setRecoveryProps(props)
 		ErrorReport.getError(props.exp.errorRecovery)
 		_global.useGlobalIdx = 0
+		if (Platform.OS == 'ios')
+			LegacyNotification.addListener((x) => LibNotification.onAction({ notification: { request: { content: { data: { body: x.data } } } } }))
 		LibNotification.listen(this.notification)
 	}
 

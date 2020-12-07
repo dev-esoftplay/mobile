@@ -6,6 +6,7 @@ import { esp, UserNotification, LibCurl, LibCrypt, LibNavigation, UserClass, _gl
 import moment from 'moment';
 import AsyncStorage from '@react-native-community/async-storage'
 import Constants from 'expo-constants';
+import { reportApiError } from 'esoftplay/error';
 /*
 {
   to: // exp token
@@ -41,6 +42,37 @@ Notifications.setNotificationHandler({
 
 export default class m {
 
+  static onAction(notification: any) {
+    // if (Constants.deviceName == 'iPhone 6') {
+    // reportApiError("ACTION", JSON.stringify(notification))
+    // Alert.alert("ACTION", JSON.stringify(notification))
+    // }
+    UserNotification.user_notification_loadData()
+    const data = m.getData(notification)
+    function doOpen(data: any) {
+      if (!_global.NavsIsReady) {
+        setTimeout(() => {
+          doOpen(data)
+        }, 300);
+        return
+      } else {
+        setTimeout(() => {
+          m.openPushNotif(data)
+        }, 0)
+      }
+    }
+    doOpen(data)
+  }
+
+  static getData(x: any) {
+    if (Platform.OS == 'ios') {
+      return x.notification.request.content.data.body
+    } else if (Platform.OS == 'android') {
+      return x.notification.request.content.data
+    }
+    return x
+  }
+
   static listen(dataRef: any): () => void {
     if (esp.config('notification') == 1) {
       if (Platform.OS == 'android')
@@ -58,38 +90,12 @@ export default class m {
           }
         )
       // AsyncStorage.getItem("push_id").then((push_id) => {
+      // if (!push_id)
       UserClass.pushToken();
       // })
-      dataRef.receive = Notifications.addNotificationReceivedListener((x) => onReceive(x))
-      dataRef.response = Notifications.addNotificationResponseReceivedListener(x => onAction(x))
-      function getData(x: any) {
-        if (Platform.OS == 'ios') {
-          return x.notification.request.content.data.body
-        } else if (Platform.OS == 'android') {
-          return x.notification.request.content.data
-        }
-        return x
-      }
-
-      function onReceive(notification: any) {
+      dataRef.receive = Notifications.addNotificationReceivedListener((x) => {
         UserNotification.user_notification_loadData()
-      }
-
-      function onAction(notification: any) {
-        function doOpen(data: any) {
-          if (!_global.NavsIsReady) {
-            setTimeout(() => {
-              doOpen(data)
-            }, 300);
-            return
-          } else {
-            m.openPushNotif(data)
-          }
-        }
-        UserNotification.user_notification_loadData()
-        const data = getData(notification)
-        doOpen(data)
-      }
+      })
     }
     else return () => { }
   }
