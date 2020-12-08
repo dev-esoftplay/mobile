@@ -30,9 +30,7 @@ export default class m {
   }
 
   static navigate<S>(route: LibNavigationRoutes, params?: S): void {
-    setTimeout(() => {
-      LibNavigation_dataProperty.libNavigationRef.navigate(route, params)
-    });
+    LibNavigation_dataProperty.libNavigationRef.navigate(route, params)
   }
 
   static getResultKey(props: any): number {
@@ -76,45 +74,37 @@ export default class m {
   }
 
   static replace<S>(routeName: LibNavigationRoutes, params?: S): void {
-    setTimeout(() => {
-      LibNavigation_dataProperty.libNavigationRef.dispatch(
-        StackActions.replace(routeName, params)
-      )
-    })
+    LibNavigation_dataProperty.libNavigationRef.dispatch(
+      StackActions.replace(routeName, params)
+    )
   }
 
   static push<S>(routeName: LibNavigationRoutes, params?: S): void {
-    setTimeout(() => {
-      LibNavigation_dataProperty.libNavigationRef.dispatch(
-        StackActions.push(
-          routeName,
-          params
-        )
+    LibNavigation_dataProperty.libNavigationRef.dispatch(
+      StackActions.push(
+        routeName,
+        params
       )
-    })
+    )
   }
 
   static reset(routeName?: LibNavigationRoutes, ...routeNames: LibNavigationRoutes[]): void {
-    setTimeout(() => {
-      const user = LibUtils.getReduxState('user_class')
-      let _routeName = [routeName || esp.config('home', (user && (user.id || user.user_id)) ? 'member' : 'public')]
-      if (routeNames && routeNames.length > 0) {
-        _routeName = [..._routeName, ...routeNames]
-      }
-      const resetAction = CommonActions.reset({
-        index: _routeName.length - 1,
-        routes: _routeName.map((rn) => ({ name: rn }))
-      });
-      LibNavigation_dataProperty.libNavigationRef.dispatch(resetAction);
+    const user = LibUtils.getReduxState('user_class')
+    let _routeName = [routeName || esp.config('home', (user && (user.id || user.user_id)) ? 'member' : 'public')]
+    if (routeNames && routeNames.length > 0) {
+      _routeName = [..._routeName, ...routeNames]
+    }
+    const resetAction = CommonActions.reset({
+      index: _routeName.length - 1,
+      routes: _routeName.map((rn) => ({ name: rn }))
     });
+    LibNavigation_dataProperty.libNavigationRef.dispatch(resetAction);
   }
 
   static back(deep?: number): void {
-    setTimeout(() => {
-      let _deep = deep || 1
-      const popAction = StackActions.pop(_deep);
-      LibNavigation_dataProperty.libNavigationRef.dispatch(popAction)
-    });
+    let _deep = deep || 1
+    const popAction = StackActions.pop(_deep);
+    LibNavigation_dataProperty.libNavigationRef.dispatch(popAction)
   }
 
   /* return `root` on initialRoute otherwise return the routeName was active  */
@@ -132,12 +122,10 @@ export default class m {
   }
 
   static backToRoot(): void {
-    setTimeout(() => {
-      try {
-        LibNavigation_dataProperty.libNavigationRef.dispatch(StackActions.popToTop());
-      } catch (error) {
-      }
-    });
+    try {
+      LibNavigation_dataProperty.libNavigationRef.dispatch(StackActions.popToTop());
+    } catch (error) {
+    }
   }
 
   static Injector(props: LibNavigationInjector): any {
