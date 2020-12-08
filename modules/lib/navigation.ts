@@ -26,11 +26,11 @@ export default class m {
   }
 
   static navigation(): any {
-    return LibNavigation_dataProperty.libNavigationData._navigation
+    return LibNavigation_dataProperty?.libNavigationData?._navigation
   }
 
   static navigate<S>(route: LibNavigationRoutes, params?: S): void {
-    LibNavigation_dataProperty.libNavigationRef.navigate(route, params)
+    LibNavigation_dataProperty?.libNavigationRef?.navigate?.(route, params)
   }
 
   static getResultKey(props: any): number {
@@ -80,7 +80,7 @@ export default class m {
   }
 
   static push<S>(routeName: LibNavigationRoutes, params?: S): void {
-    LibNavigation_dataProperty.libNavigationRef.dispatch(
+    LibNavigation_dataProperty?.libNavigationRef?.dispatch?.(
       StackActions.push(
         routeName,
         params
@@ -98,13 +98,13 @@ export default class m {
       index: _routeName.length - 1,
       routes: _routeName.map((rn) => ({ name: rn }))
     });
-    LibNavigation_dataProperty.libNavigationRef.dispatch(resetAction);
+    LibNavigation_dataProperty?.libNavigationRef?.dispatch?.(resetAction);
   }
 
   static back(deep?: number): void {
     let _deep = deep || 1
     const popAction = StackActions.pop(_deep);
-    LibNavigation_dataProperty.libNavigationRef.dispatch(popAction)
+    LibNavigation_dataProperty?.libNavigationRef?.dispatch?.(popAction)
   }
 
   /* return `root` on initialRoute otherwise return the routeName was active  */
@@ -122,10 +122,7 @@ export default class m {
   }
 
   static backToRoot(): void {
-    try {
-      LibNavigation_dataProperty.libNavigationRef.dispatch(StackActions.popToTop());
-    } catch (error) {
-    }
+    LibNavigation_dataProperty?.libNavigationRef?.dispatch?.(StackActions.popToTop());
   }
 
   static Injector(props: LibNavigationInjector): any {
