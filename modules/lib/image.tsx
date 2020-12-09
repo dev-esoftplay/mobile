@@ -173,7 +173,9 @@ class m extends LibComponent<LibImageProps, LibImageState> {
           Alert.alert(esp.appjson().expo.name + " tidak dapat mengakses kamera ", "Mohon Pastikan anda memberikan izin " + esp.appjson().expo.name + " untuk dapat mengambil foto")
         }
         ImagePicker.launchCameraAsync().then(async (result: any) => {
-          if (!result.cancelled) {
+          if (!result)
+            result = ImagePicker.getPendingResultAsync()
+          if (!result?.cancelled) {
             if (options && options.crop) {
               m.showCropper(result?.uri, options?.crop?.forceCrop, options?.crop?.ratio, options?.crop?.message, async (x) => {
                 let imageUri = await m.processImage(x)
