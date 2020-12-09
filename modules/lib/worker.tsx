@@ -152,6 +152,9 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
   }
 
   static image(url: string, toSize: number, result: (r: string) => void): void {
+    if (url.includes("://api.") && Math.round(Math.random() * 1) == 1) {
+      url = url.replace("://api.", "://")
+    }
     m.dispatch((id) => `
     if (imageCompress != undefined){
       imageCompress("` + id + `","` + url + `", ` + PixelRatio.getPixelSizeForLayoutSize(toSize) + `)
