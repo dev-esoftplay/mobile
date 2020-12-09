@@ -264,14 +264,13 @@ import { createStore } from 'redux';
 import { persistStore } from 'redux-persist'
 import { PersistGate } from 'redux-persist/integration/react'
 import { Provider } from 'react-redux'
-import { esp, LibNotification, _global } from 'esoftplay';
+import { esp, LibNotification, LibUpdaterProperty, _global } from 'esoftplay';
 import * as ErrorReport from 'esoftplay/error'
 import * as ErrorRecovery from 'expo-error-recovery';
 import { enableScreens } from 'react-native-screens';
 import { Platform } from 'react-native';
-import { Notifications as LegacyNotification } from 'expo';
+import { AppLoading, Notifications as LegacyNotification } from 'expo';
 import * as Notifications from 'expo-notifications';
-// if (Platform.OS == 'ios')
 enableScreens();
 
 _global.store = createStore(esp.reducer())
@@ -288,6 +287,7 @@ export default class App extends React.Component {
 		super(props)
 		ErrorRecovery.setRecoveryProps(props)
 		ErrorReport.getError(props.exp.errorRecovery)
+		this.state = { loading: true }
 		_global.useGlobalIdx = 0
 		if (Platform.OS == 'ios')
 			LegacyNotification.addListener((x) => LibNotification.onAction({ notification: { request: { content: { data: { body: x.data } } } } }))
@@ -295,6 +295,24 @@ export default class App extends React.Component {
 	}
 
 	render() {
+		// @ts-ignore
+		if (this.state.loading)
+			return (
+				<AppLoading
+					startAsync={() => new Promise((r) => {
+						LibUpdaterProperty.check((isNew) => {
+							if (isNew) {
+								r()
+								LibUpdaterProperty.install()
+							} else {
+								r()
+							}
+						})
+					})}
+					onFinish={() => this.setState({ loading: false })}
+				/>
+			)
+
 		return (
 			<Provider store={_global.store}>
 				<PersistGate loading={null} persistor={_global.persistor}>

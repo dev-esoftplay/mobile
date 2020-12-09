@@ -174,7 +174,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
         }
         ImagePicker.launchCameraAsync().then(async (result: any) => {
           if (!result)
-            result = ImagePicker.getPendingResultAsync()
+            result = ImagePicker?.getPendingResultAsync()
           if (!result?.cancelled) {
             if (options && options.crop) {
               m.showCropper(result?.uri, options?.crop?.forceCrop, options?.crop?.ratio, options?.crop?.message, async (x) => {
