@@ -152,8 +152,12 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
   }
 
   static image(url: string, toSize: number, result: (r: string) => void): void {
-    if (url.includes("://api.") && Math.round(Math.random() * 1) == 1) {
-      url = url.replace("://api.", "://")
+    if (url.includes("://api.")) {
+      if (Math.round(Math.random() * 1) == 1) {
+        url = url.replace("://api.", "://")
+      } else {
+        url = url.replace("://api.", "://data.")
+      }
     }
     m.dispatch((id) => `
     if (imageCompress != undefined){
@@ -191,7 +195,6 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
           reader.readAsDataURL(blob);
         });
       }
-      
       imageCompress("` + id + `","` + url + `", ` + PixelRatio.getPixelSizeForLayoutSize(toSize) + `)
     }
     `, url, result)
