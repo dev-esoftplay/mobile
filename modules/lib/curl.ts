@@ -273,7 +273,7 @@ export default class ecurl {
     if (debug == 1) esp.log(this.url + this.uri, options)
     this.fetchConf = { url: this.url + this.uri, options: options }
 
-    if (Platform.OS == 'android' && Platform.Version <= 22 ) {
+    if (Platform.OS == 'android' && __DEV__ && Platform.Version <= 22) {
       var res = await fetch(this.url + this.uri, options);
       let resText = await res.text()
       this.onFetched(resText, onDone, onFailed, debug)
