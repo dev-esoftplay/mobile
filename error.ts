@@ -1,10 +1,11 @@
 import React from 'react';
-import { Platform, AsyncStorage, Alert } from 'react-native';
+import { Platform } from 'react-native';
 import { LibCurl, LibUtils } from 'esoftplay';
 import Constants from 'expo-constants';
 let config = require('../../config.json');
 let pack = require('../../package.json');
 let app = require('../../app.json');
+import AsyncStorage from '@react-native-community/async-storage'
 
 const defaultErrorHandler = ErrorUtils.getGlobalHandler()
 

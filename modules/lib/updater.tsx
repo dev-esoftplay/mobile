@@ -28,19 +28,22 @@ export function checkAlertInstall(): void {
 }
 
 export function check(callback: (isNew: boolean) => void): void {
-  if (!__DEV__)
-    Updates.checkForUpdateAsync().then(({ isAvailable }) => {
-      if (!isAvailable) {
-        callback(false)
+  if (__DEV__) {
+    callback(false)
+    return
+  }
+  Updates.checkForUpdateAsync().then(({ isAvailable }) => {
+    if (!isAvailable) {
+      callback(false)
+      LibProgress.hide()
+    } else {
+      Updates.fetchUpdateAsync().then(({ isNew }) => {
+        callback(isNew)
+      }).catch((e) => {
         LibProgress.hide()
-      } else {
-        Updates.fetchUpdateAsync().then(({ isNew }) => {
-          callback(isNew)
-        }).catch((e) => {
-          LibProgress.hide()
-        })
-      }
-    })
+      })
+    }
+  })
 }
 
 export default function m(props: LibUpdaterProps): any {

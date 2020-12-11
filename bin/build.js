@@ -269,7 +269,7 @@ import * as ErrorReport from 'esoftplay/error'
 import * as ErrorRecovery from 'expo-error-recovery';
 import { enableScreens } from 'react-native-screens';
 import { Platform } from 'react-native';
-import { AppLoading, Notifications as LegacyNotification } from 'expo';
+import { Notifications as LegacyNotification } from 'expo';
 import * as Notifications from 'expo-notifications';
 enableScreens();
 
@@ -295,24 +295,6 @@ export default class App extends React.Component {
 	}
 
 	render() {
-		// @ts-ignore
-		if (this.state.loading)
-			return (
-				<AppLoading
-					startAsync={() => new Promise((r) => {
-						LibUpdaterProperty.check((isNew) => {
-							if (isNew) {
-								r()
-								LibUpdaterProperty.install()
-							} else {
-								r()
-							}
-						})
-					})}
-					onFinish={() => this.setState({ loading: false })}
-				/>
-			)
-
 		return (
 			<Provider store={_global.store}>
 				<PersistGate loading={null} persistor={_global.persistor}>
