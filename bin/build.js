@@ -3,7 +3,6 @@
 const { spawn } = require('child_process');
 const fs = require('fs');
 const { stdout } = require('process');
-
 const DIR = "../../"
 const packjson = DIR + "package.json"
 const appjson = DIR + "app.json"
@@ -15,6 +14,13 @@ const appjs = DIR + "App.js"
 const appts = DIR + "App.tsx"
 const store = DIR + "store.ts"
 const pathScript = DIR + "node_modules/react-native-scripts/build/bin/react-native-scripts.js"
+
+/**
+ * function ini untuk mengambil name autocomplete dari @expo/vector-icons untuk library LibIcon
+ * function akan di injectkan di folder @expo/vector-icons/build dengan nama file esoftplay_icons.ts
+ * function ini hanya akan dieksekusi sekali saat install esoftplay framework
+*/
+
 if (fs.existsSync(packjson)) {
 	let txt = fs.readFileSync(packjson, 'utf8');
 	let $package = JSON.parse(txt);
@@ -253,7 +259,6 @@ npm-debug.*\n\
 package-lock.json\n\
 yarn.lock\n\
 			`
-
 		fs.writeFile(gitignore, GitIgnore, (err) => {
 			if (err) throw err;
 			console.log('.gitignore has been created');
@@ -387,6 +392,22 @@ export default class App extends React.Component {
 			exec(cmd, (err, stdout, stderr) => {
 				stdout.toString()
 				console.log('App.js has been replace to App.tsx');
+				if (fs.existsSync('../@expo/vector-icons')) {
+					let esoftplayIcon = ''
+					fs.readdir('../@expo/vector-icons/build', (err, files) => {
+						const dfiles = files.filter((file) => file.includes('d.ts'))
+						dfiles.map((dfile, i) => {
+							const rdfile = fs.readFileSync('../@expo/vector-icons/build/' + dfile, { encoding: 'utf8' })
+							const names = (/import\("\.\/createIconSet"\)\.Icon<((.*))>;/g).exec(rdfile);
+							if (names && names[1].includes('|')) {
+								esoftplayIcon += 'export type ' + dfile.replace('.d.ts', 'Types') + ' = ' + names[1] + '\n';
+							}
+						})
+						fs.writeFileSync('../@expo/vector-icons/build/esoftplay_icons.ts', esoftplayIcon)
+					})
+				} else {
+					console.log("@expo/vector-icons not installed")
+				}
 			})
 			console.log('Please wait until processes has finished...');
 		});

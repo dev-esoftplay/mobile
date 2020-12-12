@@ -5,7 +5,7 @@ import React, { useEffect } from "react";
 import Navs from "../../cache/navs";
 import { View, ImageBackground } from "react-native";
 import * as Font from "expo-font";
-import { esp, UserClass, LibWorker, LibUpdaterProperty, LibWorkloop, LibNet_status, LibTheme, LibLocale, LibDialog, LibStyle, LibImage, LibProgress, UserMain, LibToast, useSafeState, LibVersion, _global, UserIndex_dataProperty, UseSelector, LibPictureProperty } from 'esoftplay';
+import { esp, UserClass, LibWorker, LibLoading, LibUpdaterProperty, LibWorkloop, LibNet_status, LibTheme, LibLocale, LibDialog, LibStyle, LibImage, LibProgress, UserMain, LibToast, useSafeState, LibVersion, _global, UserIndex_dataProperty, UseSelector, LibPictureProperty } from 'esoftplay';
 import firebase from 'firebase'
 import { useDispatch } from 'react-redux';
 
@@ -92,8 +92,7 @@ export default function m(props: UserIndexProps): any {
     }
   }, [loading])
 
-  if (loading) return <ImageBackground style={{ flex: 1 }} source={esp.assets('splash.png')} />
-
+  if (loading) return <LibLoading />
   return (
     <>
       <View style={{ flex: 1 }}>

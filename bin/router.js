@@ -178,7 +178,7 @@ checks.forEach(modules => {
                       tmpTask[clsName]["interface"] = [];
                     }
                   }
-                  if (m = data.match(/\n\s{0,}export\s+(interface\s+[a-zA-Z0-9_]+\s{0,}\{[^\}]+\})/g)) {
+                  if (m = data.match(/\n\s{0,}export\s+(interface\s+[a-zA-Z0-9_]+.*\{[^\}]+\})/g)) {
                     for (var i = 0; i < m.length; i++) {
                       tmpTask[clsName]["interface"].push(m[i].replace('export ', '').trim());
                     }
@@ -348,6 +348,7 @@ function createIndex() {
 
   var Text = "import { Component, ComponentClass, Ref, ComponentType } from 'react';\n" +
     "import { ContextProvider } from 'recyclerlistview';\n" +
+    `import { AntDesignTypes, EntypoTypes, EvilIconsTypes, FeatherTypes, FontAwesomeTypes, FontistoTypes, FoundationTypes, IoniconsTypes, MaterialCommunityIconsTypes, MaterialIconsTypes, OcticonsTypes, SimpleLineIconsTypes, ZocialTypes, } from '@expo/vector-icons/build/esoftplay_icons'` +
     "\n" +
     "declare module \"esoftplay\" {\n" +
     "  var _global: any;\n" +
@@ -380,7 +381,7 @@ function createIndex() {
       get: (param?: string, ...params: string[]) => S,
       set: (x: S) => void,
       reset: () => void,
-      useSelector: (selector: (state: T) => any) => any;
+      useSelector: (selector: (state: S) => any) => any;
     }\n
   interface useGlobalOption {
     persistKey?: string,
