@@ -152,7 +152,7 @@ export default class edetail extends LibComponent<ContentDetailProps, ContentDet
           </View>
         }
         {config.title == 1 && <Text style={[styles.title]} >{result.title}</Text>}
-        {result.created != "" && config.created && <Text note style={styles.created}>{moment(result.created).format("dddd, DD MMMM YYYY HH:mm")}</Text>}
+        {result.created == 1 && <Text note style={styles.created}>{moment(result.created).format("dddd, DD MMMM YYYY HH:mm")}</Text>}
       </View>
     }
 
@@ -233,7 +233,7 @@ export default class edetail extends LibComponent<ContentDetailProps, ContentDet
                 </Text>
               }
               {
-                config.created &&
+                config.created == 1 &&
                 <Text
                   note
                   style={styles.created}>
