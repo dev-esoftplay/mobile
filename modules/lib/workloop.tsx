@@ -48,7 +48,7 @@ export default class m extends LibComponent<LibWorkloopProps, LibWorkloopState> 
     }
   }
 
-  static onMessage = (e: any) => {
+  static onMessage(e: any): void {
     if (_global.workloopHasTask) {
       InteractionManager.runAfterInteractions(() => {
         const ctask = _global?.workloopTasks?.[0]

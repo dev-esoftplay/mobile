@@ -122,10 +122,6 @@ export default class m extends LibComponent<LibCarrouselProps, LibCarrouselState
     if (childrenLength != oldChildrenLength) {
       const { currentPage } = this.state;
       this._clearTimer();
-      let childrenLength = 0;
-      if (children) {
-        childrenLength = React.Children.count(children) || 1;
-      }
       const nextPage = currentPage >= childrenLength ? childrenLength - 1 : currentPage;
       if (React.Children.count(children) != React.Children.count(this.props.children))
         this.setState({ childrenLength }, () => {

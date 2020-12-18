@@ -31,9 +31,8 @@ export default function m(props: LibCarrousel_snapProps): any {
   const views = useMemo(() => [...prefix(), ...props.data, ...suffix()], [props.data])
   const renderOffsets = useMemo(() => views.map((_, i) => i * props.itemWidth), [props.data])
   const wideMargin = (props.maxWidth - props.itemWidth) * 0.5
-
-  let thisPage = 0
-  let timmerTick: any
+  let thisPage = useRef(0).current
+  let timmerTick: any = useRef().current
 
   useEffect(() => {
     let initialPage = props.initialPage || 0
