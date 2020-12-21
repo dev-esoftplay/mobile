@@ -2,7 +2,7 @@
 
 import React, { useMemo } from 'react';
 import { View, Image, Platform } from 'react-native';
-import { useSafeState, LibWorker, LibStyle, LibWorkloop, } from 'esoftplay';
+import { useSafeState, LibWorker, LibStyle, LibWorkloop, esp, } from 'esoftplay';
 import * as FileSystem from 'expo-file-system'
 const sh = require("shorthash")
 
@@ -36,6 +36,7 @@ const getCacheEntry = async (uri: string, toSize: number): Promise<{ exists: boo
 export default function m(props: LibPictureProps): any {
   const [uri, setUri] = useSafeState('')
   let { width, height } = props.style
+  const valid = props?.source?.uri?.includes(esp.config('domain'))
 
   if (props.source.hasOwnProperty("uri") && (!width || !height)) {
     if (width) {
@@ -47,7 +48,7 @@ export default function m(props: LibPictureProps): any {
   }
 
   useMemo(() => {
-    if (Platform.OS == 'android' && Platform.Version <= 22 && __DEV__) {
+    if (!valid || (Platform.OS == 'android' && Platform.Version <= 22 && __DEV__)) {
       return
     }
     if (props.source.uri) {
@@ -66,14 +67,14 @@ export default function m(props: LibPictureProps): any {
     }
   }, [props.source])
 
-  if (Platform.Version <= 22 && Platform.OS == 'android' && __DEV__) {
+  if (!valid || (Platform.Version <= 22 && Platform.OS == 'android' && __DEV__)) {
     if (typeof props.source != 'number' && !props.source.uri) {
       return <View style={props.style} />
     }
     return <Image {...props} />
   }
 
-  if (!props.source.hasOwnProperty("uri")) {
+  if (!valid || (!props.source.hasOwnProperty("uri"))) {
     return <Image {...props} />
   }
 
