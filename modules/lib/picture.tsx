@@ -35,8 +35,9 @@ const getCacheEntry = async (uri: string, toSize: number): Promise<{ exists: boo
 
 export default function m(props: LibPictureProps): any {
   const [uri, setUri] = useSafeState('')
+  const b_uri = props?.source?.uri?.replace?.('://api.', "://")
   let { width, height } = props.style
-  const valid = props?.source?.uri?.includes(esp.config('domain'))
+  const valid = b_uri?.includes?.(esp.config('domain'))
 
   if (props.source.hasOwnProperty("uri") && (!width || !height)) {
     if (width) {
@@ -51,24 +52,24 @@ export default function m(props: LibPictureProps): any {
     if (!valid || (Platform.OS == 'android' && Platform.Version <= 22 && __DEV__)) {
       return
     }
-    if (props.source.uri) {
+    if (b_uri) {
       let toSize = Math.max(width, height)
       toSize = isNaN(toSize) ? LibStyle.width * 0.5 : toSize
-      getCacheEntry(props.source.uri, toSize).then(({ path, exists }) => {
+      getCacheEntry(b_uri, toSize).then(({ path, exists }) => {
         if (exists) {
           setUri(path)
         } else {
-          LibWorker.image(props.source.uri, toSize, (uri) => {
+          LibWorker.image(b_uri, toSize, (uri) => {
             setUri("data:image/png;base64," + uri)
             LibWorkloop.execNextTix(FileSystem.writeAsStringAsync, [path, uri, { encoding: "base64" }])
           })
         }
       })
     }
-  }, [props.source])
+  }, [props?.source?.uri])
 
   if (!valid || (Platform.Version <= 22 && Platform.OS == 'android' && __DEV__)) {
-    if (typeof props.source != 'number' && !props.source.uri) {
+    if (typeof props.source != 'number' && !b_uri) {
       return <View style={props.style} />
     }
     return <Image {...props} />

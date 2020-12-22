@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // @ts-check
-const { spawn } = require('child_process');
+const { spawn, execSync } = require('child_process');
 const fs = require('fs');
 const { stdout } = require('process');
 const DIR = "../../"
@@ -389,26 +389,24 @@ export default class App extends React.Component {
 				cmd += "&& npm install --save-dev " + installDevLibs.join(" ") + " "
 			if (installExpoLibs.length > 0)
 				cmd += "&& expo install " + installExpoLibs.join(" ")
-			exec(cmd, (err, stdout, stderr) => {
-				stdout.toString()
-				console.log('App.js has been replace to App.tsx');
-				if (fs.existsSync('../@expo/vector-icons')) {
-					let esoftplayIcon = ''
-					fs.readdir('../@expo/vector-icons/build', (err, files) => {
-						const dfiles = files.filter((file) => file.includes('d.ts'))
-						dfiles.map((dfile, i) => {
-							const rdfile = fs.readFileSync('../@expo/vector-icons/build/' + dfile, { encoding: 'utf8' })
-							const names = (/import\("\.\/createIconSet"\)\.Icon<((.*))>;/g).exec(rdfile);
-							if (names && names[1].includes('|')) {
-								esoftplayIcon += 'export type ' + dfile.replace('.d.ts', 'Types') + ' = ' + names[1] + '\n';
-							}
-						})
-						fs.writeFileSync('../@expo/vector-icons/build/esoftplay_icons.ts', esoftplayIcon)
+			execSync(cmd, { stdio: ['inherit', 'inherit', 'inherit'] })
+			console.log('App.js has been replace to App.tsx');
+			if (fs.existsSync('../@expo/vector-icons')) {
+				let esoftplayIcon = ''
+				fs.readdir('../@expo/vector-icons/build', (err, files) => {
+					const dfiles = files.filter((file) => file.includes('d.ts'))
+					dfiles.map((dfile, i) => {
+						const rdfile = fs.readFileSync('../@expo/vector-icons/build/' + dfile, { encoding: 'utf8' })
+						const names = (/import\("\.\/createIconSet"\)\.Icon<((.*))>;/g).exec(rdfile);
+						if (names && names[1].includes('|')) {
+							esoftplayIcon += 'export type ' + dfile.replace('.d.ts', 'Types') + ' = ' + names[1] + '\n';
+						}
 					})
-				} else {
-					console.log("@expo/vector-icons not installed")
-				}
-			})
+					fs.writeFileSync('../@expo/vector-icons/build/esoftplay_icons.ts', esoftplayIcon)
+				})
+			} else {
+				console.log("@expo/vector-icons not installed")
+			}
 			console.log('Please wait until processes has finished...');
 		});
 	}

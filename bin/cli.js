@@ -24,15 +24,7 @@ var args = process.argv.slice(2);
 
 // console.log(modpath, "sdofsjdofjsd")
 function execution() {
-	var yourscript = exec(
-		'node ./node_modules/esoftplay/bin/router.js && watchman -j < ' + watcherConf,
-		(error, stdout, stderr) => {
-			console.log(stdout);
-			console.log(stderr);
-			if (error !== null) {
-				console.log(`exec error: ${error}`);
-			}
-		});
+	command('node ./node_modules/esoftplay/bin/router.js && watchman -j < ' + watcherConf)
 }
 
 if (args.length == 0) {
@@ -476,15 +468,7 @@ function askPerm(question, answer) {
 }
 
 function command(command) {
-	exec(
-		command,
-		(error, stdout, stderr) => {
-			console.log(stdout);
-			console.log(stderr);
-			if (error !== null) {
-				console.log(`exec error: ${error}`);
-			}
-		});
+	exec(command, { stdio: ['inherit', 'inherit', 'inherit'] });
 }
 
 function build() {
