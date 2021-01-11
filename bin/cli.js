@@ -20,9 +20,12 @@ const gplistdebug = DIR + "GoogleService-Info.debug.plist"
 
 
 const watchman_configs = [
-/* watcher esp */	`watchman -j <<< '[ "trigger", "./", { "name": "esp", "expression": [ "allof", [ "not", [ "dirname", "node_modules" ] ], [ "not", [ "name", "index.d.ts" ] ] ], "command": [ "node", "./node_modules/esoftplay/bin/router.js" ], "append_files": true } ]'`,
-/* config live */	`watchman -j <<< '[ "trigger", "./", { "name": "config_live", "expression": [ "allof", [ "name", "config.live.json" ] ], "command": [ "node", "./node_modules/esoftplay/bin/uconfig.js", "live" ] } ]'`,
-/* config debug */	`watchman -j <<< '[ "trigger", "./", { "name": "config_debug", "expression": [ "allof", [ "name", "config.debug.json" ] ], "command": [ "node", "./node_modules/esoftplay/bin/uconfig.js", "debug" ] } ]'`,
+	/* watcher esp */
+	`watchman -j <<< '[ "trigger", "./", { "name": "esp", "expression": [ "allof", [ "not", [ "dirname", "node_modules" ] ], [ "not", [ "name", "index.d.ts" ] ] ], "command": [ "node", "./node_modules/esoftplay/bin/router.js" ], "append_files": true } ]'`,
+	/* config live */
+	`watchman -j <<< '[ "trigger", "./", { "name": "config_live", "expression": [ "allof", [ "name", "config.live.json" ] ], "command": [ "node", "./node_modules/esoftplay/bin/uconfig.js", "live" ] } ]'`,
+	/* config debug */
+	`watchman -j <<< '[ "trigger", "./", { "name": "config_debug", "expression": [ "allof", [ "name", "config.debug.json" ] ], "command": [ "node", "./node_modules/esoftplay/bin/uconfig.js", "debug" ] } ]'`,
 ]
 var args = process.argv.slice(2);
 
