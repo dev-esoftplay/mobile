@@ -2,17 +2,14 @@
 // @ts-check
 const { spawn, execSync } = require('child_process');
 const fs = require('fs');
-const { stdout } = require('process');
 const DIR = "../../"
 const packjson = DIR + "package.json"
 const appjson = DIR + "app.json"
 const confjson = DIR + "config.json"
-const babelrc = DIR + ".babelrc"
 const gitignore = DIR + ".gitignore"
 const tsconfig = DIR + "tsconfig.json"
 const appjs = DIR + "App.js"
 const appts = DIR + "App.tsx"
-const store = DIR + "store.ts"
 const pathScript = DIR + "node_modules/react-native-scripts/build/bin/react-native-scripts.js"
 
 /**
@@ -254,6 +251,8 @@ if (fs.existsSync(packjson)) {
 .expo*/\n\
 index.d.ts\n\
 config.json\n\
+config.debug.json\n\
+config.live.json\n\
 node_modules/\n\
 npm-debug.*\n\
 package-lock.json\n\

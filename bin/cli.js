@@ -19,12 +19,16 @@ const gplistlive = DIR + "GoogleService-Info.live.plist"
 const gplistdebug = DIR + "GoogleService-Info.debug.plist"
 
 
-var watcherConf = "./node_modules/esoftplay/bin/watchman.json";
+const watchman_configs = [
+/* watcher esp */	`watchman -j <<< '[ "trigger", "./", { "name": "esp", "expression": [ "allof", [ "not", [ "dirname", "node_modules" ] ], [ "not", [ "name", "index.d.ts" ] ] ], "command": [ "node", "./node_modules/esoftplay/bin/router.js" ], "append_files": true } ]'`,
+/* config live */	`watchman -j <<< '[ "trigger", "./", { "name": "config_live", "expression": [ "allof", [ "name", "config.live.json" ] ], "command": [ "node", "./node_modules/esoftplay/bin/uconfig.js", "live" ] } ]'`,
+/* config debug */	`watchman -j <<< '[ "trigger", "./", { "name": "config_debug", "expression": [ "allof", [ "name", "config.debug.json" ] ], "command": [ "node", "./node_modules/esoftplay/bin/uconfig.js", "debug" ] } ]'`,
+]
 var args = process.argv.slice(2);
 
 // console.log(modpath, "sdofsjdofjsd")
 function execution() {
-	command('node ./node_modules/esoftplay/bin/router.js && watchman -j < ' + watcherConf)
+	command('node ./node_modules/esoftplay/bin/router.js && ' + watchman_configs.join(' && '))
 }
 
 if (args.length == 0) {
