@@ -40,10 +40,6 @@ Notifications.setNotificationHandler({
 export default class m {
 
   static onAction(notification: any): void {
-    // if (Constants.deviceName == 'iPhone 6') {
-    // reportApiError("ACTION", JSON.stringify(notification))
-    // Alert.alert("ACTION", JSON.stringify(notification))
-    // }
     UserNotification.user_notification_loadData()
     const data = m.getData(notification)
     function doOpen(data: any) {
@@ -62,12 +58,7 @@ export default class m {
   }
 
   static getData(x: any): any {
-    if (Platform.OS == 'ios') {
-      return x.notification.request.content.data.body
-    } else if (Platform.OS == 'android') {
-      return x.notification.request.content.data
-    }
-    return x
+    return x?.notification?.request?.content?.data
   }
 
   static listen(dataRef: any): () => void {
@@ -86,10 +77,7 @@ export default class m {
             lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC
           }
         )
-      // AsyncStorage.getItem("push_id").then((push_id) => {
-      // if (!push_id)
       UserClass.pushToken();
-      // })
       dataRef.receive = Notifications.addNotificationReceivedListener((x) => {
         UserNotification.user_notification_loadData()
       })
@@ -222,6 +210,4 @@ export default class m {
         break;
     }
   }
-
-
 }
