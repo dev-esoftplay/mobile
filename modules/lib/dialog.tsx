@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableOpacity, BackHandler } from 'react-native';
+import { View, TouchableOpacity, BackHandler, Keyboard } from 'react-native';
 import { esp, LibComponent, LibTheme, LibStyle, LibTextstyle, LibIcon, LibIconStyle } from 'esoftplay';
 import { connect } from 'react-redux';
 
@@ -114,6 +114,7 @@ class m extends LibComponent<LibDialogProps, LibDialogState>{
   }
 
   static show(style: 'default' | 'danger', icon: LibIconStyle, title: string, msg: string, ok?: string, cancel?: string, onPressOK?: () => void, onPressCancel?: () => void): void {
+    Keyboard.dismiss()
     esp.dispatch({
       type: "lib_dialog_show",
       payload: {
@@ -130,6 +131,7 @@ class m extends LibComponent<LibDialogProps, LibDialogState>{
   }
 
   static custom(view: any): void {
+    Keyboard.dismiss()
     esp.dispatch({
       type: "lib_dialog_show",
       payload: {

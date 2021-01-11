@@ -1,6 +1,6 @@
 import React from 'react';
 import { LibComponent, LibStyle, LibKeyboard_avoid } from 'esoftplay';
-import { View, KeyboardAvoidingView, Animated, TouchableOpacity, BackHandler } from 'react-native';
+import { View, KeyboardAvoidingView, Animated, TouchableOpacity, BackHandler, Keyboard } from 'react-native';
 
 export interface LibSlidingupProps {
 
@@ -36,6 +36,7 @@ export default class m extends LibComponent<LibSlidingupProps, LibSlidingupState
   }
 
   show(): void {
+    Keyboard.dismiss()
     if (this.props.children) {
       this.setState({ show: true }, () => {
         this._toggleSubview(true)
