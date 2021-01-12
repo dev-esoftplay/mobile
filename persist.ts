@@ -2,6 +2,7 @@ import { useRef, useEffect, useState, useMemo } from 'react'
 import AsyncStorage from '@react-native-community/async-storage'
 const _global = require('./_global')
 
+let obj: any = {}
 export default function usePersistState(key: string, def?: any): any[] {
   const r = useRef(true)
   const [a, b] = useState(def)
@@ -16,16 +17,26 @@ export default function usePersistState(key: string, def?: any): any[] {
   }
 
   function e(callback?: (a?: typeof def) => void) {
-    if (r.current)
-      AsyncStorage.getItem(key).then((x) => {
-        if (x) {
-          if (callback) callback(JSON.parse(x))
-          c(JSON.parse(x))
-        } else {
-          if (callback) callback(def)
-          c(def)
-        }
-      })
+    if (obj[key]) {
+      clearTimeout(obj[key])
+      debounce()
+    } else
+      debounce()
+    function debounce() {
+      obj[key] = setTimeout(() => {
+        if (r.current)
+          AsyncStorage.getItem(key).then((x) => {
+            delete obj[key]
+            if (x) {
+              if (callback) callback(JSON.parse(x))
+              c(JSON.parse(x))
+            } else {
+              if (callback) callback(def)
+              c(def)
+            }
+          })
+      }, 100);
+    }
   }
 
   function d() {
@@ -39,13 +50,7 @@ export default function usePersistState(key: string, def?: any): any[] {
     if (!_global.usePersistState_Setter[key])
       _global.usePersistState_Setter[key] = []
     _global.usePersistState_Setter[key].push(b)
-    AsyncStorage.getItem(key).then((x) => {
-      if (x) {
-        c(JSON.parse(x))
-      } else {
-        c(def)
-      }
-    })
+    e()
   }, [])
 
   useEffect(() => {
