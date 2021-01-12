@@ -17,21 +17,13 @@ const confdebug = DIR + "config.debug.json"
 const gplist = DIR + "GoogleService-Info.plist"
 const gplistlive = DIR + "GoogleService-Info.live.plist"
 const gplistdebug = DIR + "GoogleService-Info.debug.plist"
-const wconfig = require('./wconfig.json')
 
-const watchman_configs = [
-	/* watcher esp */
-	`watchman -j <<< '` + JSON.stringify(wconfig.main) + `'`,
-	/* config live */
-	`watchman -j <<< '` + JSON.stringify(wconfig.clive) + `'`,
-	/* config debug */
-	`watchman -j <<< '` + JSON.stringify(wconfig.cdebug) + `'`,
-]
 var args = process.argv.slice(2);
 
 // console.log(modpath, "sdofsjdofjsd")
 function execution() {
-	command(watchman_configs.join(' && ') + '&& node ./node_modules/esoftplay/bin/router.js')
+	const cmd = `watchman -j <<< '["trigger","./",{"name":"esp","expression":["allof",["not",["dirname","node_modules"]],["not",["name","index.d.ts"]]],"command":["node","./node_modules/esoftplay/bin/router.js"],"append_files":true}]' && watchman -j <<< '["trigger","./",{"name":"espcl","expression":["allof",["name","config.live.json"]],"command":["node","./node_modules/esoftplay/bin/uconfig.js","live"]}]' && watchman -j <<< '["trigger","./",{"name":"espcd","expression":["allof",["name","config.debug.json"]],"command":["node","./node_modules/esoftplay/bin/uconfig.js","debug"]}]'&& node ./node_modules/esoftplay/bin/router.js`
+	exec(cmd, {})
 }
 
 if (args.length == 0) {
@@ -475,7 +467,10 @@ function askPerm(question, answer) {
 }
 
 function command(command) {
-	exec(command, { stdio: ['inherit', 'inherit', 'inherit'] });
+	exec(command, {
+		shell: '/bin/bash',
+		stdio: ['inherit', 'inherit', 'inherit']
+	});
 }
 
 function build() {
