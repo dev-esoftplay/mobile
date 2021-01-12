@@ -6,7 +6,7 @@ const shorthash = require('shorthash')
 const DIR = './'
 const args = process.argv.slice(2);
 const pclive = DIR + 'config.live.json'
-const assetsBackup = DIR + 'assets/confighash'
+const assetsBackup = DIR + 'assets/confighash.js'
 const pcdebug = DIR + 'config.debug.json'
 
 function command(command) {
@@ -41,7 +41,9 @@ function checkConfigChange() {
     if (fs.existsSync(path)) {
       const newConfLive = JSON.stringify(readToJSON(path))
       if (fs.existsSync(assetsBackup)) {
-        const txt = fs.readFileSync(assetsBackup, 'utf8').split('|');
+        let txt = fs.readFileSync(assetsBackup, 'utf8')
+        txt = txt.slice(1, txt.length - 1)
+        txt = txt.split('|');
         if (args[0] == 'live') {
           out = txt[1]
         } else if (args[0] == 'debug') {
@@ -55,11 +57,11 @@ function checkConfigChange() {
           } else if (args[0] == 'debug') {
             hash = newOut + '|' + txt[1]
           }
-          fs.writeFileSync(assetsBackup, hash)
+          fs.writeFileSync(assetsBackup, '`' + hash + '`')
           updateToTelegram()
         }
       } else {
-        fs.writeFileSync(assetsBackup, 'inital|initial')
+        fs.writeFileSync(assetsBackup, '`inital|initial`')
         checkConfigChange()
       }
     }
