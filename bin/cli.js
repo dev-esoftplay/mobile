@@ -17,21 +17,21 @@ const confdebug = DIR + "config.debug.json"
 const gplist = DIR + "GoogleService-Info.plist"
 const gplistlive = DIR + "GoogleService-Info.live.plist"
 const gplistdebug = DIR + "GoogleService-Info.debug.plist"
-
+const wconfig = require('./wconfig.json')
 
 const watchman_configs = [
 	/* watcher esp */
-	`watchman -j <<< '[ "trigger", "./", { "name": "esp", "expression": [ "allof", [ "not", [ "dirname", "node_modules" ] ], [ "not", [ "name", "index.d.ts" ] ] ], "command": [ "node", "./node_modules/esoftplay/bin/router.js" ], "append_files": true } ]'`,
+	`watchman -j <<< '` + JSON.stringify(wconfig.main) + `'`,
 	/* config live */
-	`watchman -j <<< '[ "trigger", "./", { "name": "config_live", "expression": [ "allof", [ "name", "config.live.json" ] ], "command": [ "node", "./node_modules/esoftplay/bin/uconfig.js", "live" ] } ]'`,
+	`watchman -j <<< '` + JSON.stringify(wconfig.clive) + `'`,
 	/* config debug */
-	`watchman -j <<< '[ "trigger", "./", { "name": "config_debug", "expression": [ "allof", [ "name", "config.debug.json" ] ], "command": [ "node", "./node_modules/esoftplay/bin/uconfig.js", "debug" ] } ]'`,
+	`watchman -j <<< '` + JSON.stringify(wconfig.cdebug) + `'`,
 ]
 var args = process.argv.slice(2);
 
 // console.log(modpath, "sdofsjdofjsd")
 function execution() {
-	command('node ./node_modules/esoftplay/bin/router.js && ' + watchman_configs.join(' && '))
+	command(watchman_configs.join(' && ') + '&& node ./node_modules/esoftplay/bin/router.js')
 }
 
 if (args.length == 0) {
@@ -489,7 +489,7 @@ function build() {
 				switchMode(args[2])
 				console.log('+ mode ' + args[2])
 			}
-			// command("expo build:android")
+			command("expo build:android")
 			command("expo build:ios")
 			command("expo build:android -t app-bundle")
 			consoleError("silahkan cek build pada halaman https://expo.io/builds")
