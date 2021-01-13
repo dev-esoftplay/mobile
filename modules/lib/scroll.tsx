@@ -66,7 +66,6 @@ export default class escroll extends LibComponent<LibScrollProps, LibScrollState
     return (
       <View key={index.toString()} onLayout={(e) => {
         this.idxNumber[index] = this.props.horizontal ? e.nativeEvent.layout.x : e.nativeEvent.layout.y
-        console.log(this.idxNumber)
       }} >
         {item}
       </View>
