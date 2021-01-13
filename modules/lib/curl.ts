@@ -35,6 +35,7 @@ export default class ecurl {
     this.signatureBuild = this.signatureBuild.bind(this)
     this.encodeGetValue = this.encodeGetValue.bind(this)
     this.urlEncode = this.urlEncode.bind(this)
+    this.setEnabledTimeoutMode = this.setEnabledTimeoutMode.bind(this)
     this.closeConnection = this.closeConnection.bind(this)
     const str: any = _global.store.getState()
     if (uri && str.lib_net_status.isOnline) {
@@ -58,6 +59,9 @@ export default class ecurl {
 
   setMaxTimeout(milisecond: number): void {
     this.maxTimeout = milisecond
+  }
+  setEnabledTimeoutMode(status: boolean): void {
+    this.enabledTimeoutMode = status
   }
 
   async setHeader(): Promise<void> {
@@ -194,6 +198,8 @@ export default class ecurl {
 
   async custom(uri: string, post?: any, onDone?: (res: any, timeout: boolean) => void, debug?: number): Promise<void> {
     this.setMaxTimeout(this.maxTimeout)
+    this.setEnabledTimeoutMode(this.enabledTimeoutMode)
+    console.log(this.enabledTimeoutMode)
     if (this.enabledTimeoutMode) {
       this.timeout = setTimeout(() => {
         Alert.alert(this.alertTimeout.title, this.alertTimeout.message, [
@@ -260,6 +266,8 @@ export default class ecurl {
 
   async init(uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number, upload?: boolean): Promise<void> {
     this.setMaxTimeout(this.maxTimeout)
+    this.setEnabledTimeoutMode(this.enabledTimeoutMode)
+    console.log(this.enabledTimeoutMode)
     if (this.enabledTimeoutMode) {
       this.timeout = setTimeout(() => {
         Alert.alert(this.alertTimeout.title, this.alertTimeout.message, [
