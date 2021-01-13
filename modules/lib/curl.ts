@@ -1,10 +1,10 @@
 //
 import react from "react";
-import { Platform } from "react-native"
 import momentTimeZone from "moment-timezone"
 import moment from "moment/min/moment-with-locales"
-import { esp, LibCrypt, LibProgress, _global, LibWorker, LibUtils } from 'esoftplay';
+import { esp, LibCrypt, LibProgress, _global, LibUtils } from 'esoftplay';
 import { reportApiError } from "../../error";
+import { Alert } from "react-native";
 
 export default class ecurl {
   isDebug = esp.config("isDebug");
@@ -14,8 +14,17 @@ export default class ecurl {
   apiKey: any = 0
   uri: any = '';
   fetchConf: any = ''
-  maxTimeout = 120000 // 2 menit
-  // timeout: any
+  enabledTimeoutMode: boolean = false
+  maxTimeout = 30000 // 30detik
+  timeout: any
+  alertTimeout = {
+    title: "Oops..! Gagal menyambung ke server",
+    message: "Sepertinya perangkatmu ada masalah jaringan",
+    ok: "Coba Lagi",
+    cancel: "Tutup"
+  }
+  controller = new AbortController();
+  signal = this.controller.signal;
 
   constructor(uri?: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number) {
     this.header = {}
@@ -26,6 +35,7 @@ export default class ecurl {
     this.signatureBuild = this.signatureBuild.bind(this)
     this.encodeGetValue = this.encodeGetValue.bind(this)
     this.urlEncode = this.urlEncode.bind(this)
+    this.closeConnection = this.closeConnection.bind(this)
     const str: any = _global.store.getState()
     if (uri && str.lib_net_status.isOnline) {
       this.init(uri, post, onDone, onFailed, debug);
@@ -59,6 +69,10 @@ export default class ecurl {
     });
   }
 
+  closeConnection(): void {
+    this?.controller?.abort?.()
+  }
+
   onDone(result: any, msg?: string): void {
 
   }
@@ -87,6 +101,7 @@ export default class ecurl {
         }
         let ps = Object.keys(_post).map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(_post[key])).join('&');
         var options: any = {
+          signal: this.signal,
           method: "POST",
           headers: {
             ...this.header,
@@ -97,6 +112,7 @@ export default class ecurl {
           _post: _post
         }
         var res = await fetch(this.url + this.uri + (token_uri || 'get_token'), options);
+        clearTimeout(this.timeout)
         let resText = await res.text()
         this.onFetched(resText,
           (res, msg) => {
@@ -177,12 +193,25 @@ export default class ecurl {
   }
 
   async custom(uri: string, post?: any, onDone?: (res: any, timeout: boolean) => void, debug?: number): Promise<void> {
-    // this.setMaxTimeout(this.maxTimeout)
-    // this.timeout = setTimeout(() => {
-    //   // if (onDone)
-    //     // onDone("Request Timed Out", true)
-    //   LibProgress.hide()
-    // }, this.maxTimeout);
+    this.setMaxTimeout(this.maxTimeout)
+    if (this.enabledTimeoutMode) {
+      this.timeout = setTimeout(() => {
+        Alert.alert(this.alertTimeout.title, this.alertTimeout.message, [
+          {
+            text: this.alertTimeout.ok,
+            style: 'cancel',
+            onPress: () => this.custom(uri, post, onDone, debug)
+          },
+          {
+            text: this.alertTimeout.cancel,
+            style: 'destructive',
+            onPress: () => { }
+          }
+        ])
+        this.closeConnection()
+        LibProgress.hide()
+      }, this.maxTimeout);
+    }
     const str: any = _global.store.getState()
     if (str.lib_net_status.isOnline) {
       if (post) {
@@ -200,6 +229,7 @@ export default class ecurl {
       }
       await this.setHeader()
       var options: any = {
+        signal: this.signal,
         method: !this.post ? "GET" : "POST",
         headers: {
           ...this.header,
@@ -215,7 +245,7 @@ export default class ecurl {
       var res
       this.fetchConf = { url: this.url + this.uri, options: options }
       res = await fetch(this.url + this.uri, options)
-      // clearTimeout(this.timeout)
+      clearTimeout(this.timeout)
       var resText = await res.text()
       var resJson = (resText.startsWith("{") || resText.startsWith("[")) ? JSON.parse(resText) : null
       if (resJson) {
@@ -229,13 +259,28 @@ export default class ecurl {
   }
 
   async init(uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number, upload?: boolean): Promise<void> {
-    // this.setMaxTimeout(this.maxTimeout)
-    // this.timeout = setTimeout(() => {
-    //   // this.onFailed("Request Timed Out", true)
-    //   // if (onFailed)
-    //     // onFailed("Request Timed Out", true)
-    //   LibProgress.hide()
-    // }, this.maxTimeout);
+    this.setMaxTimeout(this.maxTimeout)
+    if (this.enabledTimeoutMode) {
+      this.timeout = setTimeout(() => {
+        Alert.alert(this.alertTimeout.title, this.alertTimeout.message, [
+          {
+            text: this.alertTimeout.ok,
+            style: 'cancel',
+            onPress: () => this.init(uri, post, onDone, onFailed, debug)
+          },
+          {
+            text: this.alertTimeout.cancel,
+            style: 'destructive',
+            onPress: () => { }
+          }
+        ])
+        this.onFailed("Request Timed Out", true)
+        if (onFailed)
+          onFailed("Request Timed Out", true)
+        this.closeConnection()
+        LibProgress.hide()
+      }, this.maxTimeout);
+    }
     if (post) {
       if (upload) {
         let fd = new FormData();
@@ -263,6 +308,7 @@ export default class ecurl {
     if (!upload)
       this.header["Content-Type"] = "application/x-www-form-urlencoded;charset=UTF-8"
     var options: any = {
+      signal: this.signal,
       method: !this.post ? "GET" : "POST",
       headers: this.header,
       body: this.post,
@@ -273,22 +319,23 @@ export default class ecurl {
     if (debug == 1) esp.log(this.url + this.uri, options)
     this.fetchConf = { url: this.url + this.uri, options: options }
 
-    if (Platform.OS == 'android' && __DEV__ && Platform.Version <= 22) {
-      var res = await fetch(this.url + this.uri, options);
-      let resText = await res.text()
-      this.onFetched(resText, onDone, onFailed, debug)
-    } else
-      if (!upload) {
-        LibWorker.curl(this.url + this.uri, options, async (resText) => {
-          if (typeof resText == 'string') {
-            this.onFetched(resText, onDone, onFailed, debug)
-          }
-        })
-      } else {
-        var res = await fetch(this.url + this.uri, options);
-        let resText = await res.text()
-        this.onFetched(resText, onDone, onFailed, debug)
-      }
+    // if (Platform.OS == 'android' && __DEV__ && Platform.Version <= 22) {
+    //   var res = await fetch(this.url + this.uri, options);
+    //   let resText = await res.text()
+    //   this.onFetched(resText, onDone, onFailed, debug)
+    // } else
+    //   if (!upload) {
+    //     LibWorker.curl(this.url + this.uri, options, async (resText) => {
+    //       if (typeof resText == 'string') {
+    //         this.onFetched(resText, onDone, onFailed, debug)
+    //       }
+    //     })
+    //   } else {
+    var res = await fetch(this.url + this.uri, options);
+    clearTimeout(this.timeout)
+    let resText = await res.text()
+    this.onFetched(resText, onDone, onFailed, debug)
+    // }
   }
 
   onFetched(resText: string, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number): void {
