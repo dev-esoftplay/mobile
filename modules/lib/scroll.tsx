@@ -1,7 +1,7 @@
 //
 
 import React from "react"
-import { View, FlatList } from "react-native";
+import { View, ScrollView, RefreshControl } from "react-native";
 import { LibComponent } from "esoftplay";
 
 /*
@@ -29,34 +29,22 @@ var Escroll = esp.mod("lib/scroll")
 */
 
 export interface LibScrollProps {
-  defaultHeight?: number,
   bounces?: boolean,
   style?: any,
-  staticHeight?: number,
   ItemSeparatorComponent?: any,
-  ListEmptyComponent?: any,
-  ListFooterComponent?: any,
-  ListHeaderComponent?: any,
-  columnWrapperStyle?: any,
   onScroll?: (e: any) => void,
   scrollEventThrottle?: number,
   keyboardShouldPersistTaps?: boolean | "always" | "never" | "handled",
   children?: any[],
-  extraData?: any,
   stickyHeaderIndices?: number[],
   pagingEnabled?: boolean,
   horizontal?: boolean,
   initialNumToRender?: number,
   initialScrollIndex?: number,
   keyExtractor?: (item: any, index: number) => string,
-  legacyImplementation?: boolean,
   numColumns?: number,
-  onEndReached?: (() => void) | null,
-  onEndReachedThreshold?: number | null,
   onRefresh?: (() => void) | null,
   refreshing?: boolean | null,
-  viewabilityConfig?: any,
-  removeClippedSubviews?: boolean,
 }
 
 export interface LibScrollState {
@@ -66,45 +54,46 @@ export interface LibScrollState {
 
 export default class escroll extends LibComponent<LibScrollProps, LibScrollState> {
 
-  flatscroll = React.createRef<FlatList<View>>();
+  flatscroll = React.createRef<ScrollView>();
+  idxNumber = []
   constructor(props: LibScrollProps) {
     super(props);
     this.rowRenderer = this.rowRenderer.bind(this);
     this.scrollToIndex = this.scrollToIndex.bind(this);
-    this.keyExtractor = this.keyExtractor.bind(this);
   }
 
-  rowRenderer({ item, index }): any {
-    return item
+  rowRenderer(item, index): any {
+    return (
+      <View key={index.toString()} onLayout={(e) => {
+        this.idxNumber[index] = this.props.horizontal ? e.nativeEvent.layout.x : e.nativeEvent.layout.y
+        console.log(this.idxNumber)
+      }} >
+        {item}
+      </View>
+    )
   }
 
-  keyExtractor(item: any, index: number): string {
-    return index.toString()
-  }
-
-  scrollToIndex(x: number, anim?: boolean, viewOffset?: number, viewPosition?: number): void {
-    if (!anim) anim = true;
-    this.flatscroll.current!.scrollToIndex({ index: x, animated: anim, viewOffset: viewOffset, viewPosition: viewPosition })
+  scrollToIndex(x: number, anim?: boolean): void {
+    if (anim == undefined) anim = true;
+    this.flatscroll.current!.scrollTo({
+      x: this.props.horizontal ? this.idxNumber[x] : 0,
+      y: !this.props.horizontal ? this.idxNumber[x] : 0,
+      animated: anim
+    })
   }
 
 
   render(): any {
     return (
       <View style={[{ flex: 1 }]} >
-        <FlatList
+        <ScrollView
           ref={this.flatscroll}
-          data={this.props.children}
-          refreshing={false}
-          nestedScrollEnabled
-          initialNumToRender={5}
-          maxToRenderPerBatch={10}
-          windowSize={10}
-          showsHorizontalScrollIndicator={false}
-          showsVerticalScrollIndicator={false}
-          keyExtractor={this.keyExtractor}
           {...this.props}
-          renderItem={this.rowRenderer}
-        />
+          refreshControl={this.props.onRefresh && <RefreshControl onRefresh={this.props.onRefresh} refreshing={false} />} >
+          {
+            React.Children.toArray(this.props.children).map(this.rowRenderer)
+          }
+        </ScrollView>
       </View>
     )
   }

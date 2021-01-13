@@ -43,7 +43,7 @@ export default function usePersistState(key: string, def?: any): any[] {
     AsyncStorage.removeItem(key)
   }
 
-  useMemo(() => {
+  useEffect(() => {
     if (!_global.usePersistState_Setter) {
       _global.usePersistState_Setter = {}
     }
@@ -51,9 +51,6 @@ export default function usePersistState(key: string, def?: any): any[] {
       _global.usePersistState_Setter[key] = []
     _global.usePersistState_Setter[key].push(b)
     e()
-  }, [])
-
-  useEffect(() => {
     return () => {
       r.current = false
       _global.usePersistState_Setter[key] = _global.usePersistState_Setter[key].filter((x) => x !== b)
