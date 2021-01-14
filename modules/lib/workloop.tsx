@@ -27,17 +27,18 @@ export default class m extends LibComponent<LibWorkloopProps, LibWorkloopState> 
 
   static execNextTix(func: Function, params?: any[]): void {
     _global.workloopTasks.push([func, params])
-    if (!_global.workloopHasTask) {
+    if (_global.workloopHasTask == false) {
       _global.workloopHasTask = true
       _global.workloopRef.current?.injectJavaScript(`
       var stop = false
+      var next
       if (typeof next == Function) {
         next()
       } else {
-        function next() {
+        next = () => {
           setTimeout(() => {
             if (!stop){
-              window.ReactNativeWebView.postMessage()
+              window.ReactNativeWebView.postMessage('next')
               next()
             }
           }, 500)

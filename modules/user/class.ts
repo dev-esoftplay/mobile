@@ -48,6 +48,9 @@ export default class eclass {
             j()
             if (callback) callback(null)
           }
+        } else {
+          j()
+          if (callback) callback(null)
         }
       })
     })
