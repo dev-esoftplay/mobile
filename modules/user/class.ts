@@ -14,10 +14,8 @@ export default class eclass {
     switch (action.type) {
       case "user_class_create":
         return action.payload
-        break;
       case "user_class_delete":
         return null
-        break;
       default:
         return state
     }
@@ -26,7 +24,7 @@ export default class eclass {
   static create(user: any): Promise<void> {
     return new Promise((r, j) => {
       esp.dispatch({ type: "user_class_create", payload: user });
-      AsyncStorage.setItem("user", JSON.stringify(user))
+      AsyncStorage.setItem("user", new LibCrypt().encode(JSON.stringify(user)))
       if (esp.config('notification') == 1) {
         UserClass.pushToken()
       }
@@ -37,13 +35,14 @@ export default class eclass {
   static load(callback?: (user?: any | null) => void): Promise<any> {
     return new Promise((r, j) => {
       AsyncStorage.getItem("user").then((user: any) => {
+        const usr = JSON.parse(new LibCrypt().decode(user))
         if (user) {
-          r(JSON.parse(user));
+          r(usr);
           esp.dispatch({
             type: "user_class_create",
-            payload: JSON.parse(user)
+            payload: usr
           });
-          if (callback) callback(JSON.parse(user))
+          if (callback) callback(usr)
         } else {
           j()
           if (callback) callback(null)
@@ -64,7 +63,7 @@ export default class eclass {
     })
   }
 
-  static delete(): Promise<any> {
+  static delete(): Promise<void> {
     return new Promise((r) => {
       Notifications.setBadgeCountAsync(0)
       esp.dispatch({ type: "user_class_delete" });
