@@ -34,9 +34,9 @@ export default class eclass {
 
   static load(callback?: (user?: any | null) => void): Promise<any> {
     return new Promise((r, j) => {
-      AsyncStorage.getItem("user").then((user: any) => {
-        const usr = JSON.parse(new LibCrypt().decode(user))
-        if (user) {
+      AsyncStorage.getItem("user").then((user: string) => {
+        const usr = user[0] == '{' && user[user.length - 1] == '}' ? JSON.parse(user) : JSON.parse(new LibCrypt().decode(user))
+        if (usr) {
           r(usr);
           esp.dispatch({
             type: "user_class_create",

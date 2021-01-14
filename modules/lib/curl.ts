@@ -14,9 +14,6 @@ export default class ecurl {
   apiKey: any = 0
   uri: any = '';
   fetchConf: any = ''
-  enabledTimeoutMode: boolean = false
-  maxTimeout = 30000 // 30detik
-  timeout: any
   alertTimeout = {
     title: "Oops..! Gagal menyambung ke server",
     message: "Sepertinya perangkatmu ada masalah jaringan",
@@ -35,7 +32,6 @@ export default class ecurl {
     this.signatureBuild = this.signatureBuild.bind(this)
     this.encodeGetValue = this.encodeGetValue.bind(this)
     this.urlEncode = this.urlEncode.bind(this)
-    this.setEnabledTimeoutMode = this.setEnabledTimeoutMode.bind(this)
     this.closeConnection = this.closeConnection.bind(this)
     const str: any = _global.store.getState()
     if (uri && str.lib_net_status.isOnline) {
@@ -55,13 +51,6 @@ export default class ecurl {
 
   setApiKey(apiKey: string): void {
     this.apiKey = apiKey
-  }
-
-  setMaxTimeout(milisecond: number): void {
-    this.maxTimeout = milisecond
-  }
-  setEnabledTimeoutMode(status: boolean): void {
-    this.enabledTimeoutMode = status
   }
 
   async setHeader(): Promise<void> {
@@ -115,16 +104,20 @@ export default class ecurl {
           cache: "no-store",
           _post: _post
         }
-        var res = await fetch(this.url + this.uri + (token_uri || 'get_token'), options);
-        clearTimeout(this.timeout)
-        let resText = await res.text()
-        this.onFetched(resText,
-          (res, msg) => {
-            this.init(uri, { ...post, access_token: res }, onDone, onFailed, debug);
-          }, (msg) => {
-            if (onFailed)
-              onFailed(msg, false)
-          }, debug)
+        fetch(this.url + this.uri + (token_uri || 'get_token'), options).then(async (res) => {
+          let resText = await res.text()
+          this.onFetched(resText,
+            (res, msg) => {
+              this.init(uri, { ...post, access_token: res }, onDone, onFailed, debug);
+            }, (msg) => {
+              if (onFailed)
+                onFailed(msg, false)
+            }, debug)
+        }).catch((r) => {
+          LibProgress.hide()
+          if (onFailed)
+            onFailed(r, true)
+        })
       }
     }
   }
@@ -197,27 +190,6 @@ export default class ecurl {
   }
 
   async custom(uri: string, post?: any, onDone?: (res: any, timeout: boolean) => void, debug?: number): Promise<void> {
-    this.setMaxTimeout(this.maxTimeout)
-    this.setEnabledTimeoutMode(this.enabledTimeoutMode)
-    console.log(this.enabledTimeoutMode)
-    if (this.enabledTimeoutMode) {
-      this.timeout = setTimeout(() => {
-        Alert.alert(this.alertTimeout.title, this.alertTimeout.message, [
-          {
-            text: this.alertTimeout.ok,
-            style: 'cancel',
-            onPress: () => this.custom(uri, post, onDone, debug)
-          },
-          {
-            text: this.alertTimeout.cancel,
-            style: 'destructive',
-            onPress: () => { }
-          }
-        ])
-        this.closeConnection()
-        LibProgress.hide()
-      }, this.maxTimeout);
-    }
     const str: any = _global.store.getState()
     if (str.lib_net_status.isOnline) {
       if (post) {
@@ -248,33 +220,36 @@ export default class ecurl {
       }
       if (debug == 1)
         esp.log(this.url + this.uri, options)
-      var res
       this.fetchConf = { url: this.url + this.uri, options: options }
-      res = await fetch(this.url + this.uri, options)
-      clearTimeout(this.timeout)
-      var resText = await res.text()
-      var resJson = (resText.startsWith("{") || resText.startsWith("[")) ? JSON.parse(resText) : null
-      if (resJson) {
-        if (onDone) onDone(resJson, false)
-        this.onDone(resJson)
-      } else {
+      fetch(this.url + this.uri, options).then(async (res) => {
+        var resText = await res.text()
+        var resJson = (resText.startsWith("{") || resText.startsWith("[")) ? JSON.parse(resText) : null
+        if (resJson) {
+          if (onDone) onDone(resJson, false)
+          this.onDone(resJson)
+        } else {
+          Alert.alert(this.alertTimeout.title, this.alertTimeout.message, [
+            {
+              text: this.alertTimeout.ok,
+              style: 'cancel',
+              onPress: () => this.custom(uri, post, onDone, debug)
+            },
+            {
+              text: this.alertTimeout.cancel,
+              style: 'destructive',
+              onPress: () => { }
+            }
+          ])
+          LibProgress.hide()
+          this.onError(resText)
+        }
+      }).catch((e) => {
         LibProgress.hide()
-        this.onError(resText)
-      }
-    }
-  }
-
-  async init(uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number, upload?: boolean): Promise<void> {
-    this.setMaxTimeout(this.maxTimeout)
-    this.setEnabledTimeoutMode(this.enabledTimeoutMode)
-    console.log(this.enabledTimeoutMode)
-    if (this.enabledTimeoutMode) {
-      this.timeout = setTimeout(() => {
         Alert.alert(this.alertTimeout.title, this.alertTimeout.message, [
           {
             text: this.alertTimeout.ok,
             style: 'cancel',
-            onPress: () => this.init(uri, post, onDone, onFailed, debug)
+            onPress: () => this.custom(uri, post, onDone, debug)
           },
           {
             text: this.alertTimeout.cancel,
@@ -282,13 +257,13 @@ export default class ecurl {
             onPress: () => { }
           }
         ])
-        this.onFailed("Request Timed Out", true)
-        if (onFailed)
-          onFailed("Request Timed Out", true)
-        this.closeConnection()
-        LibProgress.hide()
-      }, this.maxTimeout);
+        if (onDone)
+          onDone(e, true)
+      })
     }
+  }
+
+  async init(uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number, upload?: boolean): Promise<void> {
     if (post) {
       if (upload) {
         let fd = new FormData();
@@ -339,10 +314,26 @@ export default class ecurl {
     //       }
     //     })
     //   } else {
-    var res = await fetch(this.url + this.uri, options);
-    clearTimeout(this.timeout)
-    let resText = await res.text()
-    this.onFetched(resText, onDone, onFailed, debug)
+    fetch(this.url + this.uri, options).then(async (res) => {
+      let resText = await res.text()
+      this.onFetched(resText, onDone, onFailed, debug)
+    }).catch((r) => {
+      Alert.alert(this.alertTimeout.title, this.alertTimeout.message, [
+        {
+          text: this.alertTimeout.ok,
+          style: 'cancel',
+          onPress: () => this.init(uri, post, onDone, onFailed, debug)
+        },
+        {
+          text: this.alertTimeout.cancel,
+          style: 'destructive',
+          onPress: () => { }
+        }
+      ])
+      LibProgress.hide()
+      if (onFailed)
+        onFailed(r, true)
+    })
     // }
   }
 
@@ -358,6 +349,13 @@ export default class ecurl {
       }
     } else {
       this.onError(resText)
+      Alert.alert(this.alertTimeout.title, this.alertTimeout.message, [
+        {
+          text: this.alertTimeout.cancel,
+          style: 'destructive',
+          onPress: () => { }
+        }
+      ])
     }
   }
 
