@@ -37,8 +37,7 @@ export interface LibInfiniteProps {
   onEndReached?: (() => void) | null,
   onEndReachedThreshold?: number | null,
   pagingEnabled?: boolean,
-  onRefresh?: (() => void) | null,
-  refreshing?: boolean | null,
+  refreshEnabled?: boolean,
   renderFooter?: () => any,
   renderItem: (item: any, index: number) => any,
   viewabilityConfig?: any,
@@ -163,7 +162,7 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
 
   render(): any {
     const { data, error } = this.state
-    const { errorView } = this.props
+    const { errorView, refreshEnabled } = this.props
     return (
       <View style={{ flex: 1 }} >
         {
@@ -173,7 +172,7 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
             <FlatList
               ref={this.flatlist}
               data={data || []}
-              onRefresh={() => this.loadData()}
+              onRefresh={((refreshEnabled == undefined) || refreshEnabled) && (() => this.loadData())}
               refreshing={false}
               keyExtractor={this._keyExtractor}
               nestedScrollEnabled
