@@ -5,6 +5,7 @@ import { LibComponent, LibStyle } from 'esoftplay';
 export interface LibTabsProps {
   tabIndex: number,
   defaultIndex?: number,
+  swipeEnabled?: boolean,
   tabViews: any[]
 }
 export interface LibTabsState {
@@ -38,7 +39,7 @@ export default class m extends LibComponent<LibTabsProps, LibTabsState> {
         ref={this.scrollRef}
         horizontal
         showsHorizontalScrollIndicator={false}
-        scrollEnabled={false}
+        scrollEnabled={this.props.swipeEnabled}
         pagingEnabled
         style={{ flex: 1 }} >
         {
