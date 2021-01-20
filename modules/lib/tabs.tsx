@@ -54,7 +54,7 @@ export default class m extends LibComponent<LibTabsProps, LibTabsState> {
         horizontal
         showsHorizontalScrollIndicator={false}
         scrollEnabled={!!this.props.swipeEnabled}
-        scrollEventThrottle={160}
+        scrollEventThrottle={16}
         onScroll={this.changePage}
         pagingEnabled
         style={{ flex: 1 }} >
