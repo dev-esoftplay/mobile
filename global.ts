@@ -1,5 +1,5 @@
 import * as R from 'react'
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 let _global: any = require('./_global').default
 const isEqual = require('react-fast-compare');
 

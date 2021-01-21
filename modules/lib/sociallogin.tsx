@@ -4,7 +4,7 @@ import { Component } from "react";
 import { View, ActivityIndicator } from "react-native";
 import { WebView } from 'react-native-webview'
 import { esp, LibUtils, LibComponent, LibStyle } from "esoftplay";
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const config = esp.config()
 const { colorPrimary } = LibStyle
 

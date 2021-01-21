@@ -320,7 +320,7 @@ export default class App extends React.Component {
 			"expo-font",
 			"expo-error-recovery",
 			"@expo/vector-icons",
-			"@react-native-community/async-storage",
+			"@react-native-async-storage/async-storage",
 			"@react-native-community/netinfo",
 			"@react-native-community/masked-view",
 			"@react-navigation/native",

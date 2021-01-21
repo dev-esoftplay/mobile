@@ -5,7 +5,7 @@ import Constants from 'expo-constants';
 let config = require('../../config.json');
 let pack = require('../../package.json');
 let app = require('../../app.json');
-import AsyncStorage from '@react-native-community/async-storage'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const defaultErrorHandler = ErrorUtils.getGlobalHandler()
 
