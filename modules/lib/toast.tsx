@@ -61,7 +61,7 @@ export default function m(props: LibToastProps): any {
 
   const inv = animatable.interpolate({
     inputRange: [0, 1],
-    outputRange: [-(LibStyle.STATUSBAR_HEIGHT * 2), 0],
+    outputRange: [-(LibStyle.STATUSBAR_HEIGHT + 70), 0],
   })
   const op = animatable.interpolate({
     inputRange: [0, 0.4, 1],
@@ -81,7 +81,7 @@ export default function m(props: LibToastProps): any {
   }, [data])
 
   return (
-    <Animated.View style={{ position: 'absolute', top: LibStyle.STATUSBAR_HEIGHT * 2, left: 0, right: 0, transform: [{ translateY: inv }], marginVertical: 4, marginHorizontal: 13, borderRadius: 13, borderWidth: 0.5, borderColor: '#eee', opacity: op, backgroundColor: 'rgba(255,255,255,0.7)', padding: 16, flex: 1 }} >
+    <Animated.View style={{ position: 'absolute', top: LibStyle.STATUSBAR_HEIGHT + 70, left: 0, right: 0, transform: [{ translateY: inv }], marginVertical: 4, marginHorizontal: 13, borderRadius: 13, borderWidth: 1, borderColor: '#ddd', opacity: op, backgroundColor: 'rgba(255,255,255,0.7)', padding: 16, flex: 1 }} >
       <Text style={{ fontSize: 13, fontWeight: "bold", fontStyle: "normal", letterSpacing: 0, textAlign: "center", color: '#333' }} >{data?.message}</Text>
     </Animated.View>
   )
