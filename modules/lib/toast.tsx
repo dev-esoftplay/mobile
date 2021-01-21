@@ -1,10 +1,10 @@
 // withHooks
 
-import React from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { View, Text } from 'react-native';
 import { useSelector } from 'react-redux';
 import { LibStyle, esp } from 'esoftplay';
-
+import Animated, { Easing } from 'react-native-reanimated'
 
 export interface LibToastProps {
 
@@ -12,7 +12,7 @@ export interface LibToastProps {
 
 const initState = {
   message: undefined,
-  timeout: 2000
+  timeout: 2500
 }
 
 export function reducer(state: any, action: any): any {
@@ -55,12 +55,34 @@ export function show(message: string, timeout?: number): void {
 
 export default function m(props: LibToastProps): any {
   const data = useSelector((state: any) => state.lib_toast)
-  if (!data.message) return null
+  // if (!data.message) return null
+
+  const animatable = useRef(new Animated.Value(0)).current
+
+  const inv = animatable.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-(LibStyle.STATUSBAR_HEIGHT * 2), 0],
+  })
+  const op = animatable.interpolate({
+    inputRange: [0, 0.4, 1],
+    outputRange: [0, 0, 1],
+  })
+
+  const showHide = useCallback((show: boolean) => {
+    Animated.timing(animatable, {
+      toValue: show ? 1 : 0,
+      duration: 300,
+      easing: Easing.linear
+    }).start()
+  }, [data])
+
+  useEffect(() => {
+    showHide(data?.message)
+  }, [data])
+
   return (
-    <View style={{ position: 'absolute', bottom: 58 + (LibStyle.isIphoneX ? 30 : 0), left: 36, right: 36, alignItems: 'center' }}>
-      <View style={{ borderRadius: 30, backgroundColor: '#323232', padding: 16 }} >
-        <Text style={{ fontSize: 12, fontWeight: "normal", fontStyle: "normal", letterSpacing: 0, textAlign: "center", color: "white" }} >{data.message}</Text>
-      </View>
-    </View>
+    <Animated.View style={{ position: 'absolute', top: LibStyle.STATUSBAR_HEIGHT * 2, left: 0, right: 0, transform: [{ translateY: inv }], marginVertical: 4, marginHorizontal: 13, borderRadius: 13, borderWidth: 0.5, borderColor: '#eee', opacity: op, backgroundColor: 'rgba(255,255,255,0.7)', padding: 16, flex: 1 }} >
+      <Text style={{ fontSize: 13, fontWeight: "bold", fontStyle: "normal", letterSpacing: 0, textAlign: "center", color: '#333' }} >{data?.message}</Text>
+    </Animated.View>
   )
 }

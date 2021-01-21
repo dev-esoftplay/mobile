@@ -20,14 +20,9 @@ export default function m(props: LibPinProps): any {
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }} >
             {
               new Array(props.length).fill('').map((_, __) => (
-                <View key={__} style={{ height: 40, width: 40, margin: 5, borderRadius: 4, borderWidth: 0.5, borderColor: '#444', ...props.boxStyle }} />
-              ))
-            }
-          </View>
-          <View style={{ flexDirection: 'row', width: 60 * props.length, alignSelf: 'center', marginLeft: 60 }} >
-            {
-              pin && pin.map((item: any, i: number) => (
-                <Text key={i} style={{ textAlign: 'center', width: 40, height: 40, marginTop: -40, fontFamily: 'digital', fontSize: 40, margin: 5, ...props.pinStyle }} >•</Text>
+                <View key={__} style={{ height: 40, width: 40, margin: 5, borderRadius: 4, borderWidth: 0.5, borderColor: '#444', ...props.boxStyle, alignItems: 'center', justifyContent: 'center' }}>
+                  {!!pin[__] && <View style={{ height: 10, width: 10, borderRadius: 5, backgroundColor: '#444',...props.pinStyle }} />}
+                </View>
               ))
             }
           </View>
@@ -43,7 +38,7 @@ export default function m(props: LibPinProps): any {
                 let _t: string[] = t.split('')
                 setPin(_t)
                 props.onChangePin(t)
-              }} maxLength={6} />
+              }} maxLength={props.length} />
           </View>
         </View>
       </View>

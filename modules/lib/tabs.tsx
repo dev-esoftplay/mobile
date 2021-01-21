@@ -36,7 +36,7 @@ export default class m extends LibComponent<LibTabsProps, LibTabsState> {
     }
   }
 
-  changePage(e): void {
+  changePage(e: any): void {
     let page = 0
     const offsetx = e.nativeEvent.contentOffset.x
     if (offsetx > 0) {
