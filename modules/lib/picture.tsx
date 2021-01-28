@@ -33,6 +33,43 @@ const getCacheEntry = async (uri: string, toSize: number): Promise<{ exists: boo
   return { exists, path };
 };
 
+LibWorker.registerJob('imageCompress', (id, url, toSize) => {
+  fetch(url, { mode: 'cors' })
+    .then(response => response.blob())
+    .then(blob => {
+      let reader = new FileReader();
+      reader.onload = function () {
+        let img = document.createElement('img');
+        img.onload = function () {
+          let wantedMaxSize = toSize
+          let rawheight = img.height
+          let rawwidth = img.width
+          let wantedheight = 0
+          let wantedwidth = 0
+          let ratio = rawwidth / rawheight
+          if (rawheight > rawwidth) {
+            wantedwidth = wantedMaxSize * ratio;
+            wantedheight = wantedMaxSize;
+          } else {
+            wantedwidth = wantedMaxSize;
+            wantedheight = wantedMaxSize / ratio;
+          }
+          let canvas = document.createElement('canvas');
+          let ctx = canvas.getContext('2d');
+          canvas.width = wantedwidth;
+          canvas.height = wantedheight;
+          //@ts-ignore
+          ctx.drawImage(this, 0, 0, wantedwidth, wantedheight);
+          let x = canvas.toDataURL();
+          //@ts-ignore
+          window.ReactNativeWebView.postMessage(JSON.stringify({ id: id, data: x.replace("data:image/png;base64,", "") }))
+        }
+        img.src = String(reader.result)
+      };
+      reader.readAsDataURL(blob);
+    });
+})
+
 export default function m(props: LibPictureProps): any {
   const [uri, setUri] = useSafeState('')
   const b_uri = props?.source?.uri?.replace('://api.', '://').replace('://data.', '')
@@ -86,9 +123,6 @@ export default function m(props: LibPictureProps): any {
   }
 
   return (
-    <Image
-      {...props}
-      source={{ uri: uri }}
-      style={props.style} />
+    <Image {...props} source={{ uri: uri }} style={props.style} />
   )
 }

@@ -1,7 +1,7 @@
 import React from "react";
 import { Component } from "react"
 import { WebView } from 'react-native-webview'
-import { esp, LibWorker, LibWorker_dataProperty } from 'esoftplay'
+import { esp, LibWorker_dataProperty } from 'esoftplay'
 import { PixelRatio, Platform, View } from 'react-native';
 
 export interface LibWorkerInit {
@@ -24,21 +24,21 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
     LibWorker_dataProperty.libWorkerData.LibWorkerTasks = new Map()
     LibWorker_dataProperty.libWorkerData.LibWorkerReady = 0
     LibWorker_dataProperty.libWorkerData.LibWorkerCount = 0
-    this.renderWorkers = this.renderWorkers.bind(this);
+    this.onMessage = this.onMessage.bind(this);
   }
 
   static delete(taskId: string): void {
     LibWorker_dataProperty.libWorkerData.LibWorkerTasks.delete(taskId)
   }
 
-  static setData(name: string, data: any): void {
-    m.dispatch(() => `
-    if (!_esoftplay) var esoftplay = {};
-    if (!_esoftplay.LibWorker) var esoftplay.LibWorker = {};
-    _esoftplay.LibWorker[`+ name + `]=JSON.parse(` + LibWorker.objToString(data) + ')', '', () => { })
-  }
+  // static setData(name: string, data: any): void {
+  //   m.dispatch(() => `
+  //   if (!_esoftplay) var esoftplay = {};
+  //   if (!_esoftplay.LibWorker) var esoftplay.LibWorker = {};
+  //   _esoftplay.LibWorker[`+ name + `]=JSON.parse(` + LibWorker.objToString(data) + ')', '', () => { })
+  // }
 
-  static data: any = {}
+  // static data: any = {}
 
   static registerJob(name: string, func: Function): (params: any[], res: (data: any) => void) => void {
     m.dispatch(() => func.toString().replace('function', 'function ' + name), '', () => { })
@@ -179,7 +179,7 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
 
   static dispatch(task: (id: string) => string, url: string, result: (r: string) => void): void {
     const _dispatcher = () => {
-      if (LibWorker_dataProperty.libWorkerData.LibWorkerReady == 1) {
+      if (LibWorker_dataProperty.libWorkerData.LibWorkerReady > 0) {
         LibWorker_dataProperty.libWorkerData.LibWorkerCount++
         var _task = task(LibWorker_dataProperty.libWorkerData.LibWorkerCount)
         // console.log(_task)
@@ -187,9 +187,6 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
           task: _task,
           result: result
         })
-        if (url == '') {
-          LibWorker_dataProperty.libWorkerData.LibWorkerBase.current!.injectJavaScript(_task)
-        }
         LibWorker_dataProperty.libWorkerData.LibWorkerBase.current!.injectJavaScript(_task)
       } else {
         setTimeout(() => { _dispatcher() }, 1000);
@@ -198,43 +195,8 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
     _dispatcher()
   }
 
-  renderWorkers(): any {
-    let injectedJavaScript = ""
-    injectedJavaScript += `
-      function imageCompress(id, url, toSize) {
-        fetch(url, { mode: 'cors' })
-          .then(response => response.blob())
-          .then(blob => {
-            var reader = new FileReader();
-            reader.onload = function () {
-              var img = document.createElement('img');
-              img.onload = function () {
-                var wantedMaxSize = toSize
-                var rawheight = img.height
-                var rawwidth = img.width
-                var ratio = rawwidth / rawheight
-                if (rawheight > rawwidth) {
-                  var wantedwidth = wantedMaxSize * ratio;
-                  var wantedheight = wantedMaxSize;
-                } else {
-                  var wantedwidth = wantedMaxSize;
-                  var wantedheight = wantedMaxSize / ratio;
-                }
-                var canvas = document.createElement('canvas');
-                var ctx = canvas.getContext('2d');
-                canvas.width = wantedwidth;
-                canvas.height = wantedheight;
-                ctx.drawImage(this, 0, 0, wantedwidth, wantedheight);
-                let x = canvas.toDataURL();
-                window.ReactNativeWebView.postMessage(JSON.stringify({ id: id, data: x.replace("data:image/png;base64,", "") }))
-              }
-              img.src = String(reader.result)
-            };
-            reader.readAsDataURL(blob);
-          });
-      }
-    `
-    const onMessage = (e: any) => (withRefName: string) => {
+  onMessage(e: any) {
+    return (withRefName: string) => {
       if (e.nativeEvent.data == withRefName) {
         LibWorker_dataProperty.libWorkerData.LibWorkerReady += 1
         return
@@ -247,19 +209,7 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
         itemTask.result(x.data)
         m.delete(x.id)
       }
-
     }
-    return (
-      <WebView
-        ref={LibWorker_dataProperty.libWorkerData.LibWorkerBase}
-        style={{ width: 0, height: 0 }}
-        javaScriptEnabled={true}
-        injectedJavaScript={injectedJavaScript + `\nwindow.ReactNativeWebView.postMessage("BaseWorkerIsReady")`}
-        originWhitelist={["*"]}
-        source={{ uri: esp.config("protocol") + "://" + esp.config("domain") + esp.config("uri") + "dummyPageToBypassCORS" }}
-        onMessage={(e) => onMessage(e)('BaseWorkerIsReady')}
-      />
-    )
   }
 
   render(): any {
@@ -270,7 +220,15 @@ class m extends Component<LibWorkerProps, LibWorkerState> {
 
     return (
       <View style={{ height: 0, width: 0 }} >
-        {this.renderWorkers()}
+        <WebView
+          ref={LibWorker_dataProperty.libWorkerData.LibWorkerBase}
+          style={{ width: 0, height: 0 }}
+          javaScriptEnabled={true}
+          injectedJavaScript={`\nwindow.ReactNativeWebView.postMessage("BaseWorkerIsReady")`}
+          originWhitelist={["*"]}
+          source={{ uri: esp.config("protocol") + "://" + esp.config("domain") + esp.config("uri") + "dummyPageToBypassCORS" }}
+          onMessage={(e) => this.onMessage(e)('BaseWorkerIsReady')}
+        />
       </View>
     )
   }
