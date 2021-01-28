@@ -35,7 +35,7 @@ const getCacheEntry = async (uri: string, toSize: number): Promise<{ exists: boo
 
 export default function m(props: LibPictureProps): any {
   const [uri, setUri] = useSafeState('')
-  const b_uri = props?.source?.uri
+  const b_uri = props?.source?.uri?.replace('://api.', '://').replace('://data.', '')
   let { width, height } = props.style
   const valid = b_uri?.includes?.(esp.config('domain'))
 

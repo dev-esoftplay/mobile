@@ -1,10 +1,10 @@
 // withHooks
 
 import React, { useCallback, useEffect, useRef } from 'react';
-import { View, Text } from 'react-native';
+import { Text } from 'react-native';
 import { useSelector } from 'react-redux';
 import { LibStyle, esp } from 'esoftplay';
-import Animated, { Easing } from 'react-native-reanimated'
+import Animated, { Easing } from 'react-native-reanimated';
 
 export interface LibToastProps {
 
@@ -61,17 +61,17 @@ export default function m(props: LibToastProps): any {
 
   const inv = animatable.interpolate({
     inputRange: [0, 1],
-    outputRange: [-(LibStyle.STATUSBAR_HEIGHT + 70), 0],
+    outputRange: [-(LibStyle.STATUSBAR_HEIGHT + 300), 0],
   })
   const op = animatable.interpolate({
-    inputRange: [0, 0.4, 1],
+    inputRange: [0, 0.7, 1],
     outputRange: [0, 0, 1],
   })
 
   const showHide = useCallback((show: boolean) => {
     Animated.timing(animatable, {
       toValue: show ? 1 : 0,
-      duration: 300,
+      duration: 500,
       easing: Easing.linear
     }).start()
   }, [data])
