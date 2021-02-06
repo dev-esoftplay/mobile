@@ -38,7 +38,7 @@ export default function useGlobalState<T>(initValue: T, o?: UseGlobal_options): 
       isChange = true
     }
     value = ns
-    _global.useGlobalSubscriber[_idx].forEach((c: any) => c?.(value));
+    _global?.useGlobalSubscriber?.[_idx]?.forEach?.((c: any) => c?.(value));
     if (o?.persistKey) {
       AsyncStorage.setItem(o.persistKey, JSON.stringify(value))
     }
@@ -81,7 +81,7 @@ export default function useGlobalState<T>(initValue: T, o?: UseGlobal_options): 
     R.useEffect(() => {
       _global.useGlobalSubscriber[_idx].push(func);
       return () => {
-        _global.useGlobalSubscriber[_idx] = _global.useGlobalSubscriber[_idx].filter((f) => f !== func);
+        _global.useGlobalSubscriber[_idx] = _global.useGlobalSubscriber?.[_idx]?.filter?.((f) => f !== func);
       };
     }, [func]);
   }

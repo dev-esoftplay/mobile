@@ -87,6 +87,7 @@ export default class escroll extends LibComponent<LibScrollProps, LibScrollState
       <View style={[{ flex: 1 }]} >
         <ScrollView
           ref={this.flatscroll}
+          scrollEventThrottle={64}
           {...this.props}
           refreshControl={this.props.onRefresh && <RefreshControl onRefresh={this.props.onRefresh} refreshing={false} />} >
           {

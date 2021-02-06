@@ -1,11 +1,11 @@
 // withHooks
 
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 //@ts-ignore
 import Navs from "../../cache/navs";
 import { View, ImageBackground } from "react-native";
 import * as Font from "expo-font";
-import { esp, UserClass, LibWorker, LibLoading, LibUpdaterProperty, LibWorkloop, LibNet_status, LibTheme, LibLocale, LibDialog, LibStyle, LibImage, LibProgress, UserMain, LibToast, useSafeState, LibVersion, _global, UserIndex_dataProperty, UseSelector, LibPictureProperty } from 'esoftplay';
+import { esp, UserClass, LibWorker, LibUpdaterProperty, LibWorkloop, LibNet_status, LibTheme, LibLocale, LibDialog, LibStyle, LibImage, LibProgress, UserMain, LibToast, useSafeState, LibVersion, _global, UserIndex_dataProperty, UseSelector, LibPictureProperty } from 'esoftplay';
 import firebase from 'firebase'
 import { useDispatch } from 'react-redux';
 
@@ -60,8 +60,9 @@ export default function m(props: UserIndexProps): any {
       UserIndex_dataProperty.userIndexData.nav__state = currentState
     }
   }
+  
 
-  useEffect(() => {
+  useMemo(() => {
     LibTheme.getTheme()
     LibLocale.getLanguage()
     LibPictureProperty.createCacheDir()
@@ -92,7 +93,7 @@ export default function m(props: UserIndexProps): any {
     }
   }, [loading])
 
-  if (loading) return <LibLoading />
+  if (loading) return <ImageBackground source={esp.assets('splash.png')} style={{ flex: 1 }} />
   return (
     <>
       <View style={{ flex: 1 }}>
