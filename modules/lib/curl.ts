@@ -228,35 +228,35 @@ export default class ecurl {
           if (onDone) onDone(resJson, false)
           this.onDone(resJson)
         } else {
-          Alert.alert(this.alertTimeout.title, this.alertTimeout.message, [
-            {
-              text: this.alertTimeout.ok,
-              style: 'cancel',
-              onPress: () => this.custom(uri, post, onDone, debug)
-            },
-            {
-              text: this.alertTimeout.cancel,
-              style: 'destructive',
-              onPress: () => { }
-            }
-          ])
+          // Alert.alert(this.alertTimeout.title, this.alertTimeout.message, [
+          //   {
+          //     text: this.alertTimeout.ok,
+          //     style: 'cancel',
+          //     onPress: () => this.custom(uri, post, onDone, debug)
+          //   },
+          //   {
+          //     text: this.alertTimeout.cancel,
+          //     style: 'destructive',
+          //     onPress: () => { }
+          //   }
+          // ])
           LibProgress.hide()
           this.onError(resText)
         }
       }).catch((e) => {
         LibProgress.hide()
-        Alert.alert(this.alertTimeout.title, this.alertTimeout.message, [
-          {
-            text: this.alertTimeout.ok,
-            style: 'cancel',
-            onPress: () => this.custom(uri, post, onDone, debug)
-          },
-          {
-            text: this.alertTimeout.cancel,
-            style: 'destructive',
-            onPress: () => { }
-          }
-        ])
+        // Alert.alert(this.alertTimeout.title, this.alertTimeout.message, [
+        //   {
+        //     text: this.alertTimeout.ok,
+        //     style: 'cancel',
+        //     onPress: () => this.custom(uri, post, onDone, debug)
+        //   },
+        //   {
+        //     text: this.alertTimeout.cancel,
+        //     style: 'destructive',
+        //     onPress: () => { }
+        //   }
+        // ])
         if (onDone)
           onDone(e, true)
       })
@@ -318,18 +318,18 @@ export default class ecurl {
       let resText = await res.text()
       this.onFetched(resText, onDone, onFailed, debug)
     }).catch((r) => {
-      Alert.alert(this.alertTimeout.title, this.alertTimeout.message, [
-        {
-          text: this.alertTimeout.ok,
-          style: 'cancel',
-          onPress: () => this.init(uri, post, onDone, onFailed, debug)
-        },
-        {
-          text: this.alertTimeout.cancel,
-          style: 'destructive',
-          onPress: () => { }
-        }
-      ])
+      // Alert.alert(this.alertTimeout.title, this.alertTimeout.message, [
+      //   {
+      //     text: this.alertTimeout.ok,
+      //     style: 'cancel',
+      //     onPress: () => this.init(uri, post, onDone, onFailed, debug)
+      //   },
+      //   {
+      //     text: this.alertTimeout.cancel,
+      //     style: 'destructive',
+      //     onPress: () => { }
+      //   }
+      // ])
       LibProgress.hide()
       if (onFailed)
         onFailed(r, true)
@@ -349,13 +349,13 @@ export default class ecurl {
       }
     } else {
       this.onError(resText)
-      Alert.alert(this.alertTimeout.title, this.alertTimeout.message, [
-        {
-          text: this.alertTimeout.cancel,
-          style: 'destructive',
-          onPress: () => { }
-        }
-      ])
+      // Alert.alert(this.alertTimeout.title, this.alertTimeout.message, [
+      //   {
+      //     text: this.alertTimeout.cancel,
+      //     style: 'destructive',
+      //     onPress: () => { }
+      //   }
+      // ])
     }
   }
 
