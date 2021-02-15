@@ -22,7 +22,7 @@ const { height, width } = LibStyle;
 export interface LibImageCrop {
   ratio: string,
   forceCrop: boolean,
-  message: string
+  message?: string
 }
 
 export interface LibImageProps {
