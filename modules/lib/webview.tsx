@@ -4,7 +4,7 @@ import React from "react";
 import { Component } from "react";
 import { StyleSheet, View, Animated, Dimensions, Platform, Linking } from "react-native";
 import { WebView } from 'react-native-webview'
-import { esp, LibComponent } from "esoftplay";
+import { esp, LibComponent, LibStyle } from "esoftplay";
 let { width, height } = Dimensions.get("window");
 const config = esp.config();
 
@@ -21,6 +21,7 @@ export interface LibWebviewProps {
   needAnimate?: boolean,
   AnimationDuration?: number,
   needAutoResetHeight?: boolean,
+  maxWidth?: number,
   onMessage?: any,
   bounces?: any,
   onLoadEnd?: any,
@@ -93,8 +94,16 @@ class ewebview extends LibComponent<LibWebviewProps, LibWebviewState> {
   }
   getMessageFromWebView(event: any): void {
     let message = event.nativeEvent.data;
+    const wbHeight = message.split('-')[1]
+    const wbWidth = message.split('-')[0]
+    let height = wbHeight
+    if (this.props.maxWidth) {
+      height = this.props.maxWidth * wbHeight / wbWidth
+      if (Platform.OS == 'ios')
+        height = height - 50
+    }
     if (this.heightMessage === undefined || this.heightMessage === null || this.heightMessage === "") {
-      this.heightMessage = message;
+      this.heightMessage = height;
       if (this.props.needAutoResetHeight) {
         this.resetHeight();
       }
@@ -163,7 +172,7 @@ class ewebview extends LibComponent<LibWebviewProps, LibWebviewState> {
               Linking.openURL(event.url);
             }
           }}
-          injectedJavaScript={'window.ReactNativeWebView.postMessage(document.body.scrollHeight)'}
+          injectedJavaScript={'window.ReactNativeWebView.postMessage(document.body.scrollWidth+"-"+document.body.scrollHeight)'}
           onLoadEnd={() => {
             if (this.props.onFinishLoad !== undefined)
               setTimeout(() => {
