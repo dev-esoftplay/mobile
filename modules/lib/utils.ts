@@ -56,23 +56,23 @@ export default class eutils {
     if (defOutput == undefined) {
       defOutput = "";
     }
-    return props && props && props.route && props.route.params && props.route.params[key] || defOutput;
+    return props?.route?.params?.[key] || defOutput;
   }
   static getArgsAll<S>(props: any, defOutput?: any): S {
     if (defOutput == undefined) {
       defOutput = "";
     }
-    return props && props && props.route && props.route.params || defOutput;
+    return props?.route?.params || defOutput;
   }
 
   static getReduxState(key: string, ...keys: string[]): any {
-    let state: any = _global.store.getState()
+    let state: any = _global?.store?.getState?.()
     if (key) {
       var _params = [key, ...keys]
-      if (_params.length > 0)
-        for (let i = 0; i < _params.length; i++) {
+      if (_params?.length > 0)
+        for (let i = 0; i < _params?.length; i++) {
           const key = _params[i];
-          if (state.hasOwnProperty(key)) {
+          if (state?.hasOwnProperty(key)) {
             state = state[key];
           } else {
             state = {};

@@ -4,7 +4,6 @@ import momentTimeZone from "moment-timezone"
 import moment from "moment/min/moment-with-locales"
 import { esp, LibCrypt, LibProgress, _global, LibUtils } from 'esoftplay';
 import { reportApiError } from "../../error";
-import { Alert } from "react-native";
 
 export default class ecurl {
   isDebug = esp.config("isDebug");
@@ -33,6 +32,7 @@ export default class ecurl {
     this.encodeGetValue = this.encodeGetValue.bind(this)
     this.urlEncode = this.urlEncode.bind(this)
     this.closeConnection = this.closeConnection.bind(this)
+    this.onStatusCode = this.onStatusCode.bind(this)
     const str: any = _global.store.getState()
     if (uri && str.lib_net_status.isOnline) {
       this.init(uri, post, onDone, onFailed, debug);
@@ -72,6 +72,10 @@ export default class ecurl {
 
   onFailed(msg: string, timeout: boolean): void {
 
+  }
+
+  onStatusCode(ok: number, status_code: number, message: string, result: any): boolean {
+    return true
   }
 
   secure(token_uri?: string): (apiKey?: string) => (uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number) => void {
@@ -340,12 +344,14 @@ export default class ecurl {
   onFetched(resText: string, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number): void {
     var resJson = (resText.startsWith("{") && resText.endsWith("}")) || (resText.startsWith("[") && resText.endsWith("]")) ? JSON.parse(resText) : resText
     if (typeof resJson == "object") {
-      if (resJson.ok === 1) {
-        if (onDone) onDone(resJson.result, resJson.message)
-        this.onDone(resJson.result, resJson.message)
-      } else {
-        if (onFailed) onFailed(resJson.message, false)
-        this.onFailed(resJson.message, false)
+      if (!resJson.status_code || this.onStatusCode(resJson.ok, resJson.status_code, resJson.message, resJson.result)) {
+        if (resJson.ok === 1) {
+          if (onDone) onDone(resJson.result, resJson.message)
+          this.onDone(resJson.result, resJson.message)
+        } else {
+          if (onFailed) onFailed(resJson.message, false)
+          this.onFailed(resJson.message, false)
+        }
       }
     } else {
       this.onError(resText)
