@@ -5,7 +5,7 @@ import React, { useEffect, useMemo } from "react";
 import Navs from "../../cache/navs";
 import { View, ImageBackground } from "react-native";
 import * as Font from "expo-font";
-import { esp, UserClass, LibWorker, LibUpdaterProperty, LibWorkloop, LibNet_status, LibTheme, LibLocale, LibDialog, LibStyle, LibImage, LibProgress, UserMain, LibToast, useSafeState, LibVersion, _global, UserIndex_dataProperty, UseSelector, LibPictureProperty } from 'esoftplay';
+import { esp, _global, UserClass, LibWorker, LibUpdaterProperty, LibWorkloop, LibNet_status, LibTheme, LibLocale, LibDialog, LibStyle, LibImage, LibProgress, UserMain, LibToast, useSafeState, LibVersion, UserIndex_dataProperty, UseSelector, LibPictureProperty } from 'esoftplay';
 import firebase from 'firebase'
 import { useDispatch } from 'react-redux';
 
@@ -46,68 +46,71 @@ function setFonts(): Promise<void> {
   })
 }
 
-export default function m(props: UserIndexProps): any {
-  const dispatch = useDispatch()
-  const [loading, setLoading] = useSafeState(true)
-  const user = UseSelector((s) => s.user_class)
-  //@ts-ignore
-  const initialState = __DEV__ ? UserIndex_dataProperty.userIndexData.nav__state : undefined
-
-  function handler(currentState: any): void {
-    dispatch({ type: "user_nav_change", payload: currentState })
+export default (() => {
+  return (props: UserIndexProps): any => {
+    const dispatch = useDispatch()
+    const [loading, setLoading] = useSafeState(true)
+    const user = UseSelector((s) => s.user_class)
     //@ts-ignore
-    if (__DEV__) {
-      UserIndex_dataProperty.userIndexData.nav__state = currentState
-    }
-  }
-  
+    const initialState = __DEV__ ? _global.nav__state : undefined
 
-  useMemo(() => {
-    LibTheme.getTheme()
-    LibLocale.getLanguage()
-    LibPictureProperty.createCacheDir()
-
-    if (esp.config('firebase')) {
-      try {
-        firebase.initializeApp(esp.config('firebase'));
-        firebase.auth().signInAnonymously();
-      } catch (error) { }
+    function handler(currentState: any): void {
+      dispatch({ type: "user_nav_change", payload: currentState })
+      //@ts-ignore
+      if (__DEV__) {
+        _global.nav__state = currentState
+      }
     }
-    UserClass.isLogin(async () => {
-      await setFonts()
-      LibUpdaterProperty.check((isNew) => {
-        if (isNew) {
-          LibUpdaterProperty.install()
-        } else {
-          setLoading(false)
-        }
+
+
+    useMemo(() => {
+      LibTheme.getTheme()
+      LibLocale.getLanguage()
+      LibPictureProperty.createCacheDir()
+
+      if (esp.config('firebase')) {
+        try {
+          firebase.initializeApp(esp.config('firebase'));
+          firebase.auth().signInAnonymously();
+        } catch (error) { }
+      }
+      UserClass.isLogin(async () => {
+        await setFonts()
+        LibUpdaterProperty.check((isNew) => {
+          if (isNew) {
+            LibUpdaterProperty.install()
+          } else {
+            setLoading(false)
+          }
+        })
       })
-    })
-  }, [])
+    }, [])
 
-  useEffect(() => {
-    if (!loading) {
-      setTimeout(() => {
-        LibVersion.check()
-      }, 0);
-    }
-  }, [loading])
+    useEffect(() => {
+      if (!loading) {
+        setTimeout(() => {
+          LibVersion.check()
+        }, 0);
+      }
+    }, [loading])
 
-  if (loading) return <ImageBackground source={esp.assets('splash.png')} style={{ flex: 1 }} />
-  return (
-    <>
-      <View style={{ flex: 1 }}>
-        <LibWorker />
-        <LibWorkloop />
-        <Navs user={user} initialState={initialState} handler={handler} />
-        <LibNet_status />
-        <LibDialog style={'default'} />
-        <LibImage />
-        <LibProgress />
-        <UserMain />
-        <LibToast />
-      </View>
-      <View style={{ backgroundColor: LibStyle.colorNavigationBar || 'white', height: LibStyle.isIphoneX ? 35 : 0 }} />
-    </>
-  )
-}
+    if (loading) return <ImageBackground source={esp.assets('splash.png')} style={{ flex: 1 }} />
+    return (
+      <>
+        <View style={{ flex: 1 }}>
+          <LibWorker />
+          <LibWorkloop />
+          <Navs user={user} initialState={initialState} handler={handler} />
+          <LibNet_status />
+          <LibDialog style={'default'} />
+          <LibImage />
+          <LibProgress />
+          <UserMain />
+          <LibToast />
+        </View>
+        <View style={{ backgroundColor: LibStyle.colorNavigationBar || 'white', height: LibStyle.isIphoneX ? 35 : 0 }} />
+      </>
+    )
+  }
+})()
+

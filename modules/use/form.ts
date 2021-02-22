@@ -1,45 +1,48 @@
 // useLibs
 
 import { useEffect } from 'react';
-import { useSafeState, UseForm_dataProperty } from 'esoftplay';
+import { useSafeState } from 'esoftplay';
 
-export default function m<S>(formName: string, def?: S): [S, (a: string) => (v: any) => void, (a?: (x?: S) => void) => void, () => void, (x: S) => void] {
-  const [a, b] = useSafeState<S>(UseForm_dataProperty.useFormData && UseForm_dataProperty.useFormData[formName] || def)
+export default (() => {
+  let dt = {}
+  return <S>(formName: string, def?: S): [S, (a: string) => (v: any) => void, (a?: (x?: S) => void) => void, () => void, (x: S) => void] => {
+    const [a, b] = useSafeState<S>(dt && dt[formName] || def)
 
-  function c(field: any) {
-    UseForm_dataProperty.useFormData[formName] = {
-      ...UseForm_dataProperty.useFormData[formName],
-      ...field
+    function c(field: any) {
+      dt[formName] = {
+        ...dt[formName],
+        ...field
+      }
+      dt['setter-' + formName].forEach(set => {
+        set(dt[formName])
+      });
     }
-    UseForm_dataProperty.useFormData['setter-' + formName].forEach(set => {
-      set(UseForm_dataProperty.useFormData[formName])
-    });
-  }
 
-  useEffect(() => {
-    if (!UseForm_dataProperty.useFormData['setter-' + formName]) {
-      UseForm_dataProperty.useFormData['setter-' + formName] = []
+    useEffect(() => {
+      if (!dt['setter-' + formName]) {
+        dt['setter-' + formName] = []
+      }
+      dt['setter-' + formName].push(b)
+      c(dt[formName])
+      return () => {
+        dt['setter-' + formName].filter((x) => x !== b)
+      }
+    }, [])
+
+    function g(field: string) {
+      return (value: any) => {
+        c({ [field]: value })
+      }
     }
-    UseForm_dataProperty.useFormData['setter-' + formName].push(b)
-    c(UseForm_dataProperty.useFormData[formName])
-    return () => {
-      UseForm_dataProperty.useFormData['setter-' + formName].filter((x) => x !== b)
+
+    function h() {
+      delete dt[formName]
     }
-  }, [])
 
-  function g(field: string) {
-    return (value: any) => {
-      c({ [field]: value })
+    function f(callback?: (a?: S) => void) {
+      callback?.(dt[formName])
     }
-  }
 
-  function h() {
-    delete UseForm_dataProperty.useFormData[formName]
+    return [a, g, f, h, c]
   }
-
-  function f(callback?: (a?: S) => void) {
-    callback?.(UseForm_dataProperty.useFormData[formName])
-  }
-  
-  return [a, g, f, h, c]
-}
+})()

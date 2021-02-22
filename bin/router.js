@@ -201,7 +201,7 @@ checks.forEach(modules => {
 
                 /* REGEX CLASS NAME */
                 if (!isHooks && !isUseLibs)
-                  if (m = /\n\s{0,}(?:export\s+default\s+)?(class\s+([^\s]+)[^\{]+)/.exec(data)) {
+                  if (m = /\n\s{0,}(?:export\s+default\s+|return\s+)?(class\s+([^\s]+)[^\{]+)/.exec(data)) {
                     if (tmpTask[clsName]["class"] == "") {
                       tmpTask[clsName]["class"] = m[1].replace(m[2], clsName).trim();
 

@@ -1,25 +1,25 @@
 import React from 'react'
 import { InteractionManager } from 'react-native'
-import { LibAutoreload_dataProperty } from 'esoftplay'
 
-export default class m {
-  static set(callback: () => void, duration?: number): void {
-
-    if (LibAutoreload_dataProperty.libAutoreloadData.updater != undefined) {
-      clearInterval(LibAutoreload_dataProperty.libAutoreloadData.updater)
-      LibAutoreload_dataProperty.libAutoreloadData.updater = undefined
+export default (() => {
+  let updater = undefined
+  return class m {
+    static set(callback: () => void, duration?: number): void {
+      if (updater != undefined) {
+        clearInterval(updater)
+        updater = undefined
+      }
+      updater = setInterval(() => {
+        InteractionManager.runAfterInteractions(() => {
+          callback()
+        });
+      }, duration || 6000)
     }
-    LibAutoreload_dataProperty.libAutoreloadData.updater = setInterval(() => {
-      InteractionManager.runAfterInteractions(() => {
-        callback()
-      });
-    }, duration || 6000)
-  }
-  static clear(): void {
-
-    if (LibAutoreload_dataProperty.libAutoreloadData.updater != undefined) {
-      clearInterval(LibAutoreload_dataProperty.libAutoreloadData.updater)
-      LibAutoreload_dataProperty.libAutoreloadData.updater = undefined
+    static clear(): void {
+      if (updater != undefined) {
+        clearInterval(updater)
+        updater = undefined
+      }
     }
   }
-}
+})()

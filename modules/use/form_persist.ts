@@ -1,49 +1,52 @@
 // useLibs
 
 import React, { useEffect } from 'react';
-import { usePersistState, UseForm_dataProperty } from 'esoftplay';
+import { usePersistState, } from 'esoftplay';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function m<S>(formName: string, def?: S): [S, (a: string) => (v: any) => void, (a?: (x?: S) => void) => void, () => void, (x: S) => void] {
-  const [a, b, d, e] = usePersistState<S>(formName, def)
-  function c(field: any) {
-    UseForm_dataProperty.useFormData[formName] = {
-      ...UseForm_dataProperty.useFormData[formName],
-      ...field
-    }
-    b({
-      ...UseForm_dataProperty.useFormData[formName],
-      ...a,
-      ...field
-    })
-  }
-
-  useEffect(() => {
-    UseForm_dataProperty.useFormData[formName] = { ...UseForm_dataProperty.useFormData[formName], ...a }
-  }, [a])
-
-  function g(field: string) {
-    return (value: any) => {
-      c({ [field]: value })
-    }
-  }
-
-  function h() {
-    UseForm_dataProperty.useFormData[formName] = undefined
-    e()
-  }
-
-  function f(callback?: (a?: S) => void) {
-    d()
-    if (callback) {
-      AsyncStorage.getItem('useForm-' + formName).then((r) => {
-        if (r) {
-          callback(JSON.parse(r))
-        } else {
-          callback(undefined)
-        }
+export default (() => {
+  let dt = {}
+  return <S>(formName: string, def?: S): [S, (a: string) => (v: any) => void, (a?: (x?: S) => void) => void, () => void, (x: S) => void] => {
+    const [a, b, d, e] = usePersistState<S>(formName, def)
+    function c(field: any) {
+      dt[formName] = {
+        ...dt[formName],
+        ...field
+      }
+      b({
+        ...dt[formName],
+        ...a,
+        ...field
       })
     }
+
+    useEffect(() => {
+      dt[formName] = { ...dt[formName], ...a }
+    }, [a])
+
+    function g(field: string) {
+      return (value: any) => {
+        c({ [field]: value })
+      }
+    }
+
+    function h() {
+      dt[formName] = undefined
+      e()
+    }
+
+    function f(callback?: (a?: S) => void) {
+      d()
+      if (callback) {
+        AsyncStorage.getItem('useForm-' + formName).then((r) => {
+          if (r) {
+            callback(JSON.parse(r))
+          } else {
+            callback(undefined)
+          }
+        })
+      }
+    }
+    return [a, g, f, h, b]
   }
-  return [a, g, f, h, b]
-}
+})()
