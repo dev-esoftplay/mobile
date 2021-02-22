@@ -10,7 +10,7 @@ export interface LibNavigationInjector {
 }
 
 export default (() => {
-  let libNavigationRef: any = undefined
+  let libNavigationRef: any = React.createRef()
   let libNavigationData: any = {}
   return class m {
     static setRef(ref: any): void {
