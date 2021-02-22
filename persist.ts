@@ -22,11 +22,9 @@ export default (() => {
 
     function e(callback?: (a?: typeof def) => void) {
       if (obj[key]) {
-        console.log('DELETE')
         clearTimeout(obj[key])
       }
       obj[key] = setTimeout(() => {
-        console.log('ACT')
         if (r.current)
           AsyncStorage.getItem(key).then((x) => {
             delete obj[key]
