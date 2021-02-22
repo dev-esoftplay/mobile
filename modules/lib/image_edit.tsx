@@ -23,9 +23,7 @@ export default function m(props: LibImage_editProps): any {
         photo={{ uri }}
         isVisible={show}
         onPictureChoosed={(x: any) => {
-          console.log(x)
           Image.getSize(x.uri, (width, height) => {
-            console.log({ uri: x.uri, width, height })
             LibNavigation.sendBackResult({ uri: x.uri, width, height }, LibNavigation.getResultKey(props))
           }, () => { })
         }}

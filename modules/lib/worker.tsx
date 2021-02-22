@@ -188,7 +188,6 @@ export default (() => {
         if (LibWorkerReady > 0 && typeof LibWorkerBase?.current?.injectJavaScript == 'function') {
           LibWorkerCount++
           var _task = task(LibWorkerCount)
-          console.log('task => ', _task)
           LibWorkerTasks.set(String(LibWorkerCount), {
             task: _task,
             result: result

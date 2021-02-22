@@ -93,7 +93,6 @@ export default function m(props: LibPictureProps): any {
       let toSize = Math.max(width, height)
       toSize = isNaN(toSize) ? LibStyle.width * 0.5 : toSize
       getCacheEntry(b_uri, toSize).then(({ path, exists }) => {
-        // console.log(exists, b_uri)
         if (exists) {
           setUri(path)
         } else {

@@ -148,7 +148,6 @@ export default function m(props: LibImage_cropProps): any {
             height: (scale * cropHeight) > 0 ? (scale * cropHeight) : 0,
           }
 
-          console.log(cropOption, actualWidth, actualHeight)
 
           ImageManipulator.manipulateAsync(
             _image,
