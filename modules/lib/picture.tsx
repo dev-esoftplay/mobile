@@ -72,8 +72,8 @@ LibWorker.registerJob('imageCompress', (id, url, toSize) => {
 
 export default function m(props: LibPictureProps): any {
   const [uri, setUri] = useSafeState('')
-  let b_uri = props?.source?.uri?.replace('://api.', '://')
-  b_uri = b_uri.replace('://data.', '://')
+  let b_uri = props?.source?.uri?.replace?.('://api.', '://')
+  b_uri = b_uri?.replace?.('://data.', '://')
   let { width, height } = props.style
   const valid = b_uri?.includes?.(esp.config('domain'))
 
