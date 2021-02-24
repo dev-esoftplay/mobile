@@ -1,3 +1,0 @@
-{
-  "main": [ "trigger", "./", { "name": "esp", "expression": [ "allof", [ "not", [ "dirname", "node_modules" ] ], [ "not", [ "name", "index.d.ts" ] ] ], "command": [ "node", "./node_modules/esoftplay/bin/router.js" ], "append_files": true } ]
-}
