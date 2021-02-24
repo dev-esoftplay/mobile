@@ -187,7 +187,9 @@ export default function m(props: LibImage_cropProps): any {
             <View style={{ backgroundColor: "rgba(0,0,0,0.5 )", flex: 1 }} />
             <View style={{ flexDirection: "row" }} >
               <View style={{ backgroundColor: "rgba(0,0,0,0.5 )", flex: 1 }} />
-              <View ref={viewRef} style={{ height: ratioSize[1], width: ratioSize[0], backgroundColor: 'transparent', borderWidth: 1, borderColor: "white", borderStyle: 'dashed' }} />
+              <View ref={viewRef} style={{ height: ratioSize[1], width: ratioSize[0], backgroundColor: 'transparent', borderWidth: 1, borderColor: "black", borderStyle: 'dashed' }} >
+                <View style={{ flex: 1, backgroundColor: 'transparent', borderWidth: 1, borderColor: "white", borderStyle: 'dashed' }} />
+              </View>
               <View style={{ backgroundColor: "rgba(0,0,0,0.5 )", flex: 1 }} />
             </View>
             <View style={{ backgroundColor: "rgba(0,0,0,0.5 )", flex: 1 }} />

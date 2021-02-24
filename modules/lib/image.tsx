@@ -150,7 +150,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
     LibNavigation.navigateForResult("lib/image_edit", { uri }, 81793).then(result)
   }
   static showCropper(uri: string, forceCrop: boolean, ratio: string, message: string, result: (x: any) => void): void {
-    LibNavigation.navigateForResult("lib/image_crop", { image: uri, forceCrop, ratio }, 81793).then(result)
+    LibNavigation.navigateForResult("lib/image_crop", { image: uri, forceCrop, ratio, message }, 81793).then(result)
   }
 
 
