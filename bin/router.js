@@ -110,7 +110,7 @@ checks.forEach(modules => {
                     tmpTask[clsName]['class'] = ""
                     tmpTask[clsName]['function'] = {}
                     UseLibs.push(module + "/" + name) /* get export default */
-                    if (m = (/\nexport\sdefault\sfunction\s(([a-zA-Z0-9]+).*)\{\n/).exec(data)) {
+                    if (m = (/\n(?:export\sdefault|\s{2}return)\sfunction\s(([a-zA-Z0-9]+).*)\{\n/).exec(data)) {
                       tmpTask[clsName]['uselibs'] = ' function ' + m[1].replace(m[2], clsName).trim() + ";"
                       tmpTask[clsName]['namespaces'] = " namespace " + clsName.trim() + SuffixHooksProperty
                     }
@@ -144,7 +144,7 @@ checks.forEach(modules => {
                     tmpTask[clsName]['class'] = ""
                     tmpTask[clsName]['function'] = {}
                     HookModules.push(module + "/" + name) /* get export default */
-                    if (m = (/\nexport\sdefault\sfunction\s(([a-zA-Z0-9]+).*)\{\n/).exec(data)) {
+                    if (m = (/\n(?:export\sdefault|\s{2}return)\sfunction\s(([a-zA-Z0-9]+).*)\{\n/).exec(data)) {
                       tmpTask[clsName]['hooks'] = ' function ' + m[1].replace(m[2], clsName).trim() + ";"
                       tmpTask[clsName]['namespaces'] = " namespace " + clsName.trim() + SuffixHooksProperty
                     }
@@ -586,6 +586,8 @@ function createRouter() {
       } else if (module == 'lib' && task == 'worker_data') {
         staticImport.splice(2, 0, item)
       } else if (module == 'lib' && task == 'worker') {
+        staticImport.splice(2, 0, item)
+      } else if (module == 'lib' && task == 'navigation') {
         staticImport.splice(2, 0, item)
       } else {
         staticImport.push(item);

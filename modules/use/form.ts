@@ -5,7 +5,7 @@ import { useSafeState } from 'esoftplay';
 
 export default (() => {
   let dt = {}
-  return <S>(formName: string, def?: S): [S, (a: string) => (v: any) => void, (a?: (x?: S) => void) => void, () => void, (x: S) => void] => {
+  return function m<S>(formName: string, def?: S): [S, (a: string) => (v: any) => void, (a?: (x?: S) => void) => void, () => void, (x: S) => void] {
     const [a, b] = useSafeState<S>(dt && dt[formName] || def)
 
     function c(field: any) {

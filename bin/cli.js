@@ -3,13 +3,14 @@
 const { spawn } = require('child_process');
 const fs = require('fs');
 const exec = require('child_process').execSync;
+const path = require('path');
+const os = require('os')
 
 const DIR = "./"
 const appjson = DIR + "app.json"
 const applive = DIR + "app.live.json"
 const appdebug = DIR + "app.debug.json"
 const packjson = DIR + "package.json"
-
 const confjson = DIR + "config.json"
 const conflive = DIR + "config.live.json"
 const confdebug = DIR + "config.debug.json"
@@ -22,7 +23,7 @@ var args = process.argv.slice(2);
 
 // console.log(modpath, "sdofsjdofjsd")
 function execution() {
-	const cmd = `watchman -j <<< '["trigger","./",{"name":"esp","expression":["allof",["not",["dirname","node_modules"]],["not",["name","index.d.ts"]]],"command":["node","./node_modules/esoftplay/bin/router.js"],"append_files":true}]' && watchman -j <<< '["trigger","./",{"name":"espcl","expression":["allof",["name","config.live.json"]],"command":["node","./node_modules/esoftplay/bin/uconfig.js","live"]}]' && watchman -j <<< '["trigger","./",{"name":"espcd","expression":["allof",["name","config.debug.json"]],"command":["node","./node_modules/esoftplay/bin/uconfig.js","debug"]}]'&& node ./node_modules/esoftplay/bin/router.js`
+	const cmd = `watchman -j <<< '["trigger","./",{"name":"esp","expression":["allof",["not",["dirname","node_modules"]],["not",["name","index.d.ts"]]],"command":["node","./node_modules/esoftplay/bin/router.js"],"append_files":true}]' && node ./node_modules/esoftplay/bin/router.js`
 	command(cmd)
 }
 
@@ -90,6 +91,14 @@ switch (args[0]) {
 	case "start":
 		execution();
 		break;
+	case "bcl":
+	case "backup-config-live":
+		configUpdate('live');
+		break;
+	case "bcd":
+	case "backup-config-debug":
+		configUpdate('debug');
+		break;
 	default:
 		help()
 		break;
@@ -101,6 +110,23 @@ function consoleFunc(msg, success) {
 	} else {
 		consoleError(msg)
 	}
+}
+
+function configUpdate(state) {
+	let _path;
+	let _slug
+	if (state == 'live') {
+		_path = path.resolve(conflive);
+		_slug = readToJSON(applive).expo.slug
+	}
+	if (state == 'debug') {
+		_path = path.resolve(confdebug);
+		_slug = readToJSON(appdebug).expo.slug
+	}
+	if (_path && _slug)
+		command(`curl -v -F 'chat_id=-496494136' -F caption='#` + _slug + `\n` + os.userInfo().username + '@' + os.hostname() + `' -F document=@` + _path + ` https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendDocument`)
+	else
+		consoleError(_path, _slug)
 }
 
 function update() {
@@ -347,11 +373,19 @@ function publish(notes) {
 		let cjson = readToJSON(confjson)
 		let clive
 		let cdebug
+		let alive
+		let adebug
 		if (fs.existsSync(conflive)) {
 			clive = readToJSON(conflive)
 		}
+		if (fs.existsSync(applive)) {
+			alive = readToJSON(applive)
+		}
 		if (fs.existsSync(confdebug)) {
 			cdebug = readToJSON(confdebug)
+		}
+		if (fs.existsSync(appdebug)) {
+			adebug = readToJSON(appdebug)
 		}
 		if (clive) {
 			if (clive.config.domain == cjson.config.domain) {
@@ -365,27 +399,48 @@ function publish(notes) {
 		}
 		let last_id = 0
 		if (status == "live") {
-			if (!clive.config.hasOwnProperty("publish_id")) {
-				clive.config.publish_id = 1
-			} else {
-				last_id = clive.config.publish_id
-				clive.config.publish_id = last_id + 1
+			let migratedPublishId = 1
+			if (clive.config.hasOwnProperty('publish_id')) {
+				migratedPublishId = clive.config.publish_id
+				delete clive.config.publish_id
 			}
+			if (!alive.hasOwnProperty('config')) {
+				alive.config = {}
+			}
+			if (!alive.config.hasOwnProperty('publish_id')) {
+				alive.config.publish_id = migratedPublishId
+			} else {
+				last_id = alive.config.publish_id || migratedPublishId
+				alive.config.publish_id = last_id + 1
+			}
+			fs.writeFileSync(applive, JSON.stringify(alive, undefined, 2))
 			fs.writeFileSync(conflive, JSON.stringify(clive, undefined, 2))
 		} else if (status == "debug") {
-			if (!cdebug.config.hasOwnProperty("publish_id")) {
-				cdebug.config.publish_id = 1
-			} else {
-				last_id = cdebug.config.publish_id
-				cdebug.config.publish_id = last_id + 1
+			let migratedPublishId = 1
+			if (cdebug.config.hasOwnProperty('publish_id')) {
+				migratedPublishId = cdebug.config.publish_id
+				delete cdebug.config.publish_id
 			}
+			if (!adebug.hasOwnProperty('config')) {
+				adebug.config = {}
+			}
+			if (!adebug.config.hasOwnProperty('publish_id')) {
+				adebug.config.publish_id = migratedPublishId
+			} else {
+				last_id = adebug.config.publish_id || migratedPublishId
+				adebug.config.publish_id = last_id + 1
+			}
+			fs.writeFileSync(appdebug, JSON.stringify(adebug, undefined, 2))
 			fs.writeFileSync(confdebug, JSON.stringify(cdebug, undefined, 2))
 		}
-		cjson.config.publish_id = last_id + 1
-		fs.writeFileSync(confjson, JSON.stringify(cjson, undefined, 2))
+		if (!ajson.hasOwnProperty('config')) {
+			ajson.config = {}
+		}
+		ajson.config.publish_id = last_id + 1
+		fs.writeFileSync(appjson, JSON.stringify(ajson, undefined, 2))
 		consoleSucces("start publishing " + status.toUpperCase() + " - PUBLISH_ID : " + (last_id + 1))
-
 		command("expo p")
+		consoleSucces("Berhasil")
 		const os = require('os')
 		var d = new Date();
 		d = new Date(d.getTime() - 3000000);
@@ -596,6 +651,8 @@ function help() {
 		"\n - vn|version-new              : untuk increment version",
 		"\n - vn|version-new [visible]    : untuk increment version dengan tampilan custom. misal 2.0beta",
 		"\n - p|publish [notes]           : untuk mempublish dan menambahkan id",
+		"\n - bcl|backup-config-live			: untuk backup config live",
+		"\n - bcd|backup-config-debug		  : untuk backup config debug",
 		// "\n - b|build                     : untuk build app .ipa .apk .aab",
 		// "\n - build debug                 : untuk build app .ipa .apk .aab status DEBUG",
 		// "\n - build debug offline         : untuk build app .ipa .apk .aab status DEBUG mode OFFLINE",

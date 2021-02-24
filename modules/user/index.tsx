@@ -47,7 +47,7 @@ function setFonts(): Promise<void> {
 }
 
 export default (() => {
-  return (props: UserIndexProps): any => {
+  return function m(props: UserIndexProps): any {
     const dispatch = useDispatch()
     const [loading, setLoading] = useSafeState(true)
     const user = UseSelector((s) => s.user_class)
