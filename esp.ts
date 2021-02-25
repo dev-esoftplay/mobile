@@ -9,6 +9,7 @@ import { _global, esp } from 'esoftplay';
 let app = require('../../app.json');
 let conf = require('../../config.json');
 let lconf = require('../../config.live.json');
+import './oneplusfixfont'
 
 export default (() => {
   function mergeDeep(target: any, source: any): any {
