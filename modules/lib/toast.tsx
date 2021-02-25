@@ -82,7 +82,7 @@ export default function m(props: LibToastProps): any {
 
   return (
     <Animated.View style={{ position: 'absolute', top: LibStyle.STATUSBAR_HEIGHT + 70, left: 0, right: 0, transform: [{ translateY: inv }], marginVertical: 4, marginHorizontal: 13, borderRadius: 13, borderWidth: 1, borderColor: '#c4c4c4', opacity: op, backgroundColor: '#333', padding: 16, flex: 1 }} >
-      <Text style={{ fontSize: 13, fontWeight: "bold", fontStyle: "normal", letterSpacing: 0, textAlign: "center", color: 'white' }} >{data?.message}</Text>
+      <Text style={{ fontSize: 13, fontWeight: "bold", fontStyle: "normal", letterSpacing: 0, textAlign: "center", color: 'white' }} >{String(data?.message)}</Text>
     </Animated.View>
   )
 }
