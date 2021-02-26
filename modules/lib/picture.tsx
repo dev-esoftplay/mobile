@@ -1,7 +1,7 @@
 // withHooks
 
 import React, { useMemo } from 'react';
-import { View, Image, Platform, PixelRatio } from 'react-native';
+import { View, Image, Platform } from 'react-native';
 import { useSafeState, LibWorker, LibStyle, LibWorkloop, esp, } from 'esoftplay';
 import * as FileSystem from 'expo-file-system'
 const sh = require("shorthash")
@@ -11,7 +11,6 @@ export interface LibPictureSource {
 }
 export interface LibPictureProps {
   source: LibPictureSource | any,
-  noCache?: boolean,
   style: any,
   resizeMode?: "contain" | "cover",
   onError?: () => void,
@@ -34,7 +33,7 @@ const getCacheEntry = async (uri: string, toSize: number): Promise<{ exists: boo
   return { exists, path };
 };
 
-const imageCompress = LibWorker.registerJobAsync('imageCompress', (url, toSize) => {
+LibWorker.registerJob('imageCompress', (id, url, toSize) => {
   fetch(url, { mode: 'cors' })
     .then(response => response.blob())
     .then(blob => {
@@ -63,7 +62,7 @@ const imageCompress = LibWorker.registerJobAsync('imageCompress', (url, toSize) 
           ctx.drawImage(this, 0, 0, wantedwidth, wantedheight);
           let x = canvas.toDataURL();
           //@ts-ignore
-          LibWorker.jobOutput(x.replace("data:image/png;base64,", ""))
+          window.ReactNativeWebView.postMessage(JSON.stringify({ id: id, data: x.replace("data:image/png;base64,", "") }))
         }
         img.src = String(reader.result)
       };
@@ -98,10 +97,10 @@ export default function m(props: LibPictureProps): any {
         if (exists) {
           setUri(path)
         } else {
-          imageCompress([b_uri, PixelRatio.getPixelSizeForLayoutSize(toSize)], (uri) => {
+          LibWorker.image(b_uri, toSize, (uri) => {
             setUri("data:image/png;base64," + uri)
-            if (!props.noCache)
-              LibWorkloop.execNextTix(FileSystem.writeAsStringAsync, [path, uri, { encoding: "base64" }])
+            LibWorkloop.execNextTix(FileSystem.writeAsStringAsync, [path, uri, { encoding: "base64" }])
+            // FileSystem.writeAsStringAsync(path, uri, { encoding: "base64" })
           })
         }
       })
