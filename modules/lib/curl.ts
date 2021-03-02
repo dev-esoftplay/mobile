@@ -334,6 +334,7 @@ export default class ecurl {
       //     onPress: () => { }
       //   }
       // ])
+      this.onError(r)
       LibProgress.hide()
       if (onFailed)
         onFailed(r, true)
