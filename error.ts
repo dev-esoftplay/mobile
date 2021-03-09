@@ -2,10 +2,11 @@ import React from 'react';
 import { Platform } from 'react-native';
 import { LibCurl, LibUtils } from 'esoftplay';
 import Constants from 'expo-constants';
-let config = require('../../config.json');
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import esp from './esp';
+let config = esp.config()
 let pack = require('../../package.json');
 let app = require('../../app.json');
-import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const defaultErrorHandler = ErrorUtils.getGlobalHandler()
 
@@ -36,7 +37,6 @@ export function reportApiError(fetch: any, error: any) {
       'app/pub_id: ' + Constants.appOwnership + '/' + (config?.config?.publish_id || '-'),
       'user_id: ' + user?.id || user?.user_id || '-',
       'username: ' + user?.username || '-',
-      'publish_id: ' + config?.config?.publish_id || "-",
       'fetch: ' + String(JSON.stringify(fetch || {}, undefined, 2)).replace(/[\[\]\{\}\"]+/g, ''),
       'error: ' + error
     ].join('\n')
