@@ -24,17 +24,17 @@ export function setError(error?: any) {
     _e['user'] = user
     _e['error'] = JSON.stringify(error, undefined, 2).replace(/[\[\]\{\}\"]+/g, '')
     _e['routes'] = routes?.routes?.[lastIndex]?.name
-    AsyncStorage.setItem(config?.config?.domain + 'error', JSON.stringify(_e))
+    AsyncStorage.setItem(config?.domain + 'error', JSON.stringify(_e))
   }
 }
 
 export function reportApiError(fetch: any, error: any) {
-  config?.config?.errorReport?.telegramIds?.forEach?.((id: string) => {
+  config?.errorReport?.telegramIds?.forEach?.((id: string) => {
     const user = LibUtils.getReduxState("user_class")
     const msg = [
       'slug: ' + "#" + app.expo.slug,
       'dev: ' + Platform.OS + ' - ' + Constants.deviceName,
-      'app/pub_id: ' + Constants.appOwnership + '/' + (config?.config?.publish_id || '-'),
+      'app/pub_id: ' + Constants.appOwnership + '/' + (config?.publish_id || '-'),
       'user_id: ' + user?.id || user?.user_id || '-',
       'username: ' + user?.username || '-',
       'fetch: ' + String(JSON.stringify(fetch || {}, undefined, 2)).replace(/[\[\]\{\}\"]+/g, ''),
@@ -50,22 +50,22 @@ export function reportApiError(fetch: any, error: any) {
 }
 
 export function getError(adder: any) {
-  AsyncStorage.getItem(config.config.domain + 'error').then((e: any) => {
+  AsyncStorage.getItem(config.domain + 'error').then((e: any) => {
     if (e) {
       let _e = JSON.parse(e)
       let msg = [
         'slug: ' + "#" + app.expo.slug,
         'name: ' + app.expo.name + ' - sdk' + pack.dependencies.expo,
-        'domain: ' + config.config.domain + config.config.uri,
+        'domain: ' + config.domain + config.uri,
         'package: ' + (Platform.OS == 'ios' ? app.expo.ios.bundleIdentifier : app.expo.android.package) + ' - v' + (Platform.OS == 'ios' ? app.expo.ios.buildNumber : app.expo.android.versionCode),
         'device: ' + Platform.OS + ' | ' + Constants.deviceName,
-        'app/pub_id: ' + Constants.appOwnership + '/' + (config?.config?.publish_id || '-'),
+        'app/pub_id: ' + Constants.appOwnership + '/' + (config?.publish_id || '-'),
         'user_id: ' + _e?.user?.id || _e?.user?.user_id || '-',
         'username: ' + _e?.user?.username || '-',
         'module: ' + _e.routes,
         'error: \n' + String(JSON.stringify(adder?.exp?.lastErrors || {}, undefined, 2)).replace(/[\[\]\{\}\"]+/g, ''),
       ].join('\n')
-      config?.config?.errorReport?.telegramIds?.forEach?.((id: string) => {
+      config?.errorReport?.telegramIds?.forEach?.((id: string) => {
         let post = {
           text: msg,
           chat_id: id,
@@ -73,7 +73,7 @@ export function getError(adder: any) {
         }
         new LibCurl().custom('https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage', post)
       });
-      AsyncStorage.removeItem(config.config.domain + 'error')
+      AsyncStorage.removeItem(config.domain + 'error')
     }
   })
 }
