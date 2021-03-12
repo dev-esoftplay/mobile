@@ -33,12 +33,18 @@ export default class ecurl {
     this.urlEncode = this.urlEncode.bind(this)
     this.closeConnection = this.closeConnection.bind(this)
     this.onStatusCode = this.onStatusCode.bind(this)
+    this.onFetchFailed = this.onFetchFailed.bind(this)
+    this.onError = this.onError.bind(this)
     const str: any = _global.store.getState()
     if (uri && str.lib_net_status.isOnline) {
       this.init(uri, post, onDone, onFailed, debug);
     } else if (!str.lib_net_status.isOnline && onFailed) {
       onFailed("Failed to access", false);
     }
+  }
+
+  onFetchFailed(message: string): void {
+
   }
 
   setUrl(url: string): void {
@@ -119,8 +125,9 @@ export default class ecurl {
             }, debug)
         }).catch((r) => {
           LibProgress.hide()
-          if (onFailed)
-            onFailed(r, true)
+          this.onFetchFailed(r)
+          // if (onFailed)
+          //   onFailed(r, true)
         })
       }
     }
@@ -261,8 +268,9 @@ export default class ecurl {
         //     onPress: () => { }
         //   }
         // ])
-        if (onDone)
-          onDone(e, true)
+        this.onFetchFailed(e)
+        // if (onDone)
+        //   onDone(e, true)
       })
     }
   }
@@ -334,10 +342,8 @@ export default class ecurl {
       //     onPress: () => { }
       //   }
       // ])
-      this.onError(r)
+      this.onFetchFailed(r)
       LibProgress.hide()
-      if (onFailed)
-        onFailed(r, true)
     })
     // }
   }
