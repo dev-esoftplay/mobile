@@ -1,5 +1,5 @@
 //@ts-nocheck
-(() => {
+export default (() => {
   const React = require('react');
   const { Platform, Text } = require('react-native');
 
