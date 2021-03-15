@@ -4,7 +4,6 @@ import { LibCurl, LibUtils } from 'esoftplay';
 import Constants from 'expo-constants';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import esp from './esp';
-let config = esp.config()
 let pack = require('../../package.json');
 let app = require('../../app.json');
 
@@ -16,6 +15,7 @@ const myErrorHandler = (e: any, isFatal: any) => {
 }
 
 export function setError(error?: any) {
+  let config = esp.config()
   let routes = LibUtils.getReduxState('user_index')
   const user = LibUtils.getReduxState("user_class")
   let lastIndex = routes?.routes?.length - 1 || -1
@@ -29,6 +29,7 @@ export function setError(error?: any) {
 }
 
 export function reportApiError(fetch: any, error: any) {
+  let config = esp.config()
   config?.errorReport?.telegramIds?.forEach?.((id: string) => {
     const user = LibUtils.getReduxState("user_class")
     const msg = [
@@ -50,6 +51,7 @@ export function reportApiError(fetch: any, error: any) {
 }
 
 export function getError(adder: any) {
+  let config = esp.config()
   AsyncStorage.getItem(config.domain + 'error').then((e: any) => {
     if (e) {
       let _e = JSON.parse(e)

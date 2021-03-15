@@ -1,5 +1,5 @@
 //
-import react from "react";
+import React from "react";
 import momentTimeZone from "moment-timezone"
 import moment from "moment/min/moment-with-locales"
 import { esp, LibCrypt, LibProgress, _global, LibUtils } from 'esoftplay';
@@ -35,6 +35,8 @@ export default class ecurl {
     this.onStatusCode = this.onStatusCode.bind(this)
     this.onFetchFailed = this.onFetchFailed.bind(this)
     this.onError = this.onError.bind(this)
+    this.setApiKey = this.setApiKey.bind(this)
+    this.secure = this.secure.bind(this)
     const str: any = _global.store.getState()
     if (uri && str.lib_net_status.isOnline) {
       this.init(uri, post, onDone, onFailed, debug);
