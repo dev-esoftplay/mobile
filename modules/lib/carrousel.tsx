@@ -67,7 +67,8 @@ export default class m extends LibComponent<LibCarrouselProps, LibCarrouselState
     swipe: true,
     isLooped: true,
   };
-
+  
+  isBackground: boolean = false
   offset: number = 0;
   timer: any;
   nextPage: number = 0;
@@ -210,7 +211,7 @@ export default class m extends LibComponent<LibCarrouselProps, LibCarrouselState
   }
 
   _setUpTimer(): void {
-    if (this.props.autoplay && React.Children.count(this.props.children) > 1) {
+    if (this.props.autoplay && !this.isBackground && React.Children.count(this.props.children) > 1) {
       this._clearTimer();
       this.timer = setTimeout(this._animateNextPage, this.props.delay);
     }
@@ -384,7 +385,13 @@ export default class m extends LibComponent<LibCarrouselProps, LibCarrouselState
 
     return (
       <View {...containerProps}>
-        <LibFocus onFocus={this._setUpTimer} onBlur={this._clearTimer} />
+        <LibFocus onFocus={() => {
+          this.isBackground = false;
+          this._setUpTimer();
+        }} onBlur={() => {
+          this.isBackground = true;
+          this._clearTimer();
+        }} />
         <ScrollView
           ref={this.scrollView}
           onScrollBeginDrag={this._onScrollBegin}

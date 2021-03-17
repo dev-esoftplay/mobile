@@ -5,7 +5,7 @@ export default function m(def?: any) {
   const [a, b] = useState(def)
 
   function c(value: any) {
-    if (r.current) {
+    if (r?.current) {
       b(value)
     }
   }

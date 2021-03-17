@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { UseDataProperty } from 'esoftplay'
 const isEqual = require('react-fast-compare');
 
-export function set(id: string, x: any) {
+export function set(id: string, x: any): void {
   if (UseDataProperty.c?.a && UseDataProperty.c?.b?.[id] && !isEqual(UseDataProperty.c.a[id], x)) {
     UseDataProperty.c.a[id] = x
     UseDataProperty.c.b[id].forEach(d => {

@@ -62,7 +62,7 @@ export default class escroll extends LibComponent<LibScrollProps, LibScrollState
     this.scrollToIndex = this.scrollToIndex.bind(this);
   }
 
-  rowRenderer(item, index): any {
+  rowRenderer(item: any, index: number): any {
     return (
       <View key={index.toString()} onLayout={(e) => {
         this.idxNumber[index] = this.props.horizontal ? e.nativeEvent.layout.x : e.nativeEvent.layout.y
