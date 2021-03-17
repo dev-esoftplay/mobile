@@ -15,13 +15,13 @@ export interface UseCache_options {
 export default (() => {
   let useCacheIdx = 0
   let useCacheSubscriber = []
-  let value
+  let value = []
   return <T>(initValue: T, o?: UseCache_options): UseCache_return<T> => {
     const _idx = useCacheIdx
     if (!useCacheSubscriber[_idx]) {
       useCacheSubscriber[_idx] = [];
     }
-    value = initValue
+    value[_idx] = initValue
     // rehidryte instant
     if (o?.persistKey) {
       AsyncStorage.getItem(o.persistKey).then((p) => {
@@ -32,13 +32,13 @@ export default (() => {
 
     function set(ns: T) {
       let isChange = false
-      if (o?.listener && !isEqual(value, ns)) {
+      if (o?.listener && !isEqual(value[_idx], ns)) {
         isChange = true
       }
-      value = ns
-      useCacheSubscriber[_idx].forEach((c: any) => c?.(value));
+      value[_idx] = ns
+      useCacheSubscriber[_idx].forEach((c: any) => c?.(value[_idx]));
       if (o?.persistKey) {
-        AsyncStorage.setItem(o.persistKey, JSON.stringify(value))
+        AsyncStorage.setItem(o.persistKey, JSON.stringify(value[_idx]))
       }
       if (isChange)
         o.listener(ns)
@@ -63,15 +63,15 @@ export default (() => {
 
 
     function useCache(): [T, (newState: T) => void, () => void] {
-      let l = R.useRef<T>(value).current;
+      let l = R.useRef<T>(value[_idx]).current;
 
       const sl = (newl: T) => { l = newl }
-      
+
       subscribe(sl)
-      
+
       return [l, set, del];
     };
     useCacheIdx++
-    return { useCache, get: () => value, set: set };
+    return { useCache, get: () => value[_idx], set: set };
   }
-})() 
+})()
