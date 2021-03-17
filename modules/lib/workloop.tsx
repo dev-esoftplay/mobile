@@ -12,6 +12,7 @@ export interface LibWorkloopState {
 
 
 export default (() => {
+  let workloopRef = React.createRef<WebView>()
   let workloopTasks = []
   let workloopHasTask = false
   return class m extends LibComponent<LibWorkloopProps, LibWorkloopState> {
@@ -30,7 +31,7 @@ export default (() => {
       workloopTasks.push([func, params])
       if (workloopHasTask == false) {
         workloopHasTask = true
-        _global.workloopRef.current?.injectJavaScript(`
+        workloopRef.current?.injectJavaScript(`
         var stop = false
         var next
         if (typeof next == Function) {
@@ -63,7 +64,7 @@ export default (() => {
             workloopTasks = workloopTasks.slice(1, workloopTasks.length)
             if (workloopTasks.length == 0) {
               workloopHasTask = false
-              _global.workloopRef.current?.injectJavaScript(`var stop = true`)
+              workloopRef.current?.injectJavaScript(`var stop = true`)
             }
           }
         })
@@ -74,7 +75,7 @@ export default (() => {
       return (
         <View style={{ height: 0, width: 0 }} >
           <WebView
-            ref={_global.workloopRef}
+            ref={workloopRef}
             style={{ width: 0, height: 0 }}
             javaScriptEnabled={true}
             originWhitelist={["*"]}

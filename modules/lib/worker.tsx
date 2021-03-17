@@ -1,7 +1,7 @@
 import React, { createRef } from "react";
 import { Component } from "react"
 import { WebView } from 'react-native-webview'
-import { esp, _global } from 'esoftplay'
+import { esp } from 'esoftplay'
 import { PixelRatio, Platform, View } from 'react-native';
 
 export interface LibWorkerInit {
@@ -18,6 +18,7 @@ export interface LibWorkerState {
 }
 
 export default (() => {
+  let LibWorkerBase = React.createRef()
   let LibWorkerTasks = new Map()
   let injectedJavaScripts = []
   let LibWorkerReady = 0
@@ -184,14 +185,14 @@ export default (() => {
 
     static dispatch(task: (id: number) => string, url: string, result: (r: string) => void): void {
       const _dispatcher = () => {
-        if (LibWorkerReady > 0 && typeof _global.LibWorkerBase?.current?.injectJavaScript == 'function') {
+        if (LibWorkerReady > 0 && typeof LibWorkerBase?.current?.injectJavaScript == 'function') {
           LibWorkerCount++
           var _task = task(LibWorkerCount)
           LibWorkerTasks.set(String(LibWorkerCount), {
             task: _task,
             result: result
           })
-          _global.LibWorkerBase?.current?.injectJavaScript?.(_task)
+          LibWorkerBase?.current?.injectJavaScript?.(_task)
         } else {
           setTimeout(() => { _dispatcher() }, 1000);
         }
@@ -225,7 +226,7 @@ export default (() => {
       return (
         <View style={{ height: 0, width: 0 }} >
           <WebView
-            ref={_global.LibWorkerBase}
+            ref={LibWorkerBase}
             style={{ width: 0, height: 0 }}
             javaScriptEnabled={true}
             injectedJavaScript={`\nwindow.ReactNativeWebView.postMessage("BaseWorkerIsReady")\n` + injectedJavaScripts.join('\n') + '\n'}
