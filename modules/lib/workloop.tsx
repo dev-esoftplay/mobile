@@ -1,6 +1,6 @@
 import React from 'react';
 import { InteractionManager, View } from 'react-native';
-import { LibComponent } from 'esoftplay';
+import { LibComponent, _global } from 'esoftplay';
 import { WebView } from 'react-native-webview'
 
 export interface LibWorkloopProps {
@@ -14,7 +14,6 @@ export interface LibWorkloopState {
 export default (() => {
   let workloopTasks = []
   let workloopHasTask = false
-  let workloopRef = React.createRef<WebView>()
   return class m extends LibComponent<LibWorkloopProps, LibWorkloopState> {
     isReady = false
 
@@ -31,7 +30,7 @@ export default (() => {
       workloopTasks.push([func, params])
       if (workloopHasTask == false) {
         workloopHasTask = true
-        workloopRef.current?.injectJavaScript(`
+        _global.workloopRef.current?.injectJavaScript(`
         var stop = false
         var next
         if (typeof next == Function) {
@@ -64,7 +63,7 @@ export default (() => {
             workloopTasks = workloopTasks.slice(1, workloopTasks.length)
             if (workloopTasks.length == 0) {
               workloopHasTask = false
-              workloopRef.current?.injectJavaScript(`var stop = true`)
+              _global.workloopRef.current?.injectJavaScript(`var stop = true`)
             }
           }
         })
@@ -75,7 +74,7 @@ export default (() => {
       return (
         <View style={{ height: 0, width: 0 }} >
           <WebView
-            ref={workloopRef}
+            ref={_global.workloopRef}
             style={{ width: 0, height: 0 }}
             javaScriptEnabled={true}
             originWhitelist={["*"]}

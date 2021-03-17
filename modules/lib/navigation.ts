@@ -1,7 +1,7 @@
 //@ts-nocheck
 
 import React from "react";
-import { esp, LibUtils, LibNavigationRoutes } from 'esoftplay';
+import { esp, LibUtils, LibNavigationRoutes, _global } from 'esoftplay';
 import { CommonActions, StackActions } from '@react-navigation/native';
 
 export interface LibNavigationInjector {
@@ -10,11 +10,11 @@ export interface LibNavigationInjector {
 }
 
 export default (() => {
-  let libNavigationRef: any = React.createRef()
   let libNavigationData: any = {}
+  let libNavigationRedirect: any = {}
   return class m {
     static setRef(ref: any): void {
-      libNavigationRef = ref
+      _global.libNavigationRef = ref
     }
 
     static setNavigation(nav: any): void {
@@ -25,8 +25,26 @@ export default (() => {
       return libNavigationData?._navigation
     }
 
+    static setRedirect(func: Function, key?: number) {
+      if (!key) key = 1
+      libNavigationRedirect = {
+        ...libNavigationRedirect,
+        [key]: { func }
+      }
+    }
+
+    static redirect(key?: number) {
+      if (!key) key = 1
+      if (libNavigationRedirect?.[key]) {
+        const { func } = libNavigationRedirect?.[key]
+        if (typeof func == 'function')
+          func()
+        delete libNavigationRedirect[key]
+      }
+    }
+
     static navigate<S>(route: LibNavigationRoutes, params?: S): void {
-      libNavigationRef?.navigate?.(route, params)
+      _global.libNavigationRef?.navigate?.(route, params)
     }
 
     static getResultKey(props: any): number {
@@ -70,13 +88,13 @@ export default (() => {
     }
 
     static replace<S>(routeName: LibNavigationRoutes, params?: S): void {
-      libNavigationRef.dispatch(
+      _global.libNavigationRef.dispatch(
         StackActions.replace(routeName, params)
       )
     }
 
     static push<S>(routeName: LibNavigationRoutes, params?: S): void {
-      libNavigationRef?.dispatch?.(
+      _global.libNavigationRef?.dispatch?.(
         StackActions.push(
           routeName,
           params
@@ -94,13 +112,13 @@ export default (() => {
         index: _routeName.length - 1,
         routes: _routeName.map((rn) => ({ name: rn }))
       });
-      libNavigationRef?.dispatch?.(resetAction);
+      _global.libNavigationRef?.dispatch?.(resetAction);
     }
 
     static back(deep?: number): void {
       let _deep = deep || 1
       const popAction = StackActions.pop(_deep);
-      libNavigationRef?.dispatch?.(popAction)
+      _global.libNavigationRef?.dispatch?.(popAction)
     }
 
     /* return `root` on initialRoute otherwise return the routeName was active  */
@@ -118,7 +136,7 @@ export default (() => {
     }
 
     static backToRoot(): void {
-      libNavigationRef?.dispatch?.(StackActions.popToTop());
+      _global.libNavigationRef?.dispatch?.(StackActions.popToTop());
     }
 
     static Injector(props: LibNavigationInjector): any {
@@ -126,4 +144,4 @@ export default (() => {
       return React.cloneElement(props.children, { navigation: { state: { params: props.args } } })
     }
   }
-})() 
+})()
