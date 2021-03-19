@@ -550,13 +550,15 @@ function createRouter() {
   var nav = "";
   var staticImport = []
 
+  staticImport.push("import React from 'react';\n")
+  staticImport.push("export { default as _global } from '../../../node_modules/esoftplay/_global';\n")
+  staticImport.push("export { default as esp } from '../../../node_modules/esoftplay/esp';\n")
   staticImport.push("const isEqual = require('react-fast-compare');\n")
   staticImport.push("export function applyStyle(style){ return style };\n")
-  staticImport.push("export { default as _global } from '../../../node_modules/esoftplay/_global';\n")
+  staticImport.push("export { default as createCache } from '../../../node_modules/esoftplay/_cache';\n")
   staticImport.push("export { default as useGlobalState } from '../../../node_modules/esoftplay/global';\n")
   staticImport.push("export { default as useSafeState } from '../../../node_modules/esoftplay/state';\n")
   staticImport.push("export { default as usePersistState } from '../../../node_modules/esoftplay/persist';\n")
-  staticImport.push("export { default as esp } from '../../../node_modules/esoftplay/esp';\n")
   for (const module in Modules) {
     for (const task in Modules[module]) {
       nav = module + '/' + task;
@@ -578,24 +580,22 @@ function createRouter() {
         item += "export { _" + ucword(module) + ucword(task) + " as " + ucword(module) + ucword(task) + " };\n"
       }
       if (module == 'lib' && task == 'component') {
-        staticImport.splice(0, 0, item)
+        staticImport.splice(5, 0, item)
       } else if (module == 'lib' && task == 'style') {
-        staticImport.splice(0, 0, item)
+        staticImport.splice(5, 0, item)
       } else if (module == 'lib' && task == 'sqlite') {
-        staticImport.splice(1, 0, item)
+        staticImport.splice(5, 0, item)
       } else if (module == 'lib' && task == 'worker_data') {
-        staticImport.splice(2, 0, item)
+        staticImport.splice(5, 0, item)
       } else if (module == 'lib' && task == 'worker') {
-        staticImport.splice(2, 0, item)
+        staticImport.splice(5, 0, item)
       } else if (module == 'lib' && task == 'navigation') {
-        staticImport.splice(2, 0, item)
+        staticImport.splice(5, 0, item)
       } else {
         staticImport.push(item);
       }
     }
   }
-  staticImport.splice(0, 0, "export { default as createCache } from '../../../node_modules/esoftplay/_cache';\n")
-  staticImport.splice(0, 0, "import React from 'react';\n")
   const x = staticImport.join('')
   if (isChange(tmpDir + 'index.js', x))
     fs.writeFile(tmpDir + 'index.js', x, { flag: 'w' }, function (err) {
