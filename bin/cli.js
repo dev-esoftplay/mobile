@@ -40,8 +40,10 @@ switch (args[0]) {
 		let notes = ''
 		if (args[1]) {
 			notes = args.slice(1, args.length).join(' ')
+			publish(notes)
+		} else {
+			consoleError("silahkan masukkan notes publish, wajib guys")
 		}
-		publish(notes)
 		break;
 	case "f":
 	case "file":
