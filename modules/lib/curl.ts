@@ -377,6 +377,9 @@ export default class ecurl {
   onError(msg: string): void {
     esp.log("\x1b[31m", msg)
     esp.log("\x1b[0m")
+    if (esp.isDebug() && msg == '') {
+      return
+    }
     reportApiError(this.fetchConf, msg)
     LibProgress.hide()
   }
