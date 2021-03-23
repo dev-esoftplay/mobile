@@ -289,7 +289,6 @@ export default class App extends React.Component {
 		ErrorRecovery.setRecoveryProps(props)
 		ErrorReport.getError(props.exp.errorRecovery)
 		this.state = { loading: true }
-		_global.useGlobalIdx = 0
 		LibNotification.listen(this.notification)
 	}
 
@@ -369,7 +368,7 @@ export default class App extends React.Component {
 				if (fs.existsSync("../../node_modules/" + exlib)) {
 					console.log(exlib + " is Exist, Skipped")
 				} else {
-					console.log("❱❱❱ INSTALLING ... " + exlib)
+					console.log("⚙ INSTALLING ... " + exlib)
 					installExpoLibs.push(exlib)
 				}
 			})
@@ -377,7 +376,7 @@ export default class App extends React.Component {
 				if (fs.existsSync("../../node_modules/" + devlib)) {
 					console.log(devlib + " is Exist, Skipped")
 				} else {
-					console.log("❱❱❱ INSTALLING ... " + devlib)
+					console.log("⚙ INSTALLING ... " + devlib)
 					installDevLibs.push(devlib)
 				}
 			})

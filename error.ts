@@ -65,7 +65,7 @@ export function getError(adder: any) {
         'user_id: ' + _e?.user?.id || _e?.user?.user_id || '-',
         'username: ' + _e?.user?.username || '-',
         'module: ' + _e.routes,
-        'error: \n' + String(JSON.stringify(adder?.exp?.lastErrors || {}, undefined, 2)).replace(/[\[\]\{\}\"]+/g, ''),
+        'error: \n' + String(JSON.stringify(adder || {}, undefined, 2)).replace(/[\[\]\{\}\"]+/g, ''),
       ].join('\n')
       config?.errorReport?.telegramIds?.forEach?.((id: string) => {
         let post = {

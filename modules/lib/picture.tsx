@@ -123,6 +123,6 @@ export default function m(props: LibPictureProps): any {
   }
 
   return (
-    <Image key={uri} {...props} source={{ uri: uri }} style={props.style} />
+    <Image key={b_uri} {...props} source={{ uri: uri }} style={props.style} />
   )
 }
