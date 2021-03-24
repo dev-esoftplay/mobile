@@ -87,7 +87,7 @@ export default function m(props: LibPictureProps): any {
   }
 
   useMemo(() => {
-    if (!valid || (Platform.OS == 'android' && Platform.Version <= 22 && __DEV__)) {
+    if (!valid || (Platform.OS == 'android' && Platform.Version <= 22)) {
       return
     }
     if (b_uri) {
@@ -107,7 +107,7 @@ export default function m(props: LibPictureProps): any {
     }
   }, [props?.source?.uri])
 
-  if (!valid || (Platform.Version <= 22 && Platform.OS == 'android' && __DEV__)) {
+  if (!valid || (Platform.Version <= 22 && Platform.OS == 'android')) {
     if (typeof props.source != 'number' && !b_uri) {
       return <View style={props.style} />
     }

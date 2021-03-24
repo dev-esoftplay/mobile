@@ -47,7 +47,7 @@ export default (() => {
       injectedJavaScripts.push(x)
       m.dispatch(() => x, '', () => { })
       return (params: (string | number | boolean)[], res: (data: string) => void) => {
-        if (Platform.OS == 'android' && __DEV__)
+        if (Platform.OS == 'android')
           if (Platform.Version <= 22) {
             return res(func(...params))
           }
@@ -69,7 +69,7 @@ export default (() => {
       injectedJavaScripts.push(x)
       m.dispatch(() => x, '', () => { })
       return (params: (string | number | boolean)[], res: (data: string) => void) => {
-        if (Platform.OS == 'android' && __DEV__)
+        if (Platform.OS == 'android')
           if (Platform.Version <= 22) {
             return res(func(...params))
           }
@@ -89,7 +89,7 @@ export default (() => {
     }
 
     static objToString(data: any): string {
-      if (Platform.OS == 'android' && __DEV__)
+      if (Platform.OS == 'android')
         if (Platform.Version <= 22) {
           return JSON.stringify(data)
         }
@@ -101,7 +101,7 @@ export default (() => {
     }
 
     static jobAsync(func: Function, params: (string | number | boolean)[], res: (data: any) => void): void {
-      if (Platform.OS == 'android' && __DEV__)
+      if (Platform.OS == 'android')
         if (Platform.Version <= 22) {
           return res(func(...params))
         }
@@ -123,7 +123,7 @@ export default (() => {
     }
 
     static job(func: Function, params: (string | number | boolean)[], res: (data: any) => void): void {
-      if (Platform.OS == 'android' && __DEV__)
+      if (Platform.OS == 'android')
         if (Platform.Version <= 22) {
           return res(func(...params))
         }
@@ -218,7 +218,7 @@ export default (() => {
     }
 
     render(): any {
-      if (Platform.OS == 'android' && __DEV__)
+      if (Platform.OS == 'android')
         if (Platform.Version <= 22) {
           return null
         }
