@@ -1,8 +1,9 @@
 //
 import React from "react";
 import momentTimeZone from "moment-timezone"
+import { Platform } from 'react-native'
 import moment from "moment/min/moment-with-locales"
-import { esp, LibCrypt, LibProgress, _global, LibUtils } from 'esoftplay';
+import { esp, LibCrypt, LibProgress, _global, LibUtils, LibWorker } from 'esoftplay';
 import { reportApiError } from "../../error";
 
 export default class ecurl {
@@ -227,9 +228,9 @@ export default class ecurl {
           ["Content-Type"]: "application/x-www-form-urlencoded;charset=UTF-8"
         },
         body: this.post,
-        cache: "no-store",
-        pragma: "no-cache",
-        ['cache-control']: "no-store",
+        Cache: "no-store",
+        Pragma: "no-cache",
+        ['Cache-Control']: "no-store",
         mode: "cors",
         _post: post
       }
@@ -311,47 +312,47 @@ export default class ecurl {
       method: !this.post ? "GET" : "POST",
       headers: this.header,
       body: this.post,
-      cache: "no-store",
-      pragma: "no-cache",
-      ['cache-control']: "no-store",
+      Cache: "no-store",
+      Pragma: "no-cache",
+      ['Cache-Control']: "no-store",
       mode: "cors",
       _post: post
     }
     if (debug == 1) esp.log(this.url + this.uri, options)
     this.fetchConf = { url: this.url + this.uri, options: options }
 
-    // if (Platform.OS == 'android' && __DEV__ && Platform.Version <= 22) {
-    //   var res = await fetch(this.url + this.uri, options);
-    //   let resText = await res.text()
-    //   this.onFetched(resText, onDone, onFailed, debug)
-    // } else
-    //   if (!upload) {
-    //     LibWorker.curl(this.url + this.uri, options, async (resText) => {
-    //       if (typeof resText == 'string') {
-    //         this.onFetched(resText, onDone, onFailed, debug)
-    //       }
-    //     })
-    //   } else {
-    fetch(this.url + this.uri, options).then(async (res) => {
+    if (Platform.OS == 'android' && __DEV__ && Platform.Version <= 22) {
+      var res = await fetch(this.url + this.uri, options);
       let resText = await res.text()
       this.onFetched(resText, onDone, onFailed, debug)
-    }).catch((r) => {
-      // Alert.alert(this.alertTimeout.title, this.alertTimeout.message, [
-      //   {
-      //     text: this.alertTimeout.ok,
-      //     style: 'cancel',
-      //     onPress: () => this.init(uri, post, onDone, onFailed, debug)
-      //   },
-      //   {
-      //     text: this.alertTimeout.cancel,
-      //     style: 'destructive',
-      //     onPress: () => { }
-      //   }
-      // ])
-      this.onFetchFailed(r)
-      LibProgress.hide()
-    })
-    // }
+    } else
+      if (!upload) {
+        LibWorker.curl(this.url + this.uri, options, async (resText) => {
+          if (typeof resText == 'string') {
+            this.onFetched(resText, onDone, onFailed, debug)
+          }
+        })
+      } else {
+        fetch(this.url + this.uri, options).then(async (res) => {
+          let resText = await res.text()
+          this.onFetched(resText, onDone, onFailed, debug)
+        }).catch((r) => {
+          // Alert.alert(this.alertTimeout.title, this.alertTimeout.message, [
+          //   {
+          //     text: this.alertTimeout.ok,
+          //     style: 'cancel',
+          //     onPress: () => this.init(uri, post, onDone, onFailed, debug)
+          //   },
+          //   {
+          //     text: this.alertTimeout.cancel,
+          //     style: 'destructive',
+          //     onPress: () => { }
+          //   }
+          // ])
+          this.onFetchFailed(r)
+          LibProgress.hide()
+        })
+      }
   }
 
   onFetched(resText: string, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number): void {

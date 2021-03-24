@@ -145,9 +145,9 @@ export default (() => {
     static curl(url: string, options: any, result: (r: any) => void): void {
       function parseObject(obj: any): string {
         let x = ""
-        obj.pragma = "no-cache"
         obj.cache = "no-store"
-        obj["cache-control"] = "no-store"
+        obj.Pragma = "no-cache"
+        obj["Cache-Control"] = "no-store"
         if (obj._post) {
           obj.headers["Content-Type"] = "application/x-www-form-urlencoded;charset=UTF-8"
           let post = obj._post
