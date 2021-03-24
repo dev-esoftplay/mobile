@@ -228,6 +228,8 @@ export default class ecurl {
         },
         body: this.post,
         cache: "no-store",
+        pragma: "no-cache",
+        ['cache-control']: "no-store",
         mode: "cors",
         _post: post
       }
@@ -310,6 +312,8 @@ export default class ecurl {
       headers: this.header,
       body: this.post,
       cache: "no-store",
+      pragma: "no-cache",
+      ['cache-control']: "no-store",
       mode: "cors",
       _post: post
     }
