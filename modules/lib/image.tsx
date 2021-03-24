@@ -4,12 +4,10 @@ import {
   Image,
   ActivityIndicator,
   TouchableOpacity,
-  Platform,
   Alert,
-  InteractionManager,
 } from 'react-native';
 import { Icon } from 'native-base';
-import { LibStyle, LibComponent, LibCurl, esp, LibProgress, LibIcon, LibNavigation, LibUtils } from 'esoftplay';
+import { LibStyle, LibComponent, LibCurl, esp, LibProgress, LibIcon, LibNavigation } from 'esoftplay';
 import * as ImageManipulator from 'expo-image-manipulator';
 import { Camera } from 'expo-camera';
 import * as Permissions from 'expo-permissions';
@@ -28,6 +26,7 @@ export interface LibImageCrop {
 export interface LibImageProps {
   show?: boolean,
   image?: string,
+  maxDimension?: number,
   editor?: boolean,
 }
 
@@ -41,12 +40,14 @@ export interface LibImageState {
 export interface LibImageGalleryOptions {
   crop?: LibImageCrop
   editor?: boolean,
+  maxDimension?: number,
   multiple?: boolean,
   max?: number
 }
 
 export interface LibImageCameraOptions {
   crop?: LibImageCrop
+  maxDimension?: number,
   editor?: boolean
 }
 
@@ -54,7 +55,8 @@ class m extends LibComponent<LibImageProps, LibImageState> {
   static initState = {
     show: false,
     image: undefined,
-    editor: false
+    editor: false,
+    maxDimension: 1280
   }
 
   static reducer(state: any, action: any): any {
@@ -95,6 +97,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
       show: state.lib_image.show,
       image: state.lib_image.image,
       editor: state.lib_image.editor,
+      maxDimension: state.lib_image.maxDimension,
     }
   }
 
@@ -178,19 +181,19 @@ class m extends LibComponent<LibImageProps, LibImageState> {
           if (!result?.cancelled) {
             if (options && options.crop) {
               m.showCropper(result?.uri, options?.crop?.forceCrop, options?.crop?.ratio, options?.crop?.message, async (x) => {
-                let imageUri = await m.processImage(x)
+                let imageUri = await m.processImage(x, options?.maxDimension)
                 m.setResult(imageUri)
                 _r(imageUri)
               })
             } else
               if (options && options.editor) {
                 m.showEditor(result.uri, async (x) => {
-                  let imageUri = await m.processImage(x)
+                  let imageUri = await m.processImage(x, options?.maxDimension)
                   m.setResult(imageUri)
                   _r(imageUri)
                 })
               } else {
-                let imageUri = await m.processImage(result)
+                let imageUri = await m.processImage(result, options?.maxDimension)
                 m.setResult(imageUri)
                 _r(imageUri)
               }
@@ -225,20 +228,20 @@ class m extends LibComponent<LibImageProps, LibImageState> {
             if (!x.cancelled) {
               if (options && options.crop) {
                 m.showCropper(x.uri, options.crop.forceCrop, options.crop.ratio, options.crop?.message, async (x) => {
-                  let imageUri = await m.processImage(x)
+                  let imageUri = await m.processImage(x, options?.maxDimension)
                   m.setResult(imageUri)
                   _r(imageUri)
                 })
               } else
                 if (options?.editor == true) {
                   m.showEditor(x.uri, async (x) => {
-                    let imageUri = await m.processImage(x)
+                    let imageUri = await m.processImage(x, options?.maxDimension)
                     m.setResult(imageUri)
                     _r(imageUri)
                   })
                   return
                 } else {
-                  let imageUri = await m.processImage(x)
+                  let imageUri = await m.processImage(x, options?.maxDimension)
                   m.setResult(imageUri)
                   _r(imageUri)
                 }
@@ -250,13 +253,13 @@ class m extends LibComponent<LibImageProps, LibImageState> {
           if (max == 1 && x.length == 1) {
             if (options && options.crop) {
               m.showCropper(x[0].uri, options.crop.forceCrop, options.crop.ratio, options.crop?.message, async (x) => {
-                let imageUri = await m.processImage(x)
+                let imageUri = await m.processImage(x, options?.maxDimension)
                 m.setResult(imageUri)
                 _r(imageUri)
               })
             } else if (options?.editor == true)
               m.showEditor(x[0].uri, async (x) => {
-                let imageUri = await m.processImage(x)
+                let imageUri = await m.processImage(x, options?.maxDimension)
                 m.setResult(imageUri)
                 _r(imageUri)
               })
@@ -267,7 +270,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
             if (i == 0) {
               LibProgress.show("Mohon Tunggu, Sedang mengunggah foto")
             }
-            var wantedMaxSize = 780
+            var wantedMaxSize = options?.maxDimension || 1280
             var rawheight = t.height
             var rawwidth = t.width
             var ratio = rawwidth / rawheight
@@ -306,11 +309,11 @@ class m extends LibComponent<LibImageProps, LibImageState> {
     })
   }
 
-  static processImage(result: any): Promise<string> {
+  static processImage(result: any, maxDimension?: number): Promise<string> {
     return new Promise((r) => {
       if (!result.cancelled) {
         LibProgress.show("Mohon Tunggu, Sedang mengunggah foto")
-        var wantedMaxSize = 780
+        var wantedMaxSize = maxDimension || 1280
         var rawheight = result.height
         var rawwidth = result.width
         var ratio = rawwidth / rawheight
@@ -344,7 +347,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
 
   render(): any {
     const { image, type, loading, flashLight } = this.state
-    const { show, editor } = this.props
+    const { show, editor, maxDimension } = this.props
     if (!show) return null
     return (
       <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} >
@@ -399,7 +402,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
                     <TouchableOpacity onPress={() => {
                       setTimeout(
                         async () => {
-                          let imageUri = await m.processImage(image)
+                          let imageUri = await m.processImage(image, maxDimension)
                           m.setResult(imageUri)
                           this.setState({ image: null })
                         });
