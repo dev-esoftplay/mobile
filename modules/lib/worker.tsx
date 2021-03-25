@@ -166,8 +166,6 @@ export default (() => {
               doCurl(` + id + `, "` + url + `", ` + parseObject(options) + `)
             } else {
               function doCurl(id, url, params) {
-                // const ms = Date.now();
-                // url = url.includes('?') ? (url + '&cache_id=' + ms) : (url + '?cache_id=' + ms)
                 fetch(url, params)
                   .then(async (e) => {
                     var r = await e.text();
@@ -187,24 +185,23 @@ export default (() => {
     }
 
     static dispatch(task: (id: number) => string, url: string, result: (r: string) => void): void {
-      const _dispatcher = () => {
-        if (LibWorkerReady > 0 && typeof LibWorkerBase?.current?.injectJavaScript == 'function') {
-          LibWorkerCount++
-          var _task = task(LibWorkerCount)
-          LibWorkerTasks.set(String(LibWorkerCount), {
-            task: _task,
-            result: result
-          })
-          LibWorkerBase?.current?.injectJavaScript?.(_task)
-        } else {
-          setTimeout(() => { _dispatcher() }, 1000);
-        }
+      if (LibWorkerReady > 0 && typeof LibWorkerBase?.current?.injectJavaScript == 'function') {
+        LibWorkerCount++
+        var _task = task(LibWorkerCount)
+        LibWorkerTasks.set(String(LibWorkerCount), {
+          task: _task,
+          result: result
+        })
+        LibWorkerBase?.current?.injectJavaScript?.(_task)
+      } else {
+        setTimeout(() => {
+          m.dispatch(task, url, result)
+        }, 1000);
       }
-      _dispatcher()
     }
 
-    onMessage(e: any): any {
-      return (withRefName: string) => {
+    onMessage(withRefName: string): any {
+      return (e: any) => {
         if (e.nativeEvent.data == withRefName) {
           LibWorkerReady += 1
           return
@@ -235,7 +232,7 @@ export default (() => {
             injectedJavaScript={`\nwindow.ReactNativeWebView.postMessage("BaseWorkerIsReady")\n` + injectedJavaScripts.join('\n') + '\n'}
             originWhitelist={["*"]}
             source={{ uri: esp.config("protocol") + "://" + esp.config("domain") + esp.config("uri") + "dummyPageToBypassCORS" }}
-            onMessage={(e) => this.onMessage(e)('BaseWorkerIsReady')}
+            onMessage={this.onMessage('BaseWorkerIsReady')}
           />
         </View>
       )

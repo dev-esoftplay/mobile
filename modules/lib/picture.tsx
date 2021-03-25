@@ -13,6 +13,7 @@ export interface LibPictureProps {
   source: LibPictureSource | any,
   style: any,
   resizeMode?: "contain" | "cover",
+  noCache?: boolean,
   onError?: () => void,
 }
 
@@ -99,7 +100,8 @@ export default function m(props: LibPictureProps): any {
         } else {
           LibWorker.image(b_uri, toSize, (uri) => {
             setUri("data:image/png;base64," + uri)
-            LibWorkloop.execNextTix(FileSystem.writeAsStringAsync, [path, uri, { encoding: "base64" }])
+            if (!props.noCache)
+              LibWorkloop.execNextTix(FileSystem.writeAsStringAsync, [path, uri, { encoding: "base64" }])
             // FileSystem.writeAsStringAsync(path, uri, { encoding: "base64" })
           })
         }
