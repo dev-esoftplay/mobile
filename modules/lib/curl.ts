@@ -321,38 +321,38 @@ export default class ecurl {
     if (debug == 1) esp.log(this.url + this.uri, options)
     this.fetchConf = { url: this.url + this.uri, options: options }
 
-    if (Platform.OS == 'android' && Platform.Version <= 22) {
-      var res = await fetch(this.url + this.uri, options);
+    // if (Platform.OS == 'android' && Platform.Version <= 22) {
+    //   var res = await fetch(this.url + this.uri, options);
+    //   let resText = await res.text()
+    //   this.onFetched(resText, onDone, onFailed, debug)
+    // } else
+    //   if (!upload) {
+    //     LibWorker.curl(this.url + this.uri, options, async (resText) => {
+    //       if (typeof resText == 'string') {
+    //         this.onFetched(resText, onDone, onFailed, debug)
+    //       }
+    //     })
+    //   } else {
+    fetch(this.url + this.uri, options).then(async (res) => {
       let resText = await res.text()
       this.onFetched(resText, onDone, onFailed, debug)
-    } else
-      if (!upload) {
-        LibWorker.curl(this.url + this.uri, options, async (resText) => {
-          if (typeof resText == 'string') {
-            this.onFetched(resText, onDone, onFailed, debug)
-          }
-        })
-      } else {
-        fetch(this.url + this.uri, options).then(async (res) => {
-          let resText = await res.text()
-          this.onFetched(resText, onDone, onFailed, debug)
-        }).catch((r) => {
-          // Alert.alert(this.alertTimeout.title, this.alertTimeout.message, [
-          //   {
-          //     text: this.alertTimeout.ok,
-          //     style: 'cancel',
-          //     onPress: () => this.init(uri, post, onDone, onFailed, debug)
-          //   },
-          //   {
-          //     text: this.alertTimeout.cancel,
-          //     style: 'destructive',
-          //     onPress: () => { }
-          //   }
-          // ])
-          this.onFetchFailed(r)
-          LibProgress.hide()
-        })
-      }
+    }).catch((r) => {
+      // Alert.alert(this.alertTimeout.title, this.alertTimeout.message, [
+      //   {
+      //     text: this.alertTimeout.ok,
+      //     style: 'cancel',
+      //     onPress: () => this.init(uri, post, onDone, onFailed, debug)
+      //   },
+      //   {
+      //     text: this.alertTimeout.cancel,
+      //     style: 'destructive',
+      //     onPress: () => { }
+      //   }
+      // ])
+      this.onFetchFailed(r)
+      LibProgress.hide()
+    })
+    // }
   }
 
   onFetched(resText: string, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number): void {
