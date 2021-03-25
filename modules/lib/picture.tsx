@@ -18,13 +18,13 @@ export interface LibPictureProps {
 
 const CACHE_DIR = `${FileSystem.cacheDirectory}lib-picture-cache/`;
 
-export function createCacheDir(): void {
+(() => {
   try {
     FileSystem.makeDirectoryAsync(CACHE_DIR).then().catch(e => { });
   } catch (e) {
     // do nothing
   }
-}
+})()
 
 const getCacheEntry = async (uri: string, toSize: number): Promise<{ exists: boolean; path: string }> => {
   const path = `${CACHE_DIR}${sh.unique(uri)}-${toSize}.png`;

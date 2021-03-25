@@ -147,7 +147,8 @@ export default (() => {
         let x = ""
         obj.cache = "no-store"
         obj.Pragma = "no-cache"
-        obj["Cache-Control"] = "no-store"
+        obj["Cache-Control"] = 'no-cache, no-store, must-revalidate'
+        obj["Expires"] = 0
         if (obj._post) {
           obj.headers["Content-Type"] = "application/x-www-form-urlencoded;charset=UTF-8"
           let post = obj._post
@@ -165,6 +166,8 @@ export default (() => {
               doCurl(` + id + `, "` + url + `", ` + parseObject(options) + `)
             } else {
               function doCurl(id, url, params) {
+                // const ms = Date.now();
+                // url = url.includes('?') ? (url + '&cache_id=' + ms) : (url + '?cache_id=' + ms)
                 fetch(url, params)
                   .then(async (e) => {
                     var r = await e.text();

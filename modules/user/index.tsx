@@ -5,7 +5,7 @@ import React, { useEffect, useMemo } from "react";
 import Navs from "../../cache/navs";
 import { View, ImageBackground } from "react-native";
 import * as Font from "expo-font";
-import { esp, _global, UserClass, LibWorker, LibUpdaterProperty, LibWorkloop, LibNet_status, LibTheme, LibLocale, LibDialog, LibStyle, LibImage, LibProgress, UserMain, LibToast, useSafeState, LibVersion, UserIndex_dataProperty, UseSelector, LibPictureProperty } from 'esoftplay';
+import { esp, _global, UserClass, LibWorker, LibUpdaterProperty, LibWorkloop, LibNet_status, LibTheme, LibLocale, LibDialog, LibStyle, LibImage, LibProgress, UserMain, LibToast, useSafeState, LibVersion, UseSelector } from 'esoftplay';
 import firebase from 'firebase'
 import { useDispatch } from 'react-redux';
 
@@ -66,8 +66,6 @@ export default (() => {
     useMemo(() => {
       LibTheme.getTheme()
       LibLocale.getLanguage()
-      LibPictureProperty.createCacheDir()
-
       if (esp.config('firebase')) {
         try {
           firebase.initializeApp(esp.config('firebase'));
