@@ -312,9 +312,10 @@ export default class ecurl {
       method: !this.post ? "GET" : "POST",
       headers: this.header,
       body: this.post,
-      Cache: "no-store",
+      cache: "no-store",
       Pragma: "no-cache",
-      ['Cache-Control']: "no-store",
+      ["Cache-Control"]: 'no-cache, no-store, must-revalidate',
+      ["Expires"]: 0,
       mode: "cors",
       _post: post
     }

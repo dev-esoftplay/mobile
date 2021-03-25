@@ -32,6 +32,11 @@ export default (() => {
         [key]: { func }
       }
     }
+    
+    static delRedirect(key?: number) {
+      if (!key) key = 1
+      delete libNavigationRedirect[key]
+    }
 
     static redirect(key?: number) {
       if (!key) key = 1
