@@ -376,25 +376,35 @@ function createIndex() {
     "    function getTokenAsync(callback: (token: string) => void): void;\n" +
     "    function notif(): any;\n" +
     "  }\n" +
-    `  interface useGlobalReturn<S> {
-      useState: () => [S, (newState: S) => void, () => void],
-      get: (param?: string, ...params: string[]) => S,
-      set: (x: S) => void,
+    `
+    
+    interface useGlobalReturn<T> {
+      useState: () => [T, (newState: T) => void, () => void],
+      get: () => T,
+      set: (x: T) => void,
       reset: () => void,
-      useSelector: (selector: (state: S) => any) => any;
-    }\n
-  interface useGlobalOption {
-    persistKey?: string,
-    listener?: (s:any)=> void
-  }\ninterface createCacheOption {
-    persistKey?: string,
-    listener?: (s:any)=> void
-  }\ninterface createCacheReturn<S> {
-    useCache: () => [S, (newCache: S) => void, () => void],
-    get: () => any,
-    set: (x: S) => void
-  }\n
-  class LibCrypt {
+      connect: (props: useGlobalConnect<T>) => any,
+      useSelector: (selector: (state: T) => any) => any;
+    }
+
+    interface useGlobalOption {
+      persistKey?: string,
+      listener?: (data: any) => void
+    }
+
+    interface useGlobalConnect<T> {
+      render: (props: T) => any,
+    }
+    interface createCacheOption {
+      persistKey?: string,
+      listener?: (s:any)=> void
+    }
+    interface createCacheReturn<S> {
+      useCache: () => [S, (newCache: S) => void, () => void],
+      get: () => any,
+      set: (x: S) => void
+    }
+    class LibCrypt {
     encode(string: string): string
     decode(string: string): string
   }\n

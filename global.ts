@@ -2,25 +2,30 @@ import * as R from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const isEqual = require('react-fast-compare');
 
-export interface UseGlobal_return<T> {
+
+export interface useGlobalReturn<T> {
   useState: () => [T, (newState: T) => void, () => void],
   get: () => T,
   set: (x: T) => void,
   reset: () => void,
+  connect: (props: useGlobalConnect<T>) => any,
   useSelector: (selector: (state: T) => any) => any;
 }
 
-export interface UseGlobal_options {
+export interface useGlobalOption {
   persistKey?: string,
   listener?: (data: any) => void
 }
 
+export interface useGlobalConnect<T> {
+  render: (props: T) => any,
+}
 
 export default (() => {
   let idx = 0
   let subscriber = []
 
-  return <T>(initValue: T, o?: UseGlobal_options): UseGlobal_return<T> => {
+  return <T>(initValue: T, o?: useGlobalOption): useGlobalReturn<T> => {
     const _idx = idx
     if (!subscriber[_idx])
       subscriber[_idx] = [];
@@ -47,14 +52,6 @@ export default (() => {
       if (isChange)
         o.listener(ns)
     };
-
-    // function connect<T>(state: UseGlobal_return<T>): (cls: any) => void {
-    //   const [x] = state.useState()
-    //   return (cls: any) => {
-    //     const CLS = cls
-    //     (<CLS {...x} />)
-    //   }
-    // }
 
     function del() {
       if (o?.persistKey) {
@@ -114,7 +111,13 @@ export default (() => {
       return [l, set, del];
     };
 
+    function _connect(props: useGlobalConnect<T>): any {
+      const [state] = useState()
+      const children = props.render(state)
+      return children ? R.cloneElement(children) : null
+    }
+
     idx++
-    return { useState, get, set, useSelector, reset: del };
+    return { useState, get, set, useSelector, reset: del, connect: _connect };
   }
 })()
