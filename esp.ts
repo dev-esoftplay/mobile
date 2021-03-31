@@ -1,11 +1,9 @@
-import { LibLocale } from 'esoftplay';
 import React from 'react';
 import _assets from './cache/assets';
-import reducers from './cache/reducers';
 import navs from './cache/navigations';
 import routers from './cache/routers';
 import { Platform } from 'react-native';
-import { _global, esp } from 'esoftplay';
+import { _global, esp, LibLocale } from 'esoftplay';
 let app = require('../../app.json');
 let conf = require('../../config.json');
 let lconf = require('../../config.live.json');
@@ -192,9 +190,6 @@ export default (() => {
     config.webviewClose = '<script src="' + config.content + 'templates/admin/bootstrap/js/bootstrap.min.js"></script> </body> </html>';
     return config;
   }
-  function reducer(): any {
-    return reducers;
-  }
   function navigations(): string[] {
     return navs;
   }
@@ -213,13 +208,12 @@ export default (() => {
       console.log(message, ...optionalParams);
     }
   }
-  return { appjson, dispatch, log, home, isDebug, navigations, reducer, langId, lang, config, assets, routes, mod, versionName }
+  return { appjson, dispatch, log, home, isDebug, navigations, langId, lang, config, assets, routes, mod, versionName }
 })()
 
 // var a = esp.assets("bacground")     // mengambil file dari folder images
 // var b = esp.config("data", "name")  // mengambil value dari config (bisa ditentukan di app.json)
 // var c = esp.mod("module/task")      // mengeksekusi module/task
-// var d = esp.reducers()              // mengambil semua reducer
 // var e = esp.home()                  // mengkesekusi module/task untuk halaman pertama
 // var f = esp.log("pesan")            // log yang tampil jika di app.json -> isDebug == 1
 // var g = esp.routes()                // mengambil history status navigasi yang sedang berjalan
