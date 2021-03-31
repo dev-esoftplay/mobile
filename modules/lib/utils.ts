@@ -1,10 +1,11 @@
 import moment from "moment/min/moment-with-locales"
-import { Linking, Platform, Clipboard, CameraRoll, Share } from "react-native"
+import { Linking, Platform, Share } from "react-native"
 import momentTimeZone from "moment-timezone"
-import * as FileSystem from 'expo-file-system';
 import { esp, LibToastProperty, _global, createCache } from "esoftplay"
 import shorthash from "shorthash"
+import Clipboard from 'expo-clipboard'
 const Buffer = require('buffer/').Buffer
+
 const isEqual = require("react-fast-compare");
 const uniqWith = require('lodash.uniqwith');
 
@@ -65,22 +66,22 @@ export default class eutils {
     return props?.route?.params || defOutput;
   }
 
-  static getReduxState(key: string, ...keys: string[]): any {
-    let state: any = _global?.store?.getState?.()
-    if (key) {
-      var _params = [key, ...keys]
-      if (_params?.length > 0)
-        for (let i = 0; i < _params?.length; i++) {
-          const key = _params[i];
-          if (state?.hasOwnProperty(key)) {
-            state = state[key];
-          } else {
-            state = {};
-          }
-        }
-    }
-    return state;
-  }
+  // static getReduxState(key: string, ...keys: string[]): any {
+  //   let state: any = _global?.store?.getState?.()
+  //   if (key) {
+  //     var _params = [key, ...keys]
+  //     if (_params?.length > 0)
+  //       for (let i = 0; i < _params?.length; i++) {
+  //         const key = _params[i];
+  //         if (state?.hasOwnProperty(key)) {
+  //           state = state[key];
+  //         } else {
+  //           state = {};
+  //         }
+  //       }
+  //   }
+  //   return state;
+  // }
 
   static objectToUrlParam(obj: any): string {
     return Object.keys(obj).map((key, index) => {
@@ -116,19 +117,19 @@ export default class eutils {
     return momentTimeZone.tz(moment(datetime), timezone).format('YYYY-MM-DD HH:mm:ss')
   }
 
-  static getKeyBackOf(routeName: string, store?: any): string {
-    console.warn('LibUtils.getKeyBackOf is deprecated, use LibUtils.navGetKey instead')
-    var routes = eutils.getReduxState('user_index', 'routes')
-    var keyBack = ""
-    for (let i = 0; i < routes.length; i++) {
-      const item = routes[i];
-      if (item.routeName == routeName) {
-        keyBack = item.key
-        break
-      }
-    }
-    return keyBack
-  }
+  // static getKeyBackOf(routeName: string, store?: any): string {
+  //   console.warn('LibUtils.getKeyBackOf is deprecated, use LibUtils.navGetKey instead')
+  //   var routes = eutils.getReduxState('user_index', 'routes')
+  //   var keyBack = ""
+  //   for (let i = 0; i < routes.length; i++) {
+  //     const item = routes[i];
+  //     if (item.routeName == routeName) {
+  //       keyBack = item.key
+  //       break
+  //     }
+  //   }
+  //   return keyBack
+  // }
 
   static getRatingValue(rating: string): number {
     return rating.split(',').map((item) => parseInt(item)).reduce((acc, curr, index) => acc + (curr * (index + 1)))
@@ -145,42 +146,42 @@ export default class eutils {
     return (eutils.getRatingValue(rating) / eutils.getRatingCount(rating)).toFixed(decimalPlaces)
   }
 
-  static navGetKey(routeName: string): string {
-    var routes = eutils.getReduxState('user_index', 'routes')
-    var keyNav = ""
-    for (let i = 0; i < routes.length; i++) {
-      const item = routes[i];
-      if (item.routeName == routeName) {
-        keyNav = item.key
-        break
-      }
-    }
-    return keyNav
-  }
+  // static navGetKey(routeName: string): string {
+  //   var routes = eutils.getReduxState('user_index', 'routes')
+  //   var keyNav = ""
+  //   for (let i = 0; i < routes.length; i++) {
+  //     const item = routes[i];
+  //     if (item.routeName == routeName) {
+  //       keyNav = item.key
+  //       break
+  //     }
+  //   }
+  //   return keyNav
+  // }
 
-  static navReset(navigation: any, isLogin?: boolean): void {
-    console.warn('LibUtils.navReset is deleted, use LibNavigation.reset instead')
-    // const home = esp.config('home')
-    // const resetAction = StackActions.reset({
-    //   index: 0,
-    //   actions: [StackActions.navigate({ routeName: isLogin ? home.member : home.public })],
-    // });
-    // navigation.dispatch(resetAction);
-  }
+  // static navReset(navigation: any, isLogin?: boolean): void {
+  //   console.warn('LibUtils.navReset is deleted, use LibNavigation.reset instead')
+  //   // const home = esp.config('home')
+  //   // const resetAction = StackActions.reset({
+  //   //   index: 0,
+  //   //   actions: [StackActions.navigate({ routeName: isLogin ? home.member : home.public })],
+  //   // });
+  //   // navigation.dispatch(resetAction);
+  // }
 
-  static navResetCustom(navigation: any, routeName: string): void {
-    console.warn('LibUtils.navResetCustom is deleted, use LibNavigation.reset(\'customRouteName\') instead')
-    // const resetAction = StackActions.reset({
-    //   index: 0,
-    //   actions: [StackActions.navigate({ routeName })],
-    // });
-    // navigation.dispatch(resetAction);
-  }
+  // static navResetCustom(navigation: any, routeName: string): void {
+  //   console.warn('LibUtils.navResetCustom is deleted, use LibNavigation.reset(\'customRouteName\') instead')
+  //   // const resetAction = StackActions.reset({
+  //   //   index: 0,
+  //   //   actions: [StackActions.navigate({ routeName })],
+  //   // });
+  //   // navigation.dispatch(resetAction);
+  // }
 
-  static navReplace(store: any, navigation: any, routeName: string, params?: any): void {
-    (_global.store.getState().user_index.routes).some((item: any) => item.routeName == routeName) && navigation.goBack(eutils.navGetKey(routeName))
-    navigation.navigate(routeName, params)
-  }
+  // static navReplace(store: any, navigation: any, routeName: string, params?: any): void {
+  //   (_global.store.getState().user_index.routes).some((item: any) => item.routeName == routeName) && navigation.goBack(eutils.navGetKey(routeName))
+  //   navigation.navigate(routeName, params)
+  // }
 
   static money(value: string | number, currency?: string, part?: number): string {
     if (!value) value = 0
@@ -381,25 +382,25 @@ export default class eutils {
     return "rgba(" + parseInt(result[1], 16) + "," + parseInt(result[2], 16) + "," + parseInt(result[3], 16) + "," + alpha + ")"
   }
 
-  static download(url: string, onDownloaded: (file: string) => void): Promise<any> {
-    return new Promise(async (r) => {
-      const config = esp.config();
-      try {
-        await FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + config.domain, { intermediates: true })
-      } catch (error) {
+  // static download(url: string, onDownloaded: (file: string) => void): Promise<any> {
+  //   return new Promise(async (r) => {
+  //     const config = esp.config();
+  //     try {
+  //       await FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + config.domain, { intermediates: true })
+  //     } catch (error) {
 
-      }
-      var fileExtentions = url.split(".").pop();
-      var fileName = shorthash.unique(url)
-      FileSystem.downloadAsync(
-        url,
-        FileSystem.documentDirectory + config.domain + "/" + fileName + "." + fileExtentions)
-        .then(({ uri }) => {
-          CameraRoll.saveToCameraRoll(uri, "photo")
-          onDownloaded(fileName + fileExtentions)
-        }).catch((error: any) => { });
-    })
-  }
+  //     }
+  //     var fileExtentions = url.split(".").pop();
+  //     var fileName = shorthash.unique(url)
+  //     FileSystem.downloadAsync(
+  //       url,
+  //       FileSystem.documentDirectory + config.domain + "/" + fileName + "." + fileExtentions)
+  //       .then(({ uri }) => {
+  //         CameraRoll.saveToCameraRoll(uri, "photo")
+  //         onDownloaded(fileName + fileExtentions)
+  //       }).catch((error: any) => { });
+  //   })
+  // }
 
   static shorten(string: string): string {
     return shorthash.unique(string)

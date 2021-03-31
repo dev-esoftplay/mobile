@@ -7,12 +7,11 @@ import {
   Alert,
 } from 'react-native';
 import { Icon } from 'native-base';
-import { LibStyle, LibComponent, LibCurl, esp, LibProgress, LibIcon, LibNavigation } from 'esoftplay';
+import { LibStyle, LibComponent, LibCurl, esp, LibProgress, LibIcon, LibNavigation, useGlobalState } from 'esoftplay';
 import * as ImageManipulator from 'expo-image-manipulator';
 import { Camera } from 'expo-camera';
 import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
-import { connect } from 'react-redux';
 import { SaveFormat } from 'expo-image-manipulator';
 const { height, width } = LibStyle;
 
@@ -51,75 +50,36 @@ export interface LibImageCameraOptions {
   editor?: boolean
 }
 
+const initState = {
+  show: false,
+  image: undefined,
+  editor: false,
+  maxDimension: 1280
+}
+const state = useGlobalState(initState)
+
 class m extends LibComponent<LibImageProps, LibImageState> {
-  static initState = {
-    show: false,
-    image: undefined,
-    editor: false,
-    maxDimension: 1280
-  }
-
-  static reducer(state: any, action: any): any {
-    if (state == undefined) state = m.initState
-    switch (action.type) {
-      case "lib_image_camera_show":
-        return {
-          ...state,
-          show: true,
-          image: undefined,
-          editor: action.payload
-        }
-        break;
-      case "lib_image_camera_hide":
-        return {
-          ...state,
-          show: false,
-          image: undefined,
-          editor: false
-        }
-        break;
-      case "lib_image_result":
-        return {
-          ...state,
-          image: action.payload,
-          show: false,
-          editor: false
-        }
-        break;
-      default:
-        return state
-
-    }
-  }
-
-  static mapStateToProps(state: any): any {
-    return {
-      show: state.lib_image.show,
-      image: state.lib_image.image,
-      editor: state.lib_image.editor,
-      maxDimension: state.lib_image.maxDimension,
-    }
-  }
 
   static setResult(image: string): void {
-    // console.log(image)/
-    esp.dispatch({
-      type: 'lib_image_result',
-      payload: image
+    state.set({
+      ...state.get(),
+      image: image,
+      show: false,
+      editor: false,
     })
   }
 
   static show(editor?: boolean): void {
-    esp.dispatch({
-      type: 'lib_image_camera_show',
-      payload: editor
+    state.set({
+      ...state.get(),
+      show: true,
+      image: undefined,
+      editor: editor,
     })
   }
 
   static hide(): void {
-    esp.dispatch({
-      type: 'lib_image_camera_hide'
-    })
+    state.set(initState)
   }
 
   camera: any;
@@ -347,86 +307,93 @@ class m extends LibComponent<LibImageProps, LibImageState> {
 
   render(): any {
     const { image, type, loading, flashLight } = this.state
-    const { show, editor, maxDimension } = this.props
-    if (!show) return null
     return (
-      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} >
-        <View style={{ flex: 1 }} >
-          <Camera
-            ref={(camera: any) => this.camera = camera}
-            type={type}
-            ratio={'4:3'}
-            flashMode={flashLight}
-            zoom={0.1}
-            style={{ height: LibStyle.width * 4 / 3, width: LibStyle.width }}>
-            <View style={{ height: height, width: width, backgroundColor: 'transparent' }} >
-              {image ? <Image source={image} style={{ height: LibStyle.width * 4 / 3, width: width, resizeMode: 'cover', transform: [{ scaleX: this.state.type == Camera.Constants.Type.back ? 1 : -1 }] }} /> : null}
+      <state.connect
+        render={(props) => {
+          const { show, editor, maxDimension } = props
+          if (!show) return null
+          return (
+            <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} >
+              <View style={{ flex: 1 }} >
+                <Camera
+                  ref={(camera: any) => this.camera = camera}
+                  type={type}
+                  ratio={'4:3'}
+                  flashMode={flashLight}
+                  zoom={0.1}
+                  style={{ height: LibStyle.width * 4 / 3, width: LibStyle.width }}>
+                  <View style={{ height: height, width: width, backgroundColor: 'transparent' }} >
+                    {image ? <Image source={image} style={{ height: LibStyle.width * 4 / 3, width: width, resizeMode: 'cover', transform: [{ scaleX: this.state.type == Camera.Constants.Type.back ? 1 : -1 }] }} /> : null}
+                  </View>
+                </Camera>
+                <View style={{ position: 'absolute', top: 10 + LibStyle.STATUSBAR_HEIGHT, left: 10 }} >
+                  <TouchableOpacity onPress={() => this.setState({ flashLight: flashLight == 'on' ? 'off' : 'on' })} >
+                    <LibIcon color={'white'} size={24} name={flashLight == 'on' ? 'flash' : "flash-off"} />
+                  </TouchableOpacity>
+                </View>
+                <View style={{ position: 'absolute', top: width * 4 / 3, bottom: 0, left: 0, right: 0, justifyContent: 'center', backgroundColor: 'black', alignItems: 'center', flex: 1 }} >
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }} >
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
+                      {
+                        image ?
+                          <TouchableOpacity onPress={() => this.setState({ image: false })} >
+                            <Icon name='ios-close-circle' style={{ fontSize: 40, color: 'white' }} />
+                          </TouchableOpacity>
+                          :
+                          <TouchableOpacity onPress={() => this.setState({ type: this.state.type === Camera.Constants.Type.back ? Camera.Constants.Type.front : Camera.Constants.Type.back })} >
+                            <Icon name='ios-refresh-circle' style={{ fontSize: 40, color: 'white' }} />
+                          </TouchableOpacity>
+                      }
+                    </View>
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
+                      {
+                        image ? null :
+                          <TouchableOpacity onPress={() => this.takePicture()} >
+                            <View style={{ height: 70, width: 70, borderRadius: 35, backgroundColor: 'black', borderWidth: 1, borderColor: 'white', justifyContent: 'center', 'alignItems': 'center' }} >
+                              <View style={{ height: 62, width: 62, borderRadius: 31, backgroundColor: 'white', alignItems: 'center', justifyContent: 'center' }} >
+                                {
+                                  loading ? <ActivityIndicator size={'large'} color={'black'} /> : null
+                                }
+                              </View>
+                            </View>
+                          </TouchableOpacity>
+                      }
+                    </View>
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
+                      {
+                        image ?
+                          <TouchableOpacity onPress={() => {
+                            setTimeout(
+                              async () => {
+                                let imageUri = await m.processImage(image, maxDimension)
+                                m.setResult(imageUri)
+                                this.setState({ image: null })
+                              });
+                          }} >
+                            <Icon name='ios-checkmark-circle' style={{ fontSize: 40, color: 'white' }} />
+                          </TouchableOpacity>
+                          :
+                          <TouchableOpacity onPress={() => {
+                            setTimeout(
+                              async () => {
+                                m.hide()
+                                this.setState({ image: null })
+                              });
+                          }} >
+                            <Icon name='ios-close-circle' style={{ fontSize: 40, color: 'white' }} />
+                          </TouchableOpacity>
+                      }
+                    </View>
+                  </View>
+                </View>
+              </View>
             </View>
-          </Camera>
-          <View style={{ position: 'absolute', top: 10 + LibStyle.STATUSBAR_HEIGHT, left: 10 }} >
-            <TouchableOpacity onPress={() => this.setState({ flashLight: flashLight == 'on' ? 'off' : 'on' })} >
-              <LibIcon color={'white'} size={24} name={flashLight == 'on' ? 'flash' : "flash-off"} />
-            </TouchableOpacity>
-          </View>
-          <View style={{ position: 'absolute', top: width * 4 / 3, bottom: 0, left: 0, right: 0, justifyContent: 'center', backgroundColor: 'black', alignItems: 'center', flex: 1 }} >
-            <View style={{ flexDirection: 'row', alignItems: 'center' }} >
-              <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
-                {
-                  image ?
-                    <TouchableOpacity onPress={() => this.setState({ image: false })} >
-                      <Icon name='ios-close-circle' style={{ fontSize: 40, color: 'white' }} />
-                    </TouchableOpacity>
-                    :
-                    <TouchableOpacity onPress={() => this.setState({ type: this.state.type === Camera.Constants.Type.back ? Camera.Constants.Type.front : Camera.Constants.Type.back })} >
-                      <Icon name='ios-refresh-circle' style={{ fontSize: 40, color: 'white' }} />
-                    </TouchableOpacity>
-                }
-              </View>
-              <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
-                {
-                  image ? null :
-                    <TouchableOpacity onPress={() => this.takePicture()} >
-                      <View style={{ height: 70, width: 70, borderRadius: 35, backgroundColor: 'black', borderWidth: 1, borderColor: 'white', justifyContent: 'center', 'alignItems': 'center' }} >
-                        <View style={{ height: 62, width: 62, borderRadius: 31, backgroundColor: 'white', alignItems: 'center', justifyContent: 'center' }} >
-                          {
-                            loading ? <ActivityIndicator size={'large'} color={'black'} /> : null
-                          }
-                        </View>
-                      </View>
-                    </TouchableOpacity>
-                }
-              </View>
-              <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
-                {
-                  image ?
-                    <TouchableOpacity onPress={() => {
-                      setTimeout(
-                        async () => {
-                          let imageUri = await m.processImage(image, maxDimension)
-                          m.setResult(imageUri)
-                          this.setState({ image: null })
-                        });
-                    }} >
-                      <Icon name='ios-checkmark-circle' style={{ fontSize: 40, color: 'white' }} />
-                    </TouchableOpacity>
-                    :
-                    <TouchableOpacity onPress={() => {
-                      setTimeout(
-                        async () => {
-                          m.hide()
-                          this.setState({ image: null })
-                        });
-                    }} >
-                      <Icon name='ios-close-circle' style={{ fontSize: 40, color: 'white' }} />
-                    </TouchableOpacity>
-                }
-              </View>
-            </View>
-          </View>
-        </View>
-      </View>
+          )
+        }}
+      />
+
     );
   }
 }
 
-export default connect(m.mapStateToProps)(m)
+export default m

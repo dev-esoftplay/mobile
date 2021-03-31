@@ -1,6 +1,6 @@
 import React from 'react';
 import { Platform } from 'react-native';
-import { LibCurl, LibUtils } from 'esoftplay';
+import { LibCurl, UserClass } from 'esoftplay';
 import Constants from 'expo-constants';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import esp from './esp';
@@ -16,8 +16,8 @@ const myErrorHandler = (e: any, isFatal: any) => {
 
 export function setError(error?: any) {
   let config = esp.config()
-  let routes = LibUtils.getReduxState('user_index')
-  const user = LibUtils.getReduxState("user_class")
+  let routes = undefined
+  const user = UserClass.state().get()
   let lastIndex = routes?.routes?.length - 1 || -1
   if (lastIndex >= 0) {
     let _e: any = {}
@@ -31,7 +31,7 @@ export function setError(error?: any) {
 export function reportApiError(fetch: any, error: any) {
   let config = esp.config()
   config?.errorReport?.telegramIds?.forEach?.((id: string) => {
-    const user = LibUtils.getReduxState("user_class")
+    const user = UserClass.state().get()
     const msg = [
       'slug: ' + "#" + app.expo.slug,
       'dev: ' + Platform.OS + ' - ' + Constants.deviceName,

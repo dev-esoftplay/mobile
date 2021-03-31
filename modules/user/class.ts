@@ -1,3 +1,4 @@
+import { useGlobalReturn, useGlobalState } from 'esoftplay';
 //
 import React from "react"
 import { Platform } from 'react-native';
@@ -7,23 +8,16 @@ import moment from "moment";
 import Constants from 'expo-constants';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
+
+const state = useGlobalState(undefined)
+
 export default class eclass {
-
-  static reducer(state: any, action: any): any {
-    if (!state) state = null
-    switch (action.type) {
-      case "user_class_create":
-        return action.payload
-      case "user_class_delete":
-        return null
-      default:
-        return state
-    }
+  static state(): useGlobalReturn<any> {
+    return state
   }
-
   static create(user: any): Promise<void> {
     return new Promise((r, j) => {
-      esp.dispatch({ type: "user_class_create", payload: user });
+      state.set(user)
       AsyncStorage.setItem("user", new LibCrypt().encode(JSON.stringify(user)))
       if (esp.config('notification') == 1) {
         UserClass.pushToken()
@@ -39,10 +33,7 @@ export default class eclass {
           const usr = user[0] == '{' && user[user.length - 1] == '}' ? JSON.parse(user) : JSON.parse(new LibCrypt().decode(user))
           if (usr) {
             r(usr);
-            esp.dispatch({
-              type: "user_class_create",
-              payload: usr
-            });
+            state.set(usr)
             if (callback) callback(usr)
           } else {
             j()
@@ -71,7 +62,7 @@ export default class eclass {
   static delete(): Promise<void> {
     return new Promise((r) => {
       Notifications.setBadgeCountAsync(0)
-      esp.dispatch({ type: "user_class_delete" });
+      state.set(undefined)
       AsyncStorage.removeItem("user");
       AsyncStorage.removeItem("user_notification");
       new UserData().deleteAll()

@@ -7,7 +7,6 @@ import { View, ImageBackground } from "react-native";
 import * as Font from "expo-font";
 import { esp, _global, UserClass, LibWorker, LibUpdaterProperty, LibWorkloop, LibNet_status, LibTheme, LibLocale, LibDialog, LibStyle, LibImage, LibProgress, UserMain, LibToast, useSafeState, LibVersion, UseSelector } from 'esoftplay';
 import firebase from 'firebase'
-import { useDispatch } from 'react-redux';
 
 export interface UserIndexProps {
 
@@ -15,18 +14,6 @@ export interface UserIndexProps {
 
 export interface UserIndexState {
   loading: boolean
-}
-
-const initState = {}
-export function reducer(state: any, action: any): any {
-  if (state == undefined) state = initState
-  const actions: any = {
-    "user_nav_change": {
-      ...action.payload
-    }
-  }
-  const _action = actions[action.type]
-  return _action ? _action : state
 }
 
 function setFonts(): Promise<void> {
@@ -48,24 +35,19 @@ function setFonts(): Promise<void> {
 
 export default (() => {
   return function m(props: UserIndexProps): any {
-    const dispatch = useDispatch()
     const [loading, setLoading] = useSafeState(true)
-    const user = UseSelector((s) => s.user_class)
+    const user = UserClass.state().useSelector(s => s)
     //@ts-ignore
     const initialState = __DEV__ ? _global.nav__state : undefined
 
     function handler(currentState: any): void {
-      dispatch({ type: "user_nav_change", payload: currentState })
       //@ts-ignore
       if (__DEV__) {
         _global.nav__state = currentState
       }
     }
 
-
     useMemo(() => {
-      LibTheme.getTheme()
-      LibLocale.getLanguage()
       if (esp.config('firebase')) {
         try {
           firebase.initializeApp(esp.config('firebase'));

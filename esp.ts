@@ -1,10 +1,10 @@
+import { LibLocale } from 'esoftplay';
 import React from 'react';
 import _assets from './cache/assets';
 import reducers from './cache/reducers';
 import navs from './cache/navigations';
 import routers from './cache/routers';
 import { Platform } from 'react-native';
-import { connect as _connect } from 'react-redux';
 import { _global, esp } from 'esoftplay';
 let app = require('../../app.json');
 let conf = require('../../config.json');
@@ -108,8 +108,8 @@ export default (() => {
   }
 
   function langId(): string {
-    const _store: any = _global.store.getState()
-    return _store.lib_locale.lang_id
+    const _store: any = LibLocale.state().get()
+    return _store.lang_id
   }
   function mod(path: string): any {
     var modtast = path.split("/");
@@ -202,21 +202,18 @@ export default (() => {
     return mod('user/index');
   }
   function routes(): any {
-    var _store: any = _global.store.getState();
-    return _store.user_index;
+    // var _store: any = _global.store.getState();
+    return undefined;
   }
   function dispatch(action: any): void {
-    _global.store.dispatch(action)
-  }
-  function connect(mapStateToProps: any, cls: any): any {
-    return _connect(mapStateToProps)(cls)
+    // _global.store.dispatch(action)
   }
   function log(message?: any, ...optionalParams: any[]) {
     if (config("isDebug") == 1) {
       console.log(message, ...optionalParams);
     }
   }
-  return { appjson, connect, dispatch, log, home, isDebug, navigations, reducer, langId, lang, config, assets, routes, mod, versionName }
+  return { appjson, dispatch, log, home, isDebug, navigations, reducer, langId, lang, config, assets, routes, mod, versionName }
 })()
 
 // var a = esp.assets("bacground")     // mengambil file dari folder images

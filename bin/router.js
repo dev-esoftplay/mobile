@@ -501,43 +501,43 @@ function isChange(path, compare) {
 /* CREATE REDUCER LIST */
 function createReducer() {
   if (countRead >= countLoop) {
-    var CodeImporter = "";
-    var CodeReducer = "";
-    for (const key in Reducers) {
-      if (HookReducers.includes(key)) {
-        CodeImporter += "\nimport * as " + key + " from '../../." + Reducers[key] + "';";
-      } else {
-        CodeImporter += "\nimport " + key + " from '../../." + Reducers[key] + "';";
-      }
-      CodeReducer += "\n\t" + key + ": " + key + ".reducer,";
-    }
-    if (CodeReducer != "") {
-      CodeReducer = CodeReducer.substr(0, CodeReducer.length - 1);
-    }
-    Text = "import { combineReducers } from 'redux'" +
-      "\nimport { persistReducer } from 'redux-persist'" +
-      "\nimport AsyncStorage from '@react-native-async-storage/async-storage'" + CodeImporter +
-      "\n\nconst combiner = combineReducers({" + CodeReducer +
-      "\n})\n\n" +
-      "\nconst persistConfig = {" +
-      "\n\tkey: 'root'," +
-      "\n\tstorage: AsyncStorage," +
-      "\n\twhitelist: ['" + Object.keys(Persistor).join('\',\'') + "']" +
-      "\n}" +
-      "\nconst reducers = (state, action) => {" +
-      "\n\tif (action.type === 'user_class_delete') {" +
-      "\n\t\tstate = undefined" +
-      "\n\t}" +
-      "\n\treturn combiner(state, action)" +
-      "\n	}" +
-      "\nexport default persistReducer(persistConfig, reducers)";
-    if (isChange(tmpDir + "reducers.js", Text)) {
-      fs.writeFile(tmpDir + "reducers.js", Text, { flag: 'w' }, function (err) {
-        if (err) {
-          return console.log(err);
-        }
-      })
-    }
+    // var CodeImporter = "";
+    // var CodeReducer = "";
+    // for (const key in Reducers) {
+    //   if (HookReducers.includes(key)) {
+    //     CodeImporter += "\nimport * as " + key + " from '../../." + Reducers[key] + "';";
+    //   } else {
+    //     CodeImporter += "\nimport " + key + " from '../../." + Reducers[key] + "';";
+    //   }
+    //   CodeReducer += "\n\t" + key + ": " + key + ".reducer,";
+    // }
+    // if (CodeReducer != "") {
+    //   CodeReducer = CodeReducer.substr(0, CodeReducer.length - 1);
+    // }
+    // Text = "import { combineReducers } from 'redux'" +
+    //   "\nimport { persistReducer } from 'redux-persist'" +
+    //   "\nimport AsyncStorage from '@react-native-async-storage/async-storage'" + CodeImporter +
+    //   "\n\nconst combiner = combineReducers({" + CodeReducer +
+    //   "\n})\n\n" +
+    //   "\nconst persistConfig = {" +
+    //   "\n\tkey: 'root'," +
+    //   "\n\tstorage: AsyncStorage," +
+    //   "\n\twhitelist: ['" + Object.keys(Persistor).join('\',\'') + "']" +
+    //   "\n}" +
+    //   "\nconst reducers = (state, action) => {" +
+    //   "\n\tif (action.type === 'user_class_delete') {" +
+    //   "\n\t\tstate = undefined" +
+    //   "\n\t}" +
+    //   "\n\treturn combiner(state, action)" +
+    //   "\n	}" +
+    //   "\nexport default persistReducer(persistConfig, reducers)";
+    // if (isChange(tmpDir + "reducers.js", Text)) {
+    //   fs.writeFile(tmpDir + "reducers.js", Text, { flag: 'w' }, function (err) {
+    //     if (err) {
+    //       return console.log(err);
+    //     }
+    //   })
+    // }
     createRouter()
     createIndex();
   } else {

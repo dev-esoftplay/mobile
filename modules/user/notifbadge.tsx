@@ -6,7 +6,6 @@ import { View } from "react-native";
 import { Badge, Text } from "native-base"
 import { esp, UserNotification, LibComponent } from "esoftplay";
 import { TouchableOpacity } from "react-native";
-import { connect } from "react-redux";
 
 export interface UserNotifbadgeProps {
   data: any[],
@@ -18,18 +17,12 @@ export interface UserNotifbadgeState {
 }
 
 
-class Enotifbadge extends LibComponent<UserNotifbadgeProps, UserNotifbadgeState> {
+export default class Enotifbadge extends LibComponent<UserNotifbadgeProps, UserNotifbadgeState> {
 
   props: UserNotifbadgeProps
   constructor(props: UserNotifbadgeProps) {
     super(props)
     this.props = props
-  }
-
-  static mapStateToProps(state: any): any {
-    return {
-      data: state.user_notification.data
-    }
   }
 
   componentDidMount(): void {
@@ -52,4 +45,3 @@ class Enotifbadge extends LibComponent<UserNotifbadgeProps, UserNotifbadgeState>
     );
   }
 }
-export default connect(Enotifbadge.mapStateToProps)(Enotifbadge);

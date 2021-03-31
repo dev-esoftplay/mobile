@@ -264,19 +264,12 @@ yarn.lock\n\
 		});
 
 		const AppJS = `import React from 'react';
-import { createStore } from 'redux';
-import { persistStore } from 'redux-persist'
-import { PersistGate } from 'redux-persist/integration/react'
-import { Provider } from 'react-redux'
-import { esp, LibNotification, _global } from 'esoftplay';
+import { esp, LibNotification } from 'esoftplay';
 import * as ErrorReport from 'esoftplay/error'
 import * as ErrorRecovery from 'expo-error-recovery';
-import { enableScreens } from 'react-native-screens';
 import * as Notifications from 'expo-notifications';
+import { enableScreens } from 'react-native-screens';
 enableScreens();
-
-_global.store = createStore(esp.reducer())
-_global.persistor = persistStore(_global.store)
 
 Notifications.addNotificationResponseReceivedListener(x => LibNotification.onAction(x))
 
@@ -288,18 +281,11 @@ export default class App extends React.Component {
 		super(props)
 		ErrorRecovery.setRecoveryProps(props)
 		ErrorReport.getError(props.exp.errorRecovery)
-		this.state = { loading: true }
 		LibNotification.listen(this.notification)
 	}
 
 	render() {
-		return (
-			<Provider store={_global.store}>
-				<PersistGate loading={null} persistor={_global.persistor}>
-					<this.Home />
-				</PersistGate>
-			</Provider>
-		)
+		return <this.Home />
 	}
 }`;
 		let expoLib = [
@@ -313,6 +299,7 @@ export default class App extends React.Component {
 			"expo-updates",
 			"expo-notifications",
 			"expo-status-bar",
+			"expo-clipboard",
 			"expo-sqlite",
 			"expo-file-system",
 			"expo-constants",
@@ -343,10 +330,7 @@ export default class App extends React.Component {
 			"react-native-pinch-zoom-view-movable",
 			"react-native-screens",
 			"react-native-safe-area-context",
-			"react-redux",
 			"recyclerlistview",
-			"redux",
-			"redux-persist",
 			"shorthash",
 			"react-native-picker-scrollview",
 		]

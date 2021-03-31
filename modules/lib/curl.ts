@@ -1,3 +1,4 @@
+import { LibNet_status } from 'esoftplay';
 //
 import React from "react";
 import momentTimeZone from "moment-timezone"
@@ -38,10 +39,10 @@ export default class ecurl {
     this.onError = this.onError.bind(this)
     this.setApiKey = this.setApiKey.bind(this)
     this.secure = this.secure.bind(this)
-    const str: any = _global.store.getState()
-    if (uri && str.lib_net_status.isOnline) {
+    const str: any = LibNet_status.state().get()
+    if (uri && str.isOnline) {
       this.init(uri, post, onDone, onFailed, debug);
-    } else if (!str.lib_net_status.isOnline && onFailed) {
+    } else if (!str.isOnline && onFailed) {
       onFailed("Failed to access", false);
     }
   }
@@ -204,8 +205,8 @@ export default class ecurl {
   }
 
   async custom(uri: string, post?: any, onDone?: (res: any, timeout: boolean) => void, debug?: number): Promise<void> {
-    const str: any = _global.store.getState()
-    if (str.lib_net_status.isOnline) {
+    const str: any = LibNet_status.state().get()
+    if (str.isOnline) {
       if (post) {
         let ps = Object.keys(post).map((key) => {
           return encodeURIComponent(key) + '=' + encodeURIComponent(post[key]);

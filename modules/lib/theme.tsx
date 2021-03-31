@@ -1,47 +1,23 @@
 import React from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { esp, LibUtils, LibStyle, _global } from 'esoftplay';
+import { esp, LibUtils, LibStyle, _global, useGlobalState, LibNavigation } from 'esoftplay';
 
 const { colorPrimary, colorAccent } = LibStyle
 
+const state = useGlobalState({
+  theme: 'light'
+}, { persistKey: 'lib_theme' })
+
 export default class m {
 
-  static initState = {
-    theme: 'light'
-  }
-
-  static reducer(state: any, action: any): any {
-    if (state == undefined) state = m.initState
-    switch (action.type) {
-      case 'lib_theme_switch':
-        return {
-          ...state,
-          theme: action.payload
-        }
-        break;
-      default:
-        return state
-    }
-  }
-
-  static setTheme(themeName: string, navigation: any, isLogin?: any): void {
+  static setTheme(themeName: string): void {
     esp.dispatch({
       type: 'lib_theme_switch',
       payload: themeName
     })
-    LibUtils.navReset(navigation, isLogin)
+    state.set({ theme: themeName })
+    LibNavigation.reset()
     AsyncStorage.setItem('theme', themeName)
-  }
-
-  static getTheme(): void {
-    AsyncStorage.getItem('theme').then((theme) => {
-      if (theme) {
-        esp.dispatch({
-          type: 'lib_theme_switch',
-          payload: theme
-        })
-      }
-    })
   }
 
   static _barStyle(): string {
@@ -107,8 +83,7 @@ export default class m {
   }
 
   static colors(colors: string[]): string {
-    const _store: any = _global.store.getState();
-    const _themeName = _store.lib_theme.theme;
+    const _themeName = state.get().theme
     const _themes: string[] = esp.config('theme');
     const _themeIndex = _themes.indexOf(_themeName);
     if (_themeIndex <= _themes.length - 1 && _themeIndex <= colors.length - 1)

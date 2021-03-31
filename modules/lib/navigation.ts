@@ -1,3 +1,4 @@
+import { UserClass } from 'esoftplay';
 //@ts-nocheck
 
 import React from "react";
@@ -108,7 +109,7 @@ export default (() => {
     }
 
     static reset(routeName?: LibNavigationRoutes, ...routeNames: LibNavigationRoutes[]): void {
-      const user = LibUtils.getReduxState('user_class')
+      const user = UserClass.state().get()
       let _routeName = [routeName || esp.config('home', (user && (user.id || user.user_id)) ? 'member' : 'public')]
       if (routeNames && routeNames.length > 0) {
         _routeName = [..._routeName, ...routeNames]
@@ -128,11 +129,10 @@ export default (() => {
 
     /* return `root` on initialRoute otherwise return the routeName was active  */
     static getCurrentRouteName(): string {
-      const routes = LibUtils.getReduxState('user_index')
       let currentRouteName = 'root'
-      if (routes.hasOwnProperty('index') && routes.index > 0) {
-        currentRouteName = routes.routes[routes.routes.length - 1].routeName
-      }
+      // if (routes.hasOwnProperty('index') && routes.index > 0) {
+        // currentRouteName = routes.routes[routes.routes.length - 1].routeName
+      // }
       return currentRouteName
     }
 

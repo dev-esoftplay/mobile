@@ -13,10 +13,11 @@ import {
   LibUtils,
   UserNotification_item,
   LibStatusbar,
-  LibObject
+  LibObject,
+  useGlobalState,
+  UserClass,
+  useGlobalReturn
 } from "esoftplay";
-import * as Notifications from 'expo-notifications'
-import { connect } from "react-redux"
 //@ts-ignore
 import moment from "moment/min/moment-with-locales"
 import { Text, Button, Icon } from "native-base";
@@ -30,72 +31,41 @@ export interface UserNotificationState {
 
 }
 
+const initState = {
+  data: [],
+  urls: [],
+  unread: 0
+};
+
+const state = useGlobalState(initState, { persistKey: 'user_notification' })
 
 class m extends LibComponent<UserNotificationProps, UserNotificationState> {
 
-  props: UserNotificationProps
-
-  static persist = true;
-  static reducer(state: any, action: any): any {
-    if (!state)
-      state = {
-        data: [],
-        urls: []
-      };
-    switch (action.type) {
-      case "user_notification_reset":
-        return {
-          ...state,
-          data: [],
-          urls: []
-        }
-      case "user_notification_parseData":
-        let unreadedCount = [...state.data, ...action.payload.data].filter((item: any) => item.status != 2).length
-        Notifications.setBadgeCountAsync(unreadedCount)
-        return {
-          ...state,
-          data: [...state.data, ...action.payload.data],
-          urls: [...state.urls, action.payload.url]
-        }
-      case "user_notification_setRead":
-        var data: any[] = state.data
-        var index = data.findIndex((item: any) => item.id == action.payload)
-        return {
-          ...state,
-          data: LibObject.set(data, 2)(index, 'status')
-        }
-      case "user_notification_add":
-        return {
-          ...state,
-          data: [...state.data, action.payload]
-        }
-      default:
-        return state
-    }
+  static state(): useGlobalReturn<any> {
+    return state
   }
 
-
   static add(id: number, user_id: number, group_id: number, title: string, message: string, params: string, status: 0 | 1 | 2, created?: string, updated?: string): void {
-    esp.dispatch({
-      type: "user_notification_add",
-      payload: { id, user_id, group_id, title, message, params, status, created, updated }
+    const item = { id, user_id, group_id, title, message, params, status, created, updated }
+    let data = state.get().data
+    data.unshift(item)
+    state.set({
+      ...state.get(),
+      data: data
     })
   }
 
   static drop(): void {
-    esp.dispatch({
-      type: "user_notification_reset",
-      payload: []
-    })
+    state.set(initState)
   }
 
   static user_notification_loadData(): void {
     const { protocol, domain, uri, salt } = esp.config()
     var _uri = protocol + "://" + domain + uri + "user/push-notif"
-    const data = LibUtils.getReduxState('user_notification', 'data')
-    const user = LibUtils.getReduxState('user_class')
+    const data = state.get().data
+    const user = UserClass.state().get()
     if (data && data.length > 0) {
-      const lastData = data[data.length - 1]
+      const lastData = data[0]
       if (lastData.id)
         _uri += "?last_id=" + lastData.id || 0
     }
@@ -107,8 +77,6 @@ class m extends LibComponent<UserNotificationProps, UserNotificationState> {
       post["user_id"] = user.id || user.user_id
       post["group_id"] = user.group_id || esp.config('group_id')
     }
-    let unreadedCount = data.filter((item: any) => item.status != 2).length
-    Notifications.setBadgeCountAsync(unreadedCount)
     m.user_notification_fetchData(_uri, post);
   }
 
@@ -119,43 +87,34 @@ class m extends LibComponent<UserNotificationProps, UserNotificationState> {
         if (res.next != "") {
           m.user_notification_fetchData(res.next, post)
         }
-      }, () => {
-
-      }
+      }, (msg) => {
+      }, 1
     )
   }
 
-  static user_notification_parseData(res: any, uri: string): void {
+  static user_notification_parseData(res: any[], uri: string): void {
     if (res.length > 0) {
-      const urls = LibUtils.getReduxState('user_notification', 'urls')
+      const urls = state.get().urls
       if (urls && urls.indexOf(uri) < 0) {
-        esp.dispatch({
-          type: "user_notification_parseData",
-          payload: {
-            data: res,
-            url: uri
-          }
+        let { data, urls, unread } = state.get()
+        state.set({
+          data: [...res.reverse(), ...data],
+          urls: [uri, ...urls],
+          unread: unread + res.filter((row) => row.status != 2).length
         })
       }
     }
   }
 
   static user_notification_setRead(id: string | number): void {
-    esp.dispatch({
-      type: "user_notification_setRead",
-      payload: id
-    })
-  }
-
-  static mapStateToProps(state: any): Object {
-    return {
-      data: state.user_notification.data
-    }
-  }
-
-  constructor(props: UserNotificationProps) {
-    super(props)
-    this.props = props
+    let { data, unread, urls } = state.get()
+    const index = data.findIndex((row) => row.id == String(id))
+    if (index > -1)
+      state.set({
+        urls,
+        data: LibObject.set(data, 2)(index, 'status'),
+        unread: unread > 0 ? unread - 1 : 0
+      })
   }
 
   componentDidMount(): void {
@@ -167,33 +126,40 @@ class m extends LibComponent<UserNotificationProps, UserNotificationState> {
   render(): any {
     const { colorPrimary, colorAccent, STATUSBAR_HEIGHT } = LibStyle;
     const { goBack } = this.props.navigation
-    const data = [...this.props.data].reverse()
     return (
-      <View style={{ flex: 1, backgroundColor: "white" }}>
-        <LibStatusbar style={"light"} />
-        <View
-          style={{ flexDirection: "row", height: (STATUSBAR_HEIGHT) + 50, paddingTop: STATUSBAR_HEIGHT, paddingHorizontal: 0, alignItems: "center", backgroundColor: colorPrimary }}>
-          <Button transparent
-            style={{ width: 50, height: 50, alignItems: "center", margin: 0 }}
-            onPress={() => goBack()}>
-            <Icon
-              style={{ color: colorAccent }}
-              name="md-arrow-back" />
-          </Button>
-          <Text style={{ marginHorizontal: 10, fontSize: 18, textAlign: "left", flex: 1, color: colorAccent }}>Notifikasi</Text>
-        </View>
-        <LibList
-          data={data}
-          onRefresh={() => m.user_notification_loadData()}
-          renderItem={(item: any) => (
-            <TouchableOpacity onPress={() => LibNotification.openNotif(item)} >
-              <UserNotification_item {...item} />
-            </TouchableOpacity>
-          )}
-        />
-      </View>
+      <state.connect
+        render={(props) => {
+          const data = props.data
+          return (
+            <View style={{ flex: 1, backgroundColor: "white" }}>
+              <LibStatusbar style={"light"} />
+              <View
+                style={{ flexDirection: "row", height: (STATUSBAR_HEIGHT) + 50, paddingTop: STATUSBAR_HEIGHT, paddingHorizontal: 0, alignItems: "center", backgroundColor: colorPrimary }}>
+                <Button transparent
+                  style={{ width: 50, height: 50, alignItems: "center", margin: 0 }}
+                  onPress={() => goBack()}>
+                  <Icon
+                    style={{ color: colorAccent }}
+                    name="md-arrow-back" />
+                </Button>
+                <Text style={{ marginHorizontal: 10, fontSize: 18, textAlign: "left", flex: 1, color: colorAccent }}>Notifikasi</Text>
+              </View>
+              <LibList
+                data={data}
+                onRefresh={() => m.user_notification_loadData()}
+                renderItem={(item: any) => (
+                  <TouchableOpacity onPress={() => LibNotification.openNotif(item)} >
+                    <UserNotification_item {...item} />
+                  </TouchableOpacity>
+                )}
+              />
+            </View>
+          )
+        }}
+      />
+
     );
   }
 }
 
-export default connect(m.mapStateToProps)(m);
+export default m

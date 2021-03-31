@@ -5,7 +5,7 @@ import { Component } from "react";
 import { Image, Linking, TouchableWithoutFeedback, View, StyleSheet } from "react-native";
 import { Text } from "native-base";
 import moment from "moment/min/moment-with-locales";
-import { esp, LibComponent, LibStyle, LibUtils, LibPicture } from "esoftplay";
+import { esp, LibComponent, LibStyle, LibUtils, LibPicture, ContentConfig } from "esoftplay";
 const { defaultStyle, width } = LibStyle
 
 export interface ContentItemProps {
@@ -65,7 +65,7 @@ export default class eitem extends LibComponent<ContentItemProps, ContentItemSta
   render(): any {
     const props = this.props
     const { id, title, intro, description, image, created, updated, url, publish } = props
-    let config = LibUtils.getReduxState('content_config', 'list')
+    let config = ContentConfig.state().useSelector(s => s.list)
     if (created == "sponsor") {
       const goToSponsor = (url?: string) => {
         if (url)

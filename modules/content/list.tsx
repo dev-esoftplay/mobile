@@ -24,7 +24,6 @@ import {
   LibStyle
 } from "esoftplay";
 import {  Animated } from "react-native";
-import { connect } from "react-redux";
 import { StatusBar } from 'expo-status-bar';
 const { defaultStyle, colorPrimaryDark, colorAccent, width, STATUSBAR_HEIGHT_MASTER } = LibStyle;
 const config = esp.config();
@@ -418,4 +417,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect(elist.mapStateToProps)(elist);
+export default elist
