@@ -1,6 +1,6 @@
 import React from 'react';
 import { Platform } from 'react-native';
-import { LibCurl, UserClass } from 'esoftplay';
+import { LibCurl, UserClass, UserRoutes } from 'esoftplay';
 import Constants from 'expo-constants';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import esp from './esp';
@@ -16,7 +16,7 @@ const myErrorHandler = (e: any, isFatal: any) => {
 
 export function setError(error?: any) {
   let config = esp.config()
-  let routes = undefined
+  let routes = UserRoutes.state().get()
   const user = UserClass.state().get()
   let lastIndex = routes?.routes?.length - 1 || -1
   if (lastIndex >= 0) {

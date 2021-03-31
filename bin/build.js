@@ -263,7 +263,7 @@ yarn.lock\n\
 			console.log('.gitignore has been created');
 		});
 
-		const AppJS = `import React from 'react';
+		const AppJS = `import React, { useEffect, useRef } from 'react';
 import { esp, LibNotification } from 'esoftplay';
 import * as ErrorReport from 'esoftplay/error'
 import * as ErrorRecovery from 'expo-error-recovery';
@@ -273,20 +273,15 @@ enableScreens();
 
 Notifications.addNotificationResponseReceivedListener(x => LibNotification.onAction(x))
 
-export default class App extends React.Component {
-	Home = esp.home()
-	notification = {}
+export default function App(props: any) {
+	const Home = useRef(esp.home()).current
 
-	constructor(props: any) {
-		super(props)
+	useEffect(() => {
 		ErrorRecovery.setRecoveryProps(props)
 		ErrorReport.getError(props.exp.errorRecovery)
-		LibNotification.listen(this.notification)
-	}
+	}, [])
 
-	render() {
-		return <this.Home />
-	}
+	return <Home />
 }`;
 		let expoLib = [
 			"expo-av",

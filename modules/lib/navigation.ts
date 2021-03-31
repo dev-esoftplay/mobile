@@ -1,7 +1,7 @@
-import { UserClass } from 'esoftplay';
 //@ts-nocheck
 
 import React from "react";
+import { UserClass, UserRoutes } from 'esoftplay';
 import { esp, LibUtils, LibNavigationRoutes, _global } from 'esoftplay';
 import { CommonActions, StackActions } from '@react-navigation/native';
 
@@ -129,11 +129,7 @@ export default (() => {
 
     /* return `root` on initialRoute otherwise return the routeName was active  */
     static getCurrentRouteName(): string {
-      let currentRouteName = 'root'
-      // if (routes.hasOwnProperty('index') && routes.index > 0) {
-        // currentRouteName = routes.routes[routes.routes.length - 1].routeName
-      // }
-      return currentRouteName
+      return UserRoutes.getCurrentRouteName()
     }
 
     static isFirstRoute(): boolean {

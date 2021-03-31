@@ -1,9 +1,8 @@
-import React from 'react';
 import _assets from './cache/assets';
 import navs from './cache/navigations';
 import routers from './cache/routers';
 import { Platform } from 'react-native';
-import { _global, esp, LibLocale } from 'esoftplay';
+import { _global, esp, LibLocale, UserRoutes } from 'esoftplay';
 let app = require('../../app.json');
 let conf = require('../../config.json');
 let lconf = require('../../config.live.json');
@@ -197,18 +196,14 @@ export default (() => {
     return mod('user/index');
   }
   function routes(): any {
-    // var _store: any = _global.store.getState();
-    return undefined;
-  }
-  function dispatch(action: any): void {
-    // _global.store.dispatch(action)
+    return UserRoutes.state().get();
   }
   function log(message?: any, ...optionalParams: any[]) {
     if (config("isDebug") == 1) {
       console.log(message, ...optionalParams);
     }
   }
-  return { appjson, dispatch, log, home, isDebug, navigations, langId, lang, config, assets, routes, mod, versionName }
+  return { appjson, log, home, isDebug, navigations, langId, lang, config, assets, routes, mod, versionName }
 })()
 
 // var a = esp.assets("bacground")     // mengambil file dari folder images

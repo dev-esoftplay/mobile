@@ -63,8 +63,8 @@ export default class eclass {
     return new Promise((r) => {
       Notifications.setBadgeCountAsync(0)
       state.set(undefined)
-      AsyncStorage.removeItem("user");
       AsyncStorage.removeItem("user_notification");
+      AsyncStorage.removeItem("user");
       new UserData().deleteAll()
       if (esp.config('notification') == 1) {
         UserClass.pushToken()
