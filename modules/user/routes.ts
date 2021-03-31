@@ -1,7 +1,7 @@
 import { useGlobalState, useGlobalReturn } from 'esoftplay';
 
 
-const state = useGlobalState(undefined, { listener: (c) => console.log(JSON.stringify(c, undefined, 2)) })
+const state = useGlobalState(undefined)
 
 export default class m {
   static state(): useGlobalReturn<any> {
