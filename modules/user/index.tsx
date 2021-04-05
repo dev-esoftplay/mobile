@@ -5,7 +5,7 @@ import React, { useEffect, useMemo, useRef } from "react";
 import Navs from "../../cache/navs";
 import { View, ImageBackground } from "react-native";
 import * as Font from "expo-font";
-import { esp, UserClass, LibWorker, LibUpdaterProperty, LibWorkloop, LibNet_status, LibDialog, LibStyle, LibImage, LibProgress, UserMain, LibToast, useSafeState, LibVersion, UserRoutes } from 'esoftplay';
+import { esp, UserClass, LibWorker, UseDeeplink, LibUpdaterProperty, LibWorkloop, LibNet_status, LibDialog, LibStyle, LibImage, LibProgress, UserMain, LibToast, useSafeState, LibVersion, UserRoutes } from 'esoftplay';
 import firebase from 'firebase'
 
 export interface UserIndexProps {
@@ -38,7 +38,7 @@ export default function m(props: UserIndexProps): any {
   const user = UserClass.state().useSelector(s => s)
   //@ts-ignore
   const initialState = useRef(__DEV__ ? UserRoutes.state().get() : undefined).current
-
+  UseDeeplink()
   function handler(currentState: any): void {
     //@ts-ignore
     UserRoutes.set(currentState)

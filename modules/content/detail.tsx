@@ -127,7 +127,7 @@ export default class edetail extends LibComponent<ContentDetailProps, ContentDet
     result.title = LibUtils.getArgs(this.props, "title", this.props.title);
     result.image = LibUtils.getArgs(this.props, "image", this.props.image);
     result.created = LibUtils.getArgs(this.props, "created", this.props.created);
-    let config = ContentConfig.state().useSelector(s => s.detail)
+    let config = ContentConfig.state().get('detail')
 
     if (!this.state.result.content) {
       return <View style={{ flex: 1, backgroundColor: "white" }} >

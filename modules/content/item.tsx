@@ -65,7 +65,7 @@ export default class eitem extends LibComponent<ContentItemProps, ContentItemSta
   render(): any {
     const props = this.props
     const { id, title, intro, description, image, created, updated, url, publish } = props
-    let config = ContentConfig.state().useSelector(s => s.list)
+    let config = ContentConfig.state().get('list')
     if (created == "sponsor") {
       const goToSponsor = (url?: string) => {
         if (url)
