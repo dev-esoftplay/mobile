@@ -4,10 +4,8 @@ import { Component } from "react";
 import { View, ScrollView, Image, Platform } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BlurView } from "expo-blur";
-import { esp, LibComponent, LibStyle } from "esoftplay";
-const Curl = esp.mod("lib/curl")
+import { esp, LibComponent, LibStyle, LibCurl, LibMenu } from "esoftplay";
 const { STATUSBAR_HEIGHT_MASTER } = LibStyle;
-const Menu = esp.mod("lib/menu");
 
 export interface ContentMenuProps {
   url: string,
@@ -69,7 +67,7 @@ export default class emenu extends LibComponent<ContentMenuProps, ContentMenuSta
   }
 
   newData(): void {
-    new Curl(this.props.url, null,
+    new LibCurl(this.props.url, null,
       (res: any, msg: string) => {
         var trimMenu = []
         if (res.home) {
@@ -99,7 +97,7 @@ export default class emenu extends LibComponent<ContentMenuProps, ContentMenuSta
           <View style={{ backgroundColor: "transparent", height: 100, padding: 20 }}>
             <Image source={esp.assets("logo.png")} style={{ height: 60, width: "100%", resizeMode: "contain" }} />
           </View>
-          <Menu
+          <LibMenu
             onItemSelected={(e: any) => {
               this.setState({ selectedId: e.id })
               if (this.props.onItemSelected) {

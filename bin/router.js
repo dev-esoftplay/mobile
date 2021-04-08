@@ -8,6 +8,7 @@ var typesDir = "./"
 var replacer = new RegExp(/(?:\-|\.(?:ios|android))?\.(?:jsx|js|ts|tsx)$/);
 var Text = "";
 const rngh = "./node_modules/react-native-gesture-handler/react-native-gesture-handler.d.ts"
+// const isEqual = require('react-fast-compare');
 
 console.log("DICALL")
 if (fs.existsSync(rngh)) {
@@ -491,7 +492,7 @@ function createIndex() {
 function isChange(path, compare) {
   let hasChanged = true
   let old = fs.existsSync(path) && fs.readFileSync(path)
-  hasChanged = old.toString().length !== compare.length
+  hasChanged = old.toString().length != compare.length
   if (hasChanged) {
     console.log(path, 'CHANGED')
   }
@@ -562,7 +563,6 @@ function createRouter() {
 
   staticImport.push("const isEqual = require('react-fast-compare');\n")
   staticImport.push("export function applyStyle(style){ return style };\n")
-  staticImport.push("export { default as _global } from '../../../node_modules/esoftplay/_global';\n")
   staticImport.push("export { default as useGlobalState } from '../../../node_modules/esoftplay/global';\n")
   staticImport.push("export { default as useSafeState } from '../../../node_modules/esoftplay/state';\n")
   staticImport.push("export { default as usePersistState } from '../../../node_modules/esoftplay/persist';\n")
@@ -605,6 +605,7 @@ function createRouter() {
     }
   }
   staticImport.splice(0, 0, "export { default as createCache } from '../../../node_modules/esoftplay/_cache';\n")
+  staticImport.splice(0, 0, "export { default as _global } from '../../../node_modules/esoftplay/_global';\n")
   staticImport.splice(0, 0, "import React from 'react';\n")
   const x = staticImport.join('')
   if (isChange(tmpDir + 'index.js', x))

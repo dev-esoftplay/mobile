@@ -1,5 +1,6 @@
 import * as R from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+const _global = require('./_global')
 const isEqual = require('react-fast-compare');
 
 
@@ -22,11 +23,10 @@ export interface useGlobalConnect<T> {
 }
 
 export default (() => {
-  let idx = 0
   let subscriber = []
-
+  _global.useGlobalIdx = 0
   return <T>(initValue: T, o?: useGlobalOption): useGlobalReturn<T> => {
-    const _idx = idx
+    const _idx = _global.useGlobalIdx
     if (!subscriber[_idx])
       subscriber[_idx] = [];
     let value: T = initValue;
@@ -117,7 +117,7 @@ export default (() => {
       return children ? R.cloneElement(children) : null
     }
 
-    idx++
+    _global.useGlobalIdx++
     return { useState, get, set, useSelector, reset: del, connect: _connect };
   }
 })()

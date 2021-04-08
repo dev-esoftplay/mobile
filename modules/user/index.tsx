@@ -37,7 +37,6 @@ export default function m(props: UserIndexProps): any {
   const [loading, setLoading] = useSafeState(true)
   const user = UserClass.state().useSelector(s => s)
   //@ts-ignore
-  const initialState = useRef(__DEV__ ? UserRoutes.state().get() : undefined).current
   UseDeeplink()
   function handler(currentState: any): void {
     //@ts-ignore
@@ -77,7 +76,7 @@ export default function m(props: UserIndexProps): any {
       <View style={{ flex: 1 }}>
         <LibWorker />
         <LibWorkloop />
-        <Navs user={user} initialState={initialState} handler={handler} />
+        <Navs user={user} handler={handler} />
         <LibNet_status />
         <LibDialog style={'default'} />
         <LibImage />

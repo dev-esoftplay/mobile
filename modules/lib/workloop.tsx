@@ -1,6 +1,6 @@
 import React from 'react';
 import { InteractionManager, View } from 'react-native';
-import { LibComponent, _global } from 'esoftplay';
+import { LibComponent } from 'esoftplay';
 import { WebView } from 'react-native-webview'
 
 export interface LibWorkloopProps {

@@ -1,9 +1,10 @@
 //
 import * as Notifications from 'expo-notifications';
 import { Platform, Alert, Linking } from "react-native";
-import { esp, UserNotification, LibCurl, LibCrypt, LibNavigation, UserClass, _global } from "esoftplay";
+import { esp, UserNotification, LibCurl, LibCrypt, LibNavigation, UserClass } from "esoftplay";
 import moment from 'moment';
 import Constants from 'expo-constants';
+const _global = require('../../_global')
 /*
 {
   to: // exp token

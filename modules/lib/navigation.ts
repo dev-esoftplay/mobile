@@ -2,8 +2,9 @@
 
 import React from "react";
 import { UserClass, UserRoutes } from 'esoftplay';
-import { esp, LibUtils, LibNavigationRoutes, _global } from 'esoftplay';
+import { esp, LibUtils, LibNavigationRoutes } from 'esoftplay';
 import { CommonActions, StackActions } from '@react-navigation/native';
+const _global = require('../../_global')
 
 export interface LibNavigationInjector {
   args: any,

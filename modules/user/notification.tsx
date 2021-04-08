@@ -10,7 +10,6 @@ import {
   LibComponent,
   LibNotification,
   LibStyle,
-  LibUtils,
   UserNotification_item,
   LibStatusbar,
   LibObject,
@@ -21,7 +20,7 @@ import {
 //@ts-ignore
 import moment from "moment/min/moment-with-locales"
 import { Text, Button, Icon } from "native-base";
-
+import * as Notifications from 'expo-notifications';
 export interface UserNotificationProps {
   navigation: any,
   data: any[]
@@ -97,11 +96,13 @@ class m extends LibComponent<UserNotificationProps, UserNotificationState> {
       const urls = state.get().urls
       if (urls && urls.indexOf(uri) < 0) {
         let { data, urls, unread } = state.get()
+        const nUnread = unread + res.filter((row) => row.status != 2).length
         state.set({
           data: [...res.reverse(), ...data],
           urls: [uri, ...urls],
-          unread: unread + res.filter((row) => row.status != 2).length
+          unread: nUnread
         })
+        Notifications.setBadgeCountAsync(nUnread)
       }
     }
   }
@@ -109,12 +110,15 @@ class m extends LibComponent<UserNotificationProps, UserNotificationState> {
   static user_notification_setRead(id: string | number): void {
     let { data, unread, urls } = state.get()
     const index = data.findIndex((row) => row.id == String(id))
-    if (index > -1)
+    if (index > -1) {
+      const nUnread = unread > 0 ? unread - 1 : 0
       state.set({
         urls,
         data: LibObject.set(data, 2)(index, 'status'),
-        unread: unread > 0 ? unread - 1 : 0
+        unread: nUnread
       })
+      Notifications.setBadgeCountAsync(nUnread)
+    }
   }
 
   componentDidMount(): void {
