@@ -54,7 +54,6 @@ export default class esocialLogin extends LibComponent<LibSocialloginProps, LibS
         <WebView
           style={{ flex: 1 }}
           startInLoadingState={true}
-          useWebKit={true}
           renderLoading={() => <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }} ><ActivityIndicator color={colorPrimary} /></View>}
           javaScriptEnabled={true}
           userAgent={"Mozilla/5.0 (X11; Linux i686; rv:10.0.1) Gecko/20100101 Firefox/10.0.1 SeaMonkey/2.7.1"}

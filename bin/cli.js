@@ -293,7 +293,7 @@ function createMaster(module_name) {
 		
 		if (fs.existsSync("./package.json")) {
 			const packJson = require("./package.json")
-			const letterVersion = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",]
+			const letterVersion = ["abcdefghijklmnopqrstuvwxyz"]
 			const version = packJson.version
 			const letter = version.match(/([a-z])/g)
 			const number = version.replace(/-/g, "").replace(letter, "")
