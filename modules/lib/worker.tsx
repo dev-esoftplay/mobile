@@ -25,7 +25,6 @@ _global.LibWorkerCount = 0
 export default class m extends Component<LibWorkerProps, LibWorkerState> {
   constructor(props: LibWorkerProps) {
     super(props)
-    this.onMessage = this.onMessage.bind(this);
   }
 
   static delete(taskId: string): void {
@@ -144,7 +143,7 @@ export default class m extends Component<LibWorkerProps, LibWorkerState> {
     }
   }
 
-  onMessage(withRefName: string): any {
+  static onMessage(withRefName: string): any {
     return (e: any) => {
       if (e.nativeEvent.data == withRefName) {
         _global.LibWorkerReady += 1
@@ -161,24 +160,7 @@ export default class m extends Component<LibWorkerProps, LibWorkerState> {
   }
 
   render(): any {
-    if (Platform.OS == 'android')
-      if (Platform.Version <= 22) {
-        return null
-      }
-
-    return (
-      <View style={{ height: 0, width: 0 }} >
-        <WebView
-          ref={_global.LibWorkerBase}
-          style={{ width: 0, height: 0 }}
-          javaScriptEnabled={true}
-          injectedJavaScript={`\nwindow.ReactNativeWebView.postMessage("BaseWorkerIsReady")\n` + _global.injectedJavaScripts.join('\n') + '\n'}
-          originWhitelist={["*"]}
-          source={{ uri: esp.config("protocol") + "://" + esp.config("domain") + esp.config("uri") + "dummyPageToBypassCORS" }}
-          onMessage={this.onMessage('BaseWorkerIsReady')}
-        />
-      </View>
-    )
+    return null
   }
 }
 
