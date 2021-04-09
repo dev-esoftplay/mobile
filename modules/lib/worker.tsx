@@ -2,7 +2,7 @@ import React from "react";
 import { Component } from "react"
 import { WebView } from 'react-native-webview'
 import { esp } from 'esoftplay'
-import { Platform, View } from 'react-native';
+import { Platform, View, PixelRatio } from 'react-native';
 const _global = require('../../_global')
 export interface LibWorkerInit {
   task: string,
@@ -125,6 +125,9 @@ export default class m extends Component<LibWorkerProps, LibWorkerState> {
         return out
       }
       , '', res)
+  }
+  static image(url: string, toSize: number, result: (r: string) => void): void {
+    m.dispatch((id) => `imageCompress("` + id + `", "` + url + `", ` + PixelRatio.getPixelSizeForLayoutSize(toSize) + `)`, url, result)
   }
 
   static dispatch(task: (id: number) => string, url: string, result: (r: string) => void): void {

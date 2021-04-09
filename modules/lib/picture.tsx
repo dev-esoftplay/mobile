@@ -34,7 +34,7 @@ const getCacheEntry = async (uri: string, toSize: number): Promise<{ exists: boo
   return { exists, path };
 };
 
-const imgCompress = LibWorker.registerJobAsync('imageCompress', (url: string, toSize: number) => {
+LibWorker.registerJob('imageCompress', (id, url, toSize) => {
   fetch(url, { mode: 'cors' })
     .then(response => response.blob())
     .then(blob => {
@@ -63,7 +63,7 @@ const imgCompress = LibWorker.registerJobAsync('imageCompress', (url: string, to
           ctx.drawImage(this, 0, 0, wantedwidth, wantedheight);
           let x = canvas.toDataURL();
           //@ts-ignore
-          out(x.replace("data:image/png;base64,", ""))
+          window.ReactNativeWebView.postMessage(JSON.stringify({ id: id, data: x.replace("data:image/png;base64,", "") }))
         }
         img.src = String(reader.result)
       };
@@ -98,11 +98,12 @@ export default function m(props: LibPictureProps): any {
         if (exists) {
           setUri(path)
         } else {
-          imgCompress([b_uri, PixelRatio.getPixelSizeForLayoutSize(toSize)], (uri) => {
+          LibWorker.image(b_uri, toSize, (uri) => {
             setUri("data:image/png;base64," + uri)
             if (!props.noCache)
               LibWorkloop.execNextTix(FileSystem.writeAsStringAsync, [path, uri, { encoding: "base64" }])
           })
+
         }
       })
     }
