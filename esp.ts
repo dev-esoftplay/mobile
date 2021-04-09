@@ -3,6 +3,8 @@ import navs from './cache/navigations';
 import routers from './cache/routers';
 import { Platform } from 'react-native';
 import { _global, esp, LibLocale, UserRoutes } from 'esoftplay';
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['YellowBox has been replaced with LogBox. Please call LogBox.ignoreLogs() instead.']);
 let app = require('../../app.json');
 let conf = require('../../config.json');
 let lconf = require('../../config.live.json');
