@@ -179,7 +179,7 @@ export default class m {
       UserNotification.user_notification_setRead(data.id)
     }, () => {
       // esp.log(msg)
-    }, 1)
+    })
     let param = JSON.parse(data.params)
     switch (param.action) {
       case "alert":

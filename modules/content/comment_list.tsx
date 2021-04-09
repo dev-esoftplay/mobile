@@ -139,7 +139,7 @@ export default class commentList extends LibComponent<ContentComment_listProps, 
             })
             if (!success)
               Alert.alert('Komentar gagal dikirim', _msg[1])
-          }, 1
+          }
         )
       }
     } else {

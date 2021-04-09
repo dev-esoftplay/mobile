@@ -87,7 +87,7 @@ class m extends LibComponent<UserNotificationProps, UserNotificationState> {
           m.user_notification_fetchData(res.next, post)
         }
       }, (msg) => {
-      }, 1
+      }
     )
   }
 

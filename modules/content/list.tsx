@@ -147,7 +147,7 @@ class elist extends LibComponent<ContentListProps, ContentListState>{
       },
       (msg: string) => {
         // console.log("sampe sini", msg)
-      }, 1
+      }
     )
 
   }
