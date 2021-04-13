@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import { Icon } from 'native-base';
 import { LibStyle, LibComponent, LibCurl, esp, LibProgress, LibIcon, LibNavigation, useGlobalState } from 'esoftplay';
 import * as ImageManipulator from 'expo-image-manipulator';
 import { Camera } from 'expo-camera';
@@ -337,11 +336,11 @@ class m extends LibComponent<LibImageProps, LibImageState> {
                       {
                         image ?
                           <TouchableOpacity onPress={() => this.setState({ image: false })} >
-                            <Icon name='ios-close-circle' style={{ fontSize: 40, color: 'white' }} />
+                            <LibIcon.Ionicons name='ios-close-circle' style={{ fontSize: 40, color: 'white' }} />
                           </TouchableOpacity>
                           :
                           <TouchableOpacity onPress={() => this.setState({ type: this.state.type === Camera.Constants.Type.back ? Camera.Constants.Type.front : Camera.Constants.Type.back })} >
-                            <Icon name='ios-refresh-circle' style={{ fontSize: 40, color: 'white' }} />
+                            <LibIcon.Ionicons name='ios-refresh-circle' style={{ fontSize: 40, color: 'white' }} />
                           </TouchableOpacity>
                       }
                     </View>
@@ -370,7 +369,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
                                 this.setState({ image: null })
                               });
                           }} >
-                            <Icon name='ios-checkmark-circle' style={{ fontSize: 40, color: 'white' }} />
+                            <LibIcon.Ionicons name='ios-checkmark-circle' style={{ fontSize: 40, color: 'white' }} />
                           </TouchableOpacity>
                           :
                           <TouchableOpacity onPress={() => {
@@ -380,7 +379,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
                                 this.setState({ image: null })
                               });
                           }} >
-                            <Icon name='ios-close-circle' style={{ fontSize: 40, color: 'white' }} />
+                            <LibIcon.Ionicons name='ios-close-circle' style={{ fontSize: 40, color: 'white' }} />
                           </TouchableOpacity>
                       }
                     </View>

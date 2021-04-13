@@ -1,35 +1,52 @@
-import React from "react";
-import { View, AppState } from "react-native";
-import {
-  ContentList,
-  LibComponent,
-  LibNotification,
-  UserNotification,
-  LibStyle
-} from "esoftplay";
-const { isIphoneX } = LibStyle
+// withHooks
 
+import React from 'react';
+import { applyStyle, ContentBookmark, ContentCategory, ContentList, LibIcon, LibNavigation, LibStyle, useGlobalReturn, useGlobalState } from 'esoftplay';
+import { Pressable, Text, View } from 'react-native';
+
+export interface ContentIndexArgs {
+
+}
 export interface ContentIndexProps {
-  navigation: any
-}
-
-export interface ContentIndexState {
 
 }
+const _state = useGlobalState(0)
 
-export default class econtent extends LibComponent<ContentIndexProps, ContentIndexState> {
-  props: ContentIndexProps
 
-  constructor(props: ContentIndexProps) {
-    super(props);
-    this.props = props
-  }
+export function state(): useGlobalReturn<number> {
+  return _state
+}
 
-  render(): any {
-    return (
-      <View style={{ flex: 1 }}>
-        <ContentList navigation={this.props.navigation} />
+export default function m(props: ContentIndexProps): any {
+  const [idx, setIdx] = _state.useState()
+  const Aview = [ContentList, ContentCategory, ContentBookmark][idx]
+
+  return (
+    <>
+      <Aview />
+      <View style={styleId_ZKPd2h} >
+        <Pressable onPress={() => setIdx(0)} style={styleId_Z2pKvdh} >
+          <>
+            <LibIcon name='home' size={26} color={idx == 0 ? LibStyle.colorPrimary : 'grey'} />
+            <Text style={{ ...styleId_Z25Lwf9, color: idx == 0 ? LibStyle.colorPrimary : 'grey' }} >Beranda</Text>
+          </>
+        </Pressable>
+        <Pressable onPress={() => setIdx(1)} style={styleId_Z2pKvdh} >
+          <>
+            <LibIcon name='view-dashboard' size={26} color={idx == 1 ? LibStyle.colorPrimary : 'grey'} />
+            <Text style={{ ...styleId_Z25Lwf9, color: idx == 1 ? LibStyle.colorPrimary : 'grey' }} >Kategori</Text>
+          </>
+        </Pressable>
+        <Pressable onPress={() => setIdx(2)} style={styleId_Z2pKvdh} >
+          <>
+            <LibIcon name='bookmark' size={26} color={idx == 2 ? LibStyle.colorPrimary : 'grey'} />
+            <Text style={{ ...styleId_Z25Lwf9, color: idx == 2 ? LibStyle.colorPrimary : 'grey' }} >Disimpan</Text>
+          </>
+        </Pressable>
       </View>
-    );
-  }
+    </>
+  )
 }
+const styleId_ZKPd2h: any = { height: 56, flexDirection: 'row', borderTopWidth: 3, borderTopColor: '#f8f8f8' }
+const styleId_Z2pKvdh: any = { flex: 1, justifyContent: 'center', alignItems: 'center' }
+const styleId_Z25Lwf9: any = { fontFamily: "Roboto", fontSize: 12, fontWeight: "500", lineHeight: 16, textAlign: "center", color: 'grey' }

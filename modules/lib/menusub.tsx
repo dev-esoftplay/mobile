@@ -2,8 +2,7 @@
 import React from "react";
 import { Component } from "react";
 import { Text, View, FlatList, TouchableOpacity } from "react-native";
-import { Icon } from "native-base";
-import { esp, LibMenu, LibComponent, LibStyle, LibUtils } from "esoftplay";
+import { esp, LibMenu, LibComponent, LibStyle, LibUtils, LibIcon } from "esoftplay";
 const { colorPrimary } = LibStyle;
 
 export interface LibMenusubProps {
@@ -46,7 +45,7 @@ export default class Emenusub extends LibComponent<LibMenusubProps, LibMenusubSt
             data.length > 0 ?
               <TouchableOpacity onPress={() => this.setState({ expanded: !this.state.expanded })} >
                 <View style={{ paddingLeft: 10, flexDirection: "column" }}>
-                  <Icon name={!this.state.expanded ? "ios-arrow-down" : "ios-arrow-up"} style={{ color: colorPrimary, fontSize: 20, paddingRight: 16 }} />
+                  <LibIcon.Ionicons name={!this.state.expanded ? "ios-arrow-down" : "ios-arrow-up"} style={{ color: colorPrimary, fontSize: 20, paddingRight: 16 }} />
                 </View>
               </TouchableOpacity>
               : null

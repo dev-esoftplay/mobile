@@ -2,8 +2,7 @@
 
 import React from "react";
 import { Component } from "react"
-import { View, TextInput, ScrollView, Share, TouchableOpacity,  Image, KeyboardAvoidingView } from "react-native";
-import { Text, Button } from "native-base";
+import { View, TextInput, ScrollView, Share, TouchableOpacity,  Image, KeyboardAvoidingView, Pressable, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons"
 import Modal from "react-native-modal";
 import {
@@ -139,11 +138,11 @@ export default class euserLogin extends LibComponent<UserLoginProps, UserLoginSt
                 returnKeyType={"go"}
                 onSubmitEditing={() => this.attemptLogin()}
                 selectionColor={colorPrimary} />
-              <Button onPress={() => this.attemptLogin()} block style={{ backgroundColor: colorPrimary, marginHorizontal: 3 }} >
+              <Pressable onPress={() => this.attemptLogin()} style={{ backgroundColor: colorPrimary, marginHorizontal: 3 }} >
                 <Text>LOGIN</Text>
-              </Button>
+              </Pressable>
             </View>
-            <Text note style={{ margin: 20, textAlign: "center" }} >atau login dengan</Text>
+            <Text style={{ margin: 20, textAlign: "center" }} >atau login dengan</Text>
             <View style={{ flexDirection: "row", justifyContent: "space-around", width: width * 0.6 }} >
               <TouchableOpacity onPress={() => this.setState({ sosmed: "google" })} ><Ionicons name="logo-google" size={40} color={"#F34A38"} /></TouchableOpacity>
               <TouchableOpacity onPress={() => this.setState({ sosmed: "facebook" })} ><Ionicons name="logo-facebook" size={40} color={"#475993"} /></TouchableOpacity>

@@ -1,7 +1,7 @@
 //
 
 import React from "react";
-import { TouchableOpacity, View } from "react-native";
+import { Pressable, TouchableOpacity, View, Text } from "react-native";
 import {
   esp,
   LibCrypt,
@@ -15,11 +15,11 @@ import {
   LibObject,
   useGlobalState,
   UserClass,
-  useGlobalReturn
+  useGlobalReturn,
+  LibIcon,
 } from "esoftplay";
 //@ts-ignore
 import moment from "moment/min/moment-with-locales"
-import { Text, Button, Icon } from "native-base";
 import * as Notifications from 'expo-notifications';
 export interface UserNotificationProps {
   navigation: any,
@@ -139,13 +139,13 @@ class m extends LibComponent<UserNotificationProps, UserNotificationState> {
               <LibStatusbar style={"light"} />
               <View
                 style={{ flexDirection: "row", height: (STATUSBAR_HEIGHT) + 50, paddingTop: STATUSBAR_HEIGHT, paddingHorizontal: 0, alignItems: "center", backgroundColor: colorPrimary }}>
-                <Button transparent
+                <Pressable 
                   style={{ width: 50, height: 50, alignItems: "center", margin: 0 }}
                   onPress={() => goBack()}>
-                  <Icon
+                  <LibIcon.Ionicons
                     style={{ color: colorAccent }}
                     name="md-arrow-back" />
-                </Button>
+                </Pressable>
                 <Text style={{ marginHorizontal: 10, fontSize: 18, textAlign: "left", flex: 1, color: colorAccent }}>Notifikasi</Text>
               </View>
               <LibList

@@ -11,6 +11,7 @@ const tsconfig = DIR + "tsconfig.json"
 const appjs = DIR + "App.js"
 const appts = DIR + "App.tsx"
 const pathScript = DIR + "node_modules/react-native-scripts/build/bin/react-native-scripts.js"
+const pathJSTimer = DIR + "node_modules/react-native/Libraries/Core/Timers/JSTimers.js"
 
 /**
  * function ini untuk mengambil name autocomplete dari @expo/vector-icons untuk library LibIcon
@@ -218,6 +219,13 @@ if (fs.existsSync(packjson)) {
 				});
 			}
 		}
+		/* Fix Code android timers */
+		if (fs.existsSync(pathJSTimer)) {
+			let JSTimers = fs.readFileSync(pathJSTimer, { encoding: 'utf8' })
+			JSTimers = JSTimers.replace('const MAX_TIMER_DURATION_MS = 60 * 1000;', 'const MAX_TIMER_DURATION_MS = 10000 * 1000;')
+			fs.writeFileSync(pathJSTimer, JSTimers)
+		}
+
 		/* Update App.js */
 		const TSconfig = `{\n\
 	"compilerOptions": {\n\
@@ -322,12 +330,10 @@ export default function App(props: any) {
 			"moment-timezone",
 			"react-native-image-view",
 			"expo-media-library",
-			"native-base",
 			"react-native-modal",
 			"react-native-pinch-zoom-view-movable",
 			"react-native-screens",
 			"react-native-safe-area-context",
-			"recyclerlistview",
 			"shorthash",
 			"react-native-picker-scrollview",
 		]

@@ -25,7 +25,7 @@ export default class esocialLogin extends LibComponent<LibSocialloginProps, LibS
   }
 
   static setUser(userData: any): void {
-    AsyncStorage.setItem(config.domain + "_user", userData);
+    AsyncStorage.setItem(config.domain + "_user", JSON.stringify(userData));
   }
 
   static delUser(): void {

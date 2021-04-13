@@ -3,7 +3,6 @@ import { Audio } from "expo-av";
 import { LibComponent } from "esoftplay";
 
 export interface ContentAudioProps {
-  onRef: (ref: any) => void,
   code: string,
   onStatusChange: (status: any) => void
 }
@@ -47,7 +46,6 @@ class eaudio extends LibComponent<ContentAudioProps, ContentAudioState> {
 
   componentDidMount(): void {
     super.componentDidMount();
-    this.props.onRef(this);
     Audio.setAudioModeAsync({
       allowsRecordingIOS: false,
       interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
@@ -62,8 +60,13 @@ class eaudio extends LibComponent<ContentAudioProps, ContentAudioState> {
 
   componentWillUnmount(): void {
     super.componentWillUnmount();
-    this.props.onRef(undefined)
-    this.playbackInstance = null;
+    (async () => {
+      if (this.playbackInstance != null) {
+        await this.playbackInstance.unloadAsync();
+        this.playbackInstance.setOnPlaybackStatusUpdate(null);
+        this.playbackInstance = null;
+      }
+    })()
   }
 
   async _loadNewPlaybackInstance(playing: boolean): Promise<void> {

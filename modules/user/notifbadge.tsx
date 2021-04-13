@@ -1,10 +1,8 @@
 // 
 
 import React from "react";
-import { Component } from "react"
-import { View } from "react-native";
-import { Badge, Text } from "native-base"
-import { esp, UserNotification, LibComponent } from "esoftplay";
+import { View, Text } from "react-native";
+import { UserNotification, LibComponent, LibStyle } from "esoftplay";
 import { TouchableOpacity } from "react-native";
 
 export interface UserNotifbadgeProps {
@@ -37,9 +35,9 @@ export default class Enotifbadge extends LibComponent<UserNotifbadgeProps, UserN
     return (
       <View style={{ position: "absolute", top: 5, right: 5 }} >
         <TouchableOpacity onPress={() => this.props.onPress()} >
-          <Badge style={{ transform: [{ scale: 0.7 }] }} >
-            <Text>{counter}</Text>
-          </Badge>
+          <View style={{ backgroundColor: LibStyle.colorRed, minHeight: 30, paddingVertical: 2, paddingHorizontal: 5 }} >
+            <Text style={{ fontSize: 10, color: 'white' }} >{counter}</Text>
+          </View>
         </TouchableOpacity>
       </View>
     );

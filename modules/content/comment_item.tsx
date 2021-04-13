@@ -1,139 +1,59 @@
-import React from "react";
-import { Component } from "react";
-import { View, TouchableWithoutFeedback, Platform, StyleSheet, ScrollView } from "react-native";
-import { Text, Button, Icon, Thumbnail } from "native-base";
-import moment from "moment/min/moment-with-locales"
-import { esp, ContentComment_list, LibComponent, LibStyle } from "esoftplay";
-const { colorPrimary, width, STATUSBAR_HEIGHT } = LibStyle;
-import Modal from "react-native-modal";
+// withHooks
 
+import { applyStyle, LibIcon, LibNavigation, LibUtils } from 'esoftplay';
+import React from 'react';
+import { Image, Pressable, Text, View } from 'react-native';
+
+
+export interface ContentComment_itemArgs {
+
+}
 export interface ContentComment_itemProps {
   id: number,
-  par_id: string,
-  name: string,
-  image: string,
-  email: string,
-  setUser: (user: any) => void,
-  website: string,
-  content: string,
-  date: string,
-  reply: string,
   url: string,
   url_post: string,
-  user: any
+  par_id: number,
+  name: string,
+  image: string,
+  content: string,
+  email: string,
+  website: string,
+  date: string,
+  reply: number
 }
 
-export interface ContentComment_itemState {
-  isOpenChild: boolean
-}
-
-export default class Comment_item extends LibComponent<ContentComment_itemProps, ContentComment_itemState> {
-  state: ContentComment_itemState
-  props: ContentComment_itemProps
-
-  constructor(props: ContentComment_itemProps) {
-    super(props);
-    this.props = props
-    this.state = { isOpenChild: false };
-  }
-
-  render(): any {
-    var { id, par_id, name, image, email, website, content, date, reply, url, url_post, user } = this.props
-    url = url + ((/\?/g).test(url) ? "&par_id=" + id : "?par_id=" + id)
-    url_post = url_post + ((/\?/g).test(url_post) ? "&par_id=" + id : "?par_id=" + id)
-
-    return (
-      <View
-        style={[styles.bgComment, { paddingHorizontal: 17, width: width }]}>
-        <View
-          style={{ flexDirection: "row" }} >
-          <Thumbnail small
-            source={image != "" ? { uri: image } : null}
-            style={{ marginRight: 10, marginTop: 5 }} />
-          <View style={{ flex: 1 }} >
-            <Text style={{ fontSize: 14 }} >{name}</Text>
-            <Text style={{ fontSize: 11 }} note>{moment(date).format("LLLL")}</Text>
-            <Text style={[{ fontSize: 13, color: "#444" }, styles.content]} note >{content}</Text>
-            <View
-              style={{ flexDirection: "row", marginTop: 5 }} >
-              <TouchableWithoutFeedback
-                onPress={() => this.setState({ isOpenChild: true })} >
-                <View
-                  style={styles.rowCenter} >
-                  <Icon
-                    style={[styles.textPrimary13, { marginRight: 10 }]}
-                    name="ios-chatbubbles" />
-                  <Text
-                    style={styles.textPrimary13}>{reply} {"balasan"}</Text>
-                </View>
-              </TouchableWithoutFeedback>
-            </View>
-            <Modal
-              isVisible={this.state.isOpenChild}
-              backdropColor={"transparent"}
-              // animationType="slide"
-              avoidKeyboard={Platform.OS == "ios"}
-              onBackButtonPress={() => this.setState({ isOpenChild: false })}
-              onBackdropPress={() => this.setState({ isOpenChild: false })}
-              style={{ justifyContent: "flex-end", margin: 0, backgroundColor: "transparent" }}>
-              <View style={{ marginTop: (Platform.OS == "ios" ? STATUSBAR_HEIGHT : 0) + 50, paddingBottom: LibStyle.isIphoneX ? 15 : 0, backgroundColor: "white", flex: 1 }} >
-                <View style={{ flexDirection: "row", alignItems: "center", backgroundColor: "#f5f5f5", borderBottomWidth: 0.5, borderBottomColor: "#e1e1e1" }} >
-                  <Text note style={{ flex: 1, padding: 10 }} >{"Balasan Komentar"}</Text>
-                  <Button primary transparent small
-                    style={{ alignSelf: "center" }}
-                    onPress={() => this.setState({ isOpenChild: false })} >
-                    <Text style={{ color: colorPrimary }} >{"Tutup"}</Text>
-                  </Button>
-                </View>
-                <View
-                  style={{ flexDirection: "row", backgroundColor: "#f5f5f5", padding: 17 }} >
-                  <Thumbnail small
-                    source={image != "" ? { uri: image } : null}
-                    style={{ marginRight: 10, marginTop: 5 }} />
-                  <View
-                    style={{ flex: 1 }} >
-                    <Text style={{ fontSize: 14 }} >{name}</Text>
-                    <Text style={{ fontSize: 11 }} note>{moment(date).format("LLLL")}</Text>
-                    <ScrollView style={{ maxHeight: 100 }} >
-                      <Text style={[{ fontSize: 13, color: "#444" }, styles.content]} note >{content}</Text>
-                    </ScrollView>
-                  </View>
-                </View>
-                <ContentComment_list
-                  url={url}
-                  url_post={url_post}
-                  user={user}
-                  setUser={this.props.setUser}
-                  par_id={id} />
-              </View>
-            </Modal>
-          </View>
-        </View>
+export default function m(props: ContentComment_itemProps): any {
+  const styleId_Z2wK9pa: any = { flexDirection: 'row', backgroundColor: 'white', borderLeftWidth: props.par_id > 0 ? 50 : 0, borderLeftColor: '#f9f9f9' }
+  return (
+    <View style={styleId_Z2wK9pa} >
+      <View style={styleId_14E1yO} >
+        <Image source={{ uri: props.image }} style={styleId_2e0Fad} />
       </View>
-    )
-  }
+      <View style={styleId_ZLhjsk} >
+        <Text style={styleId_ZCtIoL} >{LibUtils.moment(props.date).format('DD MMM YYYY HH:mm').toUpperCase()}</Text>
+        <Text style={styleId_ZmiARo} >{props.name}</Text>
+        <Text style={styleId_1jN6UB} >{props.content}</Text>
+        <Pressable
+          onPress={() => LibNavigation.push('content/comment', {
+            header: { ...props, par_id: 0 },
+            url: props.url, url_post: props.url_post, par_id: props.id
+          })}
+          style={styleId_Z1IS0fI} >
+          <View style={styleId_Z2nP5oE} >
+            <LibIcon.AntDesign name='message1' size={12} color="#ababab" />
+            <Text style={styleId_Z1pDQI5} >{props.reply} Balasan</Text>
+          </View>
+        </Pressable>
+      </View>
+    </View>
+  )
 }
-
-
-// define your styles
-const styles = StyleSheet.create({
-  content: {
-    marginTop: 10,
-    color: "#333"
-  },
-  bgComment: {
-    paddingVertical: 10,
-    borderBottomColor: "#f5f5f5",
-    borderBottomWidth: 0.5
-  },
-  textPrimary13: {
-    fontSize: 13,
-    color: colorPrimary
-  },
-  rowCenter: {
-    padding: 5,
-    flexDirection: "row",
-    alignItems: "center"
-  }
-})
-
+const styleId_14E1yO: any = { marginTop: 18, marginLeft: 16 }
+const styleId_2e0Fad: any = { height: 50, width: 50, backgroundColor: '#f8f8f8', resizeMode: 'cover', overflow: 'hidden', borderRadius: 25 }
+const styleId_ZLhjsk: any = { flex: 1, paddingVertical: 16, marginHorizontal: 16, borderBottomWidth: 1, borderBottomColor: '#f9f9f9' }
+const styleId_ZCtIoL: any = { fontFamily: "Roboto", fontSize: 10, fontWeight: "500", letterSpacing: 1.5, color: "#686868" }
+const styleId_ZmiARo: any = { fontFamily: "Roboto_medium", fontSize: 16, fontWeight: "500", lineHeight: 20, color: "#060606", marginTop: 8 }
+const styleId_1jN6UB: any = { fontFamily: "Roboto", fontSize: 14, fontWeight: "500", lineHeight: 20, color: "#606060" }
+const styleId_Z1IS0fI: any = { flexDirection: 'row' }
+const styleId_Z2nP5oE: any = { flexDirection: 'row', alignItems: 'center', marginTop: 9, backgroundColor: '#f1f1f1', padding: 3, borderRadius: 6 }
+const styleId_Z1pDQI5: any = { fontFamily: "Roboto", fontSize: 12, lineHeight: 16, color: "#ababab", marginLeft: 5 }

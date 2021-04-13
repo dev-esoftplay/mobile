@@ -524,10 +524,14 @@ function askPerm(question, answer) {
 }
 
 function command(command) {
-	exec(command, {
-		shell: '/bin/bash',
-		stdio: ['inherit', 'inherit', 'inherit']
-	});
+	if (os.type() == 'Darwin') {
+		exec(command, { stdio: ['inherit', 'inherit', 'inherit'] });
+	} else {
+		exec(command, {
+			shell: '/bin/bash',
+			stdio: ['inherit', 'inherit', 'inherit']
+		});
+	}
 }
 
 function build() {

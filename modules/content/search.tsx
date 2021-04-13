@@ -1,108 +1,37 @@
-// 
-import React, { ReactElement, createRef } from "react";
-import { Component } from "react";
-import { View, StyleSheet } from "react-native";
-import { Button, Icon, Input } from "native-base";
-import { esp, LibUtils, LibStyle } from "esoftplay";
-const { elevation, colorPrimary } = LibStyle;
-// create a component
+// withHooks
 
+import { ContentHeader, esp, LibInput, LibNavigation } from 'esoftplay';
+import React, { useRef } from 'react';
+import { View } from 'react-native';
+
+
+export interface ContentSearchArgs {
+
+}
 export interface ContentSearchProps {
-  defaultValue?: string,
-  close: () => void,
-  onSubmit: (uri: string) => void,
-}
-
-export interface ContentSearchState {
 
 }
+export default function m(props: ContentSearchProps): any {
+  const searchInput = useRef<LibInput>(null)
+  const content = esp.config('content')
 
-export default class esearch extends Component<ContentSearchProps, ContentSearchState> {
-  inputSearch: any;
-  inputText: any;
-  props: ContentSearchProps;
-  constructor(props: ContentSearchProps) {
-    super(props)
-    this.props = props
-    this.inputText = createRef();
+  function doSearch() {
+    const keyword = encodeURIComponent(searchInput.current?.getText() || '')
+    LibNavigation.push('content/list', { title: 'Cari untuk ' + keyword, url: content + 'search.htm?id=' + keyword })
   }
 
-  componentDidMount(): void {
-    this.inputSearch = this.props.defaultValue || ""
-    setTimeout(() => {
-      if (this.inputText) {
-        this.inputText._root.focus()
-      }
-    });
-  }
-
-  render(): any {
-    return (
-      <View>
-        <View style={[{
-          backgroundColor: "white",
-          height: 50,
-          alignItems: "center",
-          flexDirection: "row"
-        }, elevation(2)]} >
-          <Button
-            transparent={true}
-            style={{
-              height: 50,
-              width: 50,
-            }}
-            onPress={() => this.props.close()}>
-            <Icon
-              name={"md-arrow-back"}
-              style={{
-                fontSize: 24,
-                color: "#353535"
-              }} />
-          </Button>
-          <Input
-            ref={(e) => this.inputText = e}
-            style={{ height: 50, width: "100%", fontSize: 17, color: "#555" }}
-            placeholderTextColor={"#999"}
-            selectionColor={LibUtils.colorAdjust(colorPrimary, 1)}
-            defaultValue={this.inputSearch}
-            returnKeyType="search"
-            onSubmitEditing={() => {
-              this.props.onSubmit(encodeURI(this.inputSearch))
-              this.props.close()
-            }}
-            onChangeText={(e: any) => this.inputSearch = e}
-            placeholder={"Temukan Berita ..."} />
-          <Button
-            transparent={true}
-            style={{
-              height: 50,
-              width: 50,
-            }}
-            onPress={() => {
-              this.props.onSubmit(encodeURI(this.inputSearch))
-              this.props.close()
-            }}>
-            <Icon
-              name="ios-search"
-              style={{
-                fontSize: 24,
-                color: "#353535"
-              }} />
-          </Button>
-        </View>
-      </View>
-    );
-  }
+  return (
+    <View>
+      <ContentHeader title="Cari Artikel" backButton />
+      <LibInput base
+        ref={searchInput}
+        autoFocus
+        placeholder={"Cari artikel"}
+        returnKeyType="search"
+        onChangeText={(text) => { }}
+        onSubmitEditing={() => doSearch()}
+        style={{ flex: 1, minHeight: 40, paddingHorizontal: 8, borderRadius: 8, backgroundColor: '#f5f5f5', marginVertical: 16, marginHorizontal: 16 }}
+      />
+    </View>
+  )
 }
-
-// define your styles
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#2c3e50",
-  },
-});
-
-//make this component available to the app
