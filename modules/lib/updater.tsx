@@ -51,7 +51,7 @@ export default function m(props: LibUpdaterProps): any {
       {
         props.show && esp.appjson().expo.updates.enabled == true &&
         <Pressable
-          style={{ position: 'absolute', right: 20, bottom: 20, height: 50, width: 50, borderRadius: 25, backgroundColor: LibStyle.colorRed }}
+          style={{ position: 'absolute', right: 20, bottom: 20, height: 50, width: 50, borderRadius: 25, justifyContent: 'center', alignItems: 'center', backgroundColor: LibStyle.colorRed }}
           onPress={() => {
             if (__DEV__) {
               Alert.alert('Development Mode', 'Update not working in development mode!')
