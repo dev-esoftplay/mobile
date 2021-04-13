@@ -25,7 +25,7 @@ export default function m(props: ContentListProps): any {
 
   return (
     <View style={{ flex: 1 }} >
-      <ContentHeader backButton={routes?.index > 0} title={title || "Transportasi"} searchButton />
+      <ContentHeader backButton={routes?.index && routes?.index > 0} title={title || "Transportasi"} searchButton />
       <LibInfinite
         url={url}
         injectData={data}
@@ -35,9 +35,9 @@ export default function m(props: ContentListProps): any {
             <LibCarrousel
               autoplay
               bullets
-              bulletsContainerStyle={{  justifyContent: 'flex-end', marginRight:10 }}
-              chosenBulletStyle={{ width: 8, height: 4, borderRadius: 2, marginHorizontal:4 }}
-              bulletStyle={{ width: 4, height: 4, borderRadius: 2,  marginHorizontal:4 }}
+              bulletsContainerStyle={{ justifyContent: 'flex-end', marginRight: 10 }}
+              chosenBulletStyle={{ width: 8, height: 4, borderRadius: 2, marginHorizontal: 4 }}
+              bulletStyle={{ width: 4, height: 4, borderRadius: 2, marginHorizontal: 4 }}
               style={{ height: 3 / 4 * LibStyle.width }}>
               {header.map(item => <ContentItem_header {...item} />)}
             </LibCarrousel>
