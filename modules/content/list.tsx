@@ -14,7 +14,7 @@ export interface ContentListProps {
 }
 export default function m(props: ContentListProps): any {
 
-  const routes = UserRoutes.state().useSelector(s => s)
+  const routes = UserRoutes.state().get()
 
   let { url, title, id } = useRef<any>(LibUtils.getArgsAll(props)).current
   const conf = esp.config()
@@ -25,7 +25,7 @@ export default function m(props: ContentListProps): any {
 
   return (
     <View style={{ flex: 1 }} >
-      <ContentHeader backButton={routes?.index && routes?.index > 0} title={title || "Transportasi"} searchButton />
+      <ContentHeader backButton={routes?.index != undefined && routes?.index > 0} title={title || "Transportasi"} searchButton />
       <LibInfinite
         url={url}
         injectData={data}

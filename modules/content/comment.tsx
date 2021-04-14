@@ -145,9 +145,12 @@ export default function m(props: ContentCommentProps): any {
           renderItem={(item) => <ContentComment_item url={url} url_post={url_post} {...item} />}
         />
         <View style={{ flexDirection: 'row', backgroundColor: 'white', alignItems: 'center' }} >
-          <Pressable onPress={() => setShowLoginForm(true)} >
-            <Image source={{ uri: user?.image }} style={{ height: 40, width: 40, borderRadius: 20, backgroundColor: '#f2f2f2', marginLeft: 16 }} />
-          </Pressable>
+          {
+            (comment_login == 1) &&
+            <Pressable onPress={() => setShowLoginForm(true)} >
+              <Image source={{ uri: user?.image }} style={{ height: 40, width: 40, borderRadius: 20, backgroundColor: '#f2f2f2', marginLeft: 16 }} />
+            </Pressable>
+          }
           <LibInput base
             ref={commentInput}
             placeholder={"Kirim Komentar"}
