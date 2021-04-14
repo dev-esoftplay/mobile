@@ -25,7 +25,7 @@ export default function m(props: ContentListProps): any {
 
   return (
     <View style={{ flex: 1 }} >
-      <ContentHeader backButton={routes?.index != undefined && routes?.index > 0} title={title || "Transportasi"} searchButton />
+      <ContentHeader backButton={routes?.index != undefined && routes?.index > 0} title={title || esp.appjson()?.expo?.name} searchButton />
       <LibInfinite
         url={url}
         injectData={data}
