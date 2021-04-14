@@ -17,6 +17,7 @@ import {
   UserClass,
   useGlobalReturn,
   LibIcon,
+  LibUtils,
 } from "esoftplay";
 //@ts-ignore
 import moment from "moment/min/moment-with-locales"
@@ -60,9 +61,18 @@ class m extends LibComponent<UserNotificationProps, UserNotificationState> {
 
   static user_notification_loadData(): void {
     const { protocol, domain, uri, salt } = esp.config()
-    var _uri = protocol + "://" + domain + uri + "user/push-notif"
-    const data = state.get().data
+    let _uri = protocol + "://" + domain + uri + "user/push-notif"
+    let data = state.get().data
     const user = UserClass.state().get()
+    /* hapus yang lebih lama dari 3 bulan */
+    const d = new Date();
+    d.setMonth(d.getMonth() - 3);
+    const created = LibUtils.moment(String(d.getDate())).format('YYYY-MM-DD HH:mm:ss')
+    let cdata = data.filter((row) => row.created > created)
+    if (cdata.length != data.length) {
+      /* jika data tidak sama artinya ada yang expired > 3 bulan */
+      state.set(LibObject.set(state.get(), cdata)('data'))
+    }
     if (data && data.length > 0) {
       const lastData = data[0]
       if (lastData.id)
@@ -139,7 +149,7 @@ class m extends LibComponent<UserNotificationProps, UserNotificationState> {
               <LibStatusbar style={"light"} />
               <View
                 style={{ flexDirection: "row", height: (STATUSBAR_HEIGHT) + 50, paddingTop: STATUSBAR_HEIGHT, paddingHorizontal: 0, alignItems: "center", backgroundColor: colorPrimary }}>
-                <Pressable 
+                <Pressable
                   style={{ width: 50, height: 50, alignItems: "center", margin: 0 }}
                   onPress={() => goBack()}>
                   <LibIcon.Ionicons

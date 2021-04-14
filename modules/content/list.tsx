@@ -1,7 +1,7 @@
 // withHooks
 
 import React, { useRef } from 'react';
-import { ContentCategory_list, ContentHeader, ContentItem, ContentItem_header, LibCarrousel, LibInfinite, LibObject, LibStyle, LibUtils, UserRoutes, useSafeState } from 'esoftplay';
+import { ContentCategory_list, ContentConfig, ContentHeader, ContentItem, ContentItem_header, LibCarrousel, LibInfinite, LibObject, LibStyle, LibUtils, UserRoutes, useSafeState } from 'esoftplay';
 import { View } from 'react-native';
 import { esp } from 'esoftplay';
 
@@ -43,6 +43,9 @@ export default function m(props: ContentListProps): any {
             </LibCarrousel>
           </>
         }
+        onResult={(res) => {
+          ContentConfig.state().set(LibObject.set(ContentConfig.state().get(), res.config)('list'))
+        }}
         onDataChange={(data: any[], page) => {
           if (page == 0) {
             setData(LibObject.splice(data, 0, 4)())

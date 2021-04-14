@@ -28,7 +28,7 @@ export default function m(props: ContentHeaderProps): any {
           </Pressable>
         }
         <View style={{ flex: 1 }} >
-          <Text style={{ fontFamily: "Roboto_medium", fontSize: 20, fontWeight: "500", lineHeight: 26, color: LibStyle.colorAccent }} >{props.title}</Text>
+          <Text style={{ fontFamily: "Roboto_medium", fontSize: 20, fontWeight: "500", lineHeight: 26, color: LibStyle.colorAccent }} >{props?.title}</Text>
           {/* {
             !props.backButton &&
             <Text style={{ fontFamily: "Roboto", fontSize: 14, lineHeight: 20, color: LibStyle.colorAccent }} >{LibUtils.moment(undefined, 'id').format('dddd, DD MMMM YYYY')}</Text>
