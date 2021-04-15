@@ -1,8 +1,6 @@
 import React from "react";
 import { Component } from "react"
-import { WebView } from 'react-native-webview'
-import { esp } from 'esoftplay'
-import { Platform, View, PixelRatio } from 'react-native';
+import { Platform } from 'react-native';
 const _global = require('../../_global')
 export interface LibWorkerInit {
   task: string,
@@ -53,15 +51,17 @@ export default class m extends Component<LibWorkerProps, LibWorkerState> {
     }
   }
 
-  static registerJobAsync(name: string, func: Function): (params: any[], res: (data: any) => void) => void {
-    const x = func.toString().replace('function', 'function ' + name).replace('\n', `\n\tconst out = (data) => { window.ReactNativeWebView.postMessage(JSON.stringify({ data: data, id: arguments[arguments.length-1] })) }\n\n`)
+  static registerJobAsync(name: string, func: (...fparams: any[]) => Promise<any>): (params: any[], res: (data: any) => void) => void {
+    const x = func.toString().replace('function', 'function ' + name)
     _global.injectedJavaScripts.push(x)
     m.dispatch(() => x, '', () => { })
     return (params: (string | number | boolean)[], res: (data: string) => void) => {
       if (Platform.OS == 'android')
         if (Platform.Version <= 22) {
-          return res(func(...params))
+          (async () => res(await func(...params)))()
+          return
         }
+
       m.dispatch(
         (id: number) => {
           let _params = params.map((param) => {
@@ -69,9 +69,7 @@ export default class m extends Component<LibWorkerProps, LibWorkerState> {
               return `"` + param + `"`
             return param
           })
-          if (!Array.isArray(_params)) _params = []
-          _params.push(id)
-          return (name + `(` + _params.join(", ") + `)`)
+          return (`(async () => window.ReactNativeWebView.postMessage(JSON.stringify({ data: await ` + name + `(` + _params.join(", ") + `), id: ` + id + ` })))()`)
         }
         , '', res)
     }
@@ -85,10 +83,11 @@ export default class m extends Component<LibWorkerProps, LibWorkerState> {
     return JSON.stringify(JSON.stringify(data)).slice(1, -1);
   }
 
-  static jobAsync(func: Function, params: (string | number | boolean)[], res: (data: any) => void): void {
+  static jobAsync(func: (...fparams: any[]) => Promise<any>, params: (string | number | boolean)[], res: (data: any) => void): void {
     if (Platform.OS == 'android')
       if (Platform.Version <= 22) {
-        return res(func(...params))
+        (async () => res(await func(...params)))()
+        return
       }
     m.dispatch(
       (id: number) => {
@@ -98,11 +97,7 @@ export default class m extends Component<LibWorkerProps, LibWorkerState> {
             return `"` + param + `"`
           return param
         })
-
-        const out = nameFunction.replace('\n', `\n\tconst out = (data) => { window.ReactNativeWebView.postMessage(JSON.stringify({ data: data, id: ` + id + ` })) }\n`)
-          + `\n` +
-          `tempFunction` + `(` + _params.join(",") + `)`
-        return out
+        return (`(async () => window.ReactNativeWebView.postMessage(JSON.stringify({ data: await ` + nameFunction + `(` + _params.join(", ") + `), id: ` + id + ` })))()`)
       }
       , '', res)
   }
@@ -126,9 +121,10 @@ export default class m extends Component<LibWorkerProps, LibWorkerState> {
       }
       , '', res)
   }
-  static image(url: string, toSize: number, result: (r: string) => void): void {
-    m.dispatch((id) => `imageCompress("` + id + `", "` + url + `", ` + PixelRatio.getPixelSizeForLayoutSize(toSize) + `)`, url, result)
-  }
+
+  // static image(url: string, toSize: number, result: (r: string) => void): void {
+  //   m.dispatch((id) => `imageCompress("` + id + `", "` + url + `", ` + PixelRatio.getPixelSizeForLayoutSize(toSize) + `)`, url, result)
+  // }
 
   static dispatch(task: (id: number) => string, url: string, result: (r: string) => void): void {
     if (_global.LibWorkerReady > 0 && typeof _global.LibWorkerBase?.current?.injectJavaScript == 'function') {
