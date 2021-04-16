@@ -387,12 +387,11 @@ function createIndex() {
       connect: (props: useGlobalConnect<T>) => any,
       useSelector: (selector: (state: T) => any) => any;
     }
-
     interface useGlobalOption {
       persistKey?: string,
-      listener?: (data: any) => void
+      listener?: (data: any) => void,
+      isUserData?: boolean
     }
-
     interface useGlobalConnect<T> {
       render: (props: T) => any,
     }

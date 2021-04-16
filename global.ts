@@ -2,7 +2,7 @@ import * as R from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const _global = require('./_global')
 const isEqual = require('react-fast-compare');
-
+const UserData = require('./modules/user/data').default
 
 export interface useGlobalReturn<T> {
   useState: () => [T, (newState: T) => void, () => void],
@@ -15,7 +15,8 @@ export interface useGlobalReturn<T> {
 
 export interface useGlobalOption {
   persistKey?: string,
-  listener?: (data: any) => void
+  listener?: (data: any) => void,
+  isUserData?: boolean
 }
 
 export interface useGlobalConnect<T> {
@@ -25,6 +26,7 @@ export interface useGlobalConnect<T> {
 export default (() => {
   let subscriber = []
   _global.useGlobalIdx = 0
+  _global.useGlobalUserDelete = {}
   return <T>(initValue: T, o?: useGlobalOption): useGlobalReturn<T> => {
     const _idx = _global.useGlobalIdx
     if (!subscriber[_idx])
@@ -37,6 +39,17 @@ export default (() => {
         if (p)
           set(JSON.parse(p))
       })
+    }
+
+    /* register to userData to automatically reset state and persist */
+    if (o?.isUserData) {
+      function resetFunction() {
+        set(initValue)
+      }
+      if (o?.persistKey) {
+        UserData.register(o?.persistKey)
+      }
+      _global.useGlobalUserDelete[_idx] = resetFunction
     }
 
     function set(ns: T) {

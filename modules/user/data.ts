@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
+const _global: any = require('../../_global')
 export default class m {
   static register(name: string): void {
     AsyncStorage.getItem("user_data_dependent").then((x) => {
@@ -20,9 +21,10 @@ export default class m {
       AsyncStorage.setItem("user_data_dependent", JSON.stringify(all))
     })
   }
-  
+
   deleteAll(): void {
     AsyncStorage.getItem("user_data_dependent").then((x) => {
+      Object.values?.(_global.useGlobalUserDelete)?.map?.((func) => func?.())
       if (x) AsyncStorage.multiRemove(JSON.parse(x))
     })
   }
