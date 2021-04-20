@@ -564,7 +564,6 @@ function createRouter() {
   staticImport.push("export function applyStyle(style){ return style };\n")
   staticImport.push("export { default as useGlobalState } from '../../../node_modules/esoftplay/global';\n")
   staticImport.push("export { default as useSafeState } from '../../../node_modules/esoftplay/state';\n")
-  staticImport.push("export { default as usePersistState } from '../../../node_modules/esoftplay/persist';\n")
   staticImport.push("export { default as esp } from '../../../node_modules/esoftplay/esp';\n")
   for (const module in Modules) {
     for (const task in Modules[module]) {

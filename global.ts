@@ -2,7 +2,6 @@ import * as R from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const _global = require('./_global')
 const isEqual = require('react-fast-compare');
-const UserData = require('./modules/user/data').default
 
 export interface useGlobalReturn<T> {
   useState: () => [T, (newState: T) => void, () => void],
@@ -29,29 +28,31 @@ export default (() => {
   _global.useGlobalUserDelete = {}
   return <T>(initValue: T, o?: useGlobalOption): useGlobalReturn<T> => {
     const _idx = _global.useGlobalIdx
+    console.log('')
     if (!subscriber[_idx])
-      subscriber[_idx] = [];
+    subscriber[_idx] = [];
     let value: T = initValue;
-
+    
     // rehidryte instant
     if (o?.persistKey) {
       AsyncStorage.getItem(o.persistKey).then((p) => {
         if (p)
-          set(JSON.parse(p))
+        set(JSON.parse(p))
       })
     }
-
+    
     /* register to userData to automatically reset state and persist */
     if (o?.isUserData) {
       function resetFunction() {
         set(initValue)
       }
       if (o?.persistKey) {
+        const UserData = require('./modules/user/data').default
         UserData.register(o?.persistKey)
       }
       _global.useGlobalUserDelete[_idx] = resetFunction
     }
-
+    
     function set(ns: T) {
       let isChange = false
       if (o?.listener && !isEqual(value, ns)) {
