@@ -22,25 +22,32 @@ export interface useGlobalConnect<T> {
   render: (props: T) => any,
 }
 
-export default (() => {
+_global.useGlobalUserDelete = {}
+
+class Context {
+  idx = 0
+  increment = () => this.idx++
+  reset = () => this.idx = 0
+}
+
+export const globalIdx = new Context()
+
+const m = () => {
   let subscriber = []
-  _global.useGlobalIdx = 0
-  _global.useGlobalUserDelete = {}
-  return <T>(initValue: T, o?: useGlobalOption): useGlobalReturn<T> => {
-    const _idx = _global.useGlobalIdx
-    console.log('')
+  function m<T>(initValue: T, o?: useGlobalOption): useGlobalReturn<T> {
+    const _idx = globalIdx.idx
     if (!subscriber[_idx])
-    subscriber[_idx] = [];
+      subscriber[_idx] = [];
     let value: T = initValue;
-    
+
     // rehidryte instant
     if (o?.persistKey) {
       AsyncStorage.getItem(o.persistKey).then((p) => {
         if (p)
-        set(JSON.parse(p))
+          set(JSON.parse(p))
       })
     }
-    
+
     /* register to userData to automatically reset state and persist */
     if (o?.isUserData) {
       function resetFunction() {
@@ -52,7 +59,7 @@ export default (() => {
       }
       _global.useGlobalUserDelete[_idx] = resetFunction
     }
-    
+
     function set(ns: T) {
       let isChange = false
       if (o?.listener && !isEqual(value, ns)) {
@@ -131,7 +138,10 @@ export default (() => {
       return children ? R.cloneElement(children) : null
     }
 
-    _global.useGlobalIdx++
+    globalIdx.increment()
     return { useState, get, set, useSelector, reset: del, connect: _connect };
   }
-})()
+  return m
+}
+
+export default m()
