@@ -50,7 +50,7 @@ export default (() => {
       if (_params.length > 0)
         for (let i = 0; i < _params.length; i++) {
           const key = _params[i];
-          if (out.hasOwnProperty(key)) {
+          if (out?.hasOwnProperty?.(key)) {
             out = out[key];
           } else {
             out = {};
@@ -75,7 +75,7 @@ export default (() => {
         if (_params.length > 0)
           for (let i = 0; i < _params.length; i++) {
             const key = _params[i];
-            if (out.hasOwnProperty(key)) {
+            if (out?.hasOwnProperty?.(key)) {
               out = out[key];
             } else {
               out = undefined;

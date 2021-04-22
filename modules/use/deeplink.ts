@@ -1,3 +1,4 @@
+import { LibCurl, LibNavigation } from 'esoftplay';
 // useLibs
 
 import { LibUtils, esp } from 'esoftplay';
@@ -6,8 +7,18 @@ import { Linking, Alert } from 'react-native';
 
 export default function m(defaultUrl?: string): void {
   const doLink = useCallback(({ url }: any) => {
-    if (url?.includes(defaultUrl || esp.config('domain')))
-      LibUtils.debounce(() => Alert.alert('Deeplink', url), 500)
+    const { domain, uri } = esp.config()
+    if (url?.includes(defaultUrl || domain))
+      LibUtils.debounce(() => {
+        url = url.replace((domain + uri), (domain + uri + 'deeplink/'))
+        new LibCurl(url, null,
+          (res, msg) => {
+            LibNavigation.push(res.module, { url: res.url })
+          }, (msg) => {
+            Alert.alert('Oops', msg)
+          }
+        )
+      }, 500)
   }, [])
 
   useEffect(() => {

@@ -34,12 +34,15 @@ export const globalIdx = new Context()
 
 const m = () => {
   let subscriber = []
+  let __DEV_VALUES__ = {}
   function m<T>(initValue: T, o?: useGlobalOption): useGlobalReturn<T> {
     const _idx = globalIdx.idx
     if (!subscriber[_idx])
       subscriber[_idx] = [];
     let value: T = initValue;
-
+    if (__DEV__ && __DEV_VALUES__[_idx]) {
+      value = __DEV_VALUES__[_idx]
+    }
     // rehidryte instant
     if (o?.persistKey) {
       AsyncStorage.getItem(o.persistKey).then((p) => {
@@ -61,17 +64,19 @@ const m = () => {
     }
 
     function set(ns: T) {
-      let isChange = false
-      if (o?.listener && !isEqual(value, ns)) {
-        isChange = true
+      if (__DEV__) {
+        __DEV_VALUES__[_idx] = ns
       }
-      value = ns
-      subscriber?.[_idx]?.forEach?.((c: any) => c?.(value));
-      if (o?.persistKey) {
-        AsyncStorage.setItem(o.persistKey, JSON.stringify(value))
+      const isChange = !isEqual(value, ns)
+      if (isChange) {
+        value = ns
+        subscriber?.[_idx]?.forEach?.((c: any) => c?.(ns));
+        if (o?.persistKey) {
+          AsyncStorage.setItem(o.persistKey, JSON.stringify(ns))
+        }
+        if (o?.listener)
+          o.listener(ns)
       }
-      if (isChange)
-        o.listener(ns)
     };
 
     function del() {
@@ -84,10 +89,13 @@ const m = () => {
     function useSelector(se: (state: T) => any): void {
       let [l, s] = R.useState<any>(se(value));
 
-      const sl = R.useCallback((ns: T) => {
-        const n = se(ns);
-        if (!isEqual(l, n)) s(n);
-      }, [l]);
+      let sl = R.useCallback(
+        (ns: T) => {
+          let n = se(ns);
+          !isEqual(l, n) && s(n);
+        },
+        [l]
+      );
 
       subscribe(sl)
 
@@ -106,15 +114,11 @@ const m = () => {
     function get(param?: string, ...params: string[]): any {
       let out: any = value;
       if (param) {
-        var _params = [param, ...params]
+        const _params = [param, ...params]
         if (_params.length > 0)
           for (let i = 0; i < _params.length; i++) {
-            const key = _params[i];
-            if (out?.hasOwnProperty?.(key)) {
-              out = out[key];
-            } else {
-              out = {};
-            }
+            if (out && _params[i] != undefined)
+              out = out?.[_params[i]];
           }
       }
       return out;
