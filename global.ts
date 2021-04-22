@@ -84,13 +84,10 @@ const m = () => {
     function useSelector(se: (state: T) => any): void {
       let [l, s] = R.useState<any>(se(value));
 
-      let sl = R.useCallback(
-        (ns: T) => {
-          let n = se(ns);
-          !isEqual(l, n) && s(n);
-        },
-        [l]
-      );
+      const sl = R.useCallback((ns: T) => {
+        const n = se(ns);
+        if (!isEqual(l, n)) s(n);
+      }, [l]);
 
       subscribe(sl)
 
