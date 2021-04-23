@@ -23,6 +23,7 @@ export interface useGlobalConnect<T> {
 }
 
 _global.useGlobalUserDelete = {}
+_global.__DEV_VALUES__ = {}
 
 class Context {
   idx = 0
@@ -34,14 +35,13 @@ export const globalIdx = new Context()
 
 const m = () => {
   let subscriber = []
-  let __DEV_VALUES__ = {}
   function m<T>(initValue: T, o?: useGlobalOption): useGlobalReturn<T> {
     const _idx = globalIdx.idx
     if (!subscriber[_idx])
       subscriber[_idx] = [];
     let value: T = initValue;
-    if (__DEV__ && __DEV_VALUES__[_idx]) {
-      value = __DEV_VALUES__[_idx]
+    if (__DEV__ && _global.__DEV_VALUES__[_idx]) {
+      value = _global.__DEV_VALUES__[_idx]
     }
     // rehidryte instant
     if (o?.persistKey) {
@@ -65,7 +65,7 @@ const m = () => {
 
     function set(ns: T) {
       if (__DEV__) {
-        __DEV_VALUES__[_idx] = ns
+        _global.__DEV_VALUES__[_idx] = ns
       }
       const isChange = !isEqual(value, ns)
       if (isChange) {
