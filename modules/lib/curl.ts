@@ -257,6 +257,7 @@ export default class ecurl {
           //     onPress: () => { }
           //   }
           // ])
+          this.onFetchFailed(resText)
           LibProgress.hide()
           this.onError(resText)
         }
@@ -370,6 +371,7 @@ export default class ecurl {
         }
       }
     } else {
+      this.onFetchFailed(resText)
       this.onError(resText)
       // Alert.alert(this.alertTimeout.title, this.alertTimeout.message, [
       //   {
