@@ -115,62 +115,60 @@ export default class m extends LibComponent<LibDialogProps, LibDialogState>{
 
   constructor(props: LibDialogProps) {
     super(props);
-    this.handleBack = this.handleBack.bind(this);
-  }
-
-  handleBack(): boolean {
-    return true
   }
 
   render(): any {
-    return (
-      <state.connect
-        render={(props) => {
-          const { visible, icon, view, style, title, msg, ok, cancel, onPressOK, onPressCancel } = props
-          if (!visible)
-            BackHandler.removeEventListener("hardwareBackPress", this.handleBack)
-          else
-            BackHandler.addEventListener("hardwareBackPress", this.handleBack)
+    return <Dialog />
+  }
+}
 
-          if (!visible) return null
-          var color = LibTheme._colorPrimary()
-          if (style == 'danger') {
-            color = '#DE204C'
-          }
-          return (
-            <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', alignItems: 'center', justifyContent: 'center', flex: 1 }} >
-              <View style={{ backgroundColor: LibTheme._colorBackgroundCardPrimary(), padding: 10, borderRadius: 4, width: LibStyle.width - 80 }} >
-                {
-                  view ?
-                    view
-                    :
-                    <View>
-                      <View style={{ marginTop: 16, marginHorizontal: 10 }} >
-                        <View style={{ alignItems: 'center', justifyContent: 'center' }} >
-                          {icon && <View style={{ marginBottom: 10 }} ><LibIcon name={icon} size={48} color={color} /></View>}
-                          {title && <LibTextstyle textStyle={"body"} text={title} style={{ marginBottom: 10, color: color, fontWeight: 'bold', textAlign: 'center' }} />}
-                          {msg && <LibTextstyle textStyle="callout" text={msg || ''} style={{ textAlign: 'center', lineHeight: 20 }} />}
-                        </View>
-                      </View>
-                      <View style={{ flexDirection: 'row', marginBottom: -5, marginHorizontal: -5, borderRadius: 4, overflow: 'hidden', marginTop: 24 }} >
-                        {onPressCancel &&
-                          <TouchableOpacity onPress={() => { onPressCancel(); m.hide() }} style={{ alignItems: "center", justifyContent: "center", padding: 10, flex: 1, marginRight: 2, borderRadius: 4, backgroundColor: LibTheme._colorBackgroundPrimary() }} >
-                            <LibTextstyle textStyle={"body"} text={cancel || ''} />
-                          </TouchableOpacity>
-                        }
-                        {onPressOK &&
-                          <TouchableOpacity onPress={() => { onPressOK(); m.hide() }} style={{ alignItems: "center", justifyContent: "center", padding: 10, flex: 1, borderRadius: 4, backgroundColor: LibTheme._colorBackgroundPrimary() }} >
-                            <LibTextstyle textStyle={"body"} text={ok || ''} style={{ color: color }} />
-                          </TouchableOpacity>
-                        }
-                      </View>
-                    </View>
+function handleBack(): boolean {
+  return true
+}
+
+function Dialog(): any {
+  const { visible, icon, view, style, title, msg, ok, cancel, onPressOK, onPressCancel } = state.useSelector(s => s)
+  if (!visible)
+    BackHandler.removeEventListener("hardwareBackPress", handleBack)
+  else
+    BackHandler.addEventListener("hardwareBackPress", handleBack)
+
+  if (!visible) return null
+  var color = LibTheme._colorPrimary()
+  if (style == 'danger') {
+    color = '#DE204C'
+  }
+  return (
+    <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', alignItems: 'center', justifyContent: 'center', flex: 1 }} >
+      <View style={{ backgroundColor: LibTheme._colorBackgroundCardPrimary(), padding: 10, borderRadius: 4, width: LibStyle.width - 80 }} >
+        {
+          view ?
+            view
+            :
+            <View>
+              <View style={{ marginTop: 16, marginHorizontal: 10 }} >
+                <View style={{ alignItems: 'center', justifyContent: 'center' }} >
+                  {icon && <View style={{ marginBottom: 10 }} ><LibIcon name={icon} size={48} color={color} /></View>}
+                  {title && <LibTextstyle textStyle={"body"} text={title} style={{ marginBottom: 10, color: color, fontWeight: 'bold', textAlign: 'center' }} />}
+                  {msg && <LibTextstyle textStyle="callout" text={msg || ''} style={{ textAlign: 'center', lineHeight: 20 }} />}
+                </View>
+              </View>
+              <View style={{ flexDirection: 'row', marginBottom: -5, marginHorizontal: -5, borderRadius: 4, overflow: 'hidden', marginTop: 24 }} >
+                {onPressCancel &&
+                  <TouchableOpacity onPress={() => { onPressCancel(); m.hide() }} style={{ alignItems: "center", justifyContent: "center", padding: 10, flex: 1, marginRight: 2, borderRadius: 4, backgroundColor: LibTheme._colorBackgroundPrimary() }} >
+                    <LibTextstyle textStyle={"body"} text={cancel || ''} />
+                  </TouchableOpacity>
+                }
+                {onPressOK &&
+                  <TouchableOpacity onPress={() => { onPressOK(); m.hide() }} style={{ alignItems: "center", justifyContent: "center", padding: 10, flex: 1, borderRadius: 4, backgroundColor: LibTheme._colorBackgroundPrimary() }} >
+                    <LibTextstyle textStyle={"body"} text={ok || ''} style={{ color: color }} />
+                  </TouchableOpacity>
                 }
               </View>
             </View>
-          )
-        }}
-      />
-    )
-  }
+        }
+      </View>
+    </View>
+  )
+
 }
