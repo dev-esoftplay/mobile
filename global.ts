@@ -23,7 +23,12 @@ export interface useGlobalConnect<T> {
 }
 
 _global.useGlobalUserDelete = {}
-_global.__DEV_VALUES__ = {}
+if (__DEV__) {
+  if (!_global.__DEV_SUBCS__)
+    _global.__DEV_SUBCS__ = {}
+  if (!_global.__DEV_VLS__)
+    _global.__DEV_VLS__ = {}
+}
 
 class Context {
   idx = 0
@@ -34,15 +39,24 @@ class Context {
 export const globalIdx = new Context()
 
 const m = () => {
-  let subscriber = []
+  let subscriber = {}
   function m<T>(initValue: T, o?: useGlobalOption): useGlobalReturn<T> {
     const _idx = globalIdx.idx
     if (!subscriber[_idx])
       subscriber[_idx] = [];
-    let value: T = initValue;
-    if (__DEV__ && _global.__DEV_VALUES__[_idx]) {
-      value = _global.__DEV_VALUES__[_idx]
+
+    if (__DEV__) { /* Fast refresh adaptor */
+      if (!_global.__DEV_VLS__[_idx]) {
+        _global.__DEV_VLS__[_idx] = initValue
+      }
+      if (!_global.__DEV_SUBCS__[_idx]) {
+        _global.__DEV_SUBCS__[_idx] = []
+      }
+      subscriber[_idx] = _global.__DEV_SUBCS__[_idx]
     }
+
+    let value: T = __DEV__ ? _global.__DEV_VLS__[_idx] : initValue;
+
     // rehidryte instant
     if (o?.persistKey) {
       AsyncStorage.getItem(o.persistKey).then((p) => {
@@ -64,16 +78,15 @@ const m = () => {
     }
 
     function set(ns: T) {
-      if (__DEV__) {
-        _global.__DEV_VALUES__[_idx] = ns
-      }
       const isChange = !isEqual(value, ns)
+      if (__DEV__)
+        _global.__DEV_VLS__[_idx] = ns
+      value = ns
+      subscriber?.[_idx]?.forEach?.((c: any) => c?.(ns));
+      if (o?.persistKey) {
+        AsyncStorage.setItem(o.persistKey, JSON.stringify(ns))
+      }
       if (isChange) {
-        value = ns
-        subscriber?.[_idx]?.forEach?.((c: any) => c?.(ns));
-        if (o?.persistKey) {
-          AsyncStorage.setItem(o.persistKey, JSON.stringify(ns))
-        }
         if (o?.listener)
           o.listener(ns)
       }
@@ -105,8 +118,13 @@ const m = () => {
     function subscribe(func: any) {
       R.useEffect(() => {
         subscriber[_idx].push(func);
+        if (__DEV__)
+          _global.__DEV_SUBCS__[_idx].push(func)
         return () => {
+          // console.log('DICALL', subscriber?.[_idx]?.length)
           subscriber[_idx] = subscriber?.[_idx]?.filter?.((f) => f !== func);
+          if (__DEV__)
+            _global.__DEV_SUBCS__[_idx] = _global.__DEV_SUBCS__[_idx]?.filter?.((f) => f !== func);
         };
       }, [func]);
     }
