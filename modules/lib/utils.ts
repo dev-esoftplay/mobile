@@ -406,10 +406,10 @@ export default class eutils {
     return shorthash.unique(string)
   }
 
-  static share(message: string): void {
+  static share(url: string, message?: string): void {
     Share.share({
-      url: message,
       message: message,
+      url: url,
     });
   }
 }
