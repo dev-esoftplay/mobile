@@ -23,6 +23,7 @@ export interface useGlobalConnect<T> {
 }
 
 _global.useGlobalUserDelete = {}
+_global.useGlobalIdx = 0
 if (__DEV__) {
   if (!_global.__DEV_SUBCS__)
     _global.__DEV_SUBCS__ = {}
@@ -30,18 +31,10 @@ if (__DEV__) {
     _global.__DEV_VLS__ = {}
 }
 
-class Context {
-  idx = 0
-  increment = () => this.idx++
-  reset = () => this.idx = 0
-}
-
-export const globalIdx = new Context()
-
 const m = () => {
   let subscriber = {}
   function m<T>(initValue: T, o?: useGlobalOption): useGlobalReturn<T> {
-    const _idx = globalIdx.idx
+    const _idx = _global.useGlobalIdx
     if (!subscriber[_idx])
       subscriber[_idx] = [];
 
@@ -121,7 +114,6 @@ const m = () => {
         if (__DEV__)
           _global.__DEV_SUBCS__[_idx].push(func)
         return () => {
-          // console.log('DICALL', subscriber?.[_idx]?.length)
           subscriber[_idx] = subscriber?.[_idx]?.filter?.((f) => f !== func);
           if (__DEV__)
             _global.__DEV_SUBCS__[_idx] = _global.__DEV_SUBCS__[_idx]?.filter?.((f) => f !== func);
@@ -157,7 +149,7 @@ const m = () => {
       return children ? R.cloneElement(children) : null
     }
 
-    globalIdx.increment()
+    _global.useGlobalIdx++
     return { useState, get, set, useSelector, reset: del, connect: _connect };
   }
   return m
