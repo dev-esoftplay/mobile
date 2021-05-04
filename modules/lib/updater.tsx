@@ -28,10 +28,6 @@ export function checkAlertInstall(): void {
 }
 
 export function check(callback: (isNew: boolean) => void): void {
-  if (__DEV__ || Constants.appOwnership == 'expo') {
-    callback(false)
-    return
-  }
   Updates.checkForUpdateAsync().then(({ isAvailable }) => {
     if (!isAvailable) {
       callback(false)
@@ -58,13 +54,16 @@ export default function m(props: LibUpdaterProps): any {
               Alert.alert('Development Mode', 'Update not working in development mode!')
               return
             }
+            if (Constants.appOwnership == 'expo') {
+              Alert.alert('App is fine', 'Your app is up-to-date')
+              return
+            }
             LibProgress.show('Sedang memeriksa versi terbaru')
             check((isNew) => {
               if (isNew) {
                 LibProgress.hide()
                 install()
-              }
-              else {
+              } else {
                 LibProgress.hide()
                 Alert.alert('App is fine', 'Your app is up-to-date')
               }
