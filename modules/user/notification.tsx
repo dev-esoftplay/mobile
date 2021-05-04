@@ -64,6 +64,9 @@ class m extends LibComponent<UserNotificationProps, UserNotificationState> {
     let _uri = protocol + "://" + domain + uri + "user/push-notif"
     let data = state.get().data
     const user = UserClass.state().get()
+    if (!user?.id) {
+      Notifications.setBadgeCountAsync(0)
+    }
     /* hapus yang lebih lama dari 3 bulan */
     const d = new Date();
     d.setMonth(d.getMonth() - 3);
