@@ -2,7 +2,7 @@
 // @ts-check
 const { spawn, execSync } = require('child_process');
 const fs = require('fs');
-const DIR = "./"
+const DIR = "../../"
 const packjson = DIR + "package.json"
 const appjson = DIR + "app.json"
 const confjson = DIR + "config.json"
@@ -352,7 +352,7 @@ export default function App(props: any) {
 			let installExpoLibs = []
 			let installDevLibs = []
 			expoLib.forEach((exlib) => {
-				if (fs.existsSync(DIR + "node_modules/" + exlib)) {
+				if (fs.existsSync("../../node_modules/" + exlib)) {
 					console.log(exlib + " is Exist, Skipped")
 				} else {
 					console.log("⚙ INSTALLING ... " + exlib)
@@ -360,7 +360,7 @@ export default function App(props: any) {
 				}
 			})
 			devLibs.forEach((devlib) => {
-				if (fs.existsSync(DIR + "node_modules/" + devlib)) {
+				if (fs.existsSync("../../node_modules/" + devlib)) {
 					console.log(devlib + " is Exist, Skipped")
 				} else {
 					console.log("⚙ INSTALLING ... " + devlib)
@@ -369,7 +369,7 @@ export default function App(props: any) {
 			})
 			if (!fs.existsSync(DIR + 'modules'))
 				fs.mkdirSync(DIR + 'modules')
-			let cmd = "cd " + DIR + " "
+			let cmd = "cd ../../ "
 			if (installDevLibs.length > 0)
 				cmd += "&& npm install --save-dev " + installDevLibs.join(" ") + " "
 			if (installExpoLibs.length > 0)

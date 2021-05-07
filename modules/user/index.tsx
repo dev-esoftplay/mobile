@@ -6,7 +6,8 @@ import Navs from "../../cache/navs";
 import { View, ImageBackground } from "react-native";
 import * as Font from "expo-font";
 import { esp, UserClass, LibWorker, UseDeeplink, LibUpdaterProperty, LibWorkloop, LibNet_status, LibDialog, LibStyle, LibImage, LibProgress, UserMain, LibToast, useSafeState, LibVersion, UserRoutes, LibWorkview } from 'esoftplay';
-import firebase from 'firebase'
+import firebase from 'firebase';
+const _global = require('../../_global')
 
 export interface UserIndexProps {
 
@@ -38,8 +39,13 @@ export default function m(props: UserIndexProps): any {
   const user = UserClass.state().useSelector(s => s)
   //@ts-ignore
   UseDeeplink()
+  const initialState = __DEV__ ? _global.nav__state : undefined
+
   function handler(currentState: any): void {
     //@ts-ignore
+    if (__DEV__) {
+      _global.nav__state = currentState
+    }
     UserRoutes.set(currentState)
   }
 
@@ -77,7 +83,7 @@ export default function m(props: UserIndexProps): any {
         <LibWorker />
         <LibWorkview />
         <LibWorkloop />
-        <Navs user={user} handler={handler} />
+        <Navs user={user} initialState={initialState} handler={handler} />
         <LibNet_status />
         <LibDialog style={'default'} />
         <LibImage />

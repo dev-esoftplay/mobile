@@ -28,6 +28,10 @@ export function checkAlertInstall(): void {
 }
 
 export function check(callback: (isNew: boolean) => void): void {
+  if (__DEV__) {
+    callback(false)
+    return
+  }
   Updates.checkForUpdateAsync().then(({ isAvailable }) => {
     if (!isAvailable) {
       callback(false)
