@@ -408,8 +408,7 @@ export default class eutils {
 
   static share(url: string, message?: string): void {
     Share.share({
-      message: message,
-      url: url,
+      message: url + (message ? ('\n' + message) : "")
     });
   }
 }

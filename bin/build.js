@@ -345,7 +345,6 @@ export default function App(props: any) {
 			"@types/react-redux"
 		]
 
-		const exec = require('child_process').exec;
 		fs.writeFile(appts, AppJS, (err) => {
 			if (err) throw err;
 			fs.unlink(appjs, (err) => { })
@@ -355,7 +354,7 @@ export default function App(props: any) {
 				if (fs.existsSync("../../node_modules/" + exlib)) {
 					console.log(exlib + " is Exist, Skipped")
 				} else {
-					console.log("⚙ INSTALLING ... " + exlib)
+					console.log("⚙⚙⚙ INSTALLING ... " + exlib)
 					installExpoLibs.push(exlib)
 				}
 			})
@@ -363,7 +362,7 @@ export default function App(props: any) {
 				if (fs.existsSync("../../node_modules/" + devlib)) {
 					console.log(devlib + " is Exist, Skipped")
 				} else {
-					console.log("⚙ INSTALLING ... " + devlib)
+					console.log("⚙⚙⚙ INSTALLING ... " + devlib)
 					installDevLibs.push(devlib)
 				}
 			})
