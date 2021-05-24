@@ -43,7 +43,7 @@ var Nav5 = (importer, navs) => {
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from 'react-native-screens/native-stack';
-import _global from '../_global'
+const _global = require('../_global')
 \nimport { `+ importer + `, esp } from "esoftplay";\n
 const Stack = createNativeStackNavigator();
 
