@@ -5,9 +5,8 @@ import React, { useEffect, useMemo, useRef } from "react";
 import Navs from "../../cache/navs";
 import { View, ImageBackground } from "react-native";
 import * as Font from "expo-font";
-import { esp, UserClass, LibWorker, UseDeeplink, LibUpdaterProperty, LibWorkloop, LibNet_status, LibDialog, LibStyle, LibImage, LibProgress, UserMain, LibToast, useSafeState, LibVersion, UserRoutes, LibWorkview } from 'esoftplay';
+import { esp, _global, UserClass, LibWorker, UseDeeplink, LibUpdaterProperty, LibWorkloop, LibNet_status, LibDialog, LibStyle, LibImage, LibProgress, UserMain, LibToast, useSafeState, LibVersion, UserRoutes, LibWorkview } from 'esoftplay';
 import firebase from 'firebase';
-const _global = require('../../_global')
 
 export interface UserIndexProps {
 

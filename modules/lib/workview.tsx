@@ -1,10 +1,9 @@
 // withHooks
 
-import { esp, LibWorker } from 'esoftplay';
+import { esp, LibWorker, _global } from 'esoftplay';
 import React from 'react';
 import { Platform, View } from 'react-native';
 import WebView from 'react-native-webview';
-const _global = require('../../_global')
 
 export interface LibWorkviewArgs {
 

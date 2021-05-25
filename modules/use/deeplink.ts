@@ -1,5 +1,4 @@
 // useLibs
-import { reportApiError } from '../../error'
 import { LibUtils, esp } from 'esoftplay';
 import { useCallback, useEffect } from 'react';
 import { Linking, Alert } from 'react-native';
@@ -19,8 +18,9 @@ export default function m(defaultUrl?: string): void {
                   setTimeout(() => {
                     nav(module, url)
                   }, 500);
+                } else {
+                  LibNavigation.push(module, { url: url })
                 }
-                LibNavigation.push(module, { url: url })
               }
               if (res.result.module && res.result.url)
                 nav(res.result.module, res.result.url)

@@ -1,7 +1,8 @@
 import React from "react";
 import { Component } from "react"
 import { Platform } from 'react-native';
-const _global = require('../../_global')
+import { _global } from 'esoftplay'
+
 export interface LibWorkerInit {
   task: string,
   taskId: string,

@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-const _global: any = require('../../_global')
+import { _global } from 'esoftplay'
+
 export default class m {
   static register(name: string): void {
     AsyncStorage.getItem("user_data_dependent").then((x) => {
