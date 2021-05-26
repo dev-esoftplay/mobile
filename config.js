@@ -25,6 +25,7 @@
       "databaseURL": "FIREBASE_Database_URL", // Eg. https://project-6495177974885932998.firebaseio.com/
       "storageBucket": "FIREBASE_Storage_URL" // Eg. test://project-6495177974885932998.appspot.com/
     },
+    "experienceId":"@esp/appslug",
     "iosClientId":"Ios Client id untuk keperluan google login",
     "facebookAppId":"APP ID dari Aplikasi yang didaftarkan di Facebook Developer",
     "theme":[],                                // untuk custom theme jika diperlukan,silahkan lihat module LibTheme untuk cara peggunaannya
