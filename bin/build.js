@@ -288,7 +288,7 @@ export default function App(props: any) {
 	useEffect(() => {
 		globalIdx.reset()
 		ErrorRecovery.setRecoveryProps(props)
-		ErrorReport.getError(props.exp.errorRecovery)
+		ErrorReport.getError(props?.exp?.errorRecovery)
 	}, [])
 
 	return <Home />

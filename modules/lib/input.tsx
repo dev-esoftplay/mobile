@@ -138,7 +138,7 @@ export default class m extends LibComponent<LibInputProps, LibInputState>{
       let masks = mask.match(/((?!\#).)/g)
       if (masks) {
         for (let i = 0; i < masks.length; i++) {
-          _text = _text.replace(new RegExp(LibUtils.escapeRegExp(masks[i]), 'g'), '')
+          _text = _text?.replace?.(new RegExp(LibUtils.escapeRegExp(masks[i]), 'g'), '')
         }
       }
       return _text
