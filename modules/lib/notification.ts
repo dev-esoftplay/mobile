@@ -108,8 +108,13 @@ export default class m {
       if (settings.granted || settings.ios?.status === Notifications.IosAuthorizationStatus.PROVISIONAL) {
         let expoToken
         let experienceId = esp.config('experienceId')
-        if (Constants.isDevice)
-          expoToken = await Notifications.getExpoPushTokenAsync(experienceId ? { experienceId } : undefined)
+        if (Constants.isDevice) {
+          if (String(experienceId).includes('/')) {
+            expoToken = await Notifications.getExpoPushTokenAsync({ experienceId })
+          } else {
+            expoToken = await Notifications.getExpoPushTokenAsync()
+          }
+        }
         if (expoToken) {
           clearTimeout(defaultToken)
           r(expoToken.data);
