@@ -37,7 +37,7 @@ const initState = {
   unread: 0
 };
 
-const state = useGlobalState(initState, { persistKey: 'user_notification' })
+const state = useGlobalState(initState, { persistKey: 'user_notification', isUserData: true  })
 
 class m extends LibComponent<UserNotificationProps, UserNotificationState> {
 
