@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, ScrollView } from 'react-native';
-import { LibComponent, LibStyle } from 'esoftplay';
+import { LibComponent, LibStyle, LibUtils } from 'esoftplay';
 
 export interface LibTabsProps {
   tabIndex: number,
@@ -9,21 +9,48 @@ export interface LibTabsProps {
   swipeEnabled?: boolean,
   tabViews: any[]
   tabProps?: any[]
+  tabOffset?: number,
+  lazyTabOffset?: boolean
 }
 export interface LibTabsState {
   forceUpdate: number
+}
+
+function arrayOfLimit(page: number, pageOffset: number) {
+  let limitBottom = page - pageOffset
+  let limitTop = page + pageOffset + 1
+  let arr = []
+  for (let i = limitBottom; i < limitTop; i++) {
+    arr.push(i)
+  }
+  return arr
 }
 
 export default class m extends LibComponent<LibTabsProps, LibTabsState> {
 
   length = React.Children.toArray(this.props.children).length
   scrollRef = React.createRef<ScrollView>()
-  allIds = [this.props.defaultIndex || 0]
+  allIds = []
 
   constructor(props: LibTabsProps) {
     super(props);
     this.state = { forceUpdate: 0 }
+    let page = this.props.defaultIndex || 0
+    let pageOffset = props.tabOffset || 1
+    this.buildAllIds = this.buildAllIds.bind(this);
     this.changePage = this.changePage.bind(this);
+    this.buildAllIds(page, pageOffset)
+  }
+
+  buildAllIds(page: number, pageOffset: number) {
+    if (this.props.lazyTabOffset) {
+      this.allIds.push(page)
+      this.allIds = this.allIds.filter((val) => arrayOfLimit(page, pageOffset).includes(val))
+    }
+    else {
+      this.allIds = arrayOfLimit(page, pageOffset)
+    }
+    this.allIds = LibUtils.uniqueArray(this.allIds)
   }
 
   componentDidUpdate(prevProps: LibTabsProps, prevState: LibTabsState): void {
@@ -41,7 +68,8 @@ export default class m extends LibComponent<LibTabsProps, LibTabsState> {
     const offsetx = e.nativeEvent.contentOffset.x
     if (offsetx > 0) {
       page = parseInt(Math.round(offsetx / LibStyle.width).toFixed(0))
-      this.allIds.push(page)
+      let pageOffset = this.props.tabOffset || 1
+      this.buildAllIds(page, pageOffset)
       this.setState({ forceUpdate: this.state.forceUpdate + 1 })
     }
     this?.props?.onChangeTab?.(page)
