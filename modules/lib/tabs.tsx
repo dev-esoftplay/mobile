@@ -36,7 +36,7 @@ export default class m extends LibComponent<LibTabsProps, LibTabsState> {
     super(props);
     this.state = { forceUpdate: 0 }
     let page = this.props.defaultIndex || 0
-    let pageOffset = props.tabOffset || 1
+    let pageOffset = props.tabOffset ? props.tabOffset : 1
     this.buildAllIds = this.buildAllIds.bind(this);
     this.changePage = this.changePage.bind(this);
     this.buildAllIds(page, pageOffset)
@@ -56,7 +56,8 @@ export default class m extends LibComponent<LibTabsProps, LibTabsState> {
   componentDidUpdate(prevProps: LibTabsProps, prevState: LibTabsState): void {
     if (this.props.tabIndex != prevProps.tabIndex) {
       if (!this.allIds.includes(this.props.tabIndex)) {
-        this.allIds.push(this.props.tabIndex)
+        let pageOffset = this.props.tabOffset ? this.props.tabOffset : 1
+        this.buildAllIds(this.props.tabIndex, pageOffset)
         this.setState({ forceUpdate: this.state.forceUpdate + 1 })
       }
       this?.scrollRef?.current?.scrollTo?.({ x: LibStyle.width * this.props.tabIndex, animated: false })
@@ -68,7 +69,7 @@ export default class m extends LibComponent<LibTabsProps, LibTabsState> {
     const offsetx = e.nativeEvent.contentOffset.x
     if (offsetx > 0) {
       page = parseInt(Math.round(offsetx / LibStyle.width).toFixed(0))
-      let pageOffset = this.props.tabOffset || 1
+      let pageOffset = this.props.tabOffset ? this.props.tabOffset : 1
       this.buildAllIds(page, pageOffset)
       this.setState({ forceUpdate: this.state.forceUpdate + 1 })
     }
