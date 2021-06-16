@@ -328,7 +328,7 @@ export default function App(props: any) {
 			"moment",
 			"expo-image-crop",
 			"moment-timezone",
-			"react-native-image-view",
+			"react-native-image-viewing",
 			"expo-media-library",
 			"react-native-modal",
 			"react-native-pinch-zoom-view-movable",
