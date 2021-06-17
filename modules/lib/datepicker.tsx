@@ -4,7 +4,7 @@ import React, { useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import ScrollPicker from 'react-native-picker-scrollview';
 import { useSafeState, LibLoading, LibToastProperty, LibStyle } from 'esoftplay';
-
+import { LinearGradient } from 'expo-linear-gradient'
 export interface LibDatepickerProps {
   minDate: string,
   maxDate: string,
@@ -159,7 +159,7 @@ export default function m(props: LibDatepickerProps): any {
     <View style={{ flex: 1, backgroundColor: 'white' }} >
       <View style={{ height: 44, alignItems: 'flex-end', backgroundColor: '#fafafa' }} >
         <TouchableOpacity onPress={() => { getDateChange() }} >
-          <Text style={{ fontSize: 15, fontWeight: "500", paddingHorizontal: 9, paddingVertical: 13, fontStyle: "normal", letterSpacing: 0, color: LibStyle.colorPrimary }} >Done</Text>
+          <Text style={{ fontSize: 15, fontWeight: "500", paddingHorizontal: 16, paddingVertical: 13, fontStyle: "normal", letterSpacing: 0, color: LibStyle.colorPrimary }} >Done</Text>
         </TouchableOpacity>
       </View>
       <View style={{ height: 175, flexDirection: 'row' }} >
@@ -203,6 +203,11 @@ export default function m(props: LibDatepickerProps): any {
           />
         </View>
       </View>
+      <LinearGradient
+        start={{ x: 1, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        colors={['rgba(255,255,255,1)','rgba(255,255,255,0.8)', 'rgba(255,255,255,0)','rgba(255,255,255,0.8)', 'rgba(255,255,255,1)']}
+        pointerEvents='none' style={{ height: 175, position: 'absolute', top: 44, bottom: 0, left: 0, right: 0 }} />
     </View>
   )
 }
