@@ -342,7 +342,6 @@ export default function App(props: any) {
 			"@types/react",
 			"@types/react-native",
 			"typescript",
-			"@types/react-redux"
 		]
 
 		fs.writeFile(appts, AppJS, (err) => {

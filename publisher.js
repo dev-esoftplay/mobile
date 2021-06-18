@@ -15,7 +15,6 @@ if (!letter) {
   nextVersion += "-" + nextLetter
 } else if (letter != "z") {
   nextLetter   = letterVersion[letterVersion.indexOf(String(letter)) + 1]
-  // console.log(letter, letterVersion, letterVersion.indexOf(letter))
   nextVersion += nextNumber
   nextVersion += "-" + nextLetter
 } else {
