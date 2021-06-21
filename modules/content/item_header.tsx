@@ -1,7 +1,7 @@
 // withHooks
 
-import { applyStyle, ContentBookmarkProperty, LibIcon, LibNavigation, LibStyle, LibUtils } from 'esoftplay';
 import React from 'react';
+import { applyStyle, ContentBookmarkProperty, LibIcon, LibNavigation, LibStyle, LibUtils } from 'esoftplay';
 import { ImageBackground, Pressable, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient'
 

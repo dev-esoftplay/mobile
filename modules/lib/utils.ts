@@ -411,4 +411,20 @@ export default class eutils {
       message: url + (message ? ('\n' + message) : "")
     });
   }
+
+  static sprintf(string: string, ...stringToBe: any[]) {
+    function spf(string: string, index: number) {
+      if (stringToBe[index] != undefined) {
+        string = string.replace("%s", stringToBe[index])
+        if (string.includes("%s")) {
+          return spf(string, index + 1)
+        }
+      }
+      return string
+    }
+    if (string.includes("%s")) {
+      string = spf(string, 0)
+    }
+  }
+
 }
