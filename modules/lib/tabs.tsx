@@ -16,15 +16,6 @@ export interface LibTabsState {
   forceUpdate: number
 }
 
-function arrayOfLimit(page: number, pageOffset: number) {
-  let limitBottom = page - pageOffset
-  let limitTop = page + pageOffset + 1
-  let arr = []
-  for (let i = limitBottom; i < limitTop; i++) {
-    arr.push(i)
-  }
-  return arr
-}
 
 export default class m extends LibComponent<LibTabsProps, LibTabsState> {
 
@@ -39,16 +30,27 @@ export default class m extends LibComponent<LibTabsProps, LibTabsState> {
     let pageOffset = props.tabOffset ? props.tabOffset : 1
     this.buildAllIds = this.buildAllIds.bind(this);
     this.changePage = this.changePage.bind(this);
+    this.arrayOfLimit = this.arrayOfLimit.bind(this);
     this.buildAllIds(page, pageOffset)
+  }
+
+  arrayOfLimit(page: number, pageOffset: number): any[] {
+    let limitBottom = page - pageOffset
+    let limitTop = page + pageOffset + 1
+    let arr = []
+    for (let i = limitBottom; i < limitTop; i++) {
+      arr.push(i)
+    }
+    return arr
   }
 
   buildAllIds(page: number, pageOffset: number) {
     if (this.props.lazyTabOffset) {
       this.allIds.push(page)
-      this.allIds = this.allIds.filter((val) => arrayOfLimit(page, pageOffset).includes(val))
+      this.allIds = this.allIds.filter((val) => this.arrayOfLimit(page, pageOffset).includes(val))
     }
     else {
-      this.allIds = arrayOfLimit(page, pageOffset)
+      this.allIds = this.arrayOfLimit(page, pageOffset)
     }
     this.allIds = LibUtils.uniqueArray(this.allIds)
   }

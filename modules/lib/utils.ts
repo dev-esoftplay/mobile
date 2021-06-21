@@ -412,7 +412,7 @@ export default class eutils {
     });
   }
 
-  static sprintf(string: string, ...stringToBe: any[]) {
+  static sprintf(string: string, ...stringToBe: any[]): string {
     function spf(string: string, index: number) {
       if (stringToBe[index] != undefined) {
         string = string.replace("%s", stringToBe[index])
@@ -425,6 +425,7 @@ export default class eutils {
     if (string.includes("%s")) {
       string = spf(string, 0)
     }
+    return string
   }
 
 }
