@@ -5,9 +5,7 @@ import { esp, LibToastProperty, _global, createCache } from "esoftplay"
 import shorthash from "shorthash"
 import Clipboard from 'expo-clipboard'
 const Buffer = require('buffer/').Buffer
-
 const isEqual = require("react-fast-compare");
-const uniqWith = require('lodash.uniqwith');
 
 
 export interface LibUtilsDate {
@@ -50,7 +48,13 @@ export default class eutils {
   }
 
   static uniqueArray(array: any[]): any[] {
-    return uniqWith(array, isEqual);
+    let cleanArray = []
+    for (let i = 0; i < array.length; i++) {
+      if (cleanArray.filter((ca) => isEqual(ca, array[i])).length == 0) {
+        cleanArray.push(array[i])
+      }
+    }
+    return cleanArray
   }
 
   static getArgs(props: any, key: string, defOutput?: any): any {
