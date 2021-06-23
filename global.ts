@@ -23,12 +23,6 @@ export interface useGlobalConnect<T> {
 }
 
 _global.useGlobalUserDelete = {}
-if (__DEV__) {
-  if (!_global.__DEV_SUBCS__)
-    _global.__DEV_SUBCS__ = {}
-  if (!_global.__DEV_VLS__)
-    _global.__DEV_VLS__ = {}
-}
 
 class Context {
   idx = 0
@@ -44,18 +38,7 @@ const m = () => {
     const _idx = globalIdx.idx
     if (!subscriber[_idx])
       subscriber[_idx] = [];
-
-    if (__DEV__) { /* Fast refresh adaptor */
-      if (!_global.__DEV_VLS__[_idx]) {
-        _global.__DEV_VLS__[_idx] = initValue
-      }
-      if (!_global.__DEV_SUBCS__[_idx]) {
-        _global.__DEV_SUBCS__[_idx] = []
-      }
-      subscriber[_idx] = _global.__DEV_SUBCS__[_idx]
-    }
-
-    let value: T = __DEV__ ? _global.__DEV_VLS__[_idx] : initValue;
+    let value: T = initValue;
 
     // rehidryte instant
     if (o?.persistKey) {
@@ -79,8 +62,6 @@ const m = () => {
 
     function set(ns: T) {
       const isChange = !isEqual(value, ns)
-      if (__DEV__)
-        _global.__DEV_VLS__[_idx] = ns
       value = ns
       subscriber?.[_idx]?.forEach?.((c: any) => c?.(ns));
       if (o?.persistKey) {
@@ -118,13 +99,8 @@ const m = () => {
     function subscribe(func: any) {
       R.useEffect(() => {
         subscriber[_idx].push(func);
-        if (__DEV__)
-          _global.__DEV_SUBCS__[_idx].push(func)
         return () => {
-          // console.log('DICALL', subscriber?.[_idx]?.length)
           subscriber[_idx] = subscriber?.[_idx]?.filter?.((f) => f !== func);
-          if (__DEV__)
-            _global.__DEV_SUBCS__[_idx] = _global.__DEV_SUBCS__[_idx]?.filter?.((f) => f !== func);
         };
       }, [func]);
     }
