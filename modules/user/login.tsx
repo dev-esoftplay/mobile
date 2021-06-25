@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Component } from "react"
-import { View, TextInput, ScrollView, Share, TouchableOpacity,  Image, KeyboardAvoidingView, Pressable, Text } from "react-native";
+import { View, TextInput, ScrollView, Share, TouchableOpacity, Image, KeyboardAvoidingView, Pressable, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons"
 import Modal from "react-native-modal";
 import {
@@ -83,8 +83,8 @@ export default class euserLogin extends LibComponent<UserLoginProps, UserLoginSt
       post = {
         email: new LibCrypt().encode(email)
       }
-      delete post.username
-      delete post.password
+      post.username = undefined
+      post.password = undefined
     }
     if (post.hasOwnProperty("email") || post.hasOwnProperty("username") || post.hasOwnProperty("password")) {
       new LibCurl(config.content + uri, post,

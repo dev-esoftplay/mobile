@@ -36,7 +36,7 @@ export default (() => {
     }
 
     function h() {
-      delete dt[formName]
+      dt[formName] = undefined
     }
 
     function f(callback?: (a?: S) => void) {

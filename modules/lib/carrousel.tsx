@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, ScrollView, Text, TouchableWithoutFeedback, Platform, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { LibComponent, LibFocus, LibUtils } from 'esoftplay';
+import { View, ScrollView, Text, TouchableWithoutFeedback, Platform, TouchableOpacity, StyleSheet } from 'react-native';
+import { LibComponent, LibFocus } from 'esoftplay';
 
 export interface LibCarrouselProps {
   children: any,

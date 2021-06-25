@@ -33,10 +33,10 @@ export default (() => {
         [key]: { func }
       }
     }
-    
+
     static delRedirect(key?: number) {
       if (!key) key = 1
-      delete libNavigationRedirect[key]
+      libNavigationRedirect[key] = undefined
     }
 
     static redirect(key?: number) {
@@ -45,7 +45,7 @@ export default (() => {
         const { func } = libNavigationRedirect?.[key]
         if (typeof func == 'function')
           func()
-        delete libNavigationRedirect[key]
+        libNavigationRedirect[key] = undefined
       }
     }
 
@@ -61,7 +61,9 @@ export default (() => {
       if (!key) {
         key = 1
       }
-      try { delete libNavigationData[key] } catch (error) { }
+      try {
+        libNavigationData[key] = undefined
+      } catch (error) { }
     }
 
     static sendBackResult(result: any, key?: number): void {
@@ -70,7 +72,7 @@ export default (() => {
       }
       if (libNavigationData[key] != undefined) {
         libNavigationData[key](result)
-        delete libNavigationData[key]
+        libNavigationData[key] = undefined
       }
       m.back()
     }

@@ -1,11 +1,10 @@
 /*  */
 
 import React from "react";
-import { Component } from "react";
-import { StyleSheet, View, Animated, Dimensions, Platform, Linking } from "react-native";
+import { Animated, Dimensions, Platform, Linking } from "react-native";
 import { WebView } from 'react-native-webview'
-import { esp, LibComponent, LibStyle } from "esoftplay";
-let { width, height } = Dimensions.get("window");
+import { esp, LibComponent } from "esoftplay";
+let { width } = Dimensions.get("window");
 const config = esp.config();
 
 //modify webview error:  https://github.com/facebook/react-native/issues/10865
@@ -68,16 +67,8 @@ class ewebview extends LibComponent<LibWebviewProps, LibWebviewState> {
     this.resetSmallHeight = this.resetSmallHeight.bind(this)
   }
 
-  componentDidUpdate(prevProps: LibWebviewProps, prevState: LibWebviewState): void {
-    if (this.props.source !== undefined && prevProps.source.html !== this.props.source.html) {
-      this.setState({
-        source: (this.props.source && this.props.source.hasOwnProperty("html"))
-          ?
-          { html: config.webviewOpen + ewebview.fixHtml(this.props.source.html) + config.webviewClose }
-          :
-          this.props.source
-      });
-    }
+  static getDerivedStateFromProps(nextProps, prevState) {
+    return { source: nextProps.source }
   }
 
   gotoShow(): void {
@@ -89,9 +80,6 @@ class ewebview extends LibComponent<LibWebviewProps, LibWebviewState> {
     }).start();
   }
 
-  componentDidMount(): void {
-    super.componentDidMount()
-  }
   getMessageFromWebView(event: any): void {
     let message = event.nativeEvent.data;
     const wbHeight = message.split('-')[1]
@@ -130,29 +118,6 @@ class ewebview extends LibComponent<LibWebviewProps, LibWebviewState> {
       height: this.props.defaultHeight
     });
     this.gotoShow();
-  }
-
-  /*change hex to rgb, hex not supported in latest android system webview [v72.0.3626.76 28-Jan-2019] in playstore*/
-  static fixHtml(html: string): string {
-    // var regex = /\#([0-9a-fA-F]+)/g;
-    // var matches = html.match(regex) || [];
-    // for (let i = 0; i < matches.length; i++) {
-    //   var e = matches[i];
-    //   if (e.length >= 6 && e.length <= 7) {
-    //     var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-    //     e = e.replace(shorthandRegex, function (m, r, g, b) {
-    //       return r + r + g + g + b + b;
-    //     });
-    //     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(e);
-    //     if (result) {
-    //       var rgb = "rgb(" + parseInt(result[1], 16) + "," + parseInt(result[2], 16) + "," + parseInt(result[3], 16) + ")"
-    //     } else {
-    //       rgb = "rgb(0,0,0)"
-    //     }
-    //     html = html.replace(e, rgb)
-    //   }
-    // }
-    return html
   }
 
   render(): any {
