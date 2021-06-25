@@ -1,6 +1,6 @@
 // withHooks
 
-import { LibStatusbar, LibStyle, LibUtils, LibIcon, LibNavigation } from 'esoftplay';
+import { LibStatusbar, LibStyle, LibIcon, LibNavigation } from 'esoftplay';
 import React from 'react';
 import { Pressable, Text, View } from 'react-native';
 

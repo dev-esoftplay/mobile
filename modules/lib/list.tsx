@@ -1,6 +1,6 @@
 //
 import React from "react"
-import { Dimensions, View, FlatList } from 'react-native';
+import { View, FlatList } from 'react-native';
 import { LibComponent } from "esoftplay";
 
 export interface LibListItemLayout {
@@ -87,7 +87,7 @@ export default class EList extends LibComponent<LibListProps, LibListState> {
           maxToRenderPerBatch={10}
           windowSize={10}
           {...this.props}
-          ListFooterComponent={this.props.renderFooter && this.props.renderFooter() || this.props.ListFooterComponent }
+          ListFooterComponent={this.props.renderFooter && this.props.renderFooter() || this.props.ListFooterComponent}
           {...isStatic()}
           renderItem={this.rowRenderer}
         />

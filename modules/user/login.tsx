@@ -1,8 +1,7 @@
 //
 
 import React from "react";
-import { Component } from "react"
-import { View, TextInput, ScrollView, Share, TouchableOpacity, Image, KeyboardAvoidingView, Pressable, Text } from "react-native";
+import { View, TextInput, ScrollView, TouchableOpacity, Image, KeyboardAvoidingView, Pressable, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons"
 import Modal from "react-native-modal";
 import {

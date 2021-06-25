@@ -1,7 +1,7 @@
 // withHooks
 
 import React from 'react';
-import { applyStyle, ContentBookmark, ContentCategory, ContentList, LibIcon, LibNavigation, LibStyle, useGlobalReturn, useGlobalState } from 'esoftplay';
+import { applyStyle, ContentBookmark, ContentCategory, ContentList, LibIcon, LibStyle, useGlobalReturn, useGlobalState } from 'esoftplay';
 import { Pressable, Text, View } from 'react-native';
 
 export interface ContentIndexArgs {

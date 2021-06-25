@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, ActivityIndicator, BackHandler } from 'react-native';
-import { LibComponent, LibTheme, LibStyle, LibTextstyle, esp, useGlobalState } from 'esoftplay';
+import { LibComponent, LibTheme, LibStyle, LibTextstyle, useGlobalState } from 'esoftplay';
 
 export interface LibProgressProps {
   show?: boolean,

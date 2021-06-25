@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, ActivityIndicator } from 'react-native';
-import { LibComponent, LibStyle, LibTheme } from 'esoftplay';
+import { LibComponent, LibTheme } from 'esoftplay';
 
 export interface LibLoadingProps {
 

@@ -1,8 +1,7 @@
 // 
 import React from "react";
-import { Component } from "react";
-import { Text, View, FlatList, TouchableOpacity } from "react-native";
-import { esp, LibMenu, LibComponent, LibStyle, LibUtils, LibIcon } from "esoftplay";
+import { Text, View, TouchableOpacity } from "react-native";
+import { LibMenu, LibComponent, LibStyle, LibUtils, LibIcon } from "esoftplay";
 const { colorPrimary } = LibStyle;
 
 export interface LibMenusubProps {

@@ -1,5 +1,5 @@
 import React from "react";
-import { LibComponent, esp, useGlobalState, useGlobalReturn } from "esoftplay";
+import { LibComponent, useGlobalState, useGlobalReturn } from "esoftplay";
 import { Animated, Text } from "react-native";
 import NetInfo from '@react-native-community/netinfo';
 

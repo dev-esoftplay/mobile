@@ -1,6 +1,6 @@
 import React from 'react';
 import { LibComponent, LibStyle, LibKeyboard_avoid } from 'esoftplay';
-import { View, KeyboardAvoidingView, Animated, TouchableOpacity, BackHandler, Keyboard } from 'react-native';
+import { View, Animated, TouchableOpacity, BackHandler, Keyboard } from 'react-native';
 
 export interface LibSlidingupProps {
 

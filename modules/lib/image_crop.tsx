@@ -1,8 +1,8 @@
 // withHooks
 
 import React, { useEffect, useRef } from 'react';
-import { View, Image, TouchableOpacity, PixelRatio, Dimensions, Text, TouchableWithoutFeedback } from 'react-native';
-import { LibNavigation, LibStyle, LibUtils, LibZom, LibIcon, LibStatusbar, useSafeState, esp, LibTextstyle, LibProgress, LibToastProperty } from 'esoftplay';
+import { View, Image, TouchableOpacity, Dimensions, Text } from 'react-native';
+import { LibNavigation, LibStyle, LibUtils, LibIcon, LibStatusbar, useSafeState, LibTextstyle, LibProgress, LibToastProperty } from 'esoftplay';
 import * as ImageManipulator from "expo-image-manipulator";
 // @ts-ignore
 import PinchZoomView from 'react-native-pinch-zoom-view-movable';

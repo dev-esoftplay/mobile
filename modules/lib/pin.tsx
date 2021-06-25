@@ -1,7 +1,7 @@
 // withHooks
 
 import React, { useState, useRef } from 'react';
-import { View, Text, TextInput } from 'react-native';
+import { View, TextInput } from 'react-native';
 
 
 export interface LibPinProps {
@@ -21,7 +21,7 @@ export default function m(props: LibPinProps): any {
             {
               new Array(props.length).fill('').map((_, __) => (
                 <View key={__} style={{ height: 40, width: 40, margin: 5, borderRadius: 4, borderWidth: 0.5, borderColor: '#444', ...props.boxStyle, alignItems: 'center', justifyContent: 'center' }}>
-                  {!!pin[__] && <View style={{ height: 10, width: 10, borderRadius: 5, backgroundColor: '#444',...props.pinStyle }} />}
+                  {!!pin[__] && <View style={{ height: 10, width: 10, borderRadius: 5, backgroundColor: '#444', ...props.pinStyle }} />}
                 </View>
               ))
             }

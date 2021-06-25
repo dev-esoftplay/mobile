@@ -1,8 +1,8 @@
 // withHooks
 
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { View } from 'react-native';
-import { useFocusEffect, useIsFocused } from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 
 export interface LibFocusProps {
   isFocused?: boolean

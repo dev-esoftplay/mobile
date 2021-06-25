@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, TextInput } from 'react-native';
-import { LibComponent, LibTextstyle, LibTheme, LibStyle, LibUtils } from 'esoftplay';
+import { LibComponent, LibTextstyle, LibTheme, LibUtils } from 'esoftplay';
 
 export interface LibInputProps {
   icon?: (color: string) => any,

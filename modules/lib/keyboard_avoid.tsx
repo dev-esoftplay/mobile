@@ -1,7 +1,7 @@
 // withHooks
 
 import React from 'react';
-import { View, Platform, KeyboardAvoidingView } from 'react-native';
+import { Platform, KeyboardAvoidingView } from 'react-native';
 
 export interface LibKeyboard_avoidProps {
   children?: any,

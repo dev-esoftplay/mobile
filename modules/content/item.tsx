@@ -1,6 +1,6 @@
 // withHooks
 
-import { applyStyle, ContentBookmark, ContentConfig, ContentBookmarkProperty, LibIcon, LibNavigation, LibPicture, LibStyle, LibUtils } from 'esoftplay';
+import { ContentConfig, ContentBookmarkProperty, LibIcon, LibNavigation, LibPicture, LibStyle, LibUtils } from 'esoftplay';
 import React from 'react';
 import { Image, Linking, Pressable, Text, View } from 'react-native';
 

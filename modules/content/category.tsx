@@ -1,6 +1,6 @@
 // withHooks
 
-import { ContentHeader, esp, LibCurl, LibIcon, LibList, LibNavigation, LibPicture, LibStatusbar, LibStyle, LibUtils, useGlobalReturn, useGlobalState } from 'esoftplay';
+import { ContentHeader, esp, LibCurl, LibList, LibNavigation, LibPicture, LibUtils, useGlobalReturn, useGlobalState } from 'esoftplay';
 import React, { useEffect, useRef } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
@@ -46,7 +46,7 @@ export default function m(props: ContentCategoryProps): any {
         renderItem={(item) => {
           return (
             <Pressable
-              onPress={() => { LibNavigation.push('content/list', { url: item.url, title: item.title, id:item.id }) }}
+              onPress={() => { LibNavigation.push('content/list', { url: item.url, title: item.title, id: item.id }) }}
               style={{ borderRadius: 8, backgroundColor: "#f2f2f2", flex: 0.35, margin: 5, alignItems: 'center' }} >
               <LibPicture source={{ uri: item.image }} style={{ height: 70, width: 70, marginTop: 16, }} />
               <Text style={{ fontFamily: "Roboto_medium", fontSize: 12, fontWeight: "500", lineHeight: 20, color: "#060606", marginBottom: 12, }}>{item?.title}</Text>
