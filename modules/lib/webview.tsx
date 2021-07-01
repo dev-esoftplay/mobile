@@ -57,7 +57,7 @@ class ewebview extends LibComponent<LibWebviewProps, LibWebviewState> {
     this.state = {
       height: props.defaultHeight,
       isFinish: false,
-      source: props.source && props.source.hasOwnProperty("html") ? { html: config.webviewOpen + ewebview.fixHtml(props.source.html) + config.webviewClose } : props.source,
+      source: props.source && props.source.hasOwnProperty("html") ? { html: config.webviewOpen + props.source.html + config.webviewClose } : props.source,
     };
     this._animatedValue = new Animated.Value(1);
     this.gotoShow = this.gotoShow.bind(this)
