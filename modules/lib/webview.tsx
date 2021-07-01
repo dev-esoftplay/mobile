@@ -68,7 +68,7 @@ class ewebview extends LibComponent<LibWebviewProps, LibWebviewState> {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    return { source: nextProps.source }
+    return { source: { html: config.webviewOpen + nextProps.source.html + config.webviewClose } }
   }
 
   gotoShow(): void {
