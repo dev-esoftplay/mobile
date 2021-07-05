@@ -8,7 +8,7 @@ export const fastFilter = (fn: (v: any) => boolean, a: any[]) => {
   return f;
 };
 
-export const fastLoop = (arr: any[], func: (item: any, idx: number) => void){
+export const fastLoop = (arr: any[], func: (item: any, idx: number) => void) => {
   const arl = arr.length
   for (let i = arl; i > 0; i--) {
     func(arl[i], i)
