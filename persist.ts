@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState, useMemo } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { fastFilter, fastLoop } from './fast'
 
 export default (() => {
   let obj: any = {}
@@ -16,7 +17,7 @@ export default (() => {
           AsyncStorage.setItem(key, JSON.stringify(value));
         else
           d()
-        setter[key].forEach(cc => cc(value))
+        fastLoop(setter[key], (cc) => cc(value))
       }
     }
 
@@ -49,10 +50,10 @@ export default (() => {
       e()
       return () => {
         r.current = false
-        setter[key] = setter[key].filter((x) => x !== b)
+        setter[key] = fastFilter((x) => x !== b, setter[key]);
       }
     }, [])
 
     return [a, c, e, d]
   }
-})() 
+})()

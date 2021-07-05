@@ -1,6 +1,7 @@
 import * as R from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const isEqual = require('react-fast-compare');
+import { fastFilter, fastLoop } from './fast'
 
 export interface UseCache_return<T> {
   useCache: () => [T, (newCache: T) => void, () => void],
@@ -36,7 +37,7 @@ export default (() => {
         isChange = true
       }
       value[_idx] = ns
-      useCacheSubscriber[_idx].forEach((c: any) => c?.(value[_idx]));
+      fastLoop(useCacheSubscriber[_idx], (c: any) => c?.(value[_idx]))
       if (o?.persistKey) {
         AsyncStorage.setItem(o.persistKey, JSON.stringify(value[_idx]))
       }
@@ -56,7 +57,7 @@ export default (() => {
       R.useEffect(() => {
         useCacheSubscriber[_idx].push(sl);
         return () => {
-          useCacheSubscriber[_idx] = useCacheSubscriber[_idx].filter((f) => f !== sl);
+          useCacheSubscriber[_idx] = fastFilter((f) => f !== sl, useCacheSubscriber[_idx])
         };
       }, [sl]);
     }

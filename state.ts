@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from 'react'
 
 export default function m(def?: any) {
-  const r = useRef<boolean>(false)
+  const r = useRef<boolean>(true)
   const [a, b] = useState(def)
 
   function c(value: any) {
@@ -11,7 +11,6 @@ export default function m(def?: any) {
   }
   
   useEffect(() => {
-    r.current = true
     return () => { r.current = false }
   }, [])
 

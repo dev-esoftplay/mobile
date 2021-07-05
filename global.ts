@@ -2,7 +2,7 @@ import * as R from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const _global = require('./_global')
 const isEqual = require('react-fast-compare');
-
+import { fastFilter, fastLoop } from './fast'
 export interface useGlobalReturn<T> {
   useState: () => [T, (newState: T) => void, () => void],
   get: () => T,
@@ -11,6 +11,8 @@ export interface useGlobalReturn<T> {
   connect: (props: useGlobalConnect<T>) => any,
   useSelector: (selector: (state: T) => any) => any;
 }
+
+
 
 export interface useGlobalOption {
   persistKey?: string,
@@ -63,7 +65,7 @@ const m = () => {
     function set(ns: T) {
       const isChange = !isEqual(value, ns)
       value = ns
-      subscriber?.[_idx]?.forEach?.((c: any) => c?.(ns));
+      fastLoop(subscriber?.[_idx], (c) => { c?.(ns) })
       if (o?.persistKey) {
         AsyncStorage.setItem(o.persistKey, JSON.stringify(ns))
       }
@@ -100,7 +102,7 @@ const m = () => {
       R.useEffect(() => {
         subscriber[_idx].push(func);
         return () => {
-          subscriber[_idx] = subscriber?.[_idx]?.filter?.((f) => f !== func);
+          subscriber[_idx] = fastFilter((f) => f !== func, subscriber?.[_idx])
         };
       }, [func]);
     }

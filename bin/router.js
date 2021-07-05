@@ -346,39 +346,35 @@ if (isChange(tmpDir + "assets.js", Text))
 /* CREATE INDEX.D.TS */
 function createIndex() {
 
-  var Text = "import { Component, ComponentClass, Ref, ComponentType } from 'react';\n" +
-    `import { AntDesignTypes, EntypoTypes, EvilIconsTypes, FeatherTypes, FontAwesomeTypes, FontistoTypes, FoundationTypes, IoniconsTypes, MaterialCommunityIconsTypes, MaterialIconsTypes, OcticonsTypes, SimpleLineIconsTypes, ZocialTypes, } from '@expo/vector-icons/build/esoftplay_icons'` +
-    "\n" +
-    "declare module \"esoftplay\" {\n" +
-    "  var _global: any;\n" +
-    "  function useGlobalState<S>(initialState?: S, option?: useGlobalOption): useGlobalReturn<S>;\n" +
-    "  function useSafeState<S>(initialState?: S | (() => S)): [S, (a: S) => void];\n" +
-    "  function applyStyle(style: any): any;\n" +
-    "  function usePersistState<S>(key: string, initialState?: S | (() => S)): [S, (a: S) => void, (a?: (x: S)=> void) => void, () => void];\n" +
-    "  namespace esp {\n" +
-    "    function appjson(): any;\n" +
-    "    function assets(path: string): any;\n" +
-    "    function dispatch(action: any): any;\n" +
-    "    function config(param?: string, ...params: string[]): any;\n" +
-    "    function _config(): string | number | boolean;\n" +
-    "    function mod(path: string): any;\n" +
-    "    function reducer(): any;\n" +
-    "    function versionName(): string;\n" +
-    "    function navigations(): any;\n" +
-    "    function isDebug(): boolean;\n" +
-    "    function lang(moduleTask: string, langName: string, ...string: string[]): string;\n" +
-    "    function langId(): string;\n" +
-    "    function connect(mapStateToProps:any,cls:any): any;\n" +
-    "    function home(): any;\n" +
-    "    function log(message?: any, ...optionalParams: any[]): void;\n" +
-    "    function routes(): any;\n" +
-    "    function getTokenAsync(callback: (token: string) => void): void;\n" +
-    "    function notif(): any;\n" +
-    "  }\n" +
-    `
+  var Text = `import { Component, ComponentClass, Ref, ComponentType } from 'react';
+  import { AntDesignTypes, EntypoTypes, EvilIconsTypes, FeatherTypes, FontAwesomeTypes, FontistoTypes, FoundationTypes, IoniconsTypes, MaterialCommunityIconsTypes, MaterialIconsTypes, OcticonsTypes, SimpleLineIconsTypes, ZocialTypes, } from '@expo/vector-icons/build/esoftplay_icons'
+
+  declare module esoftplay {
+    var _global: any;
+    function useGlobalState<S>(initialState?: S, option?: useGlobalOption): useGlobalReturn<S>;
+    function usePersistState<S>(key: string, initialState?: S | (() => S)): [S, (a: S | ((b: S )=> S)) => S | undefined, (a?: (x: S) => void) => void, () => void];
+    function applyStyle(style: any): any;
+    function usePersistState<S>(key: string, initialState?: S | (() => S)): [S, (a: S) => void, (a?: (x: S)=> void) => void, () => void];
+    namespace esp {
+      function appjson(): any;
+      function assets(path: string): any;
+      function dispatch(action: any): any;
+      function config(param?: string, ...params: string[]): any;
+      function _config(): string | number | boolean;
+      function mod(path: string): any;
+      function reducer(): any;
+      function versionName(): string;
+      function navigations(): any;
+      function isDebug(): boolean;
+      function lang(moduleTask: string, langName: string, ...string: string[]): string;
+      function langId(): string;
+      function home(): any;
+      function log(message?: any, ...optionalParams: any[]): void;
+      function routes(): any;
+    }
     
     interface useGlobalReturn<T> {
-      useState: () => [T, (newState: T) => void, () => void],
+      useState: () => [T, (newState: T | ((a:T) => T)) => T | undefined, () => void],
       get: () => T,
       set: (x: T) => void,
       reset: () => void,
@@ -403,10 +399,10 @@ function createIndex() {
       set: (x: S) => void
     }
     class LibCrypt {
-    encode(string: string): string
-    decode(string: string): string
-  }\n
-  function createCache<S>(initialCache?: S, option?: createCacheOption): createCacheReturn<S>;`;
+      encode(string: string): string
+      decode(string: string): string
+    }
+    function createCache<S>(initialCache?: S, option?: createCacheOption): createCacheReturn<S>;`;
   for (clsName in tmpTask) {
     if (tmpTask[clsName]["class"]) {
       // Text += "\n";

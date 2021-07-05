@@ -62,7 +62,7 @@ export default (() => {
         key = 1
       }
       try {
-        libNavigationData[key] = undefined
+        delete libNavigationData[key] 
       } catch (error) { }
     }
 
@@ -72,7 +72,7 @@ export default (() => {
       }
       if (libNavigationData[key] != undefined) {
         libNavigationData[key](result)
-        libNavigationData[key] = undefined
+        delete libNavigationData[key] 
       }
       m.back()
     }
