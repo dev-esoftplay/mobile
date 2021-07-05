@@ -3,7 +3,7 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { Text } from 'react-native';;
 import { LibStyle, useGlobalState } from 'esoftplay';
-import Animated, { EasingNode } from 'react-native-reanimated';
+import Animated, { Easing } from 'react-native-reanimated';
 
 export interface LibToastProps {
 
@@ -55,7 +55,7 @@ export default function m(props: LibToastProps): any {
     Animated.timing(animatable, {
       toValue: show ? 1 : 0,
       duration: 500,
-      easing: EasingNode.linear
+      easing: Easing.linear
     }).start()
   }, [data])
 
