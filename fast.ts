@@ -1,6 +1,7 @@
 export const fastFilter = (fn: (v: any) => boolean, a: any[]) => {
   const f = []; //final
-  for (let i = 0; i < a.length; i++) {
+  const al = a.length - 1
+  for (let i = al; i >= 0; i--) {
     if (fn(a[i])) {
       f.push(a[i]);
     }
@@ -9,9 +10,9 @@ export const fastFilter = (fn: (v: any) => boolean, a: any[]) => {
 };
 
 export const fastLoop = (arr: any[], func: (item: any, idx: number) => void) => {
-  const arl = arr.length
-  for (let i = arl; i > 0; i--) {
-    func(arl[i], i)
+  const arl = arr.length - 1
+  for (let i = arl; i >= 0; i--) {
+    func(arr[i], i)
   }
 }
 
