@@ -351,8 +351,18 @@ export default function App(props: any) {
 				if (fs.existsSync("../../node_modules/" + exlib)) {
 					console.log(exlib + " is Exist, Skipped")
 				} else {
-					console.log("⚙⚙⚙ INSTALLING ... " + exlib)
-					installExpoLibs.push(exlib)
+					let txt = fs.readFileSync(packjson, 'utf8');
+					let $package = JSON.parse(txt);
+					if ($package.dependencies.esoftplay) {
+						if (exlib != '@expo/vector-icons' && exlib != 'moment') {
+							console.log("⚙⚙⚙ INSTALLING ... " + exlib)
+							installExpoLibs.push(exlib)
+						}
+					} else {
+						console.log("⚙⚙⚙ INSTALLING ... " + exlib)
+						installExpoLibs.push(exlib)
+					}
+
 				}
 			})
 			devLibs.forEach((devlib) => {
