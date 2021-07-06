@@ -1,8 +1,8 @@
 // useLibs
 
 import { useEffect } from 'react';
-import { fastFilter, fastLoop } from './../../fast';
-import { LibObject, useSafeState } from 'esoftplay';
+import { useSafeState } from 'esoftplay';
+import { fastFilter } from './../../fast';
 
 export default (() => {
   let dt = {}
@@ -10,12 +10,13 @@ export default (() => {
     const [a, b] = useSafeState<S>(dt && dt[formName] || def)
 
     function c(field: any) {
-      dt[formName] = dt[formName] || {}
-      field = field || {}
-      dt[formName] = LibObject.assign(dt[formName], field)();
-      fastLoop(dt['setter-' + formName], (set) => {
-        set?.(dt[formName])
-      })
+      dt[formName] = {
+        ...dt[formName],
+        ...field
+      }
+      dt['setter-' + formName].forEach(set => {
+        set(dt[formName])
+      });
     }
 
     useEffect(() => {
