@@ -1,3 +1,4 @@
+import { fastFilter } from './../../fast';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { _global } from 'esoftplay'
 
@@ -17,7 +18,7 @@ export default class m {
     AsyncStorage.getItem("user_data_dependent").then((x) => {
       let all = []
       if (x) {
-        all = JSON.parse(x).filter((x) => x != name)
+        all = fastFilter(JSON.parse(x), (x) => x != name)
       }
       AsyncStorage.setItem("user_data_dependent", JSON.stringify(all))
     })

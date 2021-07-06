@@ -1,3 +1,4 @@
+import { fastFilter } from './../../fast';
 import { update } from "immhelper";
 
 export default class m {
@@ -51,8 +52,8 @@ export default class m {
 
 function cursorBuilder(command: string, array: any, value: any, ...values: any[]): (cursor?: string | number, ...cursors: (string | number)[]) => any {
   return function (cursor?: string | number, ...cursors: (string | number)[]) {
-    let pathToUpdate = [cursor, ...cursors].filter(x => x != undefined).join('.')
-    let allValues = [value, ...values].filter(x => x != undefined)
+    let pathToUpdate = fastFilter([cursor, ...cursors], x => x != undefined).join('.')
+    let allValues = fastFilter([value, ...values], x => x != undefined)
     let spec = {}
     if (pathToUpdate != '')
       spec = { [pathToUpdate]: [command, ...allValues] }

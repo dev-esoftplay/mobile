@@ -1,3 +1,4 @@
+import { fastFilter, fastLoop } from './../../fast';
 import moment from "moment/min/moment-with-locales"
 import { Linking, Platform, Share } from "react-native"
 import momentTimeZone from "moment-timezone"
@@ -49,11 +50,11 @@ export default class eutils {
 
   static uniqueArray(array: any[]): any[] {
     let cleanArray = []
-    for (let i = 0; i < array.length; i++) {
-      if (cleanArray.filter((ca) => isEqual(ca, array[i])).length == 0) {
-        cleanArray.push(array[i])
+    fastLoop(array, (item) => {
+      if (fastFilter(cleanArray, (ca) => isEqual(ca, item)).length == 0) {
+        cleanArray.push(item)
       }
-    }
+    })
     return cleanArray
   }
 

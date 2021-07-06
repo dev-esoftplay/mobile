@@ -36,7 +36,7 @@ export default (() => {
 
     static delRedirect(key?: number) {
       if (!key) key = 1
-      libNavigationRedirect[key] = undefined
+      delete libNavigationRedirect[key]
     }
 
     static redirect(key?: number) {
@@ -45,7 +45,7 @@ export default (() => {
         const { func } = libNavigationRedirect?.[key]
         if (typeof func == 'function')
           func()
-        libNavigationRedirect[key] = undefined
+        delete libNavigationRedirect[key]
       }
     }
 
@@ -62,7 +62,7 @@ export default (() => {
         key = 1
       }
       try {
-        delete libNavigationData[key] 
+        delete libNavigationData[key]
       } catch (error) { }
     }
 
@@ -72,7 +72,7 @@ export default (() => {
       }
       if (libNavigationData[key] != undefined) {
         libNavigationData[key](result)
-        delete libNavigationData[key] 
+        delete libNavigationData[key]
       }
       m.back()
     }

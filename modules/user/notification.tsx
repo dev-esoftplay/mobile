@@ -22,6 +22,7 @@ import {
 //@ts-ignore
 import moment from "moment/min/moment-with-locales"
 import * as Notifications from 'expo-notifications';
+import { fastFilter } from "../../fast";
 export interface UserNotificationProps {
   navigation: any,
   data: any[]
@@ -37,7 +38,7 @@ const initState = {
   unread: 0
 };
 
-const state = useGlobalState(initState, { persistKey: 'user_notification', isUserData: true  })
+const state = useGlobalState(initState, { persistKey: 'user_notification', isUserData: true })
 
 class m extends LibComponent<UserNotificationProps, UserNotificationState> {
 
@@ -71,7 +72,7 @@ class m extends LibComponent<UserNotificationProps, UserNotificationState> {
     const d = new Date();
     d.setMonth(d.getMonth() - 3);
     const created = LibUtils.moment(String(d.getDate())).format('YYYY-MM-DD HH:mm:ss')
-    let cdata = data.filter((row) => row.created > created)
+    let cdata = fastFilter(data, (row) => row.created > created)
     if (cdata.length != data.length) {
       /* jika data tidak sama artinya ada yang expired > 3 bulan */
       state.set(LibObject.set(state.get(), cdata)('data'))
@@ -109,7 +110,7 @@ class m extends LibComponent<UserNotificationProps, UserNotificationState> {
       const urls = state.get().urls
       if (urls && urls.indexOf(uri) < 0) {
         let { data, urls, unread } = state.get()
-        const nUnread = unread + res.filter((row) => row.status != 2).length
+        const nUnread = unread + fastFilter(res, (row) => row.status != 2).length
         state.set({
           data: [...res.reverse(), ...data],
           urls: [uri, ...urls],

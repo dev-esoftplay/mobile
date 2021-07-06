@@ -31,7 +31,7 @@ export default (() => {
     }
 
     function h() {
-      dt[formName] = undefined
+      delete dt[formName]
       e()
     }
 

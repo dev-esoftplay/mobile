@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, ScrollView } from 'react-native';
 import { LibComponent, LibStyle, LibUtils } from 'esoftplay';
+import { fastFilter } from '../../fast';
 
 export interface LibTabsProps {
   tabIndex: number,
@@ -47,7 +48,7 @@ export default class m extends LibComponent<LibTabsProps, LibTabsState> {
   buildAllIds(page: number, pageOffset: number) {
     if (this.props.lazyTabOffset) {
       this.allIds.push(page)
-      this.allIds = this.allIds.filter((val) => this.arrayOfLimit(page, pageOffset).includes(val))
+      this.allIds = fastFilter(this.allIds, (val) => this.arrayOfLimit(page, pageOffset).includes(val))
     }
     else {
       this.allIds = this.arrayOfLimit(page, pageOffset)

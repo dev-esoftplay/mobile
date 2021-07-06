@@ -346,63 +346,64 @@ if (isChange(tmpDir + "assets.js", Text))
 /* CREATE INDEX.D.TS */
 function createIndex() {
 
-  var Text = `import { Component, ComponentClass, Ref, ComponentType } from 'react';
-  import { AntDesignTypes, EntypoTypes, EvilIconsTypes, FeatherTypes, FontAwesomeTypes, FontistoTypes, FoundationTypes, IoniconsTypes, MaterialCommunityIconsTypes, MaterialIconsTypes, OcticonsTypes, SimpleLineIconsTypes, ZocialTypes, } from '@expo/vector-icons/build/esoftplay_icons'
+  var Text = `
+import { Component } from 'react';
+import { AntDesignTypes, EntypoTypes, EvilIconsTypes, FeatherTypes, FontAwesomeTypes, FontistoTypes, FoundationTypes, IoniconsTypes, MaterialCommunityIconsTypes, MaterialIconsTypes, OcticonsTypes, SimpleLineIconsTypes, ZocialTypes, } from '@expo/vector-icons/build/esoftplay_icons'
 
-  declare module esoftplay {
-    var _global: any;
-    function useGlobalState<S>(initialState?: S, option?: useGlobalOption): useGlobalReturn<S>;
-    function usePersistState<S>(key: string, initialState?: S | (() => S)): [S, (a: S | ((b: S )=> S)) => S | undefined, (a?: (x: S) => void) => void, () => void];
-    function applyStyle(style: any): any;
-    function usePersistState<S>(key: string, initialState?: S | (() => S)): [S, (a: S) => void, (a?: (x: S)=> void) => void, () => void];
-    namespace esp {
-      function appjson(): any;
-      function assets(path: string): any;
-      function dispatch(action: any): any;
-      function config(param?: string, ...params: string[]): any;
-      function _config(): string | number | boolean;
-      function mod(path: string): any;
-      function reducer(): any;
-      function versionName(): string;
-      function navigations(): any;
-      function isDebug(): boolean;
-      function lang(moduleTask: string, langName: string, ...string: string[]): string;
-      function langId(): string;
-      function home(): any;
-      function log(message?: any, ...optionalParams: any[]): void;
-      function routes(): any;
-    }
-    
-    interface useGlobalReturn<T> {
-      useState: () => [T, (newState: T | ((a:T) => T)) => T | undefined, () => void],
-      get: () => T,
-      set: (x: T) => void,
-      reset: () => void,
-      connect: (props: useGlobalConnect<T>) => any,
-      useSelector: (selector: (state: T) => any) => any;
-    }
-    interface useGlobalOption {
-      persistKey?: string,
-      listener?: (data: any) => void,
-      isUserData?: boolean
-    }
-    interface useGlobalConnect<T> {
-      render: (props: T) => any,
-    }
-    interface createCacheOption {
-      persistKey?: string,
-      listener?: (s:any)=> void
-    }
-    interface createCacheReturn<S> {
-      useCache: () => [S, (newCache: S) => void, () => void],
-      get: () => any,
-      set: (x: S) => void
-    }
-    class LibCrypt {
-      encode(string: string): string
-      decode(string: string): string
-    }
-    function createCache<S>(initialCache?: S, option?: createCacheOption): createCacheReturn<S>;`;
+declare module "esoftplay" {
+  var _global: any;
+  function useGlobalState<S>(initialState?: S, option?: useGlobalOption): useGlobalReturn<S>;
+  function usePersistState<S>(key: string, initialState?: S | (() => S)): [S, (a: S | ((b: S )=> S)) => S | undefined, (a?: (x: S) => void) => void, () => void];
+  function useSafeState<S>(initialState?: S | (() => S)): [S, (a: S | ((b: S )=> S)) => S | undefined];
+  function applyStyle(style: any): any;
+  function usePersistState<S>(key: string, initialState?: S | (() => S)): [S, (a: S) => void, (a?: (x: S)=> void) => void, () => void];
+  namespace esp {
+    function appjson(): any;
+    function assets(path: string): any;
+    function dispatch(action: any): any;
+    function config(param?: string, ...params: string[]): any;
+    function _config(): string | number | boolean;
+    function mod(path: string): any;
+    function reducer(): any;
+    function versionName(): string;
+    function navigations(): any;
+    function isDebug(): boolean;
+    function lang(moduleTask: string, langName: string, ...string: string[]): string;
+    function langId(): string;
+    function home(): any;
+    function log(message?: any, ...optionalParams: any[]): void;
+    function routes(): any;
+  }
+  interface useGlobalReturn<T> {
+    useState: () => [T, (newState: T | ((a:T) => T)) => T | undefined, () => void],
+    get: () => T,
+    set: (x: T) => void,
+    reset: () => void,
+    connect: (props: useGlobalConnect<T>) => any,
+    useSelector: (selector: (state: T) => any) => any;
+  }
+  interface useGlobalOption {
+    persistKey?: string,
+    listener?: (data: any) => void,
+    isUserData?: boolean
+  }
+  interface useGlobalConnect<T> {
+    render: (props: T) => any,
+  }
+  interface createCacheOption {
+    persistKey?: string,
+    listener?: (s:any)=> void
+  }
+  interface createCacheReturn<S> {
+    useCache: () => [S, (newCache: S) => void, () => void],
+    get: () => any,
+    set: (x: S) => void
+  }
+  class LibCrypt {
+    encode(string: string): string
+    decode(string: string): string
+  }
+  function createCache<S>(initialCache?: S, option?: createCacheOption): createCacheReturn<S>;`;
   for (clsName in tmpTask) {
     if (tmpTask[clsName]["class"]) {
       // Text += "\n";

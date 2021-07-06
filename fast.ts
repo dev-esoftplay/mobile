@@ -1,4 +1,4 @@
-export const fastFilter = (fn: (v: any) => boolean, a: any[]) => {
+export const fastFilter = (a: any[], fn: (v: any) => boolean) => {
   const f = []; //final
   const al = a.length - 1
   for (let i = al; i >= 0; i--) {
