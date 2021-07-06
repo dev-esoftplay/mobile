@@ -10,6 +10,8 @@ export default (() => {
     const [a, b] = useSafeState<S>(dt && dt[formName] || def)
 
     function c(field: any) {
+      dt[formName] = dt[formName] || {}
+      field = field || {}
       dt[formName] = LibObject.assign(dt[formName], field)();
       fastLoop(dt['setter-' + formName], (set) => {
         set?.(dt[formName])
