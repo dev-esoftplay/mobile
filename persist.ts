@@ -50,7 +50,7 @@ export default (() => {
       e()
       return () => {
         r.current = false
-        setter[key] = fastFilter((x) => x !== b, setter[key]);
+        setter[key] = fastFilter(setter[key], (x) => x !== b);
       }
     }, [])
 

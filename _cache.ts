@@ -57,7 +57,7 @@ export default (() => {
       R.useEffect(() => {
         useCacheSubscriber[_idx].push(sl);
         return () => {
-          useCacheSubscriber[_idx] = fastFilter((f) => f !== sl, useCacheSubscriber[_idx])
+          useCacheSubscriber[_idx] = fastFilter(useCacheSubscriber[_idx], (f) => f !== sl)
         };
       }, [sl]);
     }

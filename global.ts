@@ -102,7 +102,7 @@ const m = () => {
       R.useEffect(() => {
         subscriber[_idx].push(func);
         return () => {
-          subscriber[_idx] = fastFilter((f) => f !== func, subscriber?.[_idx])
+          subscriber[_idx] = fastFilter(subscriber?.[_idx], (f) => f !== func)
         };
       }, [func]);
     }
