@@ -11,7 +11,7 @@ export default (() => {
 
     function c(field: any) {
       dt[formName] = {
-        ...dt[formName],
+        ...dt?.[formName],
         ...field
       }
       dt['setter-' + formName].forEach(set => {

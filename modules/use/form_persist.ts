@@ -10,11 +10,11 @@ export default (() => {
     const [a, b, d, e] = usePersistState<S>(formName, def)
     function c(field: any) {
       dt[formName] = {
-        ...dt[formName],
+        ...dt?.[formName],
         ...field
       }
       b({
-        ...dt[formName],
+        ...dt?.[formName],
         ...a,
         ...field
       })
