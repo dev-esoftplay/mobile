@@ -11,6 +11,7 @@ export default function m(def?: any) {
   }
   
   useEffect(() => {
+    r.current = true
     return () => { r.current = false }
   }, [])
 

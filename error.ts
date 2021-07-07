@@ -22,7 +22,7 @@ export function setError(error?: any) {
   let lastIndex = routes?.routes?.length - 1 ?? 0
   let _e: any = {}
   _e['user'] = user
-  _e['error'] = JSON.stringify(error, undefined, 2).replace(/[\[\]\{\}\"]+/g, '')
+  _e['error'] = String(error)
   _e['routes'] = routes?.routes?.[lastIndex]?.name
   AsyncStorage.setItem(config?.domain + 'error', JSON.stringify(_e))
 }
@@ -51,7 +51,7 @@ export function reportApiError(fetch: any, error: any) {
 
 export function getError() {
   let config = esp.config()
-  AsyncStorage.getItem(config.domain + 'error').then((e: any) => {
+  AsyncStorage.getItem(config?.domain + 'error').then((e: any) => {
     if (e) {
       let _e = JSON.parse(e)
       let msg = [
@@ -64,7 +64,7 @@ export function getError() {
         'user_id: ' + _e?.user?.id || _e?.user?.user_id || '-',
         'username: ' + _e?.user?.username || '-',
         'module: ' + _e.routes,
-        'error: \n' + String(JSON.stringify(_e.error || {}, undefined, 2)).replace(/[\[\]\{\}\"]+/g, ''),
+        'error: \n' + _e.error,
       ].join('\n')
       config?.errorReport?.telegramIds?.forEach?.((id: string) => {
         let post = {
