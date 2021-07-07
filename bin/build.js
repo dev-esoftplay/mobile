@@ -274,7 +274,6 @@ yarn.lock\n\
 		const AppJS = `import React, { useEffect, useRef } from 'react';
 import { esp, LibNotification } from 'esoftplay';
 import * as ErrorReport from 'esoftplay/error'
-import * as ErrorRecovery from 'expo-error-recovery';
 import * as Notifications from 'expo-notifications';
 import { enableScreens } from 'react-native-screens';
 const { globalIdx } = require('esoftplay/global')
@@ -282,13 +281,12 @@ enableScreens();
 
 Notifications.addNotificationResponseReceivedListener(x => LibNotification.onAction(x))
 
-export default function App(props: any) {
+export default function App() {
 	const Home = useRef(esp.home()).current
 
 	useEffect(() => {
 		globalIdx.reset()
-		ErrorRecovery.setRecoveryProps(props)
-		ErrorReport.getError(props?.exp?.errorRecovery)
+		ErrorReport.getError()
 	}, [])
 
 	return <Home />

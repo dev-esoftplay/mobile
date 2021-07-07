@@ -1,6 +1,7 @@
 import React from 'react';
 import { Platform } from 'react-native';
-import { LibCurl, UserClass, UserRoutes } from 'esoftplay';
+import { LibCurl, UserClass } from 'esoftplay';
+import { default as UserRoutes } from './modules/user/routes'
 import Constants from 'expo-constants';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import esp from './esp';
@@ -18,14 +19,12 @@ export function setError(error?: any) {
   let config = esp.config()
   let routes = UserRoutes.state().get()
   const user = UserClass.state().get()
-  let lastIndex = routes?.routes?.length - 1 || -1
-  if (lastIndex >= 0) {
-    let _e: any = {}
-    _e['user'] = user
-    _e['error'] = JSON.stringify(error, undefined, 2).replace(/[\[\]\{\}\"]+/g, '')
-    _e['routes'] = routes?.routes?.[lastIndex]?.name
-    AsyncStorage.setItem(config?.domain + 'error', JSON.stringify(_e))
-  }
+  let lastIndex = routes?.routes?.length - 1 ?? 0
+  let _e: any = {}
+  _e['user'] = user
+  _e['error'] = JSON.stringify(error, undefined, 2).replace(/[\[\]\{\}\"]+/g, '')
+  _e['routes'] = routes?.routes?.[lastIndex]?.name
+  AsyncStorage.setItem(config?.domain + 'error', JSON.stringify(_e))
 }
 
 export function reportApiError(fetch: any, error: any) {
@@ -50,7 +49,7 @@ export function reportApiError(fetch: any, error: any) {
   })
 }
 
-export function getError(adder: any) {
+export function getError() {
   let config = esp.config()
   AsyncStorage.getItem(config.domain + 'error').then((e: any) => {
     if (e) {
@@ -65,7 +64,7 @@ export function getError(adder: any) {
         'user_id: ' + _e?.user?.id || _e?.user?.user_id || '-',
         'username: ' + _e?.user?.username || '-',
         'module: ' + _e.routes,
-        'error: \n' + String(JSON.stringify(adder || {}, undefined, 2)).replace(/[\[\]\{\}\"]+/g, ''),
+        'error: \n' + String(JSON.stringify(_e.error || {}, undefined, 2)).replace(/[\[\]\{\}\"]+/g, ''),
       ].join('\n')
       config?.errorReport?.telegramIds?.forEach?.((id: string) => {
         let post = {
