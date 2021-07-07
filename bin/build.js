@@ -345,10 +345,8 @@ export default function App() {
 			fs.unlink(appjs, (err) => { })
 			let installExpoLibs = []
 			let installDevLibs = []
-			let txt = fs.readFileSync(packjson, 'utf8');
-			let $package = JSON.parse(txt);
 			expoLib.forEach((exlib) => {
-				if ($package.dependencies.hasOwnProperty(exlib)) {
+				if (fs.existsSync("../../node_modules/" + exlib)) {
 					console.log(exlib + " is Exist, Skipped")
 				} else {
 					console.log("⚙⚙⚙ INSTALLING ... " + exlib)
