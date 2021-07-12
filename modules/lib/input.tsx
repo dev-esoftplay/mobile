@@ -100,8 +100,8 @@ export default class m extends LibComponent<LibInputProps, LibInputState>{
       let rMask = mask.split("")
       let rText = this.unmask(_text)?.split?.("")
       if (maskFrom == 'end') {
-        rMask = [...rMask.reverse()]
-        rText = [...rText.reverse()]
+        rMask = [...rMask?.reverse?.()]
+        rText = [...rText?.reverse?.()]
       }
       let maskedText = ''
       var _addRange = 0

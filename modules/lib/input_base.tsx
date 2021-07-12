@@ -54,8 +54,8 @@ function mask(name: string, text: string): string {
     let rMask = mask.split("")
     let rText = unmask(name, _text).split("")
     if (maskFrom == 'end') {
-      rMask = [...rMask.reverse()]
-      rText = [...rText.reverse()]
+      rMask = [...rMask?.reverse?.()]
+      rText = [...rText?.reverse?.()]
     }
     let maskedText = ''
     var _addRange = 0
