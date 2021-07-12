@@ -10,7 +10,15 @@ var Text = "";
 const rngh = "./node_modules/react-native-gesture-handler/react-native-gesture-handler.d.ts"
 // const isEqual = require('react-fast-compare');
 
-console.log("DICALL")
+const curPackjson = require('../package.json')
+const mainPackjson = require('../../../package.json')
+
+if (mainPackjson.dependencies.esoftplay != curPackjson.version) {
+  try {
+    console.log("\x1b[31m", "VERSI esoftplay tidak SESUAI " + mainPackjson.dependencies.esoftplay + " != " + curPackjson.version + " ✘", "\x1b[0m")
+  } catch (error) { }
+}
+
 if (fs.existsSync(rngh)) {
   fs.unlink(rngh, (err) => { })
 }
@@ -394,10 +402,10 @@ declare module "esoftplay" {
     persistKey?: string,
     listener?: (s:any)=> void
   }
-  interface createCacheReturn<S> {
-    useCache: () => [S, (newCache: S) => void, () => void],
-    get: () => any,
-    set: (x: S) => void
+  interface createCacheReturn<T> {
+    useCache: () => [T, (newCache: T | ((oldCache: T) => T)) => void, () => void],
+    get: () => T,
+    set: (newCache: T | ((oldCache: T) => T)) => void
   }
   class LibCrypt {
     encode(string: string): string

@@ -4,9 +4,9 @@ const isEqual = require('react-fast-compare');
 import { fastFilter, fastLoop } from './fast'
 
 export interface UseCache_return<T> {
-  useCache: () => [T, (newCache: T) => void, () => void],
+  useCache: () => [T, (newCache: T | ((oldCache: T) => T)) => void, () => void],
   get: () => T,
-  set: (x: T) => void
+  set: (newCache: T | ((oldCache: T) => T)) => void
 }
 
 export interface UseCache_options {
@@ -31,18 +31,18 @@ export default (() => {
       })
     }
 
-    function set(ns: T) {
+    function set(ns: T | ((x: T) => T)) {
       let isChange = false
       if (o?.listener && !isEqual(value[_idx], ns)) {
         isChange = true
       }
-      value[_idx] = ns
+      value[_idx] = ns instanceof Function ? ns(value[_idx]) : ns
       fastLoop(useCacheSubscriber[_idx], (c: any) => c?.(value[_idx]))
       if (o?.persistKey) {
         AsyncStorage.setItem(o.persistKey, JSON.stringify(value[_idx]))
       }
       if (isChange)
-        o.listener(ns)
+        o.listener(ns instanceof Function ? ns(value[_idx]) : ns)
     };
 
     function del() {
@@ -63,10 +63,12 @@ export default (() => {
     }
 
 
-    function useCache(): [T, (newState: T) => void, () => void] {
+    function useCache(): [T, (newCache: T | ((oldCache: T) => T)) => void, () => void] {
       let l = R.useRef<T>(value[_idx]).current;
 
-      const sl = (newl: T) => { l = newl }
+      const sl = (ns: T | ((oldCache: T) => T)) => {
+        l = ns instanceof Function ? ns(l) : ns
+      }
 
       subscribe(sl)
 

@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const _global = require('./_global')
 const isEqual = require('react-fast-compare');
 import { fastFilter, fastLoop } from './fast'
+
 export interface useGlobalReturn<T> {
   useState: () => [T, (newState: T) => void, () => void],
   get: () => T,
@@ -11,8 +12,6 @@ export interface useGlobalReturn<T> {
   connect: (props: useGlobalConnect<T>) => any,
   useSelector: (selector: (state: T) => any) => any;
 }
-
-
 
 export interface useGlobalOption {
   persistKey?: string,
@@ -34,7 +33,7 @@ class Context {
 
 export const globalIdx = new Context()
 
-const m = () => {
+const n = () => {
   let subscriber = {}
   function m<T>(initValue: T, o?: useGlobalOption): useGlobalReturn<T> {
     const _idx = globalIdx.idx
@@ -141,4 +140,4 @@ const m = () => {
   return m
 }
 
-export default m()
+export default n()
