@@ -106,27 +106,27 @@ export default class eutils {
   }
 
   static getRatingValue(rating: string): number {
-    return rating.split(',').map((item) => parseInt(item)).reduce((acc, curr, index) => acc + (curr * (index + 1)))
+    return rating?.split?.(',')?.map?.((item) => parseInt(item))?.reduce?.((acc, curr, index) => acc + (curr * (index + 1)))
   }
 
   static getRatingCount(rating: string): number {
-    return rating.split(',').map((item) => parseInt(item)).reduce((acc, curr) => acc + curr)
+    return rating?.split?.(',')?.map?.((item) => parseInt(item))?.reduce?.((acc, curr) => acc + curr)
   }
 
   static getRating(rating: string, decimalPlaces?: number): string {
     if (decimalPlaces == undefined) {
       decimalPlaces = 1
     }
-    return (eutils.getRatingValue(rating) / eutils.getRatingCount(rating)).toFixed(decimalPlaces)
+    return (eutils.getRatingValue(rating) / eutils.getRatingCount(rating))?.toFixed?.(decimalPlaces)
   }
 
   static money(value: string | number, currency?: string): string {
     if (!value) value = 0
     var val;
     if (typeof value === "number") {
-      val = value.toFixed(0).replace(/(\d)(?=(\d{3})+$)/g, "$1,")
+      val = value?.toFixed?.(0)?.replace?.(/(\d)(?=(\d{3})+$)/g, "$1,")
     } else {
-      val = parseInt(value).toFixed(0).replace(/(\d)(?=(\d{3})+$)/g, "$1,")
+      val = parseInt(value)?.toFixed?.(0)?.replace?.(/(\d)(?=(\d{3})+$)/g, "$1,")
     }
     if ((typeof value == "string" ? parseInt(value) : value) <= 0) {
       val = "0"
@@ -135,9 +135,9 @@ export default class eutils {
       currency = "Rp"
     }
     if (typeof val === "number") {
-      return currency.replace(/\./g, "") + " " + String(val).replace(/,/g, ".");
+      return currency?.replace?.(/\./g, "") + " " + String(val)?.replace?.(/,/g, ".");
     } else {
-      return currency.replace(/\./g, "") + " " + val.replace(/,/g, ".");
+      return currency?.replace?.(/\./g, "") + " " + val?.replace?.(/,/g, ".");
     }
   }
 
