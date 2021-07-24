@@ -8,6 +8,7 @@ import esp from './esp';
 let pack = require('../../package.json');
 let app = require('../../app.json');
 
+
 const defaultErrorHandler = ErrorUtils.getGlobalHandler()
 
 const myErrorHandler = (e: any, isFatal: any) => {
