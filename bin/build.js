@@ -1,9 +1,7 @@
 #!/usr/bin/env node
 // @ts-check
-const { spawn } = require('child_process');
-const exec = require('child_process').execSync;
+const { spawn, execSync } = require('child_process');
 const fs = require('fs');
-const os = require('os')
 const DIR = "../../"
 const packjson = DIR + "package.json"
 const appjson = DIR + "app.json"
@@ -21,22 +19,9 @@ const pathJSTimer = DIR + "node_modules/react-native/Libraries/Core/Timers/JSTim
  * function ini hanya akan dieksekusi sekali saat install esoftplay framework
 */
 
-
-function command(command) {
-	if (os.type().toLowerCase() == 'darwin') {
-		exec(command, { stdio: ['inherit', 'inherit', 'inherit'] });
-	} else {
-		exec(command, {
-			shell: '/bin/bash',
-			stdio: ['inherit', 'inherit', 'inherit']
-		});
-	}
-}
-
-
 if (fs.existsSync(packjson)) {
 	let txt = fs.readFileSync(packjson, 'utf8');
-	let jpackage = JSON.parse(txt);
+	let $package = JSON.parse(txt);
 	let rewrite = false;
 	let args = process.argv.slice(2);
 
@@ -80,9 +65,9 @@ if (fs.existsSync(packjson)) {
 		let stringExist = ''
 		let stringToBe = ''
 		rewrite = false
-		if (!jpackage.hasOwnProperty("scripts")) {
+		if (!$package.hasOwnProperty("scripts")) {
 			rewrite = true
-			jpackage.scripts = {
+			$package.scripts = {
 				"start": "esp start && expo start",
 				"android": "expo start --android",
 				"ios": "expo start --ios",
@@ -90,26 +75,26 @@ if (fs.existsSync(packjson)) {
 			};
 		}
 		if (args[0] == "install") {
-			if (!jpackage.scripts.hasOwnProperty("start")) {
+			if (!$package.scripts.hasOwnProperty("start")) {
 				rewrite = true;
 				stringExist = `"start": "expo start"`
 				stringToBe = `"start": "esp start && expo start"`
-				// jpackage.scripts.start = "esp start && expo start"
+				// $package.scripts.start = "esp start && expo start"
 			} else {
-				if (!jpackage.scripts.start.match(/esp start/)) {
+				if (!$package.scripts.start.match(/esp start/)) {
 					rewrite = true
 					stringExist = `"start": "expo start"`
 					stringToBe = `"start": "esp start && expo start"`
-					// jpackage.scripts.start = "esp start && " + jpackage.scripts.start
+					// $package.scripts.start = "esp start && " + $package.scripts.start
 				}
 			}
 		} else
 			if (args[0] == "uninstall") {
-				if (jpackage.scripts.start.match(/esp start/)) {
+				if ($package.scripts.start.match(/esp start/)) {
 					rewrite = true
 					stringExist = `"start": "esp start && expo start"`
 					stringToBe = `"start": "expo start"`
-					// jpackage.scripts.start = jpackage.scripts.start.replace(/esp start(\s+&&\s+)/ig, "");
+					// $package.scripts.start = $package.scripts.start.replace(/esp start(\s+&&\s+)/ig, "");
 				}
 			}
 		if (rewrite) {
@@ -117,15 +102,15 @@ if (fs.existsSync(packjson)) {
 				if (err) {
 					return console.log(err);
 				}
-				let result = data.replace(`"start": "expo start"`, `"start": "esp start && expo start"`);
+				let result = data.replace(stringExist, stringToBe);
 
-				// fs.writeFile(packjson, result, 'utf8', function (err) {
-				// 	if (err) return console.log(err);
-				// });
+				fs.writeFile(packjson, result, 'utf8', function (err) {
+					if (err) return console.log(err);
+				});
 			});
-			// console.log("Please change scripts.start in package.json into '" + jpackage.scripts.start + "'")
+			// console.log("Please change scripts.start in package.json into '" + $package.scripts.start + "'")
 			// spawn('node', ['./packager.js', args[0], packjson], { stdio: 'inherit' })
-			// fs.writeFile(packjson, JSON.stringify(jpackage, null, 2), (err) => {
+			// fs.writeFile(packjson, JSON.stringify($package, null, 2), (err) => {
 			//   if (err) throw err;
 			//   console.log('package.json has been updated');
 			// });
@@ -383,7 +368,7 @@ export default function App() {
 				cmd += "&& npm install --save-dev " + installDevLibs.join(" ") + " "
 			if (installExpoLibs.length > 0)
 				cmd += "&& expo install " + installExpoLibs.join(" ")
-			command(cmd)
+			execSync(cmd, { stdio: ['inherit', 'inherit', 'inherit'] })
 			console.log('App.js has been replace to App.tsx');
 			if (fs.existsSync('../@expo/vector-icons')) {
 				let esoftplayIcon = ''
