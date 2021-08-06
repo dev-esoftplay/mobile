@@ -4,10 +4,10 @@ import { Linking, Platform, Share } from "react-native"
 import momentTimeZone from "moment-timezone"
 import { esp, LibToastProperty, _global, createCache } from "esoftplay"
 import shorthash from "shorthash"
+import Constants from 'expo-constants';
 import Clipboard from 'expo-clipboard'
 const Buffer = require('buffer/').Buffer
 const isEqual = require("react-fast-compare");
-
 
 export interface LibUtilsDate {
   year: string,
@@ -16,7 +16,7 @@ export interface LibUtilsDate {
 }
 
 export type LibUtilsTravelMode = 'driving' | 'walking'
-
+const installationId = createCache(Constants?.installationId, { persistKey: 'installationId' })
 const cache = createCache<any>({ inDebounce: undefined })
 export default class eutils {
 
@@ -327,6 +327,18 @@ export default class eutils {
     Share.share({
       message: url + (message ? ('\n' + message) : "")
     });
+  }
+
+  static getInstallationID(): string {
+    let out = installationId.get()
+    if (!out) {
+      out = ('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      }))
+      installationId.set(out)
+    }
+    return out
   }
 
   static sprintf(string: string, ...stringToBe: any[]): string {
