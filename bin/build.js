@@ -314,7 +314,6 @@ export default function App() {
 			'expo-linear-gradient',
 			'expo-media-library',
 			'expo-notifications',
-			'expo-permissions',
 			'expo-status-bar',
 			'expo-updates',
 			'firebase',

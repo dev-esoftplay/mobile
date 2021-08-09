@@ -9,7 +9,6 @@ import {
 import { LibStyle, LibComponent, LibCurl, esp, LibProgress, LibIcon, LibNavigation, useGlobalState } from 'esoftplay';
 import * as ImageManipulator from 'expo-image-manipulator';
 import { Camera } from 'expo-camera';
-import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
 import { SaveFormat } from 'expo-image-manipulator';
 const { height, width } = LibStyle;
@@ -119,16 +118,16 @@ class m extends LibComponent<LibImageProps, LibImageState> {
   static fromCamera(options?: LibImageCameraOptions): Promise<string> {
     return new Promise((_r) => {
       setTimeout(async () => {
-        const cameraPermission = await Permissions.getAsync(Permissions.CAMERA);
+        const cameraPermission = await ImagePicker.getCameraPermissionsAsync();
         var finalStatus = cameraPermission.status
         if (finalStatus !== 'granted') {
-          const { status } = await Permissions.askAsync(Permissions.CAMERA);
+          const { status } = await ImagePicker.requestCameraPermissionsAsync();
           finalStatus = status
         }
-        const rollPermission = await Permissions.getAsync(Permissions.CAMERA_ROLL);
+        const rollPermission = await ImagePicker.getMediaLibraryPermissionsAsync();
         finalStatus = rollPermission.status
         if (finalStatus !== 'granted') {
-          const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+          const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
           finalStatus = status
         }
         if (finalStatus != 'granted') {
@@ -166,10 +165,10 @@ class m extends LibComponent<LibImageProps, LibImageState> {
   static fromGallery(options?: LibImageGalleryOptions): Promise<string | string[]> {
     return new Promise((_r) => {
       setTimeout(async () => {
-        const { status } = await Permissions.getAsync(Permissions.CAMERA_ROLL);
+        const { status } = await ImagePicker.getCameraPermissionsAsync();
         var finalStatus = status
         if (finalStatus !== 'granted') {
-          const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+          const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
           finalStatus = status
         }
         if (finalStatus != 'granted') {
