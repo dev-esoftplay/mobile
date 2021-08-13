@@ -294,7 +294,7 @@ export default function App() {
 		let expoLib = [
 			'@expo/vector-icons',
 			'@react-native-async-storage/async-storage',
-			'@react-native-community/masked-view',
+			'@react-native-masked-view/masked-view',
 			'@react-native-community/netinfo',
 			'@react-navigation/native',
 			'@react-navigation/stack',
