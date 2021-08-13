@@ -3,7 +3,7 @@
 import React from 'react'
 import { esp, LibCurl, LibDialog, LibNavigation, LibComponent, LibIcon, LibStyle, LibTextstyle, LibUtils } from 'esoftplay'
 import { Linking, BackHandler, Platform, View, TouchableOpacity } from 'react-native'
-
+import Constants from 'expo-constants';
 export interface LibVersionProps {
 
 }
@@ -14,7 +14,7 @@ export interface LibVersionState {
 export default class m extends LibComponent<LibVersionProps, LibVersionState> {
 
   static appVersion(): string {
-    let version: any = esp.appjson().expo.version
+    let version: any = Constants.nativeBuildVersion
     return version
   }
 
