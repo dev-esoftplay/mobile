@@ -1,9 +1,8 @@
 //
 
 import React from "react";
-import { View, TextInput, ScrollView, TouchableOpacity, Image, KeyboardAvoidingView, Pressable, Text } from "react-native";
+import { Modal, View, TextInput, ScrollView, TouchableOpacity, Image, KeyboardAvoidingView, Pressable, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons"
-import Modal from "react-native-modal";
 import {
   esp,
   UserClass,
@@ -148,8 +147,8 @@ export default class euserLogin extends LibComponent<UserLoginProps, UserLoginSt
               <TouchableOpacity onPress={() => this.setState({ sosmed: "twitter" })} ><Ionicons name="logo-twitter" size={40} color={"#76A9EA"} /></TouchableOpacity>
               <TouchableOpacity onPress={() => this.setState({ sosmed: "instagram" })} ><Ionicons name="logo-instagram" size={40} color={"#0C5589"} /></TouchableOpacity>
             </View>
-            <Modal
-              isVisible={this.state.sosmed != ""}
+            {/* <Modal
+              visible={this.state.sosmed != ""}
               backdropColor={"transparent"}
               onBackButtonPress={() => this.setState({ sosmed: "" })}
               onBackdropPress={() => this.setState({ sosmed: "" })} >
@@ -172,7 +171,7 @@ export default class euserLogin extends LibComponent<UserLoginProps, UserLoginSt
                   }}
                 />
               </View>
-            </Modal>
+            </Modal> */}
           </ScrollView>
         </View>
       </KeyboardAvoidingView>
