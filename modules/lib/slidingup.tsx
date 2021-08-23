@@ -3,7 +3,7 @@ import { LibComponent, LibStyle, LibKeyboard_avoid } from 'esoftplay';
 import { View, Animated, TouchableOpacity, BackHandler, Keyboard } from 'react-native';
 
 export interface LibSlidingupProps {
-
+  onChangeShow?: (isShow: boolean) => void
 }
 export interface LibSlidingupState {
   show: boolean,
@@ -33,6 +33,7 @@ export default class m extends LibComponent<LibSlidingupProps, LibSlidingupState
     } else if (prevState.show == true && this.state.show == false) {
       BackHandler.removeEventListener("hardwareBackPress", this.handleBack)
     }
+    this.props?.onChangeShow?.(this.state.show)
   }
 
   show(): void {

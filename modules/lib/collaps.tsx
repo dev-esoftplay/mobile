@@ -82,7 +82,7 @@ export default class m extends LibComponent<LibCollapsProps, LibCollapsState> {
   render(): any {
     return (
       <Animated.View
-        style={[{ overflow: 'hidden', backgroundColor: LibTheme._colorBackgroundCardPrimary(), marginBottom: 1, height: this.state.animation }, this.props.style ? StyleSheet.flatten(this.props.style) : {}, elevation(0)]} >
+        style={[{ overflow: 'hidden', backgroundColor: LibTheme._colorBackgroundCardPrimary(), marginBottom: 1, height: this.state.animation, opacity: this.state.animation == 10000 ? 0 : 1 }, this.props.style ? StyleSheet.flatten(this.props.style) : {}, elevation(0)]} >
         <TouchableOpacity onPress={this.toggle} >
           <View onLayout={this._setMinHeight} >
             {this.props.header(this.state.expanded)}
