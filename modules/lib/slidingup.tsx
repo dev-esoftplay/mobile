@@ -30,11 +30,11 @@ export default class m extends LibComponent<LibSlidingupProps, LibSlidingupState
   componentDidUpdate(prevProps: LibSlidingupProps, prevState: LibSlidingupState): void {
     if (prevState.show == false && this.state.show == true) {
       BackHandler.addEventListener("hardwareBackPress", this.handleBack)
+      this.props?.onChangeShow?.(this.state.show)
     } else if (prevState.show == true && this.state.show == false) {
       BackHandler.removeEventListener("hardwareBackPress", this.handleBack)
-    }
-    if (this.state.show != prevState.show)
       this.props?.onChangeShow?.(this.state.show)
+    }      
   }
 
   show(): void {
