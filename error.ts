@@ -7,12 +7,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import esp from './esp';
 let pack = require('../../package.json');
 let app = require('../../app.json');
+const { manifest } = Constants;
 
 
 const defaultErrorHandler = ErrorUtils.getGlobalHandler()
 
 const myErrorHandler = (e: any, isFatal: any) => {
-  setError(e)
+  if (!manifest?.packagerOpts)
+    setError(e)
   defaultErrorHandler(e, isFatal)
 }
 
