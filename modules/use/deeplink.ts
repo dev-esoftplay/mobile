@@ -22,7 +22,7 @@ export default function m(defaultUrl?: string): void {
                   LibNavigation.push(module, { url: url })
                 }
               }
-              if (res.result.module && res.result.url)
+              if (res.result.module)
                 nav(res.result.module, res.result.url)
             }
             else {

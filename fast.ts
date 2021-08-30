@@ -1,9 +1,9 @@
 export const fastFilter = (a: any[], fn: (v: any) => boolean) => {
   const f = []; //final
   const al = a.length - 1
-  for (let i = al; i >= 0; i--) {
+  for (let i = 0; i <= al; i++) {
     if (fn(a[i])) {
-      f.unshift(a[i]);
+      f.push(a[i]);
     }
   }
   return f;

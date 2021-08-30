@@ -75,7 +75,7 @@ export default function m(props: UserIndexProps): any {
     }
   }, [loading])
 
-  if (loading) return <ImageBackground source={esp.assets('splash.png')} style={{ flex: 1 }} />
+  if (loading) return <ImageBackground source={esp.assets('splash.gif') || esp.assets('splash.png')} style={{ flex: 1 }} />
   return (
     <>
       <View style={{ flex: 1 }}>
