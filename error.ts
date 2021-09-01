@@ -31,9 +31,9 @@ export function setError(error?: any) {
 }
 
 export function reportApiError(fetch: any, error: any) {
-  if (manifest?.packagerOpts) {
-    return
-  }
+  // if (manifest?.packagerOpts) {
+  //   return
+  // }
   let config = esp.config()
   config?.errorReport?.telegramIds?.forEach?.((id: string) => {
     const user = UserClass.state().get()
