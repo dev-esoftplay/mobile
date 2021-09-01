@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useRef } from "react";
 //@ts-ignore
 import Navs from "../../cache/navs";
-import { View, ImageBackground } from "react-native";
+import { View, ImageBackground, InteractionManager } from "react-native";
 import * as Font from "expo-font";
 import { esp, _global, UserClass, LibWorker, UseDeeplink, LibUpdaterProperty, LibWorkloop, LibNet_status, LibDialog, LibStyle, LibImage, LibProgress, UserMain, LibToast, useSafeState, LibVersion, UserRoutes, LibWorkview } from 'esoftplay';
 import firebase from 'firebase';
@@ -50,10 +50,18 @@ export default function m(props: UserIndexProps): any {
 
   useMemo(() => {
     if (esp.config('firebase')) {
-      try {
-        firebase.initializeApp(esp.config('firebase'));
-        firebase.auth().signInAnonymously();
-      } catch (error) { }
+      InteractionManager.runAfterInteractions(() => {
+        try {
+          firebase.initializeApp(esp.config('firebase'));
+        } catch (error) {
+          console.warn(error)
+        }
+        try {
+          firebase.auth().signInAnonymously()
+        } catch (error) {
+          console.warn(error)
+        }
+      })
     }
     UserClass.isLogin(async () => {
       await setFonts()
