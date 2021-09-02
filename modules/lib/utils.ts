@@ -16,7 +16,13 @@ export interface LibUtilsDate {
 }
 
 export type LibUtilsTravelMode = 'driving' | 'walking'
-const installationId = createCache(Constants?.installationId, { persistKey: 'installationId' })
+let installationIdDefault
+try {
+  installationIdDefault = Constants?.installationId
+} catch (error) {
+
+}
+const installationId = createCache(installationIdDefault, { persistKey: 'installationId' })
 const cache = createCache<any>({ inDebounce: undefined })
 export default class eutils {
 
