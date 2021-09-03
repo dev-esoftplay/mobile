@@ -12,6 +12,7 @@ export interface LibInfiniteProps {
   injectData?: any,
   onDataChange?: (data: any, page: number) => void
   onResult?: (res: any, uri: string) => void,
+  filterData?: (item: any, index: number, array: any[]) => any[],
   error?: string,
   errorView?: ((msg: string) => any) | any,
   mainIndex?: string,
@@ -110,7 +111,9 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
             this.setState((state: LibInfiniteState, props: LibInfiniteProps) => {
               return {
                 error: this.props.error || 'Belum ada data',
-                data: page == 0 ? [] : state.data,
+                data: page == 0
+                  ? []
+                  : (typeof this.props?.filterData == 'function' ? state.data.filter(this.props.filterData) : state.data),
               }
             }, update)
           } else {
@@ -119,7 +122,9 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
             this.setState((state: LibInfiniteState, props: LibInfiniteProps) => {
               const latestData = [...state.data, ...mainIndex.list]
               return {
-                data: page == 0 ? mainIndex.list : latestData,
+                data: page == 0
+                  ? (typeof this.props?.filterData == 'function' ? mainIndex.list.filter(this.props.filterData) : mainIndex.list)
+                  : (typeof this.props?.filterData == 'function' ? latestData.filter(this.props.filterData) : latestData),
               }
             }, update)
           }
