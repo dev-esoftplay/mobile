@@ -12,7 +12,7 @@ export interface LibInfiniteProps {
   injectData?: any,
   onDataChange?: (data: any, page: number) => void
   onResult?: (res: any, uri: string) => void,
-  filterData?: (item: any, index: number, array: any[]) => any[],
+  filterData?: (item: any, index: number, array: any[]) => boolean,
   error?: string,
   errorView?: ((msg: string) => any) | any,
   mainIndex?: string,
