@@ -20,7 +20,7 @@ import {
   LibUtils,
 } from "esoftplay";
 //@ts-ignore
-import moment from "moment/min/moment-with-locales"
+import moment from "../../moment"
 import * as Notifications from 'expo-notifications';
 import { fastFilter } from "../../fast";
 export interface UserNotificationProps {
@@ -137,7 +137,7 @@ class m extends LibComponent<UserNotificationProps, UserNotificationState> {
 
   componentDidMount(): void {
     super.componentDidMount()
-    moment.locale(esp.langId());
+    moment().locale(esp.langId());
     m.user_notification_loadData()
   }
 

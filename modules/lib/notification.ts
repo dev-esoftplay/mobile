@@ -2,7 +2,7 @@
 import * as Notifications from 'expo-notifications';
 import { Platform, Alert, Linking } from "react-native";
 import { esp, _global, UserNotification, LibCurl, LibCrypt, LibNavigation, UserClass } from "esoftplay";
-import moment from 'moment';
+import moment from '../../moment';
 import Constants from 'expo-constants';
 /*
 {

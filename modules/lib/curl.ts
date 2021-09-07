@@ -1,9 +1,9 @@
 import { LibNet_status } from 'esoftplay';
 //
 import React from "react";
-import momentTimeZone from "moment-timezone"
+
 import { Platform } from 'react-native'
-import moment from "moment/min/moment-with-locales"
+import moment from "../../moment"
 import { esp, LibCrypt, LibProgress, _global, LibUtils, LibWorker } from 'esoftplay';
 import { reportApiError } from "../../error";
 
@@ -397,7 +397,7 @@ export default class ecurl {
     var mytimes = [86400, 3600, 60, 1]
     var date1 = [], date2 = []
     var dateFormat = "H-m-s"
-    var dt1: any = momentTimeZone.tz(new Date(), timeZone)
+    var dt1: any = moment(new Date()).tz(timeZone)
     var dt2 = moment(new Date())
     date1.push(this.getDayOfYear(dt1))
     date2.push(this.getDayOfYear(dt2))

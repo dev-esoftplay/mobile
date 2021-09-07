@@ -4,7 +4,7 @@ import React from "react"
 import { Platform } from 'react-native';
 import * as Notifications from 'expo-notifications'
 import { LibNotification, esp, UserClass, LibCrypt, LibCurl, UserData } from "esoftplay";
-import moment from "moment";
+import moment from "../../moment";
 import Constants from 'expo-constants';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 

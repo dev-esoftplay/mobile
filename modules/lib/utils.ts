@@ -1,7 +1,6 @@
 import { fastFilter, fastLoop } from './../../fast';
-import moment from "moment/min/moment-with-locales"
+import moment from "../../moment"
 import { Linking, Platform, Share } from "react-native"
-import momentTimeZone from "moment-timezone"
 import { esp, LibToastProperty, _global, createCache } from "esoftplay"
 import shorthash from "shorthash"
 import Constants from 'expo-constants';
@@ -88,7 +87,7 @@ export default class eutils {
 
   static moment(date?: string, locale?: string): any {
     if (locale) {
-      moment.locale(locale)
+      moment().locale(locale)
     }
     return moment(date)
   }
@@ -108,7 +107,7 @@ export default class eutils {
     if (!datetime) {
       datetime = new Date()
     }
-    return momentTimeZone.tz(moment(datetime), timezone).format('YYYY-MM-DD HH:mm:ss')
+    return moment(datetime).tz(timezone).format('YYYY-MM-DD HH:mm:ss')
   }
 
   static getRatingValue(rating: string): number {
