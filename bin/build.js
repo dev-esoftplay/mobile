@@ -321,7 +321,7 @@ export default function App() {
 			'moment-timezone',
 			'react-fast-compare',
 			'react-native-gesture-handler',
-			'react-native-image-viewing',
+			'react-native-awesome-gallery',
 			'react-native-picker-scrollview',
 			'react-native-pinch-zoom-view-movable',
 			'react-native-reanimated',
