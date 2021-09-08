@@ -1,8 +1,6 @@
 import { LibNet_status } from 'esoftplay';
 //
 import React from "react";
-
-import { Platform } from 'react-native'
 import moment from "../../moment"
 import { esp, LibCrypt, LibProgress, _global, LibUtils, LibWorker } from 'esoftplay';
 import { reportApiError } from "../../error";
@@ -394,35 +392,6 @@ export default class ecurl {
   }
 
   getTimeByTimeZone(timeZone: string): number {
-    var mytimes = [86400, 3600, 60, 1]
-    var date1 = [], date2 = []
-    var dateFormat = "H-m-s"
-    var dt1: any = moment(new Date()).tz(timeZone)
-    var dt2 = moment(new Date())
-    date1.push(this.getDayOfYear(dt1))
-    date2.push(this.getDayOfYear(dt2))
-    date1.push(...dt1.format(dateFormat).split("-"))
-    date2.push(...dt2.format(dateFormat).split("-"))
-    var time = (new Date()).getTime();
-    var a, b
-    for (var i = 0; i < date1.length; i++) {
-      a = parseInt(date1[i]);
-      b = parseInt(date2[i]);
-      if (a > b) {
-        time += mytimes[i] * (a - b)
-      } else {
-        time -= mytimes[i] * (b - a)
-      }
-    }
-    return time;
-  }
-
-  getDayOfYear(d: string): number {
-    var date = new Date(d);
-    var start = new Date(date.getFullYear(), 0, 0);
-    var diff = date.getTime() - start.getTime();
-    var oneDay = 1000 * 60 * 60 * 24;
-    var day = Math.floor(diff / oneDay);
-    return day
+    return moment(new Date()).tz(timeZone).toMiliseconds();
   }
 }

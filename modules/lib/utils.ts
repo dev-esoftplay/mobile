@@ -3,7 +3,6 @@ import moment from "../../moment"
 import { Linking, Platform, Share } from "react-native"
 import { esp, LibToastProperty, _global, createCache } from "esoftplay"
 import shorthash from "shorthash"
-import Constants from 'expo-constants';
 import Clipboard from 'expo-clipboard'
 const Buffer = require('buffer/').Buffer
 const isEqual = require("react-fast-compare");
@@ -16,11 +15,6 @@ export interface LibUtilsDate {
 
 export type LibUtilsTravelMode = 'driving' | 'walking'
 let installationIdDefault
-try {
-  installationIdDefault = Constants?.installationId
-} catch (error) {
-
-}
 const installationId = createCache(installationIdDefault, { persistKey: 'installationId' })
 const cache = createCache<any>({ inDebounce: undefined })
 export default class eutils {
@@ -85,7 +79,7 @@ export default class eutils {
     }).join('')
   }
 
-  static moment(date?: string, locale?: string): any {
+  static moment(date?: string, locale?: any) {
     if (locale) {
       moment().locale(locale)
     }
@@ -186,7 +180,7 @@ export default class eutils {
     if (!format) {
       format = "YYYY-MM-DD kk:mm:ss";
     }
-    moment.locale(esp.langId());
+    moment().locale(esp.langId());
     return String(moment(new Date()).format(format))
   }
 
@@ -224,7 +218,7 @@ export default class eutils {
     if (!format) {
       format = "dddd, DD MMMM YYYY";
     }
-    moment.locale(esp.langId());
+    moment().locale(esp.langId());
     return moment(input).format(format)
   }
   static telTo(number: string | number): void {
