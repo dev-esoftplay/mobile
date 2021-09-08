@@ -20,11 +20,6 @@ function isNumeric(n) {
 export default function moment(date?: string | Date | any) {
   let _date = isNumeric(date) ? new Date(date * 1000) : date
   return {
-    duration: (other_date: string | Date) => {
-      const x = dayjs(_date)
-      const y = dayjs(other_date)
-      return dayjs.duration(x.diff(y))
-    },
     add: (count: number, type: "days" | "weeks" | "months" | "quarters" | "years" | "hours" | "minutes" | "seconds" | "milliseconds") => {
       const out = dayjs(_date).add(count, (dayjsType[momentType.indexOf(type)]))
       return moment(out)
@@ -59,7 +54,12 @@ export default function moment(date?: string | Date | any) {
     toMiliseconds: () => {
       const out = String(dayjs(_date).valueOf())
       return out
-    }
+    },
+    duration: (other_date: string | Date) => {
+      const x = dayjs(_date)
+      const y = dayjs(other_date)
+      return dayjs.duration(x.diff(y))
+    },
   }
 }
 
