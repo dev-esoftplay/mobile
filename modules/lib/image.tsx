@@ -24,7 +24,6 @@ export interface LibImageProps {
   show?: boolean,
   image?: string,
   maxDimension?: number,
-  editor?: boolean,
 }
 
 export interface LibImageState {
@@ -36,7 +35,6 @@ export interface LibImageState {
 
 export interface LibImageGalleryOptions {
   crop?: LibImageCrop
-  editor?: boolean,
   maxDimension?: number,
   multiple?: boolean,
   max?: number
@@ -45,13 +43,11 @@ export interface LibImageGalleryOptions {
 export interface LibImageCameraOptions {
   crop?: LibImageCrop
   maxDimension?: number,
-  editor?: boolean
 }
 
 const initState = {
   show: false,
   image: undefined,
-  editor: false,
   maxDimension: 1280
 }
 const state = useGlobalState(initState)
@@ -63,16 +59,14 @@ class m extends LibComponent<LibImageProps, LibImageState> {
       ...state.get(),
       image: image,
       show: false,
-      editor: false,
     })
   }
 
-  static show(editor?: boolean): void {
+  static show(): void {
     state.set({
       ...state.get(),
       show: true,
       image: undefined,
-      editor: editor,
     })
   }
 
@@ -96,20 +90,11 @@ class m extends LibComponent<LibImageProps, LibImageState> {
   async takePicture(): Promise<void> {
     if (this.camera) {
       this.setState({ loading: true })
-      const { editor } = this.props
       let result = await this.camera.takePictureAsync({})
       this.setState({ image: result, loading: false })
-      if (editor) {
-        m.showEditor(result.uri, (d) => {
-          this.setState({ image: d, loading: false })
-        })
-      }
     }
   }
 
-  static showEditor(uri: string, result: (x: any) => void): void {
-    LibNavigation.navigateForResult("lib/image_edit", { uri }, 81793).then(result)
-  }
   static showCropper(uri: string, forceCrop: boolean, ratio: string, message: string, result: (x: any) => void): void {
     LibNavigation.navigateForResult("lib/image_crop", { image: uri, forceCrop, ratio, message }, 81793).then(result)
   }
@@ -143,18 +128,11 @@ class m extends LibComponent<LibImageProps, LibImageState> {
                 m.setResult(imageUri)
                 _r(imageUri)
               })
-            } else
-              if (options && options.editor) {
-                m.showEditor(result.uri, async (x) => {
-                  let imageUri = await m.processImage(x, options?.maxDimension)
-                  m.setResult(imageUri)
-                  _r(imageUri)
-                })
-              } else {
-                let imageUri = await m.processImage(result, options?.maxDimension)
-                m.setResult(imageUri)
-                _r(imageUri)
-              }
+            } else {
+              let imageUri = await m.processImage(result, options?.maxDimension)
+              m.setResult(imageUri)
+              _r(imageUri)
+            }
           }
         })
         // }
@@ -190,19 +168,11 @@ class m extends LibComponent<LibImageProps, LibImageState> {
                   m.setResult(imageUri)
                   _r(imageUri)
                 })
-              } else
-                if (options?.editor == true) {
-                  m.showEditor(x.uri, async (x) => {
-                    let imageUri = await m.processImage(x, options?.maxDimension)
-                    m.setResult(imageUri)
-                    _r(imageUri)
-                  })
-                  return
-                } else {
-                  let imageUri = await m.processImage(x, options?.maxDimension)
-                  m.setResult(imageUri)
-                  _r(imageUri)
-                }
+              } else {
+                let imageUri = await m.processImage(x, options?.maxDimension)
+                m.setResult(imageUri)
+                _r(imageUri)
+              }
             }
           })
           return
@@ -215,12 +185,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
                 m.setResult(imageUri)
                 _r(imageUri)
               })
-            } else if (options?.editor == true)
-              m.showEditor(x[0].uri, async (x) => {
-                let imageUri = await m.processImage(x, options?.maxDimension)
-                m.setResult(imageUri)
-                _r(imageUri)
-              })
+            }
             return
           }
           let a: string[] = []
@@ -308,7 +273,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
     return (
       <state.connect
         render={(props) => {
-          const { show, editor, maxDimension } = props
+          const { show, maxDimension } = props
           if (!show) return null
           return (
             <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} >

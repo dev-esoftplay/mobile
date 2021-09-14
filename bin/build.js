@@ -307,7 +307,6 @@ export default function App() {
 			'expo-document-picker',
 			'expo-file-system',
 			'expo-font',
-			'expo-image-crop',
 			'expo-image-manipulator',
 			'expo-image-picker',
 			'expo-linear-gradient',
