@@ -28,13 +28,18 @@ _global.useGlobalUserDelete = {}
 class Context {
   idx = 0
   increment = () => this.idx++
-  reset = () => this.idx = 0
+  reset = () => {
+    this.idx = 0
+  }
 }
 
 export const globalIdx = new Context()
 
 const n = () => {
   let subscriber = {}
+  let debouceTime
+  let persistKeys: any = {}
+
   function m<T>(initValue: T, o?: useGlobalOption): useGlobalReturn<T> {
     const _idx = globalIdx.idx
     if (!subscriber[_idx])
@@ -43,10 +48,7 @@ const n = () => {
 
     // rehidryte instant
     if (o?.persistKey) {
-      AsyncStorage.getItem(o.persistKey).then((p) => {
-        if (p)
-          set(JSON.parse(p))
-      })
+      rehidryte(o.persistKey, (p) => { if (typeof p == 'string') set(JSON.parse(p)) })
     }
 
     /* register to userData to automatically reset state and persist */
@@ -136,6 +138,24 @@ const n = () => {
 
     globalIdx.increment()
     return { useState, get, set, useSelector, reset: del, connect: _connect };
+  }
+
+  function debounce(func: () => any, delay: number): void {
+    clearTimeout(debouceTime)
+    debouceTime = setTimeout(() => func(), delay)
+  }
+
+  function rehidryte(key: string, func: (e: string) => void) {
+    persistKeys[key] = func
+    debounce(() => {
+      AsyncStorage.multiGet(Object.keys(persistKeys), (e, v) => {
+        if (v && !e) {
+          Object.entries(persistKeys).forEach((item: any, idx) => {
+            item?.[1]?.(v[item?.[0]])
+          })
+        }
+      })
+    }, 50)
   }
   return m
 }
