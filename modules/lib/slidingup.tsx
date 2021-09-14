@@ -34,14 +34,16 @@ export default class m extends LibComponent<LibSlidingupProps, LibSlidingupState
     } else if (prevState.show == true && this.state.show == false) {
       BackHandler.removeEventListener("hardwareBackPress", this.handleBack)
       this.props?.onChangeShow?.(this.state.show)
-    }      
+    }
   }
 
   show(): void {
     Keyboard.dismiss()
     if (this.props.children) {
       this.setState({ show: true }, () => {
-        this._toggleSubview(true)
+        setTimeout(() => {
+          this._toggleSubview(true)
+        }, 1);
       })
     }
   }
