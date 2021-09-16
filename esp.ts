@@ -4,6 +4,7 @@ import routers from './cache/routers';
 import { Platform } from 'react-native';
 import { _global, esp, LibLocale, UserRoutes } from 'esoftplay';
 import { LogBox } from 'react-native';
+import Constants from 'expo-constants';
 LogBox.ignoreLogs(['YellowBox has been replaced with LogBox. Please call LogBox.ignoreLogs() instead.']);
 let app = require('../../app.json');
 let conf = require('../../config.json');
@@ -40,7 +41,7 @@ export default (() => {
   }
 
   function versionName(): string {
-    return (Platform.OS == 'android' ? appjson().expo?.android?.versionCode : appjson()?.expo?.ios?.buildNumber) + '-' + config('publish_id')
+    return (Platform.OS == 'android' ? Constants.manifest.android.versionCode : Constants.manifest.ios.buildNumber) + '-' + config('publish_id')
   }
 
   function config(param?: string, ...params: string[]): any {
