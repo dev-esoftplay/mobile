@@ -18,7 +18,7 @@ export default function m(props: LibPinProps): any {
 
   useEffect(() => {
     setPin(props?.pinValue?.split?.(''))
-    props.onChangePin(pin.join(''))
+    props.onChangePin(props?.pinValue || '')
   }, [props.pinValue])
 
   return (
@@ -42,7 +42,7 @@ export default function m(props: LibPinProps): any {
                 contextMenuHidden={true}
                 keyboardType='numeric'
                 secureTextEntry
-                style={{ opacity: 0, marginLeft: -400, width: 400 + 60 * props.length, fontSize: 0, height: 60, marginTop: -40, alignSelf: 'flex-start' }} 
+                style={{ opacity: 0, marginLeft: -400, width: 400 + 60 * props.length, fontSize: 0, height: 60, marginTop: -40, alignSelf: 'flex-start' }}
                 autoFocus 
                 onChangeText={(t: string) => {
                   if (t.length == props.length) {
