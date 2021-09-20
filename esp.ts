@@ -61,7 +61,7 @@ export default (() => {
     return out;
   }
 
-  function isDebug(): boolean {
+  function isDebug(message: string): boolean {
     if (!lconf) {
       return false
     }

@@ -375,7 +375,7 @@ declare module "esoftplay" {
     function reducer(): any;
     function versionName(): string;
     function navigations(): any;
-    function isDebug(): boolean;
+    function isDebug(message: string): boolean;
     function lang(moduleTask: string, langName: string, ...string: string[]): string;
     function langId(): string;
     function home(): any;
