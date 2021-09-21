@@ -3,7 +3,7 @@ import moment from "../../moment"
 import { Linking, Platform, Share } from "react-native"
 import { esp, LibToastProperty, _global, createCache } from "esoftplay"
 import shorthash from "shorthash"
-import Clipboard from 'expo-clipboard'
+import * as Clipboard from 'expo-clipboard';
 const Buffer = require('buffer/').Buffer
 const isEqual = require("react-fast-compare");
 

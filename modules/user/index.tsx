@@ -36,8 +36,8 @@ function setFonts(): Promise<void> {
 export default function m(props: UserIndexProps): any {
   const [loading, setLoading] = useSafeState(true)
   const user = UserClass.state().useSelector(s => s)
-  //@ts-ignore
   UseDeeplink()
+  //@ts-ignore
   const initialState = __DEV__ ? _global.nav__state : undefined
 
   function handler(currentState: any): void {
@@ -51,16 +51,8 @@ export default function m(props: UserIndexProps): any {
   useMemo(() => {
     if (esp.config('firebase')) {
       InteractionManager.runAfterInteractions(() => {
-        try {
-          firebase.initializeApp(esp.config('firebase'));
-        } catch (error) {
-          console.warn(error)
-        }
-        try {
-          firebase.auth().signInAnonymously()
-        } catch (error) {
-          console.warn(error)
-        }
+        firebase.initializeApp(esp.config('firebase'));
+        firebase.auth().signInAnonymously()
       })
     }
     UserClass.isLogin(async () => {
