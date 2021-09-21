@@ -40,13 +40,17 @@ export default function m(props: LibSkeletonProps): any {
       <MaskedView
         style={{ flex: 1 }}
         maskElement={
-          props.children ??
-          <View style={{ flex: 1, justifyContent: 'center' }} >
-            <View>
-              <View style={{ marginTop: 24, backgroundColor: 'black', height: LibStyle.width * 9 / 16, width: LibStyle.width }} >
+          props.children ?
+            <View style={{ flex: 1 }} >
+              {props.children}
+            </View>
+            :
+            <View style={{ flex: 1, justifyContent: 'center' }} >
+              <View>
+                <View style={{ marginTop: 24, backgroundColor: 'black', height: LibStyle.width * 9 / 16, width: LibStyle.width }} >
+                </View>
               </View>
             </View>
-          </View>
         }>
         <AnimatedLinearGradient
           style={[{ height: '100%', width: LibStyle.width * 2, alignSelf: 'center', }, animatedStyle]}
@@ -59,5 +63,3 @@ export default function m(props: LibSkeletonProps): any {
     </View>
   )
 }
-
-10
