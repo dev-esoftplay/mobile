@@ -6,6 +6,7 @@ import { _global, esp, LibLocale, UserRoutes } from 'esoftplay';
 import { LogBox } from 'react-native';
 import Constants from 'expo-constants';
 LogBox.ignoreLogs(['YellowBox has been replaced with LogBox. Please call LogBox.ignoreLogs() instead.']);
+LogBox.ignoreLogs(['VirtualizedLists should never be nested inside plain ScrollViews with the same orientation - use another VirtualizedList-backed container instead.']);
 let app = require('../../app.json');
 let conf = require('../../config.json');
 let lconf = require('../../config.live.json');
