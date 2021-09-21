@@ -26,7 +26,8 @@ export default function m(props: ContentGalleryProps): any {
   }
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: 'black' }} >
+    <ScrollView nestedScrollEnabled
+      style={{ flex: 1, backgroundColor: 'black' }} >
       <Gallery
         data={images.map((image) => (image?.image))}
         onSwipeToClose={() => {

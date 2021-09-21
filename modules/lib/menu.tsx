@@ -41,6 +41,7 @@ export default class emenu extends LibComponent<LibMenuProps, LibMenuState> {
       <FlatList
         style={style}
         data={data}
+        nestedScrollEnabled
         keyExtractor={(item: any) => (item.id).toString()}
         renderItem={({ item }: any) => <LibMenusub {...item} selectedId={this.props.selectedId} data={this.props.data} parent={parent} onClick={(item: any) => this.onItemSelected(item)} />}
       />

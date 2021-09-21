@@ -94,6 +94,7 @@ export default function m(props: LibImage_multiProps): any {
           showsVerticalScrollIndicator={false}
           initialNumToRender={5}
           maxToRenderPerBatch={10}
+          nestedScrollEnabled
           windowSize={5}
           style={{ paddingHorizontal: 0.5, flex: 1 }}
           onEndReached={() => getPhotos()}

@@ -86,6 +86,7 @@ export default class m extends LibComponent<LibTabsProps, LibTabsState> {
         horizontal
         showsHorizontalScrollIndicator={false}
         scrollEnabled={!!this.props.swipeEnabled}
+        nestedScrollEnabled
         scrollEventThrottle={16}
         onScroll={this.changePage}
         pagingEnabled

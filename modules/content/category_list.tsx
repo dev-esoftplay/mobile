@@ -34,7 +34,8 @@ export default function m(props: ContentCategory_listProps): any {
 
   return (
     <View style={{}} >
-      <ScrollView horizontal style={{ margin: 0 }} >
+      <ScrollView horizontal nestedScrollEnabled
+        style={{ margin: 0 }} >
         {
           menu?.list?.[0]?.filter?.((row: any) => row.par_id == id).map((row: any) => (
             <Pressable
