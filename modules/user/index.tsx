@@ -1,11 +1,11 @@
 // withHooks
 
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useMemo } from "react";
 //@ts-ignore
 import Navs from "../../cache/navs";
-import { View, ImageBackground, InteractionManager } from "react-native";
+import { View } from "react-native";
 import * as Font from "expo-font";
-import { esp, _global, UserClass, LibWorker, UseDeeplink, LibUpdaterProperty, LibWorkloop, LibNet_status, LibDialog, LibStyle, LibImage, LibProgress, UserMain, LibToast, useSafeState, LibVersion, UserRoutes, LibWorkview, createCache } from 'esoftplay';
+import { esp, _global, UserClass, LibWorker, UseDeeplink, LibUpdaterProperty, LibWorkloop, LibNet_status, LibDialog, LibStyle, LibImage, LibProgress, UserLoading, UserMain, LibToast, useSafeState, LibVersion, UserRoutes, LibWorkview } from 'esoftplay';
 import firebase from 'firebase';
 
 export interface UserIndexProps {
@@ -76,7 +76,7 @@ export default function m(props: UserIndexProps): any {
     }
   }, [loading])
 
-  if (loading) return <ImageBackground source={esp.assets('splash.gif') || esp.assets('splash.png')} style={{ flex: 1 }} />
+  if (loading) return <UserLoading />
   return (
     <>
       <View style={{ flex: 1 }}>
