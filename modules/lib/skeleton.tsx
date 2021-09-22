@@ -21,7 +21,7 @@ export interface LibSkeletonProps {
 
 const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient)
 export default function m(props: LibSkeletonProps): any {
-  const offset = useSharedValue(-LibStyle.width * 0.5)
+  const offset = useSharedValue(-LibStyle.width * 0.75)
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -30,8 +30,8 @@ export default function m(props: LibSkeletonProps): any {
   })
 
   useEffect(() => {
-    offset.value = -LibStyle.width * 0.5
-    offset.value = withRepeat(withTiming(LibStyle.width * 0.5, { duration: props.duration || 800 }), -1, props.reverse ?? true)
+    offset.value = -LibStyle.width * 0.75
+    offset.value = withRepeat(withTiming(LibStyle.width * 1.25, { duration: props.duration || 1000 }), -1, props.reverse ?? false)
   }, [])
 
 
@@ -53,9 +53,8 @@ export default function m(props: LibSkeletonProps): any {
             </View>
         }>
         <AnimatedLinearGradient
-          style={[{ height: '100%', width: LibStyle.width * 2, alignSelf: 'center', }, animatedStyle]}
-          colors={props.colors ?? ['#f1f2f3', '#c5c5c5', '#f1f2f3']}
-          locations={[0, 0.5, 1]}
+          style={[{ height: '100%', width: LibStyle.width * 3.5, alignSelf: 'center', }, animatedStyle]}
+          colors={props.colors ?? ['#f1f2f3', '#f1f2f3', '#f1f2f3', '#f1f2f3', '#f1f2f3', '#f1f2f3', '#dedede', '#f1f2f3', '#f1f2f3', '#f1f2f3', '#f1f2f3', '#f1f2f3', '#f1f2f3']}
           start={{ x: 0, y: 1 }}
           end={{ x: 1, y: 1 }}
         />
