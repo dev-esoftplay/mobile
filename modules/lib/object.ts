@@ -1,7 +1,66 @@
-import { fastFilter } from './../../fast';
 import { update } from "immhelper";
 
 export default class m {
+  _value = undefined
+
+  constructor(array: any) {
+    this._value = array
+    this.value = this.value.bind(this)
+    this.push = this.push.bind(this)
+    this.unset = this.unset.bind(this)
+    this.unshift = this.unshift.bind(this)
+    this.set = this.set.bind(this)
+    this.splice = this.splice.bind(this)
+    this.update = this.update.bind(this)
+    this.assign = this.assign.bind(this)
+    this.cursorBuilder = this.cursorBuilder.bind(this)
+  }
+
+  cursorBuilder(command: string, array: any, value: any, ...values: any[]): (cursor?: string | number, ...cursors: (string | number)[]) => this {
+    return (cursor?: string | number, ...cursors: (string | number)[]) => {
+      let pathToUpdate = [cursor, ...cursors].filter(x => x != undefined).join('.')
+      let allValues = [value, ...values].filter(x => x != undefined)
+      let spec = {}
+      if (pathToUpdate != '')
+        spec = { [pathToUpdate]: [command, ...allValues] }
+      else
+        spec = [command, ...allValues]
+      this._value = update(array, spec)
+      return this
+    }
+  }
+
+  push(value?: any, ...values: any[]): (cursor?: string | number, ...cursors: (string | number)[]) => this {
+    return this.cursorBuilder("push", this._value, value, ...values)
+  }
+
+  unshift(value?: any, ...values: any[]): (cursor?: string | number, ...cursors: (string | number)[]) => this {
+    return this.cursorBuilder("unshift", this._value, value, ...values)
+  }
+
+  splice(index: number, deleteCount: number, value?: any, ...values: any[]): (cursor?: string | number, ...cursors: (string | number)[]) => this {
+    return this.cursorBuilder("splice", this._value, index, deleteCount, value, ...values)
+  }
+  unset(index: number | string, ...indexs: (string | number)[]): (cursor?: string | number, ...cursors: (string | number)[]) => this {
+    return this.cursorBuilder("unset", this._value, index, ...indexs)
+  }
+
+  set(value: any): (cursor?: string | number, ...cursors: (string | number)[]) => this {
+    return this.cursorBuilder("set", this._value, value)
+  }
+
+  update(callback: (lastValue: any) => any): (cursor?: string | number, ...cursors: (string | number)[]) => this {
+    return this.cursorBuilder("batch", this._value, callback)
+  }
+
+  assign(obj1: any): (cursor?: string | number, ...cursors: (string | number)[]) => this {
+    return this.cursorBuilder("assign", this._value, obj1)
+  }
+
+  value(): any {
+    return this._value
+  }
+
   static push(array: any, value?: any, ...values: any[]): (cursor?: string | number, ...cursors: (string | number)[]) => any {
     return cursorBuilder("push", array, value, ...values)
   }

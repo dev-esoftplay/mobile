@@ -1,12 +1,54 @@
-// withHooks
-
 import React, { useEffect } from 'react';
+import { LibComponent, LibSkeleton } from 'esoftplay';
 import { View } from 'react-native';
 import { LibStyle } from 'esoftplay';
 import { LinearGradient } from 'expo-linear-gradient';
 import MaskedView from '@react-native-masked-view/masked-view';
 import Animated, { useSharedValue, useAnimatedStyle, withRepeat, withTiming } from 'react-native-reanimated';
 
+
+export interface LibSkeletonProps {
+
+}
+export interface LibSkeletonState {
+
+}
+export interface LibSkeletonStatic {
+  size: number
+}
+
+
+export default class m extends LibComponent<LibSkeletonProps, LibSkeletonState> {
+  constructor(props: LibSkeletonProps) {
+    super(props);
+  }
+
+  static BoxFull(props: LibSkeletonStatic): any {
+    return <View style={{ margin: '2.5%', marginVertical: 8, alignSelf: 'center', backgroundColor: 'black', height: props.size, width: '95%', borderRadius: 10 }} />
+  }
+
+  static BoxFlex(props: LibSkeletonStatic): any {
+    return (<View style={{ margin: '2.5%', marginVertical: 8, backgroundColor: 'black', flexGrow: 1, height: props.size, borderRadius: 10 }} />)
+  }
+
+  static BoxHalf(props: LibSkeletonStatic): any {
+    return <View style={{ margin: '2.5%', marginVertical: 8, backgroundColor: 'black', height: props.size, width: '45%', borderRadius: 10 }} />
+  }
+
+  static Box(props: LibSkeletonStatic): any {
+    return <View style={{ margin: '2.5%', marginVertical: 8, backgroundColor: 'black', height: props.size, width: props.size, borderRadius: 10 }} />
+  }
+
+  static Circle(props: LibSkeletonStatic): any {
+    return <View style={{ margin: '2.5%', marginVertical: 8, backgroundColor: 'black', height: props.size, width: props.size, borderRadius: props.size * 0.5 }} />
+  }
+
+  render(): any {
+    return (
+      <Skeleton {...this.props} />
+    )
+  }
+}
 
 export interface LibSkeletonArgs {
 
@@ -20,7 +62,7 @@ export interface LibSkeletonProps {
 }
 
 const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient)
-export default function m(props: LibSkeletonProps): any {
+function Skeleton(props: LibSkeletonProps): any {
   const offset = useSharedValue(-LibStyle.width * 0.75)
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -31,7 +73,7 @@ export default function m(props: LibSkeletonProps): any {
 
   useEffect(() => {
     offset.value = -LibStyle.width * 0.75
-    offset.value = withRepeat(withTiming(LibStyle.width * 1.25, { duration: props.duration || 1000 }), -1, props.reverse ?? false)
+    offset.value = withRepeat(withTiming(LibStyle.width * 0.5, { duration: props.duration || 1000 }), -1, props.reverse ?? false)
   }, [])
 
 
