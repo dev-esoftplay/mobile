@@ -91,6 +91,7 @@ switch (args[0]) {
 		createMaster(args[1])
 		break;
 	case "start":
+		excludeModules()
 		execution();
 		break;
 	case "bcl":
@@ -104,6 +105,27 @@ switch (args[0]) {
 	default:
 		help()
 		break;
+}
+
+function excludeModules() {
+	let cjson = readToJSON(confjson)
+	if (cjson.config.hasOwnProperty('excludeModules')) {
+		if (cjson.config.excludeModules) {
+			const allmodules = cjson.config.excludeModules
+			if (allmodules.length > 0) {
+				consoleSucces('\nSuccess to exclude this modules:')
+				allmodules.forEach((mod) => {
+					const fileTsxPath = DIR + 'node_modules/esoftplay/modules/' + mod + '.tsx'
+					const fileTsPath = DIR + 'node_modules/esoftplay/modules/' + mod + '.ts'
+					const fileJsPath = DIR + 'node_modules/esoftplay/modules/' + mod + '.js'
+					if (fs.existsSync(fileTsxPath)) fs.unlinkSync(fileTsxPath)
+					if (fs.existsSync(fileTsPath)) fs.unlinkSync(fileTsPath)
+					if (fs.existsSync(fileJsPath)) fs.unlinkSync(fileJsPath)
+					consoleSucces('- ' + mod)
+				})
+			}
+		}
+	}
 }
 
 function consoleFunc(msg, success) {
