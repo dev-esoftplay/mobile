@@ -3,7 +3,7 @@
 import { useSafeState } from 'esoftplay';
 import React, { useCallback } from 'react';
 import { Pressable } from 'react-native';
-import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, { interpolate, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 
 
 export interface LibCollapsArgs {
@@ -24,7 +24,7 @@ export default function m(props: LibCollapsProps): any {
       overflow: 'hidden',
       height: interpolate(animHeight.value,
         [0, 1, 2],
-        [0, bodyHeight.value, bodyHeight.value]),
+        [0, bodyHeight.value, bodyHeight.value * 2]),
       opacity: interpolate(animHeight.value,
         [-1, 0],
         [0, 1])
@@ -32,9 +32,7 @@ export default function m(props: LibCollapsProps): any {
   })
 
   const toggle = useCallback(() => {
-    animHeight.value = withTiming(animHeight.value == 0 ? 1 : 0, {
-      easing: Easing.sin
-    })
+    animHeight.value = animHeight.value == 0 ? withSpring(1) : withTiming(0)
     setExpand(animHeight.value != 1)
   }, [])
 
