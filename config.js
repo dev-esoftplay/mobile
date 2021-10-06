@@ -19,6 +19,7 @@
     "isDebug": 1,                             // optional: display console on esp.log('any message'), don't use it for automatic detect the environment (production / development)
     "salt": "CHANGE_INTO_YOUR_OWN_SALT",      // SALT form config.php in your website
     "notification": 1,                        // optional: to determine is this application have notification or not
+    "exludeModules":[],                        // optional: to delete module when listed
     "firebase": {                             // https://console.firebase.google.com - download google-services.json
       "apiKey": "FIREBASE_Web_API_Key",       // Eg. AIzaSyAvVyNeXI3RTo7Tl5LCBSZ-mu92VpbPBK8Y
       "authDomain": "FIREBASE_authDomain",    // Eg. project-6495177974885932998.firebaseapp.com
