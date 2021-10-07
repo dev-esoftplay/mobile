@@ -1,3 +1,5 @@
+// noPage
+
 import { update } from "immhelper";
 
 export default class m {

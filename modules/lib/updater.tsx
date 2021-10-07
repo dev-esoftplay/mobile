@@ -1,4 +1,5 @@
 // withHooks
+// noPage
 
 import React from 'react';
 import { Alert, Pressable } from 'react-native';

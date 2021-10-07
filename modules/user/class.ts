@@ -1,5 +1,6 @@
+// noPage
+
 import { useGlobalReturn, useGlobalState } from 'esoftplay';
-//
 import React from "react"
 import { Platform } from 'react-native';
 import * as Notifications from 'expo-notifications'

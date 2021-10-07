@@ -1,3 +1,5 @@
+// noPage
+
 import React from 'react';
 import { View } from 'react-native';
 import { LibComponent, LibCurl, LibScroll, LibTextstyle, LibLoading } from 'esoftplay';

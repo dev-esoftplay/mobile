@@ -8,7 +8,6 @@ var typesDir = "./"
 var replacer = new RegExp(/(?:\-|\.(?:ios|android))?\.(?:jsx|js|ts|tsx)$/);
 var Text = "";
 const rngh = "./node_modules/react-native-gesture-handler/react-native-gesture-handler.d.ts"
-// const isEqual = require('react-fast-compare');
 
 const curPackjson = require('../package.json')
 const mainPackjson = require('../../../package.json')
@@ -39,6 +38,7 @@ var UseLibs = []
 var SuffixHooksProperty = ('Property').trim()
 var Persistor = {};
 var Extender = {};
+var NavsExclude = [];
 var grabClass = null;
 var delReducer = true;
 var countLoop = 0; // jumlah file yang telah dihitung
@@ -111,7 +111,9 @@ checks.forEach(modules => {
                 var isHooks = false
                 var isUseLibs = false
                 /* REGEX HOOKS */
-
+                if (n = (/\n?(?:(?:\/\/\s{0,})|(?:\/\*\s{0,}))noPage/).exec(data)) {
+                  NavsExclude.push(module + '/' + file.slice(0, file.lastIndexOf('.')))
+                }
                 if (isIndexed) {
                   if (n = (/\n?(?:(?:\/\/\s{0,})|(?:\/\*\s{0,}))useLibs/).exec(data)) {
                     isUseLibs = true
@@ -572,7 +574,9 @@ function createRouter() {
   for (const module in Modules) {
     for (const task in Modules[module]) {
       nav = module + '/' + task;
-      Navigations.push(nav);
+      if (!NavsExclude.includes(nav)) {
+        Navigations.push(nav);
+      }
       Task += "\t\t" + 'case "' + nav + '":' + "\n\t\t\t" + 'Out = require("../../.' + Modules[module][task] + '").default' + "\n\t\t\t" + 'break;' + "\n";
       /* ADD ROUTER EACH FILE FOR STATIC IMPORT */
       var item = "import { default as _" + ucword(module) + ucword(task) + " } from '../../." + Modules[module][task] + "';\n"

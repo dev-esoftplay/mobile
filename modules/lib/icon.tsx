@@ -1,3 +1,5 @@
+// noPage
+
 import React from 'react';
 import { LibComponent } from 'esoftplay';
 import {

@@ -1,4 +1,4 @@
-//
+// noPage
 
 import React from "react"
 import { View, ScrollView, RefreshControl } from "react-native";

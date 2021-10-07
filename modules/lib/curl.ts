@@ -1,5 +1,6 @@
+// noPage
+
 import { LibNet_status } from 'esoftplay';
-//
 import React from "react";
 import moment from "../../moment"
 import { esp, LibCrypt, LibProgress, _global, LibUtils, LibWorker } from 'esoftplay';

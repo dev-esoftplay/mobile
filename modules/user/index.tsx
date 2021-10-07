@@ -1,4 +1,5 @@
 // withHooks
+// noPage
 
 import React, { useEffect, useMemo } from "react";
 //@ts-ignore

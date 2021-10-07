@@ -1,4 +1,5 @@
 // withHooks
+// noPage
 
 import { esp, LibWorker, _global } from 'esoftplay';
 import React from 'react';

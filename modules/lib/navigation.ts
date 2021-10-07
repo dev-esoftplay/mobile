@@ -1,4 +1,5 @@
 //@ts-nocheck
+// noPage
 
 import React from "react";
 import { UserClass, UserRoutes } from 'esoftplay';

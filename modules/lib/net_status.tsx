@@ -1,3 +1,5 @@
+// noPage
+
 import React from "react";
 import { LibComponent, useGlobalState, useGlobalReturn } from "esoftplay";
 import { Animated, Text } from "react-native";

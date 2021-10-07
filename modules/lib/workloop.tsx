@@ -1,3 +1,5 @@
+// noPage
+
 import React from 'react';
 import { InteractionManager, View } from 'react-native';
 import { LibComponent } from 'esoftplay';

@@ -1,4 +1,6 @@
 // useLibs
+// noPage
+
 import { LibUtils, esp } from 'esoftplay';
 import { useCallback, useEffect } from 'react';
 import { Linking, Alert } from 'react-native';

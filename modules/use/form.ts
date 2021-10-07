@@ -1,4 +1,5 @@
 // useLibs
+// noPage
 
 import { useEffect } from 'react';
 import { useSafeState } from 'esoftplay';

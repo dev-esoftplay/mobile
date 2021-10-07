@@ -1,3 +1,5 @@
+// noPage
+
 import { fastFilter, fastLoop } from './../../fast';
 import moment from "../../moment"
 import { Linking, Platform, Share } from "react-native"

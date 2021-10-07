@@ -1,3 +1,5 @@
+// noPage
+
 import React from "react";
 import { Dimensions, StatusBar, Platform } from "react-native";
 

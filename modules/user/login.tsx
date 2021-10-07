@@ -1,5 +1,3 @@
-//
-
 import React from "react";
 import { Modal, View, TextInput, ScrollView, TouchableOpacity, Image, KeyboardAvoidingView, Pressable, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons"

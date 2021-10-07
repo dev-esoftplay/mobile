@@ -1,3 +1,5 @@
+// noPage
+
 import React from "react"
 import { Audio } from "expo-av";
 import { LibComponent } from "esoftplay";

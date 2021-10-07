@@ -1,4 +1,5 @@
 // withHooks
+// noPage
 
 import React, { useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';

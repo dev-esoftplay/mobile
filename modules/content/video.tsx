@@ -1,4 +1,5 @@
 // withHooks
+// noPage
 
 import React from 'react';
 import { LibStyle, LibToastProperty } from 'esoftplay';

@@ -1,4 +1,5 @@
 // withHooks
+// noPage
 
 import React, { useMemo } from 'react';
 import { View, Image, Platform, PixelRatio } from 'react-native';

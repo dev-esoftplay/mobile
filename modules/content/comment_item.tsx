@@ -1,4 +1,5 @@
 // withHooks
+// noPage
 
 import { applyStyle, LibIcon, LibNavigation, LibUtils } from 'esoftplay';
 import React from 'react';

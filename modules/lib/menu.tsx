@@ -1,4 +1,5 @@
-// 
+// noPage
+
 import React from "react"
 import { FlatList } from "react-native";
 import { LibMenusub, LibComponent } from "esoftplay";

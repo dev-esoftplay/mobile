@@ -1,4 +1,5 @@
 // useLibs
+// noPage
 
 import { LibCurl, useSafeState, LibProgress } from 'esoftplay';
 

@@ -1,4 +1,5 @@
 // withHooks
+// noPage
 
 import { ContentConfig, ContentBookmarkProperty, LibIcon, LibNavigation, LibPicture, LibStyle, LibUtils } from 'esoftplay';
 import React from 'react';

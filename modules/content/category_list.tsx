@@ -1,5 +1,5 @@
 // withHooks
-
+// noPage
 import { ContentCategoryProperty, esp, LibCurl, LibNavigation, LibPicture, LibUtils } from 'esoftplay';
 import React, { useEffect, useRef } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';

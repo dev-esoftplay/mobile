@@ -1,4 +1,5 @@
 // withHooks
+// noPage
 
 import React, { useEffect } from 'react';
 import { InteractionManager } from 'react-native';

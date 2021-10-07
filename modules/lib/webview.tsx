@@ -1,4 +1,5 @@
 /*  */
+// noPage
 
 import React from "react";
 import { Animated, Dimensions, Platform, Linking } from "react-native";

@@ -1,3 +1,5 @@
+// noPage
+
 import React, { useEffect } from 'react';
 import { LibComponent, LibSkeleton } from 'esoftplay';
 import { View } from 'react-native';

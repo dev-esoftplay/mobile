@@ -1,3 +1,5 @@
+// noPage
+
 import { Component } from "react";
 const isEqual = require("react-fast-compare");
 

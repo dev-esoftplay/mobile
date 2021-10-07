@@ -1,4 +1,5 @@
 // useLibs
+// noPage
 
 
 export var inputBaseRef: any = {}

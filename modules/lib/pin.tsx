@@ -1,4 +1,5 @@
 // withHooks
+// noPage
 
 import React, { useState, useRef, useEffect } from 'react';
 import { View, TextInput } from 'react-native';

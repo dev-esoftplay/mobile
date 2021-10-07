@@ -1,3 +1,5 @@
+// noPage
+
 import React from 'react';
 import { View, ActivityIndicator, BackHandler } from 'react-native';
 import { LibComponent, LibTheme, LibStyle, LibTextstyle, useGlobalState } from 'esoftplay';

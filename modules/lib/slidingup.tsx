@@ -1,3 +1,4 @@
+// noPage
 import React from 'react';
 import { LibComponent, LibStyle, LibKeyboard_avoid } from 'esoftplay';
 import { View, Animated, TouchableOpacity, BackHandler, Keyboard } from 'react-native';

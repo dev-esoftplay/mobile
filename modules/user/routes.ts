@@ -1,5 +1,6 @@
-import { useGlobalState, useGlobalReturn } from 'esoftplay';
+// noPage
 
+import { useGlobalState, useGlobalReturn } from 'esoftplay';
 
 const state = useGlobalState(undefined)
 

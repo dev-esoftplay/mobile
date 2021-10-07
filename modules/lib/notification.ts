@@ -1,4 +1,5 @@
-//
+// noPage
+
 import * as Notifications from 'expo-notifications';
 import { Platform, Alert, Linking } from "react-native";
 import { esp, _global, UserNotification, LibCurl, LibCrypt, LibNavigation, UserClass } from "esoftplay";

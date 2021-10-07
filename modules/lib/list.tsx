@@ -1,4 +1,6 @@
-//
+// noPage
+
+
 import React from "react"
 import { View, FlatList } from 'react-native';
 import { LibComponent } from "esoftplay";

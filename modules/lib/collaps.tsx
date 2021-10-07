@@ -1,4 +1,5 @@
 // withHooks
+// noPage
 
 import { useSafeState } from 'esoftplay';
 import React, { useCallback } from 'react';
