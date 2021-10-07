@@ -52,6 +52,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from 'react-native-screens/native-stack';
 \nimport { `+ importer + `, esp, _global } from "esoftplay";\n
+\nimport { LibNavigation } from "esoftplay";\n
 const Stack = createNativeStackNavigator();
 
 export default function m(props): any{
