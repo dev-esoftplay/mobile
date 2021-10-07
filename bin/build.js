@@ -98,27 +98,28 @@ if (fs.existsSync(packjson)) {
 				}
 			}
 		if (rewrite) {
-			fs.readFile(packjson, 'utf8', function (err, data) {
-				if (err) {
-					return console.log(err);
-				}
-				let result = data.replace(stringExist, stringToBe);
+			// fs.readFile(packjson, 'utf8', function (err, data) {
+			// 	if (err) {
+			// 		return console.log(err);
+			// 	}
+			// 	let result = data.replace(stringExist, stringToBe);
 
-				fs.writeFile(packjson, result, 'utf8', function (err) {
-					if (err) return console.log(err);
-				});
-			});
+			// 	fs.writeFile(packjson, result, 'utf8', function (err) {
+			// 		if (err) return console.log(err);
+			// 	});
+			// });
 			// console.log("Please change scripts.start in package.json into '" + $package.scripts.start + "'")
 			// spawn('node', ['./packager.js', args[0], packjson], { stdio: 'inherit' })
-			// fs.writeFile(packjson, JSON.stringify($package, null, 2), (err) => {
-			//   if (err) throw err;
-			//   console.log('package.json has been updated');
-			// });
+			fs.writeFile(packjson, JSON.stringify($package, null, 2), (err) => {
+			  if (err) throw err;
+			  console.log('package.json has been updated');
+			});
 		}
 	}
 
 	/* Create esp command line */
 	if (args[0] == "install") {
+		execSync('esp start', { stdio: ['inherit', 'inherit', 'inherit'] })
 		spawn('esp', ['start'], { stdio: 'inherit' })
 			.on('exit', function (code) {
 				console.log(code);
@@ -383,6 +384,8 @@ export default function App() {
 			}
 			console.log('Please wait until processes has finished...');
 		});
+
+		execSync('esp start', { stdio: ['inherit', 'inherit', 'inherit'] })
 	}
 } else {
 	console.log(packjson + " not found!!")
