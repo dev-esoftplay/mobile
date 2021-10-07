@@ -50,7 +50,7 @@ export default function m(props: UserIndexProps): any {
   }
 
   useMemo(() => {
-    if (esp.config('firebase')) {
+    if (esp.config('firebase').hasOwnProperty('apiKey')) {
       if (!firebase.apps.length) {
         firebase.initializeApp(esp.config('firebase'));
         firebase.auth().signInAnonymously()
