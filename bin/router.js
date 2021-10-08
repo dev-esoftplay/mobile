@@ -567,7 +567,6 @@ function createRouter() {
   var Task = "";
   var nav = "";
   var staticImport = []
-  console.log(NavsExclude)
 
   staticImport.push("const isEqual = require('react-fast-compare');\n")
   staticImport.push("export function applyStyle(style){ return style };\n")
@@ -578,7 +577,7 @@ function createRouter() {
   for (const module in Modules) {
     for (const task in Modules[module]) {
       nav = module + '/' + task;
-      if (!NavsExclude[nav]) {
+      if (NavsExclude[nav] == false) {
         Navigations.push(nav);
       }
       Task += "\t\t" + 'case "' + nav + '":' + "\n\t\t\t" + 'Out = require("../../.' + Modules[module][task] + '").default' + "\n\t\t\t" + 'break;' + "\n";
@@ -640,28 +639,28 @@ function createRouter() {
         return console.log(err);
       }
     });
-    /* CREATE NAVIGATION LIST */
-    Text = "export default [\"" + Navigations.join('", "') + "\"]";
-    fs.writeFile(tmpDir + "navigations.js", Text, { flag: 'w' }, function (err) {
-      if (err) {
-        return console.log(err);
-      }
-    });
-    let importer = []
-    let screens = []
-    Navigations.forEach((nav) => {
-      const [module, task] = nav.split('/')
-      const comp = ucword(module) + ucword(task)
-      importer.push(comp)
-      screens.push("\t\t\t\t<Stack.Screen name={\"" + nav + "\"} component={" + comp + "} />")
-    })
+  }
+  /* CREATE NAVIGATION LIST */
+  Text = "export default [\"" + Navigations.join('", "') + "\"]";
+  fs.writeFile(tmpDir + "navigations.js", Text, { flag: 'w' }, function (err) {
+    if (err) {
+      return console.log(err);
+    }
+  });
+  let importer = []
+  let screens = []
+  Navigations.forEach((nav) => {
+    const [module, task] = nav.split('/')
+    const comp = ucword(module) + ucword(task)
+    importer.push(comp)
+    screens.push("\t\t\t\t<Stack.Screen name={\"" + nav + "\"} component={" + comp + "} />")
+  })
 
-    let N = Nav5(importer.join(", "), screens.join("\n"))
-
+  let N = Nav5(importer.join(", "), screens.join("\n"))
+  if (isChange(tmpDir + 'navs.tsx', N))
     fs.writeFile(tmpDir + "navs.tsx", N, { flag: 'w' }, function (err) {
       if (err) {
         return console.log(err);
       }
     });
-  }
 }
