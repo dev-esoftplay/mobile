@@ -38,7 +38,7 @@ var UseLibs = []
 var SuffixHooksProperty = ('Property').trim()
 var Persistor = {};
 var Extender = {};
-var NavsExclude = [];
+var NavsExclude = {};
 var grabClass = null;
 var delReducer = true;
 var countLoop = 0; // jumlah file yang telah dihitung
@@ -113,7 +113,9 @@ checks.forEach(modules => {
                 var isUseLibs = false
                 /* REGEX HOOKS */
                 if (n = (/\n?(?:(?:\/\/\s{0,})|(?:\/\*\s{0,}))noPage/).exec(data)) {
-                  NavsExclude.push(module + '/' + file.slice(0, file.lastIndexOf('.')))
+                  NavsExclude[module + '/' + file.slice(0, file.lastIndexOf('.'))] = true
+                } else {
+                  NavsExclude[module + '/' + file.slice(0, file.lastIndexOf('.'))] = false
                 }
                 if (isIndexed) {
                   if (n = (/\n?(?:(?:\/\/\s{0,})|(?:\/\*\s{0,}))useLibs/).exec(data)) {
@@ -565,6 +567,7 @@ function createRouter() {
   var Task = "";
   var nav = "";
   var staticImport = []
+  console.log(NavsExclude)
 
   staticImport.push("const isEqual = require('react-fast-compare');\n")
   staticImport.push("export function applyStyle(style){ return style };\n")
@@ -575,7 +578,7 @@ function createRouter() {
   for (const module in Modules) {
     for (const task in Modules[module]) {
       nav = module + '/' + task;
-      if (!NavsExclude.includes(nav)) {
+      if (!NavsExclude[nav]) {
         Navigations.push(nav);
       }
       Task += "\t\t" + 'case "' + nav + '":' + "\n\t\t\t" + 'Out = require("../../.' + Modules[module][task] + '").default' + "\n\t\t\t" + 'break;' + "\n";
