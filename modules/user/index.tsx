@@ -18,11 +18,7 @@ export interface UserIndexState {
 }
 
 function setFonts(): Promise<void> {
-  let fonts: any = {
-    "Roboto": require("../../assets/Roboto.ttf"),
-    "Roboto_medium": require("../../assets/Roboto_medium.ttf"),
-    "digital": require("../../assets/digital.ttf")
-  }
+  let fonts: any = {}
   let fontsConfig = esp.config("fonts")
   if (fontsConfig) {
     Object.keys(esp.config("fonts")).forEach((key) => {
