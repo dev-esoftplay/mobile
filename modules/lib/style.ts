@@ -84,7 +84,7 @@ const defaultStyle = {
 }
 
 export default class Style {
-  static isIphoneX: boolean = isIphoneX;
+  static isIphoneX: boolean = isIphoneX();
   static STATUSBAR_HEIGHT: number = STATUSBAR_HEIGHT;
   static STATUSBAR_HEIGHT_MASTER: number = STATUSBAR_HEIGHT_MASTER;
   static colorPrimary: string = colorPrimary;
