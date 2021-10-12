@@ -1,8 +1,8 @@
 // noPage
 
+import { LibComponent } from 'esoftplay';
 import React from 'react';
 import { Image, Platform } from 'react-native';
-import { LibComponent } from 'esoftplay';
 
 export interface LibDirect_imageSource {
   uri: string

@@ -1,8 +1,8 @@
-import * as R from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as R from 'react';
+import { fastFilter, fastLoop } from './fast';
 const _global = require('./_global')
 const isEqual = require('react-fast-compare');
-import { fastFilter, fastLoop } from './fast'
 
 export interface useGlobalReturn<T> {
   useState: () => [T, (newState: T) => void, () => void],

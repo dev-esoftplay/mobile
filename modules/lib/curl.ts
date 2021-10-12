@@ -1,10 +1,8 @@
 // noPage
 
-import { LibNet_status } from 'esoftplay';
-import React from "react";
-import moment from "../../moment"
-import { esp, LibCrypt, LibProgress, _global, LibUtils, LibWorker } from 'esoftplay';
+import { esp, LibCrypt, LibNet_status, LibProgress, LibUtils } from 'esoftplay';
 import { reportApiError } from "../../error";
+import moment from "../../moment";
 
 export default class ecurl {
   isDebug = esp.config("isDebug");

@@ -1,7 +1,14 @@
 // noPage
 
-import React from 'react';
-import { LibComponent } from 'esoftplay';
+import {
+  AntDesign, Entypo,
+  EvilIcons,
+  Feather,
+  FontAwesome,
+  Fontisto,
+  Foundation, Ionicons, MaterialCommunityIcons, MaterialIcons,
+  Octicons, SimpleLineIcons, Zocial
+} from '@expo/vector-icons';
 import {
   AntDesignTypes,
   EntypoTypes,
@@ -15,23 +22,10 @@ import {
   MaterialIconsTypes,
   OcticonsTypes,
   SimpleLineIconsTypes,
-  ZocialTypes,
-} from '@expo/vector-icons/build/esoftplay_icons'
-import {
-  MaterialCommunityIcons,
-  Ionicons,
-  AntDesign,
-  SimpleLineIcons,
-  Entypo,
-  EvilIcons,
-  Feather,
-  FontAwesome,
-  Fontisto,
-  Foundation,
-  MaterialIcons,
-  Octicons,
-  Zocial,
-} from '@expo/vector-icons'
+  ZocialTypes
+} from '@expo/vector-icons/build/esoftplay_icons';
+import { LibComponent } from 'esoftplay';
+import React from 'react';
 
 export interface LibAntDesignIconProps {
   name: AntDesignTypes,

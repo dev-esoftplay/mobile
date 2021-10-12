@@ -1,11 +1,11 @@
 // withHooks
 // noPage
 
+import { esp, LibIcon, LibProgress, LibStyle } from 'esoftplay';
+import Constants from 'expo-constants';
+import * as Updates from 'expo-updates';
 import React from 'react';
 import { Alert, Pressable } from 'react-native';
-import * as Updates from 'expo-updates';
-import Constants from 'expo-constants'
-import { LibStyle, LibProgress, esp, LibIcon } from 'esoftplay';
 
 export interface LibUpdaterProps {
   show: boolean

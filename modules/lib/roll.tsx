@@ -1,8 +1,8 @@
 // noPage
 
+import { LibComponent, LibCurl, LibLoading, LibScroll, LibTextstyle } from 'esoftplay';
 import React from 'react';
 import { View } from 'react-native';
-import { LibComponent, LibCurl, LibScroll, LibTextstyle, LibLoading } from 'esoftplay';
 
 export interface LibRollProps {
   url: string,

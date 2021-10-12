@@ -1,10 +1,10 @@
 // withHooks
 // noPage
 
-import React from 'react';
 import { LibStyle, LibToastProperty } from 'esoftplay';
+import React from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
-import { WebView } from 'react-native-webview'
+import { WebView } from 'react-native-webview';
 
 export interface ContentVideoArgs {
 

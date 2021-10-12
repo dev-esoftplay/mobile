@@ -1,11 +1,11 @@
 // withHooks
 // noPage
 
+import { LibLoading, LibStyle, LibToastProperty, useSafeState } from 'esoftplay';
+import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import ScrollPicker from 'react-native-picker-scrollview';
-import { useSafeState, LibLoading, LibToastProperty, LibStyle } from 'esoftplay';
-import { LinearGradient } from 'expo-linear-gradient'
 export interface LibDatepickerProps {
   minDate: string,
   maxDate: string,

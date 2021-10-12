@@ -1,8 +1,7 @@
 // noPage
 
-import React from "react"
-import { Audio } from "expo-av";
 import { LibComponent } from "esoftplay";
+import { Audio } from "expo-av";
 
 export interface ContentAudioProps {
   code: string,

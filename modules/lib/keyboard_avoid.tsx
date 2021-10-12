@@ -2,7 +2,7 @@
 // noPage
 
 import React from 'react';
-import { Platform, KeyboardAvoidingView } from 'react-native';
+import { KeyboardAvoidingView, Platform } from 'react-native';
 
 export interface LibKeyboard_avoidProps {
   children?: any,

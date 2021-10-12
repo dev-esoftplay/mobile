@@ -1,13 +1,11 @@
 // noPage
 
-import { useGlobalReturn, useGlobalState } from 'esoftplay';
-import React from "react"
-import { Platform } from 'react-native';
-import * as Notifications from 'expo-notifications'
-import { LibNotification, esp, UserClass, LibCrypt, LibCurl, UserData } from "esoftplay";
-import moment from "../../moment";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { esp, LibCrypt, LibCurl, LibNotification, useGlobalReturn, useGlobalState, UserClass, UserData } from 'esoftplay';
 import Constants from 'expo-constants';
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import * as Notifications from 'expo-notifications';
+import { Platform } from 'react-native';
+import moment from "../../moment";
 
 
 const state = useGlobalState(undefined)

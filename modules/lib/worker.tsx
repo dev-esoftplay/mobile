@@ -1,9 +1,8 @@
 // noPage
 
-import React from "react";
-import { Component } from "react"
+import { _global } from 'esoftplay';
+import React, { Component } from "react";
 import { Platform } from 'react-native';
-import { _global } from 'esoftplay'
 
 export interface LibWorkerInit {
   task: string,

@@ -1,9 +1,9 @@
 // noPage
 
+import { LibComponent } from 'esoftplay';
 import React from 'react';
 import { InteractionManager, View } from 'react-native';
-import { LibComponent } from 'esoftplay';
-import { WebView } from 'react-native-webview'
+import { WebView } from 'react-native-webview';
 
 export interface LibWorkloopProps {
 

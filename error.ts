@@ -1,10 +1,9 @@
-import React from 'react';
-import { Platform } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LibCurl, UserClass } from 'esoftplay';
-import { default as UserRoutes } from './modules/user/routes'
 import Constants from 'expo-constants';
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import { Platform } from 'react-native';
 import esp from './esp';
+import { default as UserRoutes } from './modules/user/routes';
 let pack = require('../../package.json');
 let app = require('../../app.json');
 const { manifest } = Constants;
@@ -31,21 +30,29 @@ export function setError(error?: any) {
 }
 
 export function reportApiError(fetch: any, error: any) {
-  // if (manifest?.packagerOpts) {
-  //   return
-  // }
+
+  const user = UserClass.state().get()
   let config = esp.config()
+  let msg = [
+    'slug: ' + "#" + app.expo.slug,
+    'dev: ' + Platform.OS + ' - ' + Constants.deviceName,
+    'app/pub_id: ' + Constants.appOwnership + '/' + (config?.publish_id || '-'),
+    'user_id: ' + user?.id || user?.user_id || '-',
+    'username: ' + user?.username || '-',
+    'fetch: ' + String(JSON.stringify(fetch || {}, undefined, 2)).replace(/[\[\]\{\}\"]+/g, ''),
+    'error: ' + error
+  ].join('\n')
+  
+  if (manifest?.packagerOpts) {
+    let post = {
+      text: msg,
+      chat_id: '-626800023',
+      disable_web_page_preview: true
+    }
+    new LibCurl().custom('https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage', post)
+    return
+  }
   config?.errorReport?.telegramIds?.forEach?.((id: string) => {
-    const user = UserClass.state().get()
-    const msg = [
-      'slug: ' + "#" + app.expo.slug,
-      'dev: ' + Platform.OS + ' - ' + Constants.deviceName,
-      'app/pub_id: ' + Constants.appOwnership + '/' + (config?.publish_id || '-'),
-      'user_id: ' + user?.id || user?.user_id || '-',
-      'username: ' + user?.username || '-',
-      'fetch: ' + String(JSON.stringify(fetch || {}, undefined, 2)).replace(/[\[\]\{\}\"]+/g, ''),
-      'error: ' + error
-    ].join('\n')
     let post = {
       text: msg,
       chat_id: id,

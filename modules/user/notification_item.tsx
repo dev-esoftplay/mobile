@@ -1,8 +1,8 @@
 // noPage
 
-import React from 'react';
-import { View, Text } from 'react-native';
 import { LibStyle, LibUtils } from 'esoftplay';
+import React from 'react';
+import { Text, View } from 'react-native';
 
 
 export interface UserNotificationProps {

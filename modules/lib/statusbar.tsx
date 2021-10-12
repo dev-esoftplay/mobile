@@ -1,8 +1,8 @@
 // withHooks
 // noPage
 
-import React from 'react';
 import { StatusBar } from 'expo-status-bar';
+import React from 'react';
 
 export interface LibStatusbarProps {
   style: "dark" | "light"

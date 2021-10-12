@@ -1,28 +1,16 @@
 //
 
-import React from "react";
-import { Pressable, TouchableOpacity, View, Text } from "react-native";
 import {
-  esp,
-  LibCrypt,
-  LibCurl,
-  LibList,
-  LibComponent,
-  LibNotification,
-  LibStyle,
-  UserNotification_item,
-  LibStatusbar,
-  LibObject,
-  useGlobalState,
-  UserClass,
-  useGlobalReturn,
-  LibIcon,
-  LibUtils,
+  esp, LibComponent, LibCrypt,
+  LibCurl, LibIcon, LibList, LibNotification, LibObject, LibStatusbar, LibStyle, LibUtils, useGlobalReturn, useGlobalState,
+  UserClass, UserNotification_item
 } from "esoftplay";
-//@ts-ignore
-import moment from "../../moment"
 import * as Notifications from 'expo-notifications';
+import React from "react";
+import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import { fastFilter } from "../../fast";
+//@ts-ignore
+import moment from "../../moment";
 export interface UserNotificationProps {
   navigation: any,
   data: any[]

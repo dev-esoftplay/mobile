@@ -1,18 +1,14 @@
 // noPage
 
+import { esp, LibComponent, LibCurl, LibIcon, LibNavigation, LibProgress, LibStyle, useGlobalState } from 'esoftplay';
+import { Camera } from 'expo-camera';
+import * as ImageManipulator from 'expo-image-manipulator';
+import { SaveFormat } from 'expo-image-manipulator';
+import * as ImagePicker from 'expo-image-picker';
 import React from 'react';
 import {
-  View,
-  Image,
-  ActivityIndicator,
-  TouchableOpacity,
-  Alert,
+  ActivityIndicator, Alert, Image, TouchableOpacity, View
 } from 'react-native';
-import { LibStyle, LibComponent, LibCurl, esp, LibProgress, LibIcon, LibNavigation, useGlobalState } from 'esoftplay';
-import * as ImageManipulator from 'expo-image-manipulator';
-import { Camera } from 'expo-camera';
-import * as ImagePicker from 'expo-image-picker';
-import { SaveFormat } from 'expo-image-manipulator';
 const { height, width } = LibStyle;
 
 

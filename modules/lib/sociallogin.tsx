@@ -1,10 +1,10 @@
 // noPage
 
-import React from "react"
-import { View, ActivityIndicator } from "react-native";
-import { WebView } from 'react-native-webview'
-import { esp, LibUtils, LibComponent, LibStyle } from "esoftplay";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { esp, LibComponent, LibStyle, LibUtils } from "esoftplay";
+import React from "react";
+import { ActivityIndicator, View } from "react-native";
+import { WebView } from 'react-native-webview';
 const config = esp.config()
 const { colorPrimary } = LibStyle
 

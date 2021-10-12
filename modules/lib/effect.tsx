@@ -1,8 +1,7 @@
 // noPage
 
-import React from 'react';
 import { LibComponent } from 'esoftplay';
-import isEqual from 'react-fast-compare'
+import isEqual from 'react-fast-compare';
 
 export interface LibEffectProps {
   deps?: any[]

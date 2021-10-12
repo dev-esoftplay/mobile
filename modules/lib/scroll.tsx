@@ -1,8 +1,8 @@
 // noPage
 
-import React from "react"
-import { View, ScrollView, RefreshControl } from "react-native";
 import { LibComponent } from "esoftplay";
+import React from "react";
+import { RefreshControl, ScrollView, View } from "react-native";
 
 /*
 Using ScrollView

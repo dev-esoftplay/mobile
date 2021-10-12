@@ -1,8 +1,8 @@
 // withHooks
 // noPage
 
-import React, { useState, useRef, useEffect } from 'react';
-import { View, TextInput } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { TextInput, View } from 'react-native';
 
 
 export interface LibPinProps {

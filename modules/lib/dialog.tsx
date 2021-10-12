@@ -1,8 +1,8 @@
 // noPage
 
+import { LibComponent, LibIcon, LibIconStyle, LibStyle, LibTextstyle, LibTheme, useGlobalState } from 'esoftplay';
 import React from 'react';
-import { View, TouchableOpacity, BackHandler, Keyboard } from 'react-native';
-import { LibComponent, LibTheme, LibStyle, LibTextstyle, LibIcon, LibIconStyle, useGlobalState } from 'esoftplay';
+import { BackHandler, Keyboard, TouchableOpacity, View } from 'react-native';
 
 export interface LibDialogProps {
   visible?: boolean,

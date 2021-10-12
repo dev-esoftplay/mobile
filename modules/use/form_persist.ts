@@ -1,9 +1,9 @@
 // useLibs
 // noPage
 
-import React, { useEffect } from 'react';
-import { usePersistState, } from 'esoftplay';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { usePersistState } from 'esoftplay';
+import { useEffect } from 'react';
 
 export default (() => {
   let dt = {}

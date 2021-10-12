@@ -1,9 +1,9 @@
 // noPage
 
-import React from "react";
-import { LibComponent, useGlobalState, useGlobalReturn } from "esoftplay";
-import { Animated, Text } from "react-native";
 import NetInfo from '@react-native-community/netinfo';
+import { LibComponent, useGlobalReturn, useGlobalState } from "esoftplay";
+import React from "react";
+import { Animated, Text } from "react-native";
 
 export interface LibNet_statusProps {
   isOnline?: boolean

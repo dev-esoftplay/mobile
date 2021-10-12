@@ -1,6 +1,5 @@
 // noPage
 
-import React from 'react';
 import { LibComponent, useGlobalReturn, useGlobalState } from 'esoftplay';
 export interface ContentConfigProps {
   navigation: any

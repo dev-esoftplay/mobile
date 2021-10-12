@@ -1,8 +1,7 @@
 // noPage
 
-import React from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { esp, LibStyle, _global, useGlobalState, LibNavigation } from 'esoftplay';
+import { esp, LibNavigation, LibStyle, useGlobalState } from 'esoftplay';
 
 const { colorPrimary, colorAccent } = LibStyle
 

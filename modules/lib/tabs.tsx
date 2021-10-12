@@ -1,8 +1,8 @@
 // noPage
 
-import React from 'react';
-import { View, ScrollView } from 'react-native';
 import { LibComponent, LibStyle, LibUtils } from 'esoftplay';
+import React from 'react';
+import { ScrollView, View } from 'react-native';
 import { fastFilter } from '../../fast';
 
 export interface LibTabsProps {

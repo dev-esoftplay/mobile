@@ -1,9 +1,9 @@
 // withHooks
 // noPage
 
+import { useIsFocused } from '@react-navigation/native';
 import React, { useEffect } from 'react';
 import { View } from 'react-native';
-import { useIsFocused } from '@react-navigation/native';
 
 export interface LibFocusProps {
   isFocused?: boolean

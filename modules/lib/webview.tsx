@@ -1,10 +1,10 @@
 /*  */
 // noPage
 
-import React from "react";
-import { Animated, Dimensions, Platform, Linking } from "react-native";
-import { WebView } from 'react-native-webview'
 import { esp, LibComponent } from "esoftplay";
+import React from "react";
+import { Animated, Dimensions, Linking, Platform } from "react-native";
+import { WebView } from 'react-native-webview';
 let { width } = Dimensions.get("window");
 const config = esp.config();
 

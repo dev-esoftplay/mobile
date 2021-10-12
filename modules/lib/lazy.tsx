@@ -1,9 +1,9 @@
 // withHooks
 // noPage
 
-import React, { useEffect } from 'react';
-import { InteractionManager } from 'react-native';
 import { useSafeState } from 'esoftplay';
+import { useEffect } from 'react';
+import { InteractionManager } from 'react-native';
 
 
 export interface LibLazyProps {

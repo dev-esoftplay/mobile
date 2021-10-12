@@ -1,9 +1,9 @@
 // noPage
 
 
-import React from "react"
-import { View, FlatList } from 'react-native';
 import { LibComponent } from "esoftplay";
+import React from "react";
+import { FlatList, View } from 'react-native';
 
 export interface LibListItemLayout {
   length: number,

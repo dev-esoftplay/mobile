@@ -1,7 +1,7 @@
-import * as R from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as R from 'react';
+import { fastFilter, fastLoop } from './fast';
 const isEqual = require('react-fast-compare');
-import { fastFilter, fastLoop } from './fast'
 
 export interface UseCache_return<T> {
   useCache: () => [T, (newCache: T | ((oldCache: T) => T)) => void, () => void],

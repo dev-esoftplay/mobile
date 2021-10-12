@@ -1,8 +1,8 @@
 // noPage
 
+import { LibComponent, LibIcon, LibMenu, LibStyle, LibUtils } from "esoftplay";
 import React from "react";
-import { Text, View, TouchableOpacity } from "react-native";
-import { LibMenu, LibComponent, LibStyle, LibUtils, LibIcon } from "esoftplay";
+import { Text, TouchableOpacity, View } from "react-native";
 const { colorPrimary } = LibStyle;
 
 export interface LibMenusubProps {

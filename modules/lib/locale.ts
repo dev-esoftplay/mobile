@@ -1,7 +1,6 @@
 // noPage
 
-import React from "react";
-import { LibNavigation, useGlobalState, useGlobalReturn } from 'esoftplay';
+import { LibNavigation, useGlobalReturn, useGlobalState } from 'esoftplay';
 
 
 const initState = {

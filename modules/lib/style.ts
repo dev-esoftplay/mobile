@@ -1,7 +1,6 @@
 // noPage
 
-import React from "react";
-import { Dimensions, StatusBar, Platform } from "react-native";
+import { Dimensions, Platform, StatusBar } from "react-native";
 
 const { height, width } = Dimensions.get("window");
 const isIphoneX = Platform.OS === "ios" && ((height === 812 || width === 812) || (height === 896 || width === 896))

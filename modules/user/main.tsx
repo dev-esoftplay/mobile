@@ -1,6 +1,5 @@
 // noPage
 
-import React from 'react';
 import { LibComponent } from 'esoftplay';
 
 export interface UserMainProps {

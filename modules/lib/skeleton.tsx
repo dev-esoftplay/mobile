@@ -1,12 +1,11 @@
 // noPage
 
-import React, { useEffect } from 'react';
-import { LibComponent, LibSkeleton } from 'esoftplay';
-import { View } from 'react-native';
-import { LibStyle } from 'esoftplay';
-import { LinearGradient } from 'expo-linear-gradient';
 import MaskedView from '@react-native-masked-view/masked-view';
-import Animated, { useSharedValue, useAnimatedStyle, withRepeat, withTiming } from 'react-native-reanimated';
+import { LibComponent, LibStyle } from 'esoftplay';
+import { LinearGradient } from 'expo-linear-gradient';
+import React, { useEffect } from 'react';
+import { View } from 'react-native';
+import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
 
 
 export interface LibSkeletonProps {

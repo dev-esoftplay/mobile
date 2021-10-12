@@ -1,10 +1,11 @@
 // withHooks
 // noPage
 
-import React, { useCallback, useEffect, useRef } from 'react';
-import { Text } from 'react-native';;
 import { LibStyle, useGlobalState } from 'esoftplay';
+import React, { useCallback, useEffect, useRef } from 'react';
+import { Text } from 'react-native';
 import Animated, { EasingNode } from 'react-native-reanimated';
+;
 
 export interface LibToastProps {
 

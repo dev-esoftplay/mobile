@@ -1,10 +1,9 @@
 // noPage
 
 
+import { LibComponent, LibStyle, UserNotification } from "esoftplay";
 import React from "react";
-import { View, Text } from "react-native";
-import { UserNotification, LibComponent, LibStyle } from "esoftplay";
-import { TouchableOpacity } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 
 export interface UserNotifbadgeProps {
   data: any[],

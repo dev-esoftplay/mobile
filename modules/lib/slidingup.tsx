@@ -1,7 +1,7 @@
 // noPage
+import { LibComponent, LibKeyboard_avoid, LibStyle } from 'esoftplay';
 import React from 'react';
-import { LibComponent, LibStyle, LibKeyboard_avoid } from 'esoftplay';
-import { View, Animated, TouchableOpacity, BackHandler, Keyboard } from 'react-native';
+import { Animated, BackHandler, Keyboard, TouchableOpacity, View } from 'react-native';
 
 export interface LibSlidingupProps {
   onChangeShow?: (isShow: boolean) => void

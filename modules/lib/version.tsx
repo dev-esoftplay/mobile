@@ -1,10 +1,10 @@
 
 // noPage
 
-import React from 'react'
-import { esp, LibCurl, LibDialog, LibNavigation, LibComponent, LibIcon, LibStyle, LibTextstyle, LibUtils } from 'esoftplay'
-import { Linking, BackHandler, Platform, View, TouchableOpacity } from 'react-native'
+import { esp, LibComponent, LibCurl, LibDialog, LibIcon, LibNavigation, LibStyle, LibTextstyle, LibUtils } from 'esoftplay';
 import Constants from 'expo-constants';
+import React from 'react';
+import { BackHandler, Linking, Platform, TouchableOpacity, View } from 'react-native';
 export interface LibVersionProps {
 
 }

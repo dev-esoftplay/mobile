@@ -1,8 +1,8 @@
 // noPage
 
-import React from 'react';
-import { View, ActivityIndicator } from 'react-native';
 import { LibComponent, LibTheme } from 'esoftplay';
+import React from 'react';
+import { ActivityIndicator, View } from 'react-native';
 
 export interface LibLoadingProps {
 

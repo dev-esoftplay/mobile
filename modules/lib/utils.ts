@@ -1,11 +1,11 @@
 // noPage
 
-import { fastFilter, fastLoop } from './../../fast';
-import moment from "../../moment"
-import { Linking, Platform, Share } from "react-native"
-import { esp, LibToastProperty, _global, createCache } from "esoftplay"
-import shorthash from "shorthash"
+import { createCache, esp, LibToastProperty } from "esoftplay";
 import * as Clipboard from 'expo-clipboard';
+import { Linking, Platform, Share } from "react-native";
+import shorthash from "shorthash";
+import moment from "../../moment";
+import { fastFilter, fastLoop } from './../../fast';
 const Buffer = require('buffer/').Buffer
 const isEqual = require("react-fast-compare");
 

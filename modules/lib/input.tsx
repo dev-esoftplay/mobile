@@ -1,7 +1,7 @@
 // noPage
-import React from 'react';
-import { View, TextInput } from 'react-native';
 import { LibComponent, LibTextstyle, LibTheme, LibUtils } from 'esoftplay';
+import React from 'react';
+import { TextInput, View } from 'react-native';
 
 export interface LibInputProps {
   icon?: (color: string) => any,

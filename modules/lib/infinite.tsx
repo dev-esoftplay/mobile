@@ -1,9 +1,9 @@
 // noPage
 
+import { esp, LibComponent, LibCurl, LibListItemLayout, LibLoading, LibStyle, LibTextstyle } from 'esoftplay';
 import React from 'react';
-import { View, FlatList } from 'react-native';
-import { LibComponent, LibLoading, LibCurl, LibTextstyle, esp, LibListItemLayout, LibStyle } from 'esoftplay';
-import isEqual from 'react-fast-compare'
+import isEqual from 'react-fast-compare';
+import { FlatList, View } from 'react-native';
 
 
 export interface LibInfiniteProps {

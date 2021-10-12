@@ -1,7 +1,7 @@
 // withHooks
 // noPage
 
-import { ContentConfig, ContentBookmarkProperty, LibIcon, LibNavigation, LibPicture, LibStyle, LibUtils } from 'esoftplay';
+import { ContentBookmarkProperty, ContentConfig, LibIcon, LibNavigation, LibPicture, LibStyle, LibUtils } from 'esoftplay';
 import React from 'react';
 import { Image, Linking, Pressable, Text, View } from 'react-native';
 

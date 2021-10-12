@@ -1,5 +1,5 @@
-import { useRef, useEffect, useState, useMemo } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { fastFilter, fastLoop } from './fast'
 
 export default (() => {

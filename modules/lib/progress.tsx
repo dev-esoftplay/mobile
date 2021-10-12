@@ -1,8 +1,8 @@
 // noPage
 
+import { LibComponent, LibStyle, LibTextstyle, LibTheme, useGlobalState } from 'esoftplay';
 import React from 'react';
-import { View, ActivityIndicator, BackHandler } from 'react-native';
-import { LibComponent, LibTheme, LibStyle, LibTextstyle, useGlobalState } from 'esoftplay';
+import { ActivityIndicator, BackHandler, View } from 'react-native';
 
 export interface LibProgressProps {
   show?: boolean,

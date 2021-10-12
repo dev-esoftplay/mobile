@@ -1,7 +1,7 @@
 // withHooks
 // noPage
 
-import { LibStatusbar, LibStyle, LibIcon, LibNavigation } from 'esoftplay';
+import { LibIcon, LibNavigation, LibStatusbar, LibStyle } from 'esoftplay';
 import React from 'react';
 import { Pressable, Text, View } from 'react-native';
 

@@ -1,8 +1,7 @@
 // noPage
 
-import React from 'react'
-import * as DocumentPicker from 'expo-document-picker';
 import { esp, LibCurl, LibProgress } from 'esoftplay';
+import * as DocumentPicker from 'expo-document-picker';
 
 export default class m {
 

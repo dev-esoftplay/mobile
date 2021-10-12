@@ -1,9 +1,9 @@
 // withHooks
 
+import { LibIcon, LibNavigation, LibStyle, LibUtils } from 'esoftplay';
 import React, { useRef } from 'react';
 import { Pressable, ScrollView } from 'react-native';
 import Gallery from 'react-native-awesome-gallery';
-import { LibIcon, LibNavigation, LibStyle, LibUtils } from 'esoftplay'
 
 export interface ContentGalleryArgs {
 

@@ -1,17 +1,12 @@
-import React from "react";
-import { Modal, View, TextInput, ScrollView, TouchableOpacity, Image, KeyboardAvoidingView, Pressable, Text } from "react-native";
-import { Ionicons } from "@expo/vector-icons"
+import { Ionicons } from "@expo/vector-icons";
 import {
-  esp,
-  UserClass,
-  LibCrypt,
-  LibCurl,
-  LibSociallogin,
-  LibComponent,
-  LibStyle
+  esp, LibComponent, LibCrypt,
+  LibCurl, LibStyle, UserClass
 } from "esoftplay";
-const config = esp.config();
 import { StatusBar } from 'expo-status-bar';
+import React from "react";
+import { Image, KeyboardAvoidingView, Pressable, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+const config = esp.config();
 
 
 

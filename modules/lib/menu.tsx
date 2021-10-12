@@ -1,8 +1,8 @@
 // noPage
 
-import React from "react"
+import { LibComponent, LibMenusub } from "esoftplay";
+import React from "react";
 import { FlatList } from "react-native";
-import { LibMenusub, LibComponent } from "esoftplay";
 
 
 export interface LibMenuProps {

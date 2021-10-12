@@ -1,8 +1,8 @@
 // useLibs
 // noPage
 
-import React, { useEffect, useState } from 'react';
-import { UseDataProperty } from 'esoftplay'
+import { UseDataProperty } from 'esoftplay';
+import { useEffect, useState } from 'react';
 const isEqual = require('react-fast-compare');
 
 export function set(id: string, x: any): void {

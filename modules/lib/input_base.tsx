@@ -1,9 +1,9 @@
 // useLibs
 // noPage
 
-import React, { useRef, useEffect } from 'react';
+import { LibInput_base_dataProperty, LibUtils } from 'esoftplay';
+import React, { useEffect, useRef } from 'react';
 import { TextInput } from 'react-native';
-import { LibUtils, LibInput_base_dataProperty } from 'esoftplay';
 
 export interface LibInput_baseProps {
   name: string,

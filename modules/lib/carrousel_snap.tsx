@@ -1,9 +1,9 @@
 // withHooks
 // noPage
 
-import React, { useRef, useEffect, useMemo } from 'react';
-import { View, ScrollView } from 'react-native';
-import { LibFocus } from "esoftplay"
+import { LibFocus } from "esoftplay";
+import React, { useEffect, useMemo, useRef } from 'react';
+import { ScrollView, View } from 'react-native';
 
 export interface LibCarrousel_snapProps {
   data: any[]

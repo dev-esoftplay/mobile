@@ -1,7 +1,7 @@
 // useLibs
 // noPage
 
-import { LibCurl, useSafeState, LibProgress } from 'esoftplay';
+import { LibCurl, LibProgress, useSafeState } from 'esoftplay';
 
 export default function m(initialWithLoading?: boolean, withProgressText?: string): [(uri: string, post: any, onDone: (res: any, msg: string) => void, debug?: 0 | 1) => void, boolean, string] {
   const [loading, setLoading] = useSafeState(initialWithLoading)

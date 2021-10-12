@@ -1,9 +1,9 @@
 // withHooks
 
+import { applyStyle, ContentAudio, ContentConfig, ContentItem, ContentVideo, LibCurl, LibIcon, LibNavigation, LibObject, LibScroll, LibStyle, LibUtils, LibWebview, useSafeState } from 'esoftplay';
+import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useRef } from 'react';
-import { applyStyle, ContentAudio, ContentItem, ContentVideo, LibObject, ContentConfig, LibCurl, LibIcon, LibNavigation, LibScroll, LibStyle, LibUtils, LibWebview, useSafeState } from 'esoftplay';
 import { ImageBackground, Linking, Pressable, Text, View } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient'
 
 export interface ContentDetailArgs {
 
