@@ -111,8 +111,8 @@ if (fs.existsSync(packjson)) {
 			// console.log("Please change scripts.start in package.json into '" + $package.scripts.start + "'")
 			// spawn('node', ['./packager.js', args[0], packjson], { stdio: 'inherit' })
 			fs.writeFile(packjson, JSON.stringify($package, null, 2), (err) => {
-			  if (err) throw err;
-			  console.log('package.json has been updated');
+				if (err) throw err;
+				console.log('package.json has been updated');
 			});
 		}
 	}
@@ -329,6 +329,12 @@ export default function App() {
 			'react-native-webview',
 			'shorthash'
 		]
+		if ($config.config.hasOwnProperty('excludePackages')) {
+			if ($config.config.excludePackages) {
+				const excludePackages = $config.config.excludePackages
+				expoLib = expoLib.filter((item) => !excludePackages.includes(item))
+			}
+		}
 		let devLibs = [
 			"@babel/core",
 			"@types/react",
