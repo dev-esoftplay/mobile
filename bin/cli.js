@@ -154,7 +154,7 @@ function configUpdate(state) {
 }
 
 function update() {
-	command("npm install -s esoftplay@latest")
+	command("yarn upgrade esoftplay --latest")
 	if (fs.existsSync(packjson)) {
 		let pack = readToJSON(packjson)
 		let esplibs = Object.keys(pack.dependencies).filter((key) => key.includes("esoftplay"))
@@ -162,7 +162,7 @@ function update() {
 		esplibs.forEach((key) => {
 			if (key != 'esoftplay') {
 				if (args[1] == 'all')
-					command('npm install -s ' + key + '@latest')
+					command('yarn upgrade ' + key + ' --latest')
 				command("cd node_modules/" + key + " && node mover.js")
 				consoleSucces(key + " succesfully implemented!")
 			}
