@@ -361,7 +361,7 @@ export default function App() {
 				fs.mkdirSync(DIR + 'modules')
 			let cmd = "cd ../../ "
 			if (installDevLibs.length > 0)
-				cmd += "&& npm install --save-dev " + installDevLibs.join(" ") + " "
+				cmd += "&& yarn add " + installDevLibs.join(" ") + " --dev "
 			if (installExpoLibs.length > 0)
 				cmd += "&& expo install " + installExpoLibs.join(" ")
 			execSync(cmd, { stdio: ['inherit', 'inherit', 'inherit'] })
