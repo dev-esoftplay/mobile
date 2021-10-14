@@ -4,7 +4,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { TextInput, View } from 'react-native';
 
-
 export interface LibPinProps {
   length: number,
   onChangePin: (pin: string) => void
@@ -18,6 +17,7 @@ export default function m(props: LibPinProps): any {
   const input = useRef<TextInput>(null)
 
   useEffect(() => {
+    setTimeout(() => { input?.current?.focus() }, 100);
     setPin(props?.pinValue?.split?.(''))
     props.onChangePin(props?.pinValue || '')
   }, [props.pinValue])
@@ -44,7 +44,7 @@ export default function m(props: LibPinProps): any {
                 keyboardType='numeric'
                 secureTextEntry
                 style={{ opacity: 0, marginLeft: -400, width: 400 + 60 * props.length, fontSize: 0, height: 60, marginTop: -40, alignSelf: 'flex-start' }}
-                autoFocus 
+                autoFocus
                 onChangeText={(t: string) => {
                   if (t.length == props.length) {
                     input.current!.blur()
