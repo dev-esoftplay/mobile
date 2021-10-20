@@ -42,7 +42,7 @@ export default function m(props: ContentCategory_listProps): any {
               onPress={() => { LibNavigation.push('content/list', { url: row.url, title: row.title, id: row.id }) }}
               style={{ borderRadius: 8, flexDirection: 'row', borderWidth: 1, borderColor: "#f2f2f2", margin: 5, padding: 8, alignItems: 'center' }} >
               <LibPicture source={{ uri: row.image }} style={{ width: 20, height: 20, resizeMode: 'contain' }} />
-              <Text style={{ fontFamily: 'Roboto', marginLeft: 8 }} >{row.title}</Text>
+              <Text style={{  marginLeft: 8 }} >{row.title}</Text>
             </Pressable>
           ))
         }

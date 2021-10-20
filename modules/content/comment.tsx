@@ -98,7 +98,7 @@ export default function m(props: ContentCommentProps): any {
       <View style={{ flex: 1, backgroundColor: "white" }} >
         <ContentHeader title="Login dengan akun" />
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", paddingRight: 16 }} >
-          <Text style={{ flex: 1, padding: 10, fontFamily: 'Roboto', color: '#606060' }} >{"Silakan login dengan salah satu akun sosial media berikut untuk dapat mengirimkan komentar"}</Text>
+          <Text style={{ flex: 1, padding: 10,  color: '#606060' }} >{"Silakan login dengan salah satu akun sosial media berikut untuk dapat mengirimkan komentar"}</Text>
           <View style={{ justifyContent: "center" }} >
             <Pressable
               onPress={() => { setShowLoginForm(false) }} >
@@ -130,13 +130,13 @@ export default function m(props: ContentCommentProps): any {
                 <Image source={{ uri: headerComment.image }} style={{ height: 50, backgroundColor: '#f8f8f8', width: 50, resizeMode: 'cover', overflow: 'hidden', borderRadius: 25 }} />
               </View>
               <View style={{ flex: 1, paddingVertical: 16, marginHorizontal: 16 }} >
-                <Text style={{ fontFamily: "Roboto", fontSize: 10, fontWeight: "500", letterSpacing: 1.5, color: "#686868" }} >{LibUtils.moment(headerComment.date).format('DD MMM YYYY HH:mm').toUpperCase()}</Text>
-                <Text style={{ fontFamily: "Roboto_medium", fontSize: 16, fontWeight: "500", lineHeight: 20, color: "#060606", marginTop: 8 }} >{headerComment.name}</Text>
-                <Text style={{ fontFamily: "Roboto", fontSize: 14, fontWeight: "500", lineHeight: 20, color: "#606060" }} >{headerComment.content}</Text>
+                <Text style={{  fontSize: 10, fontWeight: "500", letterSpacing: 1.5, color: "#686868" }} >{LibUtils.moment(headerComment.date).format('DD MMM YYYY HH:mm').toUpperCase()}</Text>
+                <Text style={{  fontSize: 16, fontWeight: "500", lineHeight: 20, color: "#060606", marginTop: 8 }} >{headerComment.name}</Text>
+                <Text style={{  fontSize: 14, fontWeight: "500", lineHeight: 20, color: "#606060" }} >{headerComment.content}</Text>
                 <Pressable style={{ flexDirection: 'row' }} >
                   <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 9, /* backgroundColor: '#f1f1f1', padding: 3, borderRadius: 6 */ }} >
                     <LibIcon.AntDesign name='message1' size={12} color="#ababab" />
-                    <Text style={{ fontFamily: "Roboto", fontSize: 12, lineHeight: 16, color: "#ababab", marginLeft: 5 }} >{headerComment.reply} Balasan</Text>
+                    <Text style={{  fontSize: 12, lineHeight: 16, color: "#ababab", marginLeft: 5 }} >{headerComment.reply} Balasan</Text>
                   </View>
                 </Pressable>
               </View>

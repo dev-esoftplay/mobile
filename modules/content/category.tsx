@@ -49,7 +49,7 @@ export default function m(props: ContentCategoryProps): any {
               onPress={() => { LibNavigation.push('content/list', { url: item.url, title: item.title, id: item.id }) }}
               style={{ borderRadius: 8, backgroundColor: "#f2f2f2", flex: 0.35, margin: 5, alignItems: 'center' }} >
               <LibPicture source={{ uri: item.image }} style={{ height: 70, width: 70, marginTop: 16, }} />
-              <Text style={{ fontFamily: "Roboto_medium", fontSize: 12, fontWeight: "500", lineHeight: 20, color: "#060606", marginBottom: 12, }}>{item?.title}</Text>
+              <Text style={{  fontSize: 12, fontWeight: "500", lineHeight: 20, color: "#060606", marginBottom: 12, }}>{item?.title}</Text>
             </Pressable>
           )
         }}

@@ -105,8 +105,8 @@ export default function m(props: ContentItemProps): any {
 const styleId_Z1pdPtF: any = { width: LibStyle.width, height: 110, resizeMode: 'contain' }
 const styleId_Z1S0WHq: any = { paddingHorizontal: 16, paddingVertical: 16, flexDirection: 'row', borderBottomWidth: 1, borderTopWidth: 1, borderBottomColor: '#f2f2f2', borderTopColor: '#f8f8f8' }
 const styleId_Z13iiKo: any = { flex: 1, marginLeft: 16, paddingTop: 0 }
-const styleId_Z14zkzb: any = { fontFamily: "Roboto_medium", fontSize: 10, fontWeight: "500", letterSpacing: 1.5, color: "#686868" }
-const styleId_1NrPkO: any = { fontFamily: "Roboto_medium", fontSize: 17, fontWeight: "500", lineHeight: 21, color: "#060606", marginTop: 5, }
+const styleId_Z14zkzb: any = {  fontSize: 10, fontWeight: "500", letterSpacing: 1.5, color: "#686868" }
+const styleId_1NrPkO: any = {  fontSize: 17, fontWeight: "500", lineHeight: 21, color: "#060606", marginTop: 5, }
 const styleId_Z1i5LUH: any = { flexDirection: 'row', marginTop: 5 }
-const styleId_mzCdS: any = { fontFamily: "Roboto", fontSize: 14, lineHeight: 20, color: LibStyle.colorPrimary, }
+const styleId_mzCdS: any = {  fontSize: 14, lineHeight: 20, color: LibStyle.colorPrimary, }
 const styleId_Zl1hMr: any = { height: 90, width: 110, borderRadius: 8, backgroundColor: '#f8f8f8' }

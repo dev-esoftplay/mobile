@@ -49,4 +49,4 @@ export default function m(props: ContentIndexProps): any {
 }
 const styleId_ZKPd2h: any = { height: 56, flexDirection: 'row', borderTopWidth: 3, borderTopColor: '#f8f8f8' }
 const styleId_Z2pKvdh: any = { flex: 1, justifyContent: 'center', alignItems: 'center' }
-const styleId_Z25Lwf9: any = { fontFamily: "Roboto", fontSize: 12, fontWeight: "500", lineHeight: 16, textAlign: "center", color: 'grey' }
+const styleId_Z25Lwf9: any = {  fontSize: 12, fontWeight: "500", lineHeight: 16, textAlign: "center", color: 'grey' }

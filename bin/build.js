@@ -370,6 +370,7 @@ export default function App() {
 				cmd += "&& yarn add " + installDevLibs.join(" ") + " --dev "
 			if (installExpoLibs.length > 0)
 				cmd += "&& expo install " + installExpoLibs.join(" ")
+				cmd += "&& esp start"
 			execSync(cmd, { stdio: ['inherit', 'inherit', 'inherit'] })
 			console.log('App.js has been replace to App.tsx');
 			if (fs.existsSync('../@expo/vector-icons')) {
@@ -390,8 +391,7 @@ export default function App() {
 			}
 			console.log('Please wait until processes has finished...');
 		});
-
-		execSync('esp start', { stdio: ['inherit', 'inherit', 'inherit'] })
+		// execSync('esp start', { stdio: ['inherit', 'inherit', 'inherit'] })
 	}
 } else {
 	console.log(packjson + " not found!!")

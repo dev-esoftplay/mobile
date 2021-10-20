@@ -214,7 +214,6 @@ export default class m extends LibComponent<LibInputProps, LibInputState>{
               marginBottom: 2,
               paddingRight: suffix ? (suffix.length * 14) : 0,
               fontSize: 17.5,
-              fontFamily: 'Roboto',
               color: error
                 ? 'red'
                 : inactive == true

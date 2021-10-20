@@ -70,8 +70,8 @@ export default function m(props: ContentBookmarkProps): any {
         ListEmptyComponent={
           <View style={{ height: LibStyle.height - 100, justifyContent: 'center', alignItems: 'center', marginHorizontal: 24 }} >
             <LibIcon name='bookmark-plus-outline' color={"#FD5593"} size={40} />
-            <Text style={{ fontFamily: "Roboto_medium", fontSize: 34, marginTop: 10, fontWeight: "500", lineHeight: 40, textAlign: "center", color: "#060606" }} >Artikel belum ada</Text>
-            <Text style={{ fontFamily: "Roboto", fontSize: 16, marginTop: 10, lineHeight: 22, textAlign: "center", color: "#686868" }} >Kamu dapat menyimpan artikel untuk dibaca nanti dengan cara klik lambang bookmark</Text>
+            <Text style={{  fontSize: 34, marginTop: 10, fontWeight: "500", lineHeight: 40, textAlign: "center", color: "#060606" }} >Artikel belum ada</Text>
+            <Text style={{  fontSize: 16, marginTop: 10, lineHeight: 22, textAlign: "center", color: "#686868" }} >Kamu dapat menyimpan artikel untuk dibaca nanti dengan cara klik lambang bookmark</Text>
           </View>
         }
         renderItem={(item) => <ContentItem {...item} />}

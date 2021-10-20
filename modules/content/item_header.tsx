@@ -42,11 +42,11 @@ export default function m(props: ContentItem_headerProps): any {
         source={{ uri: props.image }}
         style={applyStyle({ height: itemHeight, width: LibStyle.width, justifyContent: 'flex-end' })} >
         <LinearGradient colors={['transparent', 'rgba(0,0,0,0.8)']} style={applyStyle({ padding: 16 })} >
-          <Text style={applyStyle({ fontFamily: "Roboto_medium", fontSize: 10, fontWeight: "500", letterSpacing: 1.5, color: "white", textTransform: 'uppercase' })} >{LibUtils.moment(props.created, 'id').format('DD MMM YYYY HH:mm')}</Text>
-          <Text style={applyStyle({ fontFamily: "Roboto_medium", fontSize: 24, fontWeight: "500", lineHeight: 30, color: "white", marginTop: 5 })} >{props.title}</Text>
+          <Text style={applyStyle({  fontSize: 10, fontWeight: "500", letterSpacing: 1.5, color: "white", textTransform: 'uppercase' })} >{LibUtils.moment(props.created, 'id').format('DD MMM YYYY HH:mm')}</Text>
+          <Text style={applyStyle({  fontSize: 24, fontWeight: "500", lineHeight: 30, color: "white", marginTop: 5 })} >{props.title}</Text>
           <View style={applyStyle({ flexDirection: 'row', marginTop: 5 })} >
             <View style={applyStyle({ backgroundColor: 'rgba(255,255,255,0.6)', borderRadius: 4, paddingHorizontal: 10, })} >
-              <Text style={applyStyle({ fontFamily: "Roboto", fontSize: 14, lineHeight: 20, color: LibStyle.colorPrimary, })} >{props.created_by_alias}</Text>
+              <Text style={applyStyle({  fontSize: 14, lineHeight: 20, color: LibStyle.colorPrimary, })} >{props.created_by_alias}</Text>
             </View>
           </View>
         </LinearGradient>
