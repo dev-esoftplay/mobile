@@ -656,7 +656,7 @@ function createRouter() {
     screens.push("\t\t\t\t<Stack.Screen name={\"" + nav + "\"} component={" + comp + "} />")
   })
 
-  let N = Nav5(importer.join(", "), screens.join("\n"))
+  let N = Nav5(importer.join(", \n"), screens.join("\n"))
   if (isChange(tmpDir + 'navs.tsx', N))
     fs.writeFile(tmpDir + "navs.tsx", N, { flag: 'w' }, function (err) {
       if (err) {
