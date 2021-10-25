@@ -297,6 +297,7 @@ export default function App() {
 			'@react-native-async-storage/async-storage',
 			'@react-native-masked-view/masked-view',
 			'@react-native-community/netinfo',
+			'@react-navigation/native-stack',
 			'@react-navigation/native',
 			'@react-navigation/stack',
 			'buffer',
@@ -370,7 +371,7 @@ export default function App() {
 				cmd += "&& yarn add " + installDevLibs.join(" ") + " --dev "
 			if (installExpoLibs.length > 0)
 				cmd += "&& expo install " + installExpoLibs.join(" ")
-				cmd += "&& esp start"
+			cmd += "&& esp start"
 			execSync(cmd, { stdio: ['inherit', 'inherit', 'inherit'] })
 			console.log('App.js has been replace to App.tsx');
 			if (fs.existsSync('../@expo/vector-icons')) {

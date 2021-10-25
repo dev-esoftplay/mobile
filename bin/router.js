@@ -50,7 +50,7 @@ var Nav5 = (importer, navs) => {
 // @ts-nocheck
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from 'react-native-screens/native-stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 \nimport { `+ importer + `, esp, _global } from "esoftplay";\n
 \nimport { LibNavigation } from "esoftplay";\n
 const Stack = createNativeStackNavigator();
