@@ -16,6 +16,7 @@ export interface LibInfiniteProps {
   onResult?: (res: any, uri: string) => void,
   filterData?: (item: any, index: number, array: any[]) => boolean,
   error?: string,
+  LoadingView?: any,
   errorView?: ((msg: string) => any) | any,
   mainIndex?: string,
   stickyHeaderIndices?: number[],
@@ -174,7 +175,7 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
       <View style={{ flex: 1 }} >
         {
           (!data || data.length) == 0 && !this.isStop ?
-            <LibLoading />
+            this.props.LoadingView || <LibLoading />
             :
             <FlatList
               ref={this.flatlist}
