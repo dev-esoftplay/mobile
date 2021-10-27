@@ -164,17 +164,17 @@ export default function m(props: LibDatepickerProps): any {
         </TouchableOpacity>
       </View>
       <View style={{ height: 175, flexDirection: 'row' }} >
-        <View style={{ width: showYearView ? undefined : 0, flex: showYearView ? 1 : 0, }} >
+        <View style={{ width: showDateView ? undefined : 0, flex: showDateView ? 1 : 0, }} >
           <ScrollPicker
-            ref={refYear}
-            dataSource={years}
-            selectedIndex={years.indexOf(year)}
+            ref={refDate}
+            dataSource={dates}
+            selectedIndex={dates.indexOf(date)}
             itemHeight={35}
             wrapperHeight={175}
             wrapperColor={'#ffffff'}
             highlightColor={'#c8c7cc'}
             renderItem={itemRenderer}
-            onValueChange={onYearChange}
+            onValueChange={onDateChange}
           />
         </View>
         <View style={{ width: showMonthView ? undefined : 0, flex: showMonthView ? 1 : 0, }} >
@@ -190,24 +190,24 @@ export default function m(props: LibDatepickerProps): any {
             onValueChange={onMonthChange}
           />
         </View>
-        <View style={{ width: showDateView ? undefined : 0, flex: showDateView ? 1 : 0, }} >
+        <View style={{ width: showYearView ? undefined : 0, flex: showYearView ? 1 : 0, }} >
           <ScrollPicker
-            ref={refDate}
-            dataSource={dates}
-            selectedIndex={dates.indexOf(date)}
+            ref={refYear}
+            dataSource={years}
+            selectedIndex={years.indexOf(year)}
             itemHeight={35}
             wrapperHeight={175}
             wrapperColor={'#ffffff'}
             highlightColor={'#c8c7cc'}
             renderItem={itemRenderer}
-            onValueChange={onDateChange}
+            onValueChange={onYearChange}
           />
         </View>
       </View>
       <LinearGradient
         start={{ x: 1, y: 0 }}
         end={{ x: 1, y: 1 }}
-        colors={['rgba(255,255,255,1)','rgba(255,255,255,0.8)', 'rgba(255,255,255,0)','rgba(255,255,255,0.8)', 'rgba(255,255,255,1)']}
+        colors={['rgba(255,255,255,1)', 'rgba(255,255,255,0.8)', 'rgba(255,255,255,0)', 'rgba(255,255,255,0.8)', 'rgba(255,255,255,1)']}
         pointerEvents='none' style={{ height: 175, position: 'absolute', top: 44, bottom: 0, left: 0, right: 0 }} />
     </View>
   )
