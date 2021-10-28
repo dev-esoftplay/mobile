@@ -47,6 +47,14 @@ export default function m(props: UserIndexProps): any {
   }
 
   useMemo(() => {
+    const timeout = setTimeout(() => {
+      Alert.alert("Yey...! Pembaharuan sudah selesai", "Silahkan mulai ulang aplikasi kamu", [
+        {
+          onPress: () => LibUpdaterProperty.install(),
+          text: "Mulai Ulang Sekarang"
+        }
+      ], { cancelable: false })
+    }, 30 * 1000);
     if (esp.config('firebase').hasOwnProperty('apiKey')) {
       if (!firebase.apps.length) {
         firebase.initializeApp(esp.config('firebase'));
@@ -54,14 +62,6 @@ export default function m(props: UserIndexProps): any {
       }
     }
     UserClass.isLogin(async () => {
-      const timeout = setTimeout(() => {
-        Alert.alert("Yey...! Pembaharuan sudah selesai", "Silahkan mulai ulang aplikasi kamu", [
-          {
-            onPress: () => LibUpdaterProperty.install(),
-            text: "Mulai Ulang Sekarang"
-          }
-        ], { cancelable: false })
-      }, 30 * 1000);
       await setFonts()
       LibUpdaterProperty.check((isNew) => {
         if (isNew) {
