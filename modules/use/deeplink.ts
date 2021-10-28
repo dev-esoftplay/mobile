@@ -6,12 +6,19 @@ import { useCallback, useEffect } from 'react';
 import { Alert, Linking } from 'react-native';
 
 export default function m(defaultUrl?: string): void {
-  const doLink = useCallback(({ url }: any) => {
+  const doLink = useCallback(({ url }: { url: string }) => {
     const { domain, uri } = esp.config()
     if (url?.includes(defaultUrl || domain))
       LibUtils.debounce(() => {
         url = url.replace((domain + uri), (domain + uri + 'deeplink/'))
-        new LibCurl().custom(url, null,
+        function removeLastDot(url: string) {
+          if (url.substr(url.length - 1, 1) == '.') {
+            url = url.substring(0, url.length - 1)
+            return removeLastDot(url)
+          }
+          return url
+        }
+        new LibCurl().custom(removeLastDot(url), null,
           (res) => {
             if (res.ok == 1) {
               function nav(module: string, url: string) {
@@ -20,6 +27,7 @@ export default function m(defaultUrl?: string): void {
                     nav(module, url)
                   }, 500);
                 } else {
+                  //@ts-nocheck
                   LibNavigation.push(module, { url: url })
                 }
               }
