@@ -28,7 +28,9 @@ export default class m {
 
   deleteAll(): void {
     AsyncStorage.getItem("user_data_dependent").then((x) => {
-      Object.values?.(_global.useGlobalUserDelete)?.map?.((func) => func?.())
+      if (_global?.useGlobalUserDelete) {
+        Object.values?.(_global?.useGlobalUserDelete)?.map?.((func) => func?.())
+      }
       if (x) AsyncStorage.multiRemove(JSON.parse(x))
     })
   }
