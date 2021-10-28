@@ -1,6 +1,7 @@
 import { esp, LibLocale, UserRoutes } from 'esoftplay';
 import Constants from 'expo-constants';
 import { LogBox, Platform } from 'react-native';
+import 'react-native-reanimated';
 import _assets from './cache/assets';
 import navs from './cache/navigations';
 import routers from './cache/routers';
