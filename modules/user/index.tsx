@@ -5,7 +5,7 @@ import { esp, LibDialog, LibImage, LibNet_status, LibProgress, LibStyle, LibToas
 import * as Font from "expo-font";
 import firebase from 'firebase';
 import React, { useEffect, useMemo } from "react";
-import { View } from "react-native";
+import { Alert, View } from "react-native";
 //@ts-ignore
 import Navs from "../../cache/navs";
 
@@ -54,11 +54,20 @@ export default function m(props: UserIndexProps): any {
       }
     }
     UserClass.isLogin(async () => {
+      const timeout = setTimeout(() => {
+        Alert.alert("Yey...! Pembaharuan sudah selesai", "Silahkan mulai ulang aplikasi kamu", [
+          {
+            onPress: () => LibUpdaterProperty.install(),
+            text: "Mulai Ulang Sekarang"
+          }
+        ], { cancelable: false })
+      }, 30 * 1000);
       await setFonts()
       LibUpdaterProperty.check((isNew) => {
         if (isNew) {
           LibUpdaterProperty.install()
         } else {
+          clearTimeout(timeout)
           setLoading(false)
         }
       })

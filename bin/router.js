@@ -108,7 +108,6 @@ checks.forEach(modules => {
                 return console.log(err)
               } else {
                 var isIndexed = (tmpExp.indexOf(clsName) > -1) ? false : true;
-                // console.log(isIndexed, clsName);
                 var isHooks = false
                 var isUseLibs = false
                 /* REGEX HOOKS */
@@ -509,43 +508,6 @@ function isChange(path, compare) {
 /* CREATE REDUCER LIST */
 function createReducer() {
   if (countRead >= countLoop) {
-    // var CodeImporter = "";
-    // var CodeReducer = "";
-    // for (const key in Reducers) {
-    //   if (HookReducers.includes(key)) {
-    //     CodeImporter += "\nimport * as " + key + " from '../../." + Reducers[key] + "';";
-    //   } else {
-    //     CodeImporter += "\nimport " + key + " from '../../." + Reducers[key] + "';";
-    //   }
-    //   CodeReducer += "\n\t" + key + ": " + key + ".reducer,";
-    // }
-    // if (CodeReducer != "") {
-    //   CodeReducer = CodeReducer.substr(0, CodeReducer.length - 1);
-    // }
-    // Text = "import { combineReducers } from 'redux'" +
-    //   "\nimport { persistReducer } from 'redux-persist'" +
-    //   "\nimport AsyncStorage from '@react-native-async-storage/async-storage'" + CodeImporter +
-    //   "\n\nconst combiner = combineReducers({" + CodeReducer +
-    //   "\n})\n\n" +
-    //   "\nconst persistConfig = {" +
-    //   "\n\tkey: 'root'," +
-    //   "\n\tstorage: AsyncStorage," +
-    //   "\n\twhitelist: ['" + Object.keys(Persistor).join('\',\'') + "']" +
-    //   "\n}" +
-    //   "\nconst reducers = (state, action) => {" +
-    //   "\n\tif (action.type === 'user_class_delete') {" +
-    //   "\n\t\tstate = undefined" +
-    //   "\n\t}" +
-    //   "\n\treturn combiner(state, action)" +
-    //   "\n	}" +
-    //   "\nexport default persistReducer(persistConfig, reducers)";
-    // if (isChange(tmpDir + "reducers.js", Text)) {
-    //   fs.writeFile(tmpDir + "reducers.js", Text, { flag: 'w' }, function (err) {
-    //     if (err) {
-    //       return console.log(err);
-    //     }
-    //   })
-    // }
     createRouter()
     createIndex();
   } else {
@@ -587,7 +549,6 @@ function createRouter() {
         item += "" +
           "import * as " + ucword(module) + ucword(task) + SuffixHooksProperty + " from '../../." + Modules[module][task] + "';\n" +
           "const " + ucword(module) + ucword(task) + " = React.memo(_" + ucword(module) + ucword(task) + ", isEqual); \n" +
-          // "const " + ucword(module) + ucword(task) + " = _" + ucword(module) + ucword(task) + "; \n" +
           "export { " + ucword(module) + ucword(task) + SuffixHooksProperty + ", " + ucword(module) + ucword(task) + " };\n"
       } else if (UseLibs.includes(nav)) {
         item += "" +
@@ -656,7 +617,7 @@ function createRouter() {
     screens.push("\t\t\t\t<Stack.Screen name={\"" + nav + "\"} component={" + comp + "} />")
   })
 
-  let N = Nav5(importer.join(", \n"), screens.join("\n"))
+  let N = Nav5(importer.join(", "), screens.join("\n"))
   if (isChange(tmpDir + 'navs.tsx', N))
     fs.writeFile(tmpDir + "navs.tsx", N, { flag: 'w' }, function (err) {
       if (err) {
