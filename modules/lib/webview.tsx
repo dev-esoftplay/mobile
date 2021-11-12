@@ -127,6 +127,7 @@ class ewebview extends LibComponent<LibWebviewProps, LibWebviewState> {
       <Animated.View style={{ height: this.state.height, overflow: "hidden" }}>
         <WebView
           {...otherprops}
+          cacheEnabled={false} 
           ref={(e: any) => this.webview = e}
           source={this.state.source}
           bounces={bounces !== undefined ? bounces : true}

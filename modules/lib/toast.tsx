@@ -2,10 +2,9 @@
 // noPage
 
 import { LibStyle, useGlobalState } from 'esoftplay';
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { Text } from 'react-native';
-import Animated, { EasingNode } from 'react-native-reanimated';
-;
+import Animated, { interpolate, useAnimatedProps, useSharedValue, withTiming } from 'react-native-reanimated';
 
 export interface LibToastProps {
 
@@ -39,35 +38,23 @@ export function show(message: string, timeout?: number): void {
 }
 
 export default function m(props: LibToastProps): any {
-  const data = state.useSelector(s => s)
-  // if (!data.message) return null
+  const [data] = state.useState()
+  const anim = useSharedValue(0)
 
-  const animatable = useRef(new Animated.Value(0)).current
-
-  const inv = animatable.interpolate({
-    inputRange: [0, 1],
-    outputRange: [-(LibStyle.STATUSBAR_HEIGHT + 300), 0],
-  })
-  const op = animatable.interpolate({
-    inputRange: [0, 0.7, 1],
-    outputRange: [0, 0, 1],
-  })
-
-  const showHide = useCallback((show: boolean) => {
-    Animated.timing(animatable, {
-      toValue: show ? 1 : 0,
-      duration: 500,
-      easing: EasingNode.linear
-    }).start()
-  }, [data])
+  const style = useAnimatedProps(() => ({
+    transform: [{
+      translateY: interpolate(anim.value, [0, 1], [-(LibStyle.STATUSBAR_HEIGHT + 400), 0])
+    }],
+    opacity: interpolate(anim.value, [0, 0.8, 1], [0, 0, 1])
+  }))
 
   useEffect(() => {
-    showHide(data?.message)
+    anim.value = withTiming(data?.message ? 1 : 0, { duration: 500 })
   }, [data])
 
   return (
-    <Animated.View style={{ position: 'absolute', top: LibStyle.STATUSBAR_HEIGHT + 70, left: 0, right: 0, transform: [{ translateY: inv }], marginVertical: 4, marginHorizontal: 13, borderRadius: 13, borderWidth: 1, borderColor: '#c4c4c4', opacity: op, backgroundColor: '#333', padding: 16, flex: 1 }} >
-      <Text style={{ fontSize: 13, fontWeight: "bold", fontStyle: "normal", letterSpacing: 0, textAlign: "center", color: 'white' }} >{String(data?.message || '')}</Text>
+    <Animated.View style={[{ position: 'absolute', top: LibStyle.STATUSBAR_HEIGHT + 70, left: 0, right: 0, marginVertical: 4, marginHorizontal: 13, borderRadius: 4, borderWidth: 1, borderColor: '#505050', backgroundColor: '#323232', paddingVertical: 13, paddingHorizontal: 16, }, style, LibStyle.elevation(2)]} >
+      <Text style={{ fontSize: 14, textAlign: "center", color: 'white' }} >{String(data?.message || '')}</Text>
     </Animated.View>
   )
 }
