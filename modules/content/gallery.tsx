@@ -2,7 +2,7 @@
 
 import { LibIcon, LibNavigation, LibStyle, LibUtils } from 'esoftplay';
 import React, { useRef } from 'react';
-import { Pressable, ScrollView } from 'react-native';
+import { Pressable, View } from 'react-native';
 import Gallery from 'react-native-awesome-gallery';
 
 export interface ContentGalleryArgs {
@@ -26,8 +26,7 @@ export default function m(props: ContentGalleryProps): any {
   }
 
   return (
-    <ScrollView nestedScrollEnabled
-      style={{ flex: 1, backgroundColor: 'black' }} >
+    <View style={{ flex: 1, overflow: 'hidden', backgroundColor: 'black' }} >
       <Gallery
         data={images.map((image) => (image?.image))}
         onSwipeToClose={() => {
@@ -44,9 +43,9 @@ export default function m(props: ContentGalleryProps): any {
         onPress={() => {
           LibNavigation.back()
         }}
-        style={{ position: 'absolute', height: 35, alignItems: 'center', justifyContent: 'center', width: 35, borderRadius: 17.5, backgroundColor: 'rgba(0,0,0,0.3)', borderWidth: 1, borderColor: 'white', top: LibStyle.STATUSBAR_HEIGHT + 24, right: 24 }} >
+        style={{ position: 'absolute', height: 35, alignItems: 'center', justifyContent: 'center', width: 35, borderRadius: 17.5, backgroundColor: 'rgba(0,0,0,0.3)', borderWidth: 1, borderColor: 'white', top: LibStyle.STATUSBAR_HEIGHT + 24, left: 24 }} >
         <LibIcon name='close' color="white" />
       </Pressable>
-    </ScrollView>
+    </View>
   )
 }
