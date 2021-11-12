@@ -58,6 +58,7 @@ export default class m extends LibComponent<LibInputProps, LibInputState>{
     this.clearError = this.clearError.bind(this);
     this.setHelper = this.setHelper.bind(this);
     this.clearHelper = this.clearHelper.bind(this);
+    this.reverseString = this.reverseString.bind(this);
     this.getTextMasked = this.getTextMasked.bind(this);
   }
 
@@ -93,20 +94,27 @@ export default class m extends LibComponent<LibInputProps, LibInputState>{
     this.setState({ error: undefined })
   }
 
+  reverseString(str: string): string {
+    let out = '';
+    for (let i = str.length - 1; i >= 0; i--) {
+      out += str[i];
+    }
+    return out;
+  }
+
   mask(text: string): string {
-    let _text = text
     let { mask, maskFrom } = this.props
     if (mask) {
       if (!maskFrom) maskFrom = 'start'
-      let rMask = mask.split("")
-      let rText = this.unmask(_text)?.split?.("")
+      let rMask = mask
+      let rText = this.unmask(text)
       if (maskFrom == 'end') {
-        rMask = [...rMask?.reverse?.()]
-        rText = [...rText?.reverse?.()]
+        rMask = this.reverseString(mask)
+        rText = this.reverseString(rText)
       }
       let maskedText = ''
-      var _addRange = 0
-      var _addMaskChar = ''
+      let _addRange = 0
+      let _addMaskChar = ''
       for (let i = 0; i < rMask.length; i++) {
         const iMask = rMask[i];
         if (iMask == '#') {
@@ -124,12 +132,12 @@ export default class m extends LibComponent<LibInputProps, LibInputState>{
         }
       }
       if (maskFrom == 'end') {
-        maskedText = maskedText.split('').reverse().join('')
+        maskedText = this.reverseString(maskedText)
       }
       this.ref.setNativeProps({ text: maskedText })
       return maskedText
     }
-    return _text
+    return text
   }
 
   unmask(text: string): string {
