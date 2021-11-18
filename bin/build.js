@@ -119,24 +119,7 @@ if (fs.existsSync(packjson)) {
 
 	/* Create esp command line */
 	if (args[0] == "install") {
-		execSync('esp start', { stdio: ['inherit', 'inherit', 'inherit'] })
-		spawn('esp', ['start'], { stdio: 'inherit' })
-			.on('exit', function (code) {
-				console.log(code);
-			})
-			.on('error', function () {
-				console.log("Installing the package 'esoftplay-cli'...");
-				spawn('npm', ['install', '--global', '--loglevel', 'error', 'esoftplay-cli'], {
-					stdio: ['inherit', 'ignore', 'inherit'],
-				}).on('close', function (code) {
-					if (code !== 0) {
-						console.error('Installing esoftplay-cli failed. You can install it manually with:');
-						console.error('  npm install --global esoftplay-cli');
-					} else {
-						console.log('esoftplay-cli installed. You can run `esp help` for instructions.');
-					}
-				});
-			});
+		execSync('cd ../../ && node ./node_modules/esoftplay/bin/router.js', { stdio: ['inherit', 'inherit', 'inherit'] })
 	}
 
 	/* Update app.json */
@@ -371,7 +354,7 @@ export default function App() {
 				cmd += "&& yarn add " + installDevLibs.join(" ") + " --dev "
 			if (installExpoLibs.length > 0)
 				cmd += "&& expo install " + installExpoLibs.join(" ")
-			cmd += "&& esp start"
+			cmd += "&& node ./node_modules/esoftplay/bin/router.js"
 			execSync(cmd, { stdio: ['inherit', 'inherit', 'inherit'] })
 			console.log('App.js has been replace to App.tsx');
 			if (fs.existsSync('../@expo/vector-icons')) {
@@ -392,7 +375,6 @@ export default function App() {
 			}
 			console.log('Please wait until processes has finished...');
 		});
-		// execSync('esp start', { stdio: ['inherit', 'inherit', 'inherit'] })
 	}
 } else {
 	console.log(packjson + " not found!!")

@@ -32,6 +32,7 @@ export default class m extends Component<LibWorkerProps, LibWorkerState> {
   }
 
   static registerJob(name: string, func: Function): (params: any[], res: (data: any) => void) => void {
+    'show source';
     const x = func.toString().replace('function', 'function ' + name)
     _global.injectedJavaScripts.push(x)
     m.dispatch(() => x, '', () => { })
@@ -54,6 +55,7 @@ export default class m extends Component<LibWorkerProps, LibWorkerState> {
   }
 
   static registerJobAsync(name: string, func: (...fparams: any[]) => Promise<any>): (params: any[], res: (data: any) => void) => void {
+    'show source';
     const x = func.toString().replace('function', 'function ' + name)
     _global.injectedJavaScripts.push(x)
     m.dispatch(() => x, '', () => { })
@@ -86,6 +88,7 @@ export default class m extends Component<LibWorkerProps, LibWorkerState> {
   }
 
   static jobAsync(func: (...fparams: any[]) => Promise<any>, params: (string | number | boolean)[], res: (data: any) => void): void {
+    'show source';
     if (Platform.OS == 'android')
       if (Platform.Version <= 22) {
         (async () => res(await func(...params)))()
@@ -105,6 +108,7 @@ export default class m extends Component<LibWorkerProps, LibWorkerState> {
   }
 
   static job(func: Function, params: (string | number | boolean)[], res: (data: any) => void): void {
+    'show source';
     if (Platform.OS == 'android')
       if (Platform.Version <= 22) {
         return res(func(...params))
