@@ -363,7 +363,7 @@ export default function App() {
 					const dfiles = files.filter((file) => file.includes('d.ts'))
 					dfiles.map((dfile, i) => {
 						const rdfile = fs.readFileSync('../@expo/vector-icons/build/' + dfile, { encoding: 'utf8' })
-						const names = (/import\("\.\/createIconSet"\)\.Icon<((.*))>;/g).exec(rdfile);
+						const names = (/import\("\.\/createIconSet"\)\.Icon<((.*))\,.*>/g).exec(rdfile);
 						if (names && names[1].includes('|')) {
 							esoftplayIcon += 'export type ' + dfile.replace('.d.ts', 'Types') + ' = ' + names[1] + '\n';
 						}
