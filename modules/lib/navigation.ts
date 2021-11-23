@@ -91,7 +91,7 @@ export default (() => {
             r(value)
           };
         }
-        m.navigate(route, params)
+        m.push(route, params)
       })
     }
 
