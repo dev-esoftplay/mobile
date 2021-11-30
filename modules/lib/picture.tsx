@@ -1,10 +1,10 @@
 // withHooks
 // noPage
 
+import { esp, LibStyle, LibWorker, LibWorkloop, useSafeState } from 'esoftplay';
+import * as FileSystem from 'expo-file-system';
 import React, { useMemo } from 'react';
-import { View, Image, Platform, PixelRatio } from 'react-native';
-import { useSafeState, LibWorker, LibStyle, LibWorkloop, esp, } from 'esoftplay';
-import * as FileSystem from 'expo-file-system'
+import { Image, PixelRatio, Platform, View } from 'react-native';
 const sh = require("shorthash")
 
 export interface LibPictureSource {
@@ -36,6 +36,7 @@ const getCacheEntry = async (uri: string, toSize: number): Promise<{ exists: boo
 };
 
 const fetchPicture = LibWorker.registerJobAsync('lib_picture_fetch', (url: string, toSize: number) => {
+  'show source';
   return new Promise((resolve, reject) => {
     fetch(url, { mode: 'cors' })
       .then(response => response.blob())
