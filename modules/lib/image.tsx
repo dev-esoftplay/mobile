@@ -141,12 +141,8 @@ class m extends LibComponent<LibImageProps, LibImageState> {
   static fromGallery(options?: LibImageGalleryOptions): Promise<string | string[]> {
     return new Promise((_r) => {
       setTimeout(async () => {
-        const { status } = await ImagePicker.getCameraPermissionsAsync();
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
         var finalStatus = status
-        if (finalStatus !== 'granted') {
-          const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-          finalStatus = status
-        }
         if (finalStatus != 'granted') {
           Alert.alert(esp.appjson().expo.name + " tidak dapat mengakses galeri ", "Mohon Pastikan anda memberikan izin " + esp.appjson().expo.name + " untuk dapat mengambil foto")
           return
