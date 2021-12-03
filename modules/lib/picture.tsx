@@ -1,7 +1,7 @@
 // withHooks
 // noPage
 
-import { esp, LibBone, LibStyle, LibWorker, LibWorkloop, useSafeState } from 'esoftplay';
+import { esp, LibStyle, LibWorker, LibWorkloop, useSafeState } from 'esoftplay';
 import * as FileSystem from 'expo-file-system';
 import React, { useMemo } from 'react';
 import { Image, PixelRatio, Platform, View } from 'react-native';
@@ -124,9 +124,7 @@ export default function m(props: LibPictureProps): any {
 
   if (uri == '') {
     return (
-      <LibBone loading={uri == ''} >
-        <View style={props.style} />
-      </LibBone>
+      <View style={[{ backgroundColor: '#f1f2f3', borderRadius: 10, margin: 5 }, props.style]} />
     )
   }
 
