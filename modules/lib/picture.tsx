@@ -124,7 +124,7 @@ export default function m(props: LibPictureProps): any {
 
   if (uri == '') {
     return (
-      <View style={[{ backgroundColor: '#f1f2f3', borderRadius: 10, margin: 5 }, props.style]} />
+      <View style={[{ backgroundColor: '#f1f2f3', borderRadius: 10 }, props.style]} />
     )
   }
 

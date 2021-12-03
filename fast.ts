@@ -1,5 +1,5 @@
 export const fastFilter = (a: any[], fn: (v: any) => boolean) => {
-  const f = []; //final
+  let f = []; //final
   const al = a.length - 1
   for (let i = 0; i <= al; i++) {
     if (fn(a[i])) {
