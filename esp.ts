@@ -112,6 +112,7 @@ export default (() => {
     const _store: any = LibLocale.state().get()
     return _store.lang_id
   }
+  
   function mod(path: string): any {
     var modtast = path.split("/");
     if (modtast[1] == "") {
@@ -119,35 +120,39 @@ export default (() => {
     }
     return routers(modtast.join("/"));
   }
+
   function _config(): string {
     var msg = ''
     if (!app.hasOwnProperty('config')) {
-      msg = "app.json tidak ada config"
+      msg = "tidak ada config"
     } else if (!app.config.hasOwnProperty('domain') || app.config.domain.length == 0) {
-      msg = "app.json di config tidak ada domain"
+      msg = "config tidak ada domain"
     } else if (!app.config.hasOwnProperty('salt') || app.config.salt.length == 0) {
-      msg = "app.json di config tidak ada salt"
+      msg = "config tidak ada salt"
     }
     if (msg != '') {
       let error = new Error(msg);
       throw error;
     }
 
-    var config = app.config;
-    if (!config.hasOwnProperty('timezone') || config.timezone.length == 0) {
-      config.timezone = 'Asia/Jakarta';
-    }
-    if (!config.hasOwnProperty('protocol') || config.protocol.length == 0) {
-      config.protocol = 'http';
-    }
-    if (!config.hasOwnProperty('uri') || config.uri.length == 0) {
-      config.uri = "/";
-    }
-    if (!config.hasOwnProperty('api') || config.api.length == 0) {
-      config.api = "api";
-    }
-    if (!config.hasOwnProperty('data') || config.data.length == 0) {
-      config.data = "data";
+    var config = {
+      // default config
+      timezone: "Asia/Jakarta",
+      protocol: "http",
+      uri: "/",
+      api: "api",
+      data: "data",
+      home: {
+        member: "content/index",
+        public: "content/index"
+      },
+      group_id: 0,
+      langIds: ["id", "en"],
+      theme: ["light", "dark"],
+      comment_login: 1,
+      notification: 0,
+      isDebug: __DEV__ ? 1 : 0,
+      ...app.config
     }
     if (!config.hasOwnProperty('url') || config.url.length == 0) {
       config.url = config.protocol + "://" + config.api + "." + config.domain + config.uri;
@@ -155,44 +160,11 @@ export default (() => {
     if (!config.hasOwnProperty('content') || config.content.length == 0) {
       config.content = config.protocol + "://" + config.data + "." + config.domain + config.uri;
     }
-    if (config.hasOwnProperty('home') && config.home.length != 0) {
-      if (!config.home.hasOwnProperty('member') || config.home.member.length == 0) {
-        config.home.member = "content/index";
-      }
-      if (!config.home.hasOwnProperty('public') || config.home.public.length == 0) {
-        config.home.public = "content/index";
-      }
-    } else {
-      config.home = {};
-      config.home.member = "content/index";
-      config.home.public = "content/index";
-    }
-    if (!config.hasOwnProperty('api') || config.api.length == 0) {
-      config.api = "api";
-    }
-    if (!config.hasOwnProperty('group_id')) {
-      config.group_id = '0'
-    }
-    if (!config.hasOwnProperty('langIds')) {
-      config.langIds = ["id", "en"];
-    }
-    if (!config.hasOwnProperty('theme')) {
-      config.theme = ['light', 'dark']
-    }
-    if (!config.hasOwnProperty('comment_login')) {
-      config.comment_login = 1;
-    }
-    if (!config.hasOwnProperty('notification')) {
-      config.notification = 0;
-    }
-    if (!config.hasOwnProperty("isDebug")) {
-      config.isDebug = __DEV__ ? 1 : 0;
-    }
-
     config.webviewOpen = '<!DOCTYPE html> <html lang="en"> <head> <meta charset="utf-8" /> <meta name="viewport" content="width=device-width, initial-scale=1" /> <link href="' + config.content + 'user/editor_css" rel="stylesheet" /> <script type="text/javascript">var _ROOT="' + config.uri + '";var _URL="' + config.content + '";function _Bbc(a,b){var c="BS3load_func";if(!window[c+"i"]){window[c+"i"]=0};window[c+"i"]++;if(!b){b=c+"i"+window[c+"i"]};if(!window[c]){window[c]=b}else{window[c]+=","+b}window[b]=a;if(typeof BS3!="undefined"){window[b](BS3)}};</script> <style type="text/css">body {padding: 0 20px;}</style></head> <body>';
     config.webviewClose = '<script src="' + config.content + 'templates/admin/bootstrap/js/bootstrap.min.js"></script> </body> </html>';
     return config;
   }
+
   function navigations(): string[] {
     return navs;
   }

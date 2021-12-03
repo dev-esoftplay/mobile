@@ -107,16 +107,18 @@ class m extends LibComponent<LibImageProps, LibImageState> {
           const { status } = await ImagePicker.requestCameraPermissionsAsync();
           finalStatus = status
         }
-        const rollPermission = await ImagePicker.getMediaLibraryPermissionsAsync();
-        finalStatus = rollPermission.status
-        if (finalStatus !== 'granted') {
-          const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-          finalStatus = status
+        if (finalStatus === 'granted') {
+          const rollPermission = await ImagePicker.getMediaLibraryPermissionsAsync();
+          finalStatus = rollPermission.status
+          if (finalStatus !== 'granted') {
+            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+            finalStatus = status
+          }
         }
         if (finalStatus != 'granted') {
           Alert.alert(esp.appjson().expo.name + " tidak dapat mengakses kamera ", "Mohon Pastikan anda memberikan izin " + esp.appjson().expo.name + " untuk dapat mengambil foto")
         }
-        ImagePicker.launchCameraAsync().then(async (result: any) => {
+        ImagePicker.launchCameraAsync({ presentationStyle: 0 }).then(async (result: any) => {
           if (!result)
             result = ImagePicker?.getPendingResultAsync()
           if (!result?.cancelled) {
@@ -158,7 +160,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
           max = 1
         }
         if (max == 1) {
-          ImagePicker.launchImageLibraryAsync().then(async (x: any) => {
+          ImagePicker.launchImageLibraryAsync({ presentationStyle: 0 }).then(async (x: any) => {
             if (!x.cancelled) {
               if (options && options.crop) {
                 m.showCropper(x.uri, options.crop.forceCrop, options.crop.ratio, options.crop?.message, async (x) => {
