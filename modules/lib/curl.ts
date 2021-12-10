@@ -1,10 +1,12 @@
 // noPage
-
 import { esp, LibCrypt, LibNet_status, LibProgress, LibUtils } from 'esoftplay';
-import { reportApiError } from "../../error";
-import moment from "../../moment";
+import { reportApiError } from "esoftplay/error";
+import moment from "esoftplay/moment";
+const axios = require('axios');
 
 export default class ecurl {
+  timeout = 25000;
+  timeoutContext: any = null;
   isDebug = esp.config("isDebug");
   post: any;
   header: any;
@@ -18,8 +20,8 @@ export default class ecurl {
     ok: "Coba Lagi",
     cancel: "Tutup"
   }
-  controller = new AbortController();
-  signal = this.controller.signal;
+
+  abort = axios.CancelToken.source();
 
   constructor(uri?: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number) {
     this.header = {}
@@ -36,12 +38,29 @@ export default class ecurl {
     this.onError = this.onError.bind(this)
     this.setApiKey = this.setApiKey.bind(this)
     this.secure = this.secure.bind(this)
+    this.initTimeout = this.initTimeout.bind(this)
+    this.cancelTimeout = this.cancelTimeout.bind(this)
     const str: any = LibNet_status.state().get()
     if (uri && str.isOnline) {
       this.init(uri, post, onDone, onFailed, debug);
     } else if (!str.isOnline && onFailed) {
       onFailed("Failed to access", false);
     }
+  }
+
+  initTimeout(customTimeout?: number): void {
+    this.cancelTimeout()
+    this.timeoutContext = setTimeout(() => {
+      if (this.abort?.cancel) {
+        reportApiError(`Request timeout ${this.url}`, this.fetchConf)
+        this.closeConnection()
+      }
+    }, customTimeout ?? this.timeout);
+  }
+
+  cancelTimeout(): void {
+    clearTimeout(this.timeoutContext)
+    this.timeoutContext = null;
   }
 
   onFetchFailed(message: string): void {
@@ -70,7 +89,7 @@ export default class ecurl {
   }
 
   closeConnection(): void {
-    this?.controller?.abort?.()
+    this?.abort?.cancel('Request Timeout');
   }
 
   onDone(result: any, msg?: string): void {
@@ -105,18 +124,21 @@ export default class ecurl {
         }
         let ps = Object.keys(_post).map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(_post[key])).join('&');
         var options: any = {
-          signal: this.signal,
+          url: this.url + this.uri + (token_uri || 'get_token'),
           method: "POST",
+          cancelToken: this.abort.token,
           headers: {
             ...this.header,
             ["Content-Type"]: "application/x-www-form-urlencoded;charset=UTF-8"
           },
-          body: ps,
+          data: ps,
           cache: "no-store",
           _post: _post
         }
-        fetch(this.url + this.uri + (token_uri || 'get_token'), options).then(async (res) => {
-          let resText = await res.text()
+        this.initTimeout();
+        axios(options).then(async (res: any) => {
+          this.cancelTimeout();
+          let resText = res.data;
           this.onFetched(resText,
             (res, msg) => {
               this.init(uri, { ...post, access_token: res }, onDone, onFailed, debug);
@@ -124,11 +146,10 @@ export default class ecurl {
               if (onFailed)
                 onFailed(msg, false)
             }, debug)
-        }).catch((r) => {
+        }).catch((r: string) => {
+          this.cancelTimeout();
           LibProgress.hide()
           this.onFetchFailed(r)
-          // if (onFailed)
-          //   onFailed(r, true)
         })
       }
     }
@@ -219,13 +240,14 @@ export default class ecurl {
       }
       await this.setHeader()
       var options: any = {
-        signal: this.signal,
+        url: this.url + this.uri,
         method: !this.post ? "GET" : "POST",
+        cancelToken: this.abort.token,
         headers: {
           ...this.header,
           ["Content-Type"]: "application/x-www-form-urlencoded;charset=UTF-8"
         },
-        body: this.post,
+        data: this.post,
         Cache: "no-store",
         Pragma: "no-cache",
         ['Cache-Control']: "no-store",
@@ -235,46 +257,19 @@ export default class ecurl {
       if (debug == 1)
         esp.log(this.url + this.uri, options)
       this.fetchConf = { url: this.url + this.uri, options: options }
-      fetch(this.url + this.uri, options).then(async (res) => {
-        var resText = await res.text()
-        var resJson = (resText.startsWith("{") || resText.startsWith("[")) ? JSON.parse(resText) : null
-        if (resJson) {
-          if (onDone) onDone(resJson, false)
-          this.onDone(resJson)
-        } else {
-          // Alert.alert(this.alertTimeout.title, this.alertTimeout.message, [
-          //   {
-          //     text: this.alertTimeout.ok,
-          //     style: 'cancel',
-          //     onPress: () => this.custom(uri, post, onDone, debug)
-          //   },
-          //   {
-          //     text: this.alertTimeout.cancel,
-          //     style: 'destructive',
-          //     onPress: () => { }
-          //   }
-          // ])
-          this.onFetchFailed(resText)
-          LibProgress.hide()
-          this.onError(resText)
+      this.initTimeout()
+      axios(options).then(async (res: any) => {
+        this.cancelTimeout()
+        if (res.data) {
+          if (onDone) onDone(res.data, false)
+          this.onDone(res.data)
         }
-      }).catch((e) => {
         LibProgress.hide()
-        // Alert.alert(this.alertTimeout.title, this.alertTimeout.message, [
-        //   {
-        //     text: this.alertTimeout.ok,
-        //     style: 'cancel',
-        //     onPress: () => this.custom(uri, post, onDone, debug)
-        //   },
-        //   {
-        //     text: this.alertTimeout.cancel,
-        //     style: 'destructive',
-        //     onPress: () => { }
-        //   }
-        // ])
-        this.onFetchFailed(e)
-        // if (onDone)
-        //   onDone(e, true)
+      }).catch((r: string) => {
+        this.cancelTimeout()
+        this.onFetchFailed(r)
+        LibProgress.hide()
+        this.onError(r)
       })
     }
   }
@@ -307,10 +302,11 @@ export default class ecurl {
     if (!upload)
       this.header["Content-Type"] = "application/x-www-form-urlencoded;charset=UTF-8"
     var options: any = {
-      signal: this.signal,
+      url: this.url + this.uri,
       method: !this.post ? "GET" : "POST",
       headers: this.header,
-      body: this.post,
+      data: this.post,
+      cancelToken: this.abort.token,
       cache: "no-store",
       Pragma: "no-cache",
       ["Cache-Control"]: 'no-cache, no-store, must-revalidate',
@@ -320,43 +316,18 @@ export default class ecurl {
     }
     if (debug == 1) esp.log(this.url + this.uri, options)
     this.fetchConf = { url: this.url + this.uri, options: options }
-
-    // if (Platform.OS == 'android' && Platform.Version <= 22) {
-    //   var res = await fetch(this.url + this.uri, options);
-    //   let resText = await res.text()
-    //   this.onFetched(resText, onDone, onFailed, debug)
-    // } else
-    //   if (!upload) {
-    //     LibWorker.curl(this.url + this.uri, options, async (resText) => {
-    //       if (typeof resText == 'string') {
-    //         this.onFetched(resText, onDone, onFailed, debug)
-    //       }
-    //     })
-    //   } else {
-    fetch(this.url + this.uri, options).then(async (res) => {
-      let resText = await res.text()
-      this.onFetched(resText, onDone, onFailed, debug)
-    }).catch((r) => {
-      // Alert.alert(this.alertTimeout.title, this.alertTimeout.message, [
-      //   {
-      //     text: this.alertTimeout.ok,
-      //     style: 'cancel',
-      //     onPress: () => this.init(uri, post, onDone, onFailed, debug)
-      //   },
-      //   {
-      //     text: this.alertTimeout.cancel,
-      //     style: 'destructive',
-      //     onPress: () => { }
-      //   }
-      // ])
-      this.onFetchFailed(r)
-      LibProgress.hide()
+    this.initTimeout(upload ? 120000 : undefined)
+    axios(options).then(async (res: any) => {
+      this.cancelTimeout()
+      this.onFetched(res.data, onDone, onFailed, debug)
+    }).catch((e: any) => {
+      this.cancelTimeout()
+      this.onFetched(e, onDone, onFailed, debug)
     })
-    // }
   }
 
-  onFetched(resText: string, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number): void {
-    var resJson = (resText.startsWith("{") && resText.endsWith("}")) || (resText.startsWith("[") && resText.endsWith("]")) ? JSON.parse(resText) : resText
+  onFetched(resText: string | Object, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number): void {
+    var resJson = typeof resText == 'string' && ((resText.startsWith("{") && resText.endsWith("}")) || (resText.startsWith("[") && resText.endsWith("]"))) ? JSON.parse(resText) : resText
     if (typeof resJson == "object") {
       if (!resJson.status_code || this.onStatusCode(resJson.ok, resJson.status_code, resJson.message, resJson.result)) {
         if (resJson.ok === 1) {
@@ -368,22 +339,17 @@ export default class ecurl {
         }
       }
     } else {
-      this.onFetchFailed(resText)
-      this.onError(resText)
-      // Alert.alert(this.alertTimeout.title, this.alertTimeout.message, [
-      //   {
-      //     text: this.alertTimeout.cancel,
-      //     style: 'destructive',
-      //     onPress: () => { }
-      //   }
-      // ])
+      if (typeof resText == 'string') {
+        this.onFetchFailed(resText)
+        this.onError(resText)
+      }
     }
   }
 
   onError(msg: string): void {
     esp.log("\x1b[31m", msg)
     esp.log("\x1b[0m")
-    if (esp.isDebug() && msg == '') {
+    if (esp.isDebug('') && msg == '') {
       return
     }
     reportApiError(this.fetchConf, msg)

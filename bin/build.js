@@ -284,6 +284,7 @@ export default function App() {
 			'@react-navigation/native',
 			'@react-navigation/stack',
 			'buffer',
+			'axios',
 			'expo-av',
 			'expo-blur',
 			'expo-camera',
