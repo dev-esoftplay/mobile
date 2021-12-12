@@ -4,6 +4,7 @@ import { reportApiError } from "esoftplay/error";
 import moment from "esoftplay/moment";
 const axios = require('axios');
 
+
 export default class ecurl {
   timeout = 25000;
   timeoutContext: any = null;
@@ -52,7 +53,7 @@ export default class ecurl {
     this.cancelTimeout()
     this.timeoutContext = setTimeout(() => {
       if (this.abort?.cancel) {
-        reportApiError(`Request timeout ${this.url}`, this.fetchConf)
+        reportApiError(`Request timeout`, this.url + this.uri)
         this.closeConnection()
       }
     }, customTimeout ?? this.timeout);
