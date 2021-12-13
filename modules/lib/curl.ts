@@ -258,16 +258,16 @@ export default class ecurl {
       if (debug == 1)
         esp.log(this.url + this.uri, options)
       this.fetchConf = { url: this.url + this.uri, options: options }
-      this.initTimeout()
+      // this.initTimeout()
       axios(options).then(async (res: any) => {
-        this.cancelTimeout()
+        // this.cancelTimeout()
         if (res.data) {
           if (onDone) onDone(res.data, false)
           this.onDone(res.data)
         }
         LibProgress.hide()
       }).catch((r: string) => {
-        this.cancelTimeout()
+        // this.cancelTimeout()
         this.onFetchFailed(r)
         LibProgress.hide()
         this.onError(r)
