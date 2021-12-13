@@ -90,7 +90,7 @@ export default class ecurl {
   }
 
   closeConnection(): void {
-    this?.abort?.cancel('Request Timeout');
+    this?.abort?.cancel('Oops, Sepertinya ada gangguan jaringan... Silahkan coba beberapa saat lagi');
   }
 
   onDone(result: any, msg?: string): void {
