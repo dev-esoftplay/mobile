@@ -65,12 +65,12 @@ const n = () => {
 
     function set(ns: T) {
       const isChange = !isEqual(value, ns)
-      value = ns
-      fastLoop(subscriber?.[_idx], (c) => { c?.(ns) })
-      if (o?.persistKey) {
-        AsyncStorage.setItem(o.persistKey, JSON.stringify(ns))
-      }
       if (isChange) {
+        value = ns
+        fastLoop(subscriber?.[_idx], (c) => { c?.(ns) })
+        if (o?.persistKey) {
+          AsyncStorage.setItem(o.persistKey, JSON.stringify(ns))
+        }
         if (o?.listener)
           o.listener(ns)
       }

@@ -33,16 +33,17 @@ export default (() => {
 
     function set(ns: T | ((x: T) => T)) {
       let isChange = false
-      if (o?.listener && !isEqual(value[_idx], ns)) {
+      if (!isEqual(value[_idx], ns)) {
         isChange = true
       }
-      value[_idx] = ns instanceof Function ? ns(value[_idx]) : ns
-      fastLoop(useCacheSubscriber[_idx], (c: any) => c?.(value[_idx]))
-      if (o?.persistKey) {
-        AsyncStorage.setItem(o.persistKey, JSON.stringify(value[_idx]))
-      }
-      if (isChange)
+      if (isChange) {
+        value[_idx] = ns instanceof Function ? ns(value[_idx]) : ns
+        fastLoop(useCacheSubscriber[_idx], (c: any) => c?.(value[_idx]))
+        if (o?.persistKey) {
+          AsyncStorage.setItem(o.persistKey, JSON.stringify(value[_idx]))
+        }
         o.listener(ns instanceof Function ? ns(value[_idx]) : ns)
+      }
     };
 
     function del() {
