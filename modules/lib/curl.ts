@@ -55,6 +55,7 @@ export default class ecurl {
       if (this.abort?.cancel) {
         // reportApiError(`Request timeout`, this.url + this.uri)
         this.closeConnection()
+        LibProgress.hide()
       }
     }, customTimeout ?? this.timeout);
   }
