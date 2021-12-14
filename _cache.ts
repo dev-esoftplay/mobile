@@ -42,7 +42,9 @@ export default (() => {
         if (o?.persistKey) {
           AsyncStorage.setItem(o.persistKey, JSON.stringify(value[_idx]))
         }
-        o.listener(ns instanceof Function ? ns(value[_idx]) : ns)
+        if (o?.listener) {
+          o?.listener?.(ns instanceof Function ? ns(value[_idx]) : ns)
+        }
       }
     };
 
