@@ -255,26 +255,27 @@ yarn.lock\n\
 			console.log('.gitignore has been created');
 		});
 
-		const AppJS = `import React, { useEffect, useRef } from 'react';
-import { esp, LibNotification } from 'esoftplay';
-import * as ErrorReport from 'esoftplay/error'
-import * as Notifications from 'expo-notifications';
-import { enableScreens } from 'react-native-screens';
-const { globalIdx } = require('esoftplay/global')
-enableScreens();
-
-Notifications.addNotificationResponseReceivedListener(x => LibNotification.onAction(x))
-
-export default function App() {
-	const Home = useRef(esp.home()).current
-
-	useEffect(() => {
-		globalIdx.reset()
-		ErrorReport.getError()
-	}, [])
-
-	return <Home />
-}`;
+		const AppJS = `import { esp, LibNotification } from 'esoftplay';
+		import * as ErrorReport from 'esoftplay/error';
+		import * as Notifications from 'expo-notifications';
+		import React, { useEffect, useRef } from 'react';
+		import { enableFreeze, enableScreens } from 'react-native-screens';
+		const { globalIdx } = require('esoftplay/global')
+		enableScreens();
+		enableFreeze(true);
+		
+		Notifications.addNotificationResponseReceivedListener(x => LibNotification.onAction(x))
+		
+		export default function App() {
+			const Home = useRef(esp.home()).current
+		
+			useEffect(() => {
+				globalIdx.reset()
+				ErrorReport.getError()
+			}, [])
+		
+			return <Home />
+		}`;
 		let expoLib = [
 			'@expo/vector-icons',
 			'@react-native-async-storage/async-storage',
