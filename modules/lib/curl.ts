@@ -45,7 +45,7 @@ export default class ecurl {
     if (uri && str.isOnline) {
       this.init(uri, post, onDone, onFailed, debug);
     } else if (!str.isOnline && onFailed) {
-      onFailed("Failed to access", false);
+      onFailed(this.refineErrorMessage("Failed to access"), false);
     }
   }
 
@@ -146,7 +146,7 @@ export default class ecurl {
               this.init(uri, { ...post, access_token: res }, onDone, onFailed, debug);
             }, (msg) => {
               if (onFailed)
-                onFailed(msg, false)
+                onFailed(this.refineErrorMessage(msg), false)
             }, debug)
         }).catch((r: string) => {
           this.cancelTimeout();
@@ -350,7 +350,7 @@ export default class ecurl {
 
   refineErrorMessage(resText: string): string {
     let out = resText
-    if (resText.includes('failed') || resText.includes('code')) {
+    if (resText.toLowerCase().includes('failed') || resText.toLowerCase().includes('code')) {
       out = 'Terjadi kesalahan, biar ' + esp.appjson()?.expo?.name + ' bereskan, silahkan coba beberapa saat lagi.'
     }
     return out
