@@ -38,6 +38,7 @@ class m extends LibComponent<LibProgressProps, LibProgressState>{
 
 
 function handleBack(): boolean {
+  state.set({ show: false, message: undefined })
   return true
 }
 

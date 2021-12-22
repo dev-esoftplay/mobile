@@ -73,7 +73,7 @@ export default class EList extends LibComponent<LibListProps, LibListState> {
   render(): any {
     const isStatic = () => {
       if (this.props.staticHeight)
-        return { getItemLayout: (data, index) => this.props.staticHeight ? ({ length: this.props.staticHeight, offset: this.props.staticHeight, index: index }) : undefined }
+        return ({ getItemLayout: (data, index) => this.props.staticHeight ? ({ length: this.props.staticHeight, offset: this.props.staticHeight, index: index }) : undefined })
     }
     return (
       <View ref={(e) => this.view = e} style={[{ flex: 1 }]} >

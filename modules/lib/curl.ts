@@ -336,8 +336,8 @@ export default class ecurl {
           if (onDone) onDone(resJson.result, resJson.message)
           this.onDone(resJson.result, resJson.message)
         } else {
-          if (onFailed) onFailed(resJson.message, false)
-          this.onFailed(resJson.message, false)
+          if (onFailed) onFailed(this.refineErrorMessage(resJson.message), false)
+          this.onFailed(this.refineErrorMessage(resJson.message), false)
         }
       }
     } else {
@@ -348,13 +348,22 @@ export default class ecurl {
     }
   }
 
+  refineErrorMessage(resText: string): string {
+    let out = resText
+    if (resText.includes('failed') || resText.includes('code')) {
+      out = 'Terjadi kesalahan, biar ' + esp.appjson()?.expo?.name + ' bereskan, silahkan coba beberapa saat lagi.'
+    }
+    return out
+  }
+
   onError(msg: string): void {
     esp.log("\x1b[31m", msg)
     esp.log("\x1b[0m")
     if (esp.isDebug('') && msg == '') {
       return
     }
-    reportApiError(this.fetchConf, msg)
+    delete this.fetchConf.options.cancelToken
+    reportApiError(this.fetchConf.options, msg)
     LibProgress.hide()
   }
 

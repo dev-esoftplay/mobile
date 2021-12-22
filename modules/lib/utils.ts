@@ -60,12 +60,14 @@ export default class eutils {
   }
 
   static getArgs(props: any, key: string, defOutput?: any): any {
+    console.warn('LibUtils.getArgs is deprecated, use LibNavigation.getArgs instead')
     if (defOutput == undefined) {
       defOutput = "";
     }
     return props?.route?.params?.[key] || defOutput;
   }
   static getArgsAll<S>(props: any, defOutput?: any): S {
+    console.warn('LibUtils.getArgsAll is deprecated, use LibNavigation.getArgsAll instead')
     if (defOutput == undefined) {
       defOutput = "";
     }

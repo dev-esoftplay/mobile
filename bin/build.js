@@ -255,14 +255,36 @@ yarn.lock\n\
 			console.log('.gitignore has been created');
 		});
 
-		const AppJS = `import { esp, LibNotification } from 'esoftplay';
-import * as ErrorReport from 'esoftplay/error';
+// 		const AppJS = `import { esp, LibNotification } from 'esoftplay';
+// import * as ErrorReport from 'esoftplay/error';
+// import * as Notifications from 'expo-notifications';
+// import React, { useEffect, useRef } from 'react';
+// import { enableFreeze, enableScreens } from 'react-native-screens';
+// const { globalIdx } = require('esoftplay/global')
+// enableScreens();
+// enableFreeze(true);
+
+// Notifications.addNotificationResponseReceivedListener(x => LibNotification.onAction(x))
+
+// export default function App() {
+// 	const Home = useRef(esp.home()).current
+
+// 	useEffect(() => {
+// 		globalIdx.reset()
+// 		ErrorReport.getError()
+// 	}, [])
+
+// 	return <Home />
+// }`;
+
+
+		const AppJS = `import React, { useEffect, useRef } from 'react';
+import { esp, LibNotification } from 'esoftplay';
+import * as ErrorReport from 'esoftplay/error'
 import * as Notifications from 'expo-notifications';
-import React, { useEffect, useRef } from 'react';
-import { enableFreeze, enableScreens } from 'react-native-screens';
+import { enableScreens } from 'react-native-screens';
 const { globalIdx } = require('esoftplay/global')
 enableScreens();
-enableFreeze(true);
 
 Notifications.addNotificationResponseReceivedListener(x => LibNotification.onAction(x))
 
@@ -361,13 +383,13 @@ export default function App() {
 			cmd += "&& node ./node_modules/esoftplay/bin/router.js"
 			execSync(cmd, { stdio: ['inherit', 'inherit', 'inherit'] })
 			console.log('App.js has been replace to App.tsx');
-			/* bugfix AsyncStorage @firebase, remove this section if firebase has update the AsyncStorage */
-			if (fs.existsSync('../@firebase/app/dist/index.rn.cjs.js')) {
-				let firebaseText = fs.readFileSync('../@firebase/app/dist/index.rn.cjs.js', 'utf8')
-				firebaseText = firebaseText.replace("var AsyncStorage = require('react-native').AsyncStorage;", "var AsyncStorage = require('@react-native-async-storage/async-storage').default;")
-				fs.writeFileSync('../@firebase/app/dist/index.rn.cjs.js', firebaseText)
-			}
-			/* end AsyncStorage @firebase section */
+			// /* bugfix AsyncStorage @firebase, remove this section if firebase has update the AsyncStorage */
+			// if (fs.existsSync('../@firebase/app/dist/index.rn.cjs.js')) {
+			// 	let firebaseText = fs.readFileSync('../@firebase/app/dist/index.rn.cjs.js', 'utf8')
+			// 	firebaseText = firebaseText.replace("var AsyncStorage = require('react-native').AsyncStorage;", "var AsyncStorage = require('@react-native-async-storage/async-storage').default;")
+			// 	fs.writeFileSync('../@firebase/app/dist/index.rn.cjs.js', firebaseText)
+			// }
+			// /* end AsyncStorage @firebase section */
 			if (fs.existsSync('../@expo/vector-icons')) {
 				let esoftplayIcon = ''
 				fs.readdir('../@expo/vector-icons/build', (err, files) => {

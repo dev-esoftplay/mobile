@@ -102,6 +102,7 @@ function unmask(name: string, text: string): string {
 }
 
 export default function m(props: LibInput_baseProps): any {
+
   LibInput_base_dataProperty.inputBaseRef[props.name] = useRef<TextInput>(null);
   LibInput_base_dataProperty.inputBaseData[props.name] = {
     mask: props.mask,
@@ -109,6 +110,7 @@ export default function m(props: LibInput_baseProps): any {
   }
 
   useEffect(() => {
+    console.warn('LibInput_base is deprecated, use LibInput with props `base={true}` instead')
     LibInput_base_dataProperty.inputBaseRef[props.name].current!.blur()
     if (props.defaultValue) {
       setTimeout(() => {

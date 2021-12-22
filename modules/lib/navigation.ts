@@ -22,6 +22,19 @@ export default (() => {
       libNavigationData._navigation = nav
     }
 
+    static getArgs(props: any, key: string, defOutput?: any): any {
+      if (defOutput == undefined) {
+        defOutput = "";
+      }
+      return props?.route?.params?.[key] || defOutput;
+    }
+    static getArgsAll<S>(props: any, defOutput?: any): S {
+      if (defOutput == undefined) {
+        defOutput = "";
+      }
+      return props?.route?.params || defOutput;
+    }
+
     static navigation(): any {
       return libNavigationData?._navigation
     }
