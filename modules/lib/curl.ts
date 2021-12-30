@@ -4,7 +4,6 @@ import { reportApiError } from "esoftplay/error";
 import moment from "esoftplay/moment";
 const axios = require('axios');
 
-
 export default class ecurl {
   timeout = 55000;
   timeoutContext: any = null;
@@ -14,6 +13,7 @@ export default class ecurl {
   url: any = esp.config('url')
   apiKey: any = 0
   uri: any = '';
+  isSecure: boolean = false
   fetchConf: any = ''
   alertTimeout = {
     title: "Oops..! Gagal menyambung ke server",
@@ -39,8 +39,10 @@ export default class ecurl {
     this.onError = this.onError.bind(this)
     this.setApiKey = this.setApiKey.bind(this)
     this.secure = this.secure.bind(this)
+    this.withHeader = this.withHeader.bind(this)
     this.initTimeout = this.initTimeout.bind(this)
     this.cancelTimeout = this.cancelTimeout.bind(this)
+    // this.createApiTesterUris = this.createApiTesterUris.bind(this)
     const str: any = LibNet_status.state().get()
     if (uri && str.isOnline) {
       this.init(uri, post, onDone, onFailed, debug);
@@ -49,7 +51,7 @@ export default class ecurl {
     }
   }
 
-  initTimeout(customTimeout?: number): void {
+  protected initTimeout(customTimeout?: number): void {
     this.cancelTimeout()
     this.timeoutContext = setTimeout(() => {
       if (this.abort?.cancel) {
@@ -60,28 +62,57 @@ export default class ecurl {
     }, customTimeout ?? this.timeout);
   }
 
-  cancelTimeout(): void {
+  private cancelTimeout(): void {
     clearTimeout(this.timeoutContext)
     this.timeoutContext = null;
   }
 
-  onFetchFailed(message: string): void {
+  private onFetchFailed(message: string): void {
 
   }
 
-  setUrl(url: string): void {
+  protected setUrl(url: string): void {
     this.url = url
   }
 
-  setUri(uri: string): void {
+  protected setUri(uri: string): void {
     this.uri = uri
   }
 
-  setApiKey(apiKey: string): void {
+  //   createApiTesterUris(): void {
+
+  //     if (esp.isDebug('onlyAvailableOnDebug')) {
+  //       setTimeout(() => {
+  //         const options = this.fetchConf.options
+  //         const msg = this.uri.replace('/', '.').split('?')[0] + `
+  // /* RARE USAGE : to simulate LibCurl().secure() : default false */
+  // const IS_SECURE_POST = `+ this.isSecure + `
+
+  // const EXTRACT = []
+  // const EXTRACT_CHECK = []
+
+  // const GET = {`+ JSON.stringify(LibUtils.getUrlParams(options?.url) || '') + `
+  // }
+
+  // const POST = {`+ options._post + `
+  // }
+  // module.exports = { POST, GET, IS_SECURE_POST, EXTRACT, EXTRACT_CHECK }
+  //       `
+  //         let post = {
+  //           text: msg,
+  //           chat_id: '-626800023',
+  //           disable_web_page_preview: true
+  //         }
+  //         this.custom('https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage', post)
+  //       }, 1000);
+  //     }
+  //   }
+
+  protected setApiKey(apiKey: string): void {
     this.apiKey = apiKey
   }
 
-  async setHeader(): Promise<void> {
+  protected async setHeader(): Promise<void> {
     return new Promise((r) => {
       if ((/:\/\/data.*?\/(.*)/g).test(this.url)) {
         this.header["masterkey"] = new LibCrypt().encode(this.url)
@@ -90,25 +121,26 @@ export default class ecurl {
     });
   }
 
-  closeConnection(): void {
+  protected closeConnection(): void {
     this?.abort?.cancel('Oops, Sepertinya ada gangguan jaringan... Silahkan coba beberapa saat lagi');
   }
 
-  onDone(result: any, msg?: string): void {
+  protected onDone(result: any, msg?: string): void {
 
   }
 
-  onFailed(msg: string, timeout: boolean): void {
+  protected onFailed(msg: string, timeout: boolean): void {
 
   }
 
-  onStatusCode(ok: number, status_code: number, message: string, result: any): boolean {
+  protected onStatusCode(ok: number, status_code: number, message: string, result: any): boolean {
     return true
   }
 
-  secure(token_uri?: string): (apiKey?: string) => (uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number) => void {
+  public secure(token_uri?: string): (apiKey?: string) => (uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number) => void {
     return (apiKey?: string): (uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number) => void => {
       return async (uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number) => {
+        this.isSecure = true
         await this.setHeader();
         const _apiKey = apiKey || this.apiKey
         Object.keys(post).forEach((key) => {
@@ -157,7 +189,12 @@ export default class ecurl {
     }
   }
 
-  upload(uri: string, postKey: string, fileUri: string, mimeType: string, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number): void {
+  public withHeader(header: any): (uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number) => void {
+    this.header = { ...this.header, ...header }
+    return (uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number) => this.init(uri, post, onDone, onFailed, debug)
+  }
+
+  public upload(uri: string, postKey: string, fileUri: string, mimeType: string, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number): void {
     postKey = postKey || "image";
     var uName = fileUri.substring(fileUri.lastIndexOf("/") + 1, fileUri.length);
     if (!uName.includes('.')) {
@@ -168,7 +205,7 @@ export default class ecurl {
     this.init(uri, post, onDone, onFailed, debug, true)
   }
 
-  urlEncode(str: string): string {
+  private urlEncode(str: string): string {
     return str
       .replace(/\!/g, '%21')
       .replace(/\'/g, '%27')
@@ -178,7 +215,7 @@ export default class ecurl {
       .replace(/%20/g, '+')
   }
 
-  encodeGetValue(_get: string): string {
+  private encodeGetValue(_get: string): string {
     if (_get != '') {
       let hashes = _get.split('&')
       let params: any = {}
@@ -200,7 +237,7 @@ export default class ecurl {
     return _get
   }
 
-  signatureBuild(): string {
+  private signatureBuild(): string {
     let signature = '';
     if (this.url.includes(esp.config('url'))) {
       let payload = '';
@@ -224,7 +261,7 @@ export default class ecurl {
     return signature
   }
 
-  async custom(uri: string, post?: any, onDone?: (res: any, timeout: boolean) => void, debug?: number): Promise<void> {
+  public async custom(uri: string, post?: any, onDone?: (res: any, timeout: boolean) => void, debug?: number): Promise<void> {
     const str: any = LibNet_status.state().get()
     if (str.isOnline) {
       if (post) {
@@ -276,7 +313,7 @@ export default class ecurl {
     }
   }
 
-  async init(uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number, upload?: boolean): Promise<void> {
+  private async init(uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number, upload?: boolean): Promise<void> {
     if (post) {
       if (upload) {
         let fd = new FormData();
@@ -328,7 +365,7 @@ export default class ecurl {
     })
   }
 
-  onFetched(resText: string | Object, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number): void {
+  protected onFetched(resText: string | Object, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number): void {
     var resJson = typeof resText == 'string' && ((resText.startsWith("{") && resText.endsWith("}")) || (resText.startsWith("[") && resText.endsWith("]"))) ? JSON.parse(resText) : resText
     if (typeof resJson == "object") {
       if (!resJson.status_code || this.onStatusCode(resJson.ok, resJson.status_code, resJson.message, resJson.result)) {
@@ -348,7 +385,7 @@ export default class ecurl {
     }
   }
 
-  refineErrorMessage(resText: string): string {
+  private refineErrorMessage(resText: string): string {
     let out = resText
     if (resText.toLowerCase().includes('failed') || resText.toLowerCase().includes('code')) {
       out = 'Terjadi kesalahan, biar ' + esp.appjson()?.expo?.name + ' bereskan, silahkan coba beberapa saat lagi.'
@@ -356,7 +393,7 @@ export default class ecurl {
     return out
   }
 
-  onError(msg: string): void {
+  private onError(msg: string): void {
     esp.log("\x1b[31m", msg)
     esp.log("\x1b[0m")
     if (esp.isDebug('') && msg == '') {
@@ -367,7 +404,7 @@ export default class ecurl {
     LibProgress.hide()
   }
 
-  getTimeByTimeZone(timeZone: string): number {
+  protected getTimeByTimeZone(timeZone: string): number {
     return moment(new Date()).tz(timeZone).toMiliseconds();
   }
 }

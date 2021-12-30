@@ -247,7 +247,7 @@ checks.forEach(modules => {
                   }
                   /* REGEX All Functions */
                   if (!isHooks && !isUseLibs) {
-                    var r = /\n(\s+)((?:(?:static|public|private|async)\s+)?[a-zA-Z0-9_]{3,}\s{0,}(?:<S>|)(?:=\s{0,})?\([^{\n]+)/g; // 1=spaces 2=FunctionObject
+                    var r = /\n(\s+)((?:(?:static|public|private|protected|public async|private async|protected async|async)\s+)?[a-zA-Z0-9_]{3,}\s{0,}(?:<S>|)(?:=\s{0,})?\([^{\n]+)/g; // 1=spaces 2=FunctionObject
                     if (s = r.exec(data)) {
                       if (m = data.match(r)) {
                         /* check jika class tersebut nge replace bukan nge extends maka hapus semua fungsi bawaan dari supernya */
@@ -257,7 +257,7 @@ checks.forEach(modules => {
                           }
                         }
                         for (var i = 0; i < m.length; i++) {
-                          if (S = m[i].match(/\n([^\na-zA-Z0-9_]+)((?:(?:static|public|private|async)\s+)?[a-zA-Z0-9_]{3,})/)) {
+                          if (S = m[i].match(/\n([^\na-zA-Z0-9_]+)((?:(?:static|public|private|protected|public async|private async|protected async|async)\s+)?[a-zA-Z0-9_]{3,})/)) {
                             if (S[1] === s[1].replace(new RegExp('\n', 'g'), '')) {
                               var a = m[i].trim().replace('async ', '') + ";"
                               tmpTask[clsName]["function"][S[2]] = a;
