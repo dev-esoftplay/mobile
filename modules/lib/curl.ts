@@ -293,8 +293,9 @@ export default class ecurl {
         mode: "cors",
         _post: post
       }
-      if (debug == 1)
-        esp.log(this.url + this.uri, options)
+      if (debug == 1) {
+        esp.log(this.url + this.uri, { ...options, cancelToken: undefined })
+      }
       this.fetchConf = { url: this.url + this.uri, options: options }
       // this.initTimeout()
       axios(options).then(async (res: any) => {
@@ -353,7 +354,9 @@ export default class ecurl {
       mode: "cors",
       _post: post
     }
-    if (debug == 1) esp.log(this.url + this.uri, options)
+    if (debug == 1) {
+      esp.log(this.url + this.uri, { ...options, cancelToken: undefined })
+    }
     this.fetchConf = { url: this.url + this.uri, options: options }
     this.initTimeout(upload ? 120000 : undefined)
     axios(options).then(async (res: any) => {
@@ -387,8 +390,11 @@ export default class ecurl {
 
   private refineErrorMessage(resText: string): string {
     let out = resText
-    if (resText.toLowerCase().includes('failed') || resText.toLowerCase().includes('code')) {
-      out = 'Terjadi kesalahan, biar ' + esp.appjson()?.expo?.name + ' bereskan, silahkan coba beberapa saat lagi.'
+    if (!esp.isDebug('')) {
+      if (resText.toLowerCase().includes('failed') || resText.toLowerCase().includes('code')) {
+        reportApiError(this.fetchConf.options, resText)
+        out = 'Terjadi kesalahan, biar ' + esp.appjson()?.expo?.name + ' bereskan, silahkan coba beberapa saat lagi.'
+      }
     }
     return out
   }
