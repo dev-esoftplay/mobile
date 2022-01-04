@@ -35,7 +35,7 @@ export default function moment(date?: string | Date | any) {
     locale: (locale_id: "af" | "am" | "ar-dz" | "ar-kw" | "ar-ly" | "ar-ma" | "ar-sa" | "ar-tn" | "ar" | "az" | "be" | "bg" | "bi" | "bm" | "bn" | "bo" | "br" | "bs" | "ca" | "cs" | "cv" | "cy" | "da" | "de-at" | "de-ch" | "de" | "dv" | "el" | "en-au" | "en-ca" | "en-gb" | "en-ie" | "en-il" | "en-in" | "en-nz" | "en-sg" | "en-tt" | "en" | "eo" | "es-do" | "es-pr" | "es-us" | "es" | "fi" | "fo" | "fr-ca" | "fr-ch" | "fr" | "fy" | "ga" | "gd" | "gl" | "gom-latn" | "gu" | "he" | "hi" | "hr" | "ht" | "hu" | "hy-am" | "id" | "is" | "it-ch" | "it" | "ja" | "jv" | "ka" | "kk" | "km" | "kn" | "ko" | "ku" | "ky" | "lb" | "lo" | "lt" | "lv" | "me" | "mi" | "mk" | "ml" | "mn" | "mr" | "ms-my" | "ms" | "mt" | "my" | "nb" | "ne" | "nl-be" | "nl" | "nn" | "oc-lnc" | "pa-in" | "pl" | "pt-br" | "pt" | "ro" | "ru" | "rw" | "sd" | "se" | "si" | "sk" | "sl" | "sq" | "sr-cyrl" | "sr" | "ss" | "sv-fi" | "sv" | "sw" | "ta" | "te" | "tet" | "tg" | "th" | "tk" | "tl-ph" | "tlh" | "tr" | "tzl" | "tzm-latn" | "tzm" | "ug-cn" | "uk" | "ur" | "uz-latn" | "uz" | "vi" | "x-pseudo" | "yo" | "zh-cn" | "zh-hk" | "zh-tw" | "zh" | "et" | "eu" | "fa") => {
       require('dayjs/locale/en')
       require('dayjs/locale/id')
-      const out = dayjs.locale(locale_id)
+      const out = dayjs.locale('id')
       return moment(out)
     },
     /* last chain */

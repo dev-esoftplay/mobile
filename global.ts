@@ -48,7 +48,10 @@ const n = () => {
 
     // rehidryte instant
     if (o?.persistKey) {
-      rehidryte(o.persistKey, (p) => { if (typeof p == 'string') set(JSON.parse(p)) })
+      rehidryte(o.persistKey, (p) => {
+        if (typeof p == 'string') set(JSON.parse(p))
+
+      })
     }
 
     /* register to userData to automatically reset state and persist */
@@ -150,9 +153,11 @@ const n = () => {
     debounce(() => {
       AsyncStorage.multiGet(Object.keys(persistKeys), (e, v) => {
         if (v && !e) {
-          Object.entries(persistKeys).forEach((item: any, idx) => {
-            item?.[1]?.(v[item?.[0]])
+          v.forEach((iv, i) => {
+            persistKeys[iv[0]]?.(iv[1])
           })
+        } else {
+          
         }
       })
     }, 30)
