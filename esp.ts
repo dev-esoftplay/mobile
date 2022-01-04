@@ -76,11 +76,9 @@ export default (() => {
         var _params = [param, ...params]
         if (_params.length > 0)
           for (let i = 0; i < _params.length; i++) {
-            const key = _params[i];
-            if (out?.hasOwnProperty?.(key)) {
-              out = out[key];
-            } else {
-              out = undefined;
+            out = out?.[_params[i]];
+            if (out == undefined){
+              break;
             }
           }
       }
@@ -109,10 +107,9 @@ export default (() => {
   }
 
   function langId(): string {
-    const _store: any = LibLocale.state().get()
-    return _store.lang_id
+    return LibLocale.state().get()
   }
-  
+
   function mod(path: string): any {
     var modtast = path.split("/");
     if (modtast[1] == "") {

@@ -3,19 +3,16 @@
 import { LibNavigation, useGlobalReturn, useGlobalState } from 'esoftplay';
 
 
-const initState = {
-  lang_id: "id"
-}
-const state = useGlobalState(initState, { persistKey: 'lib_locale' })
+const state = useGlobalState("id", { persistKey: 'lib_locale_lang' })
 
-export default class local {
+export default class m {
 
   static state(): useGlobalReturn<any> {
     return state
   }
 
   static setLanguage(langId: string): void {
-    state.set({ lang_id: langId })
     LibNavigation.reset()
+    state.set(langId)
   }
 }
