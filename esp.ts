@@ -11,6 +11,7 @@ LogBox.ignoreLogs(['VirtualizedLists should never be nested inside plain ScrollV
 let app = require('../../app.json');
 let conf = require('../../config.json');
 let lconf = require('../../config.live.json');
+let langFile
 
 export default (() => {
   function mergeDeep(target: any, source: any): any {
@@ -77,7 +78,7 @@ export default (() => {
         if (_params.length > 0)
           for (let i = 0; i < _params.length; i++) {
             out = out?.[_params[i]];
-            if (out == undefined){
+            if (out == undefined) {
               break;
             }
           }
@@ -87,9 +88,12 @@ export default (() => {
   }
 
   function lang(moduleTask: string, langName: string, ...stringToBe: string[]): string {
-    let string = readDeepObj(esp.assets("locale/" + langId() + ".json"))(moduleTask, langName)
+    if (!langFile) {
+      langFile = esp.assets("locale/" + langId() + ".json")
+    }
+    let string = langFile[moduleTask][langName]
     if (!string) {
-      string = readDeepObj(esp.assets("locale/id.json"))(moduleTask, langName)
+      string = esp.assets("locale/id.json")[moduleTask][langName]
     }
     function sprintf(string: string, index: number) {
       if (stringToBe[index] != undefined) {
