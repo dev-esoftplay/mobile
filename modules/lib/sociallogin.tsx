@@ -1,7 +1,7 @@
 // noPage
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { esp, LibComponent, LibStyle, LibUtils } from "esoftplay";
+import { esp, LibComponent, LibNavigation, LibStyle } from "esoftplay";
 import React from "react";
 import { ActivityIndicator, View } from "react-native";
 import { WebView } from 'react-native-webview';
@@ -47,7 +47,7 @@ export default class esocialLogin extends LibComponent<LibSocialloginProps, LibS
   render(): any {
     var { url, onResult } = this.props
     if (!url) {
-      url = LibUtils.getArgs(this.props, "url");
+      url = LibNavigation.getArgs(this.props, "url");
     }
     return (
       <View style={{ flex: 1 }} >

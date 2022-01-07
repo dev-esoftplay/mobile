@@ -1,6 +1,6 @@
 // withHooks
 
-import { ContentComment_item, ContentHeader, LibCurl, LibIcon, LibInfinite, LibInput, LibKeyboard_avoid, LibObject, LibSociallogin, LibStyle, LibToastProperty, LibUtils, useGlobalReturn, useGlobalState, useSafeState } from 'esoftplay';
+import { ContentComment_item, ContentHeader, LibCurl, LibIcon, LibInfinite, LibInput, LibKeyboard_avoid, LibNavigation, LibObject, LibSociallogin, LibStyle, LibToastProperty, LibUtils, useGlobalReturn, useGlobalState, useSafeState } from 'esoftplay';
 import esp from 'esoftplay/esp';
 import React, { useEffect, useRef } from 'react';
 import { Alert, Image, Pressable, Text, View } from 'react-native';
@@ -26,7 +26,7 @@ export function state(): useGlobalReturn<any> {
 export default function m(props: ContentCommentProps): any {
   const listComment = useRef<LibInfinite>(null)
   const commentInput = useRef<LibInput>(null)
-  let { url, url_post, id, par_id, header } = LibUtils.getArgsAll(props)
+  let { url, url_post, id, par_id, header } = LibNavigation.getArgsAll(props)
 
   url = useRef(url || esp.config('content') + 'user/commentlist/' + id).current
   url_post = useRef(url_post || esp.config('content') + 'user/commentpost/' + id).current
@@ -113,7 +113,7 @@ export default function m(props: ContentCommentProps): any {
       </View>
     )
   }
-  let x =(item) => <ContentComment_item url={url} url_post={url_post} {...item} />
+  let x = (item) => <ContentComment_item url={url} url_post={url_post} {...item} />
 
   return (
     <View style={{ flex: 1 }} >

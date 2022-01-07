@@ -2,7 +2,7 @@
 // noPage
 
 import { CommonActions, StackActions } from '@react-navigation/native';
-import { esp, LibNavigationRoutes, LibUtils, UserClass, UserRoutes, _global } from 'esoftplay';
+import { esp, LibNavigationRoutes, UserClass, UserRoutes, _global } from 'esoftplay';
 import React from "react";
 
 export interface LibNavigationInjector {
@@ -67,7 +67,7 @@ export default (() => {
     }
 
     static getResultKey(props: any): number {
-      return LibUtils.getArgs(props, "_senderKey", 0)
+      return m.getArgs(props, "_senderKey", 0)
     }
 
     static cancelBackResult(key?: number): void {

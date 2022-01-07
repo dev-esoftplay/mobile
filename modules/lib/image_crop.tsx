@@ -1,6 +1,6 @@
 // withHooks
 
-import { LibIcon, LibNavigation, LibProgress, LibStatusbar, LibStyle, LibTextstyle, LibToastProperty, LibUtils, useSafeState } from 'esoftplay';
+import { LibIcon, LibNavigation, LibProgress, LibStatusbar, LibStyle, LibTextstyle, LibToastProperty, useSafeState } from 'esoftplay';
 import * as ImageManipulator from "expo-image-manipulator";
 import React, { useEffect, useRef } from 'react';
 import { Dimensions, Image, Text, TouchableOpacity, View } from 'react-native';
@@ -13,7 +13,7 @@ export interface LibImage_cropProps {
 
 }
 export default function m(props: LibImage_cropProps): any {
-  const { image, ratio, forceCrop, message } = LibUtils.getArgsAll(props)
+  const { image, ratio, forceCrop, message } = LibNavigation.getArgsAll(props)
   const [_image, setImage] = useSafeState(image)
   const [counter, setCounter] = useSafeState(0)
   const [size, setSize] = useSafeState(LibStyle.width)

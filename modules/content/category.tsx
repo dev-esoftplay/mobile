@@ -1,6 +1,6 @@
 // withHooks
 
-import { ContentHeader, esp, LibCurl, LibList, LibNavigation, LibPicture, LibUtils, useGlobalReturn, useGlobalState } from 'esoftplay';
+import { ContentHeader, esp, LibCurl, LibList, LibNavigation, LibPicture, useGlobalReturn, useGlobalState } from 'esoftplay';
 import React, { useEffect, useRef } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
@@ -20,7 +20,7 @@ export function state(): useGlobalReturn<any> {
 
 
 export default function m(props: ContentCategoryProps): any {
-  let { url } = useRef<any>(LibUtils.getArgsAll(props)).current
+  let { url } = useRef<any>(LibNavigation.getArgsAll(props)).current
   const conf = esp.config()
   url = url || conf.content
   const data = _state.useSelector(s => s)

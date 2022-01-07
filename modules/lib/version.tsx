@@ -59,7 +59,7 @@ export default class m extends LibComponent<LibVersionProps, LibVersionState> {
   }
 
   render(): any {
-    const { res: { title, version, android, ios }, msg } = LibUtils.getArgsAll(this.props)
+    const { res: { title, version, android, ios }, msg } = LibNavigation.getArgsAll(this.props)
     const link = Platform.OS == 'ios' ? ios : android
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', borderStartColor: 'white', paddingHorizontal: 17 }} >

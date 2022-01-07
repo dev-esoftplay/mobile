@@ -1,6 +1,6 @@
 // withHooks
 
-import { LibIcon, LibLoading, LibNavigation, LibObject, LibStyle, LibTextstyle, LibUtils, useSafeState } from 'esoftplay';
+import { LibIcon, LibLoading, LibNavigation, LibObject, LibStyle, LibTextstyle, useSafeState } from 'esoftplay';
 import * as MediaLibrary from 'expo-media-library';
 import React, { useEffect } from 'react';
 import { FlatList, Image, TouchableOpacity, View } from 'react-native';
@@ -30,7 +30,7 @@ export default function m(props: LibImage_multiProps): any {
   const [photos, setPhotos] = useSafeState([])
   const [after, setAfter] = useSafeState(null)
   const [hasNextPage, setHasNextPage] = useSafeState(true)
-  const { max } = LibUtils.getArgsAll(props)
+  const { max } = LibNavigation.getArgsAll(props)
 
   useEffect(() => {
     MediaLibrary.getPermissionsAsync()

@@ -1,6 +1,6 @@
 // withHooks
 // noPage
-import { ContentCategoryProperty, esp, LibCurl, LibNavigation, LibPicture, LibUtils } from 'esoftplay';
+import { ContentCategoryProperty, esp, LibCurl, LibNavigation, LibPicture } from 'esoftplay';
 import React, { useEffect, useRef } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 
@@ -13,7 +13,7 @@ export interface ContentCategory_listProps {
 }
 export default function m(props: ContentCategory_listProps): any {
   const { id } = props
-  let { url } = useRef<any>(LibUtils.getArgsAll(props)).current
+  let { url } = useRef<any>(LibNavigation.getArgsAll(props)).current
   const conf = esp.config()
   url = url || conf.content
   const menu = ContentCategoryProperty.state().useSelector(s => s)

@@ -12,7 +12,7 @@ export interface ContentDetailProps {
 
 }
 export default function m(props: ContentDetailProps): any {
-  const { id, url, title, image, created } = LibUtils.getArgsAll(props)
+  const { id, url, title, image, created } = LibNavigation.getArgsAll(props)
   const [result, setResult] = useSafeState<any>({ id, url, title, image, created })
   const [isAudioPlaying, setIsAudioPlaying] = useSafeState(false)
   const audioRef = useRef<ContentAudio>(null)

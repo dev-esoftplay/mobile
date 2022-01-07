@@ -1,6 +1,6 @@
 // withHooks
 
-import { ContentCategory_list, ContentConfig, ContentHeader, ContentItem, ContentItem_header, esp, LibCarrousel, LibInfinite, LibObject, LibStyle, LibUtils, UserRoutes, useSafeState } from 'esoftplay';
+import { ContentCategory_list, ContentConfig, ContentHeader, ContentItem, ContentItem_header, esp, LibCarrousel, LibInfinite, LibNavigation, LibObject, LibStyle, UserRoutes, useSafeState } from 'esoftplay';
 import React, { useRef } from 'react';
 import { View } from 'react-native';
 
@@ -15,7 +15,7 @@ export default function m(props: ContentListProps): any {
 
   const routes = UserRoutes.state().get()
 
-  let { url, title, id } = useRef<any>(LibUtils.getArgsAll(props)).current
+  let { url, title, id } = useRef<any>(LibNavigation.getArgsAll(props)).current
   const conf = esp.config()
   url = url || conf.content
   id = id || 0

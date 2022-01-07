@@ -1,6 +1,6 @@
 // withHooks
 
-import { LibIcon, LibNavigation, LibStyle, LibUtils } from 'esoftplay';
+import { LibIcon, LibNavigation, LibStyle } from 'esoftplay';
 import React, { useRef } from 'react';
 import { Pressable, View } from 'react-native';
 import Gallery from 'react-native-awesome-gallery';
@@ -12,9 +12,9 @@ export interface ContentGalleryProps {
 
 }
 export default function m(props: ContentGalleryProps): any {
-  let images = LibUtils.getArgs(props, "images", [])
-  const image = LibUtils.getArgs(props, "image", "")
-  const index = LibUtils.getArgs(props, "index", 0)
+  let images = LibNavigation.getArgs(props, "images", [])
+  const image = LibNavigation.getArgs(props, "image", "")
+  const index = LibNavigation.getArgs(props, "index", 0)
   let scale = useRef(1).current
 
   if (images.length == 0) {
