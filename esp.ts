@@ -87,7 +87,7 @@ export default (() => {
   }
 
   function lang(moduleTask: string, langName: string, ...stringToBe: string[]): string {
-    let string = esp.assets("locale/" + langId() + ".json")[moduleTask][langName]
+    let string = esp.assets("locale/" + langId() + ".json")?.[moduleTask]?.[langName]
     if (!string) {
       string = esp.assets("locale/id.json")[moduleTask][langName]
     }
