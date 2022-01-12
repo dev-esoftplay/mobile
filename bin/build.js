@@ -249,6 +249,7 @@ node_modules/\n\
 npm-debug.*\n\
 package-lock.json\n\
 yarn.lock\n\
+yarn-error.log\n\
 			`
 		fs.writeFile(gitignore, GitIgnore, (err) => {
 			if (err) throw err;
