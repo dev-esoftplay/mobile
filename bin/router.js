@@ -12,7 +12,22 @@ const rngh = "./node_modules/react-native-gesture-handler/react-native-gesture-h
 const curPackjson = require('../package.json')
 const mainPackjson = require('../../../package.json')
 
-if (!mainPackjson.dependencies.esoftplay.includes(curPackjson.version)) {
+function getNestedObjectValue(obj, keys) {
+  if (keys.length > 0) {
+    var key = keys.shift();
+    if (key in obj) {
+      return getNestedObjectValue(obj[key], keys);
+    } else {
+      return null;
+    }
+  } else {
+    return obj;
+  }
+}
+
+
+const prjVersion = getNestedObjectValue(mainPackjson, ['dependencies', 'esoftplay'])
+if (prjVersion && prjVersion.includes(curPackjson.version)) {
   try {
     console.log("\x1b[31m", "VERSI esoftplay tidak SESUAI " + mainPackjson.dependencies.esoftplay + " != " + curPackjson.version + " ✘", "\x1b[0m")
   } catch (error) { }
