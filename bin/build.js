@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 // @ts-check
-const { exec } = require('child_process');
+const { execSync } = require('child_process');
 const fs = require('fs');
 const DIR = "../../"
 const packjson = DIR + "package.json"
 const appjson = DIR + "app.json"
 const confjson = DIR + "config.json"
 const gitignore = DIR + ".gitignore"
-const babelconfig = DIR + ".babel.config.js"
+const babelconfig = DIR + "babel.config.js"
 const tsconfig = DIR + "tsconfig.json"
 const appjs = DIR + "App.js"
 const appts = DIR + "App.tsx"
@@ -118,15 +118,15 @@ if (fs.existsSync(packjson)) {
 
 
 		const babelconf = `module.exports = function (api) {
-api.cache(true);
+	api.cache(true);
 
-let plugins = []
+	let plugins = []
 
-if (process.env["ENV"] === "prod") {
-	plugins.push("transform-remove-console");
-	plugins.push("transform-react-native-style-optimizer");
-}
-plugins.push("react-native-reanimated/plugin")
+	if (process.env["ENV"] === "prod") {
+		plugins.push("transform-remove-console");
+		plugins.push("transform-react-native-style-optimizer");
+	}
+	plugins.push("react-native-reanimated/plugin")
 	return {
 		presets: ["babel-preset-expo"],
 		plugins
@@ -310,10 +310,8 @@ export default function App() {
 				cmd += "&& yarn add " + installDevLibs.join(" ") + " --dev "
 			if (installExpoLibs.length > 0)
 				cmd += "&& expo install " + installExpoLibs.join(" ")
-			cmd += " && npm i -s esoftplay"
-			setTimeout(() => {
-				exec(cmd)
-			}, 100);
+			// cmd += " && npm i -s esoftplay"
+			execSync(cmd)
 			console.log('App.js has been replace to App.tsx');
 			// /* bugfix AsyncStorage @firebase, remove this section if firebase has update the AsyncStorage */
 			// if (fs.existsSync('../@firebase/app/dist/index.rn.cjs.js')) {

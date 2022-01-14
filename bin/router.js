@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// @ts-check
 /* EXECUTED ON `ESP START` TO BUILD FILE CACHES */
 const fs = require('fs');
 var checks = ['./node_modules/esoftplay/modules/', './modules/', './templates/'];
@@ -9,29 +10,29 @@ var replacer = new RegExp(/(?:\-|\.(?:ios|android))?\.(?:jsx|js|ts|tsx)$/);
 var Text = "";
 const rngh = "./node_modules/react-native-gesture-handler/react-native-gesture-handler.d.ts"
 
-const curPackjson = require('../package.json')
-const mainPackjson = require('../../../package.json')
+// const curPackjson = require('../package.json')
+// const mainPackjson = require('../../../package.json')
 
-function getNestedObjectValue(obj, keys) {
-  if (keys.length > 0) {
-    var key = keys.shift();
-    if (key in obj) {
-      return getNestedObjectValue(obj[key], keys);
-    } else {
-      return null;
-    }
-  } else {
-    return obj;
-  }
-}
+// function getNestedObjectValue(obj, keys) {
+//   if (keys.length > 0) {
+//     var key = keys.shift();
+//     if (key in obj) {
+//       return getNestedObjectValue(obj[key], keys);
+//     } else {
+//       return null;
+//     }
+//   } else {
+//     return obj;
+//   }
+// }
 
 
-const prjVersion = getNestedObjectValue(mainPackjson, ['dependencies', 'esoftplay'])
-if (prjVersion && prjVersion.includes(curPackjson.version)) {
-  try {
-    console.log("\x1b[31m", "VERSI esoftplay tidak SESUAI " + mainPackjson.dependencies.esoftplay + " != " + curPackjson.version + " ✘", "\x1b[0m")
-  } catch (error) { }
-}
+// const prjVersion = getNestedObjectValue(mainPackjson, ['dependencies', 'esoftplay'])
+// if (prjVersion && prjVersion.includes(curPackjson.version)) {
+//   try {
+//     console.log("\x1b[31m", "VERSI esoftplay tidak SESUAI " + mainPackjson.dependencies.esoftplay + " != " + curPackjson.version + " ✘", "\x1b[0m")
+//   } catch (error) { }
+// }
 
 if (fs.existsSync(rngh)) {
   fs.unlink(rngh, (err) => { })

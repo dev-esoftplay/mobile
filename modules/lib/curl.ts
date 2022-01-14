@@ -392,7 +392,7 @@ export default class ecurl {
     let out = resText
     if (!esp.isDebug('')) {
       if (resText.toLowerCase().includes('failed') || resText.toLowerCase().includes('code')) {
-        reportApiError(this.fetchConf.options, resText)
+        // reportApiError(this.fetchConf.options, resText)
         out = 'Terjadi kesalahan, biar ' + esp.appjson()?.expo?.name + ' bereskan, silahkan coba beberapa saat lagi.'
       }
     }
