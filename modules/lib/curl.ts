@@ -286,7 +286,7 @@ export default class ecurl {
           ...this.header,
           ["Content-Type"]: "application/x-www-form-urlencoded;charset=UTF-8"
         },
-        data: this.post,
+        data: !this.post ? undefined : this.post,
         Cache: "no-store",
         Pragma: "no-cache",
         ['Cache-Control']: "no-store",
@@ -345,7 +345,7 @@ export default class ecurl {
       url: this.url + this.uri,
       method: !this.post ? "GET" : "POST",
       headers: this.header,
-      data: this.post,
+      data: !this.post ? undefined : this.post,
       cancelToken: this.abort.token,
       cache: "no-store",
       Pragma: "no-cache",
