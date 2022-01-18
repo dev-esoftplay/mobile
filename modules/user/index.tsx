@@ -1,13 +1,12 @@
 // withHooks
 // noPage
 
-import { esp, LibDialog, LibImage, LibNet_status, LibProgress, LibStyle, LibToast, LibUpdaterProperty, LibVersion, LibWorker, LibWorkloop, LibWorkview, UseDeeplink, UserClass, UserLoading, UserMain, UserRoutes, useSafeState, _global } from 'esoftplay';
-import * as Font from "expo-font";
-import firebase from 'firebase';
 import React, { useEffect, useMemo } from "react";
 import { Alert, View } from "react-native";
-//@ts-ignore
 import Navs from "../../cache/navs";
+import { esp, LibDialog, LibImage, LibNet_status, LibProgress, LibStyle, LibToast, LibUpdaterProperty, LibVersion, LibWorker, LibWorkloop, LibWorkview, UseDeeplink, UserClass, UserLoading, UserMain, UserRoutes, useSafeState, _global } from 'esoftplay';
+import * as Font from "expo-font";
+
 
 export interface UserIndexProps {
 
@@ -56,10 +55,9 @@ export default function m(props: UserIndexProps): any {
       ], { cancelable: false })
     }, 30 * 1000);
     if (esp.config('firebase').hasOwnProperty('apiKey')) {
-      if (!firebase.apps.length) {
-        firebase.initializeApp(esp.config('firebase'));
-        firebase.auth().signInAnonymously()
-      }
+      const chatFirebase = require('../chatting/firebase')?.default
+      if (chatFirebase)
+        chatFirebase?.signInAnonymously?.();
     }
     UserClass.isLogin(async () => {
       await setFonts()
