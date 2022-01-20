@@ -253,7 +253,6 @@ export default function App() {
 			'expo-status-bar',
 			'expo-secure-store',
 			'expo-updates',
-			'firebase',
 			'immhelper',
 			'dayjs',
 			'react-fast-compare',

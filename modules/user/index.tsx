@@ -55,9 +55,13 @@ export default function m(props: UserIndexProps): any {
       ], { cancelable: false })
     }, 30 * 1000);
     if (esp.config('firebase').hasOwnProperty('apiKey')) {
-      const chatFirebase = require('../chatting/firebase')?.default
-      if (chatFirebase)
-        chatFirebase?.signInAnonymously?.();
+      try {
+        const chatFirebase = require('../chatting/firebase')?.default
+        if (chatFirebase)
+          chatFirebase?.signInAnonymously?.();
+      } catch (error) {
+
+      }
     }
     UserClass.isLogin(async () => {
       await setFonts()

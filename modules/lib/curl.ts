@@ -391,7 +391,10 @@ export default class ecurl {
   private refineErrorMessage(resText: string): string {
     let out = resText
     if (!esp.isDebug('')) {
-      if (resText.toLowerCase().includes('failed') || resText.toLowerCase().includes('code')) {
+      if (
+        resText.toLowerCase().includes('failed')
+        || resText.toLowerCase().includes('code')
+        || resText.toLowerCase().includes('timeout exceeded')) {
         // reportApiError(this.fetchConf.options, resText)
         out = 'Terjadi kesalahan, biar ' + esp.appjson()?.expo?.name + ' bereskan, silahkan coba beberapa saat lagi.'
       }
