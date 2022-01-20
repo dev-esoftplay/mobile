@@ -1,8 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { LibCurl, UserClass } from 'esoftplay';
+import { LibCurl, UserClass, esp } from 'esoftplay';
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
-import esp from './esp';
 import { default as UserRoutes } from './modules/user/routes';
 let pack = require('../../package.json');
 let app = require('../../app.json');
@@ -42,7 +41,7 @@ export function reportApiError(fetch: any, error: any) {
     'fetch: ' + String(JSON.stringify(fetch || {}, undefined, 2)).replace(/[\[\]\{\}\"]+/g, ''),
     'error: ' + error
   ].join('\n')
-  
+
   if (manifest?.packagerOpts) {
     let post = {
       text: msg,

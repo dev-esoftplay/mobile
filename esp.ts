@@ -10,7 +10,12 @@ LogBox.ignoreLogs(['YellowBox has been replaced with LogBox. Please call LogBox.
 LogBox.ignoreLogs(['VirtualizedLists should never be nested inside plain ScrollViews with the same orientation - use another VirtualizedList-backed container instead.']);
 let app = require('../../app.json');
 let conf = require('../../config.json');
-let lconf = require('../../config.live.json');
+let lconf
+try {
+  lconf = require('../../config.live.json');
+} catch (error) {
+
+}
 
 export default (() => {
   function mergeDeep(target, ...sources) {
