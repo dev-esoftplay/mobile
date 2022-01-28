@@ -71,6 +71,10 @@ export default class ecurl {
 
   }
 
+  protected buildUri(uri: string): void {
+    this.uri = uri
+  }
+
   protected setUrl(url: string): void {
     this.url = url
   }
@@ -270,11 +274,12 @@ export default class ecurl {
         }).join('&');
         this.post = ps
       }
-      this.setUri(uri)
+      this.buildUri(uri);
       if ((/^[A-z]+:\/\//g).test(uri)) {
         this.setUrl(uri)
         this.setUri("")
       } else {
+        this.setUri(uri)
         this.setUrl(esp.config("url"))
       }
       await this.setHeader()
@@ -331,11 +336,12 @@ export default class ecurl {
         this.post = ps
       }
     }
-    this.setUri(uri)
+    this.buildUri(uri);
     if ((/^[A-z]+:\/\//g).test(uri)) {
       this.setUrl(uri)
       this.setUri("")
     } else {
+      this.setUri(uri)
       this.setUrl(esp.config("url"))
     }
     await this.setHeader();

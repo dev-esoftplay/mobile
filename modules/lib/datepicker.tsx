@@ -130,7 +130,7 @@ export default function m(props: LibDatepickerProps): any {
   function itemRenderer(data: any, index: number, isSelected: boolean) {
     return (
       <View>
-        <Text style={{ fontWeight: isSelected ? 'bold' : 'normal' }} >{data}</Text>
+        <Text style={{ fontSize: 20, fontWeight: isSelected ? 'bold' : 'normal' }} >{data}</Text>
       </View>
     )
   }
