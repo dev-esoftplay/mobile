@@ -40,7 +40,6 @@ export default function m(props: LibTimepickerProps): any {
   let showHourMinute = (type == 'hourMinuteSecond') || (type == 'hourMinute');
   let showHourMinuteSecond = type == 'hourMinuteSecond';
 
-
   function scrollTo(time: string) {
     refHour?.current?.scrollToIndex(t24.indexOf(time.split(':')[0]))
     refMinute?.current?.scrollToIndex(t60.indexOf(time.split(':')[1]))
@@ -49,16 +48,18 @@ export default function m(props: LibTimepickerProps): any {
 
   useEffect(() => {
     if (selectedTime) {
+      let toTime = null
       if (maxTime && selectedTime > maxTime) {
-        scrollTo(maxTime);
-        setSelectedTime(maxTime);
+        toTime = maxTime;
       } else if (minTime && selectedTime < minTime) {
-        scrollTo(minTime);
-        setSelectedTime(minTime);
+        toTime = minTime;
+      }
+      if (toTime != null){
+        scrollTo(toTime);
+        setSelectedTime(toTime);
       }
     }
   }, [selectedTime])
-
 
   function itemRenderer(data: any, index: number, isSelected: boolean) {
     return (

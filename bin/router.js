@@ -383,7 +383,7 @@ declare module "esoftplay" {
   function useGlobalState<S>(initialState?: S, option?: useGlobalOption): useGlobalReturn<S>;
   function usePersistState<S>(key: string, initialState?: S | (() => S)): [S, (a: S | ((b: S )=> S)) => S | undefined, (a?: (x: S) => void) => void, () => void];
   function useSafeState<S>(initialState?: S | (() => S)): [S, (a: S | ((b: S )=> S)) => S | undefined];
-  function applyStyle(style: any): any;
+  function applyStyle<T>(style: T): T;
   function usePersistState<S>(key: string, initialState?: S | (() => S)): [S, (a: S) => void, (a?: (x: S)=> void) => void, () => void];
   namespace esp {
     function appjson(): any;
