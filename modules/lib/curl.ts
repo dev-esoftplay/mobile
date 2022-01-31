@@ -72,8 +72,9 @@ export default class ecurl {
 
   }
 
-  protected buildUri(uri: string): void {
+  protected buildUri(uri: string): string {
     this.uri = uri
+    return this.uri
   }
 
   protected setUrl(url: string): void {
@@ -275,7 +276,7 @@ export default class ecurl {
         }).join('&');
         this.post = ps
       }
-      this.buildUri(uri);
+      uri = this.buildUri(uri);
       if ((/^[A-z]+:\/\//g).test(uri)) {
         this.setUrl(uri)
         this.setUri("")
@@ -337,7 +338,7 @@ export default class ecurl {
         this.post = ps
       }
     }
-    this.buildUri(uri);
+    uri = this.buildUri(uri);
     if ((/^[A-z]+:\/\//g).test(uri)) {
       this.setUrl(uri)
       this.setUri("")
