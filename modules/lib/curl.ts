@@ -28,22 +28,23 @@ export default class ecurl {
     this.header = {}
     this.setUri = this.setUri.bind(this);
     this.setUrl = this.setUrl.bind(this);
-    this.onFetched = this.onFetched.bind(this)
+    this.buildUri = this.buildUri.bind(this);
+    this.onFetched = this.onFetched.bind(this);
     this.setHeader = this.setHeader.bind(this);
-    this.signatureBuild = this.signatureBuild.bind(this)
-    this.encodeGetValue = this.encodeGetValue.bind(this)
-    this.urlEncode = this.urlEncode.bind(this)
-    this.closeConnection = this.closeConnection.bind(this)
-    this.onStatusCode = this.onStatusCode.bind(this)
-    this.onFetchFailed = this.onFetchFailed.bind(this)
-    this.onError = this.onError.bind(this)
-    this.setApiKey = this.setApiKey.bind(this)
-    this.secure = this.secure.bind(this)
-    this.withHeader = this.withHeader.bind(this)
-    this.initTimeout = this.initTimeout.bind(this)
-    this.cancelTimeout = this.cancelTimeout.bind(this)
+    this.signatureBuild = this.signatureBuild.bind(this);
+    this.encodeGetValue = this.encodeGetValue.bind(this);
+    this.urlEncode = this.urlEncode.bind(this);
+    this.closeConnection = this.closeConnection.bind(this);
+    this.onStatusCode = this.onStatusCode.bind(this);
+    this.onFetchFailed = this.onFetchFailed.bind(this);
+    this.onError = this.onError.bind(this);
+    this.setApiKey = this.setApiKey.bind(this);
+    this.secure = this.secure.bind(this);
+    this.withHeader = this.withHeader.bind(this);
+    this.initTimeout = this.initTimeout.bind(this);
+    this.cancelTimeout = this.cancelTimeout.bind(this);
     // this.createApiTesterUris = this.createApiTesterUris.bind(this)
-    const str: any = LibNet_status.state().get()
+    const str: any = LibNet_status.state().get();
     if (uri && str.isOnline) {
       this.init(uri, post, onDone, onFailed, debug);
     } else if (!str.isOnline && onFailed) {
