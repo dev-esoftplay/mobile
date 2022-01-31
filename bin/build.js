@@ -210,9 +210,10 @@ yarn-error.log\n\
 import * as ErrorReport from 'esoftplay/error';
 import * as Notifications from 'expo-notifications';
 import React, { useEffect, useRef } from 'react';
-import { enableScreens } from 'react-native-screens';
+import { enableScreens, enableFreeze } from 'react-native-screens';
 const { globalIdx } = require('esoftplay/global');
 enableScreens();
+enableFreeze(true);
 
 Notifications.addNotificationResponseReceivedListener(x => LibNotification.onAction(x));
 
@@ -309,8 +310,11 @@ export default function App() {
 				cmd += "&& yarn add " + installDevLibs.join(" ") + " --dev "
 			if (installExpoLibs.length > 0)
 				cmd += "&& expo install " + installExpoLibs.join(" ")
-			// cmd += " && npm i -s esoftplay"
+			cmd += " && node ./node_modules/esoftplay/bin/router.js"
 			execSync(cmd)
+			// if (fs.existsSync("../../node_modules/esoftplay/bin/router.js")) {
+			// 	execSync("node ../../node_modules/esoftplay/bin/router.js")
+			// }
 			console.log('App.js has been replace to App.tsx');
 			// /* bugfix AsyncStorage @firebase, remove this section if firebase has update the AsyncStorage */
 			// if (fs.existsSync('../@firebase/app/dist/index.rn.cjs.js')) {
