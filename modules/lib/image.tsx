@@ -7,7 +7,7 @@ import { SaveFormat } from 'expo-image-manipulator';
 import * as ImagePicker from 'expo-image-picker';
 import React from 'react';
 import {
-  ActivityIndicator, Alert, Image, TouchableOpacity, View
+    ActivityIndicator, Alert, Image, TouchableOpacity, View
 } from 'react-native';
 const { height, width } = LibStyle;
 

@@ -2,7 +2,7 @@
 // noPage
 
 import { esp, LibCurl, LibNavigation, LibUtils, _global } from 'esoftplay';
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { Alert, Linking } from 'react-native';
 
 export default function m(defaultUrl?: string): void {

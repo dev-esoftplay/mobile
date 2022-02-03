@@ -31,7 +31,7 @@ export interface UserLoginState {
   isLoading: boolean
 }
 
-export default class euserLogin extends LibComponent<UserLoginProps, UserLoginState> {
+export default class m extends LibComponent<UserLoginProps, UserLoginState> {
 
   inputUsername: any;
   inputPassword: any;

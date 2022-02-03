@@ -27,7 +27,7 @@ if (fs.existsSync(packjson)) {
 	/* ADD SCRIPTS.PRESTART AND SCRIPTS.POSTSTOP */
 
 	if (args[0] == "install") {
-		$package.scripts.start = "esp start && expo start"
+		$package.scripts.start = "esp start && expo start --dev-client"
 		fs.writeFile(packjson, JSON.stringify($package, null, 2), (err) => {
 			if (err) throw err;
 			console.log('package.json has been updated');
@@ -258,6 +258,7 @@ export default function App() {
 			'dayjs',
 			'react-fast-compare',
 			'react-native-gesture-handler',
+			'react-native-fast-image',
 			'react-native-awesome-gallery',
 			'react-native-picker-scrollview',
 			'react-native-pinch-zoom-view-movable',

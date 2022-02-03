@@ -4,7 +4,8 @@
 import { esp, LibStyle, LibWorker, LibWorkloop, useSafeState } from 'esoftplay';
 import * as FileSystem from 'expo-file-system';
 import React, { useMemo } from 'react';
-import { Image, PixelRatio, Platform, View } from 'react-native';
+import { PixelRatio, Platform, View } from 'react-native';
+import FastImage from 'react-native-fast-image';
 const sh = require("shorthash")
 
 export interface LibPictureSource {
@@ -80,6 +81,8 @@ export default function m(props: LibPictureProps): any {
   b_uri = b_uri?.replace?.('://data.', '://')
   let { width, height } = props.style
   const valid = b_uri?.includes?.(esp.config('domain'))
+  const sResizeMode = props?.style?.resizeMode || 'cover'
+  const resizeMode = (props.resizeMode || sResizeMode) == 'cover' ? FastImage.resizeMode.cover : FastImage.resizeMode.contain
 
   if (props.source.hasOwnProperty("uri") && (!width || !height)) {
     if (width) {
@@ -115,11 +118,11 @@ export default function m(props: LibPictureProps): any {
     if (typeof props.source != 'number' && !b_uri) {
       return <View style={props.style} />
     }
-    return <Image {...props} />
+    return <FastImage {...props} resizeMode={resizeMode} />
   }
 
   if (!valid || (!props.source.hasOwnProperty("uri"))) {
-    return <Image {...props} />
+    return <FastImage {...props} resizeMode={resizeMode} />
   }
 
   if (uri == '') {
@@ -129,6 +132,6 @@ export default function m(props: LibPictureProps): any {
   }
 
   return (
-    <Image key={b_uri + uri} {...props} source={{ uri: uri }} style={props.style} />
+    <FastImage key={b_uri + uri} {...props} source={{ uri: uri }} style={props.style} resizeMode={resizeMode} />
   )
 }
