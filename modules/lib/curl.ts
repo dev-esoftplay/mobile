@@ -1,8 +1,10 @@
 // noPage
-import { esp, LibCrypt, LibNet_status, LibProgress, LibUtils } from 'esoftplay';
+import { esp, LibCrypt, LibNet_status, LibObject, LibProgress, LibUtils, LogStateProperty } from 'esoftplay';
 import { reportApiError } from "esoftplay/error";
 import moment from "esoftplay/moment";
+import Constants from 'expo-constants';
 const axios = require('axios');
+const { manifest } = Constants;
 
 export default class ecurl {
   timeout = 55000;
@@ -362,9 +364,40 @@ export default class ecurl {
       mode: "cors",
       _post: post
     }
-    if (debug == 1) {
-      esp.log(this.url + this.uri, { ...options, cancelToken: undefined })
+    // if (debug == 1) {
+    // console.log(this.url + this.uri, { ...options, cancelToken: undefined })
+    // }
+
+    if (esp.isDebug('apitest') && manifest?.packagerOpts?.dev && LogStateProperty) {
+      const allData = LogStateProperty.state().get() || []
+      const logEnable = LogStateProperty.enableLog().get()
+
+      const complete_uri = this.uri;
+      const _uri = complete_uri.includes('?') ? complete_uri.split('?')[0] : complete_uri
+      const _get = complete_uri.includes('?') ? complete_uri.split('?')[1].split('&').map((x: any) => x.split('=')).map((t: any) => {
+        return ({ [t[0]]: [t[1]] })
+      }) : []
+      const get = Object.assign({}, ..._get)
+      const _post = post && Object.keys(post).map((key) => {
+        return ({ [key]: [post[key]] })
+      }) || []
+      const postNew = Object.assign({}, ..._post)
+
+      if (_uri != '') {
+        const data = {
+          [_uri]: {
+            secure: this.isSecure,
+            get: get,
+            post: postNew
+          }
+        }
+        let dt = LibObject.push(allData, data)()
+        if (logEnable) {
+          LogStateProperty.state().set(dt)
+        }
+      }
     }
+
     this.fetchConf = { url: this.url + this.uri, options: options }
     this.initTimeout(upload ? 120000 : undefined)
     axios(options).then(async (res: any) => {
@@ -399,12 +432,17 @@ export default class ecurl {
   private refineErrorMessage(resText: string): string {
     let out = resText
     if (!esp.isDebug('')) {
+      const ltext = resText.toLowerCase()
       if (
-        resText.toLowerCase().includes('failed')
-        || resText.toLowerCase().includes('code')
-        || resText.toLowerCase().includes('timeout exceeded')) {
+        ltext.includes('failed') ||
+        ltext.includes('code') ||
+        ltext.includes('error')
+      ) {
         // reportApiError(this.fetchConf.options, resText)
-        out = 'Terjadi kesalahan, biar ' + esp.appjson()?.expo?.name + ' bereskan, silahkan coba beberapa saat lagi.'
+        out = 'Terjadi kesalahan, biar ' + esp.appjson()?.expo?.name + ' bereskan, silahkan coba beberapa saat lagi atau kembali ke halaman utama'
+      }
+      if (ltext.includes('timeout exceeded')) {
+        out = 'Koneksi internet anda tidak stabil, silahkan coba beberapa saat lagi'
       }
     }
     return out

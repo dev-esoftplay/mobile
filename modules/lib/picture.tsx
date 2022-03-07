@@ -4,8 +4,7 @@
 import { esp, LibStyle, LibWorker, LibWorkloop, useSafeState } from 'esoftplay';
 import * as FileSystem from 'expo-file-system';
 import React, { useMemo } from 'react';
-import { PixelRatio, Platform, View } from 'react-native';
-import FastImage from 'react-native-fast-image';
+import { Image, PixelRatio, Platform, View } from 'react-native';
 const sh = require("shorthash")
 
 export interface LibPictureSource {
@@ -52,12 +51,17 @@ const fetchPicture = LibWorker.registerJobAsync('lib_picture_fetch', (url: strin
             let wantedheight = 0
             let wantedwidth = 0
             let ratio = rawwidth / rawheight
-            if (rawheight > rawwidth) {
-              wantedwidth = wantedMaxSize * ratio;
-              wantedheight = wantedMaxSize;
+            if (Math.max(rawheight, rawwidth) > wantedMaxSize) {
+              if (rawheight > rawwidth) {
+                wantedwidth = wantedMaxSize * ratio;
+                wantedheight = wantedMaxSize;
+              } else {
+                wantedwidth = wantedMaxSize;
+                wantedheight = wantedMaxSize / ratio;
+              }
             } else {
-              wantedwidth = wantedMaxSize;
-              wantedheight = wantedMaxSize / ratio;
+              wantedwidth = rawwidth
+              wantedheight = rawheight
             }
             let canvas = document.createElement('canvas');
             let ctx = canvas.getContext('2d');
@@ -81,8 +85,6 @@ export default function m(props: LibPictureProps): any {
   b_uri = b_uri?.replace?.('://data.', '://')
   let { width, height } = props.style
   const valid = b_uri?.includes?.(esp.config('domain'))
-  const sResizeMode = props?.style?.resizeMode || 'cover'
-  const resizeMode = (props.resizeMode || sResizeMode) == 'cover' ? FastImage.resizeMode.cover : FastImage.resizeMode.contain
 
   if (props.source.hasOwnProperty("uri") && (!width || !height)) {
     if (width) {
@@ -118,11 +120,11 @@ export default function m(props: LibPictureProps): any {
     if (typeof props.source != 'number' && !b_uri) {
       return <View style={props.style} />
     }
-    return <FastImage {...props} resizeMode={resizeMode} />
+    return <Image {...props} />
   }
 
   if (!valid || (!props.source.hasOwnProperty("uri"))) {
-    return <FastImage {...props} resizeMode={resizeMode} />
+    return <Image {...props} />
   }
 
   if (uri == '') {
@@ -132,6 +134,6 @@ export default function m(props: LibPictureProps): any {
   }
 
   return (
-    <FastImage key={b_uri + uri} {...props} source={{ uri: uri }} style={props.style} resizeMode={resizeMode} />
+    <Image key={b_uri + uri} {...props} source={{ uri: uri }} style={props.style} />
   )
 }
