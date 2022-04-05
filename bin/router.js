@@ -578,14 +578,12 @@ function createRouter() {
         staticImport.splice(0, 0, item)
       } else if (module == 'lib' && task == 'style') {
         staticImport.splice(0, 0, item)
-      } else if (module == 'lib' && task == 'sqlite') {
-        staticImport.splice(1, 0, item)
-      } else if (module == 'lib' && task == 'worker_data') {
-        staticImport.splice(2, 0, item)
       } else if (module == 'lib' && task == 'worker') {
         staticImport.splice(2, 0, item)
       } else if (module == 'lib' && task == 'navigation') {
         staticImport.splice(2, 0, item)
+      } else if (task == 'style') {
+        staticImport.splice(9, 0, item)
       } else {
         staticImport.push(item);
       }

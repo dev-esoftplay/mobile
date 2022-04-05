@@ -29,7 +29,7 @@ export default class eclass {
     return new Promise((r, j) => {
       AsyncStorage.getItem("user").then((user: string) => {
         if (user) {
-          const usr = user[0] == '{' && user[user.length - 1] == '}' ? JSON.parse(user) : JSON.parse(new LibCrypt().decode(user))
+          const usr = (user[0] == '{' && user[user.length - 1] == '}') ? JSON.parse(user) : JSON.parse(new LibCrypt().decode(user))
           if (usr) {
             r(usr);
             state.set(usr)

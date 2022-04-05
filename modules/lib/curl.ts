@@ -1,13 +1,14 @@
-// noPage
-import { esp, LibCrypt, LibNet_status, LibObject, LibProgress, LibUtils, LogStateProperty } from 'esoftplay';
+import { esp, LibCrypt, LibNet_status, LibObject, LibProgress, LibToastProperty, LibUtils, LogStateProperty } from 'esoftplay';
 import { reportApiError } from "esoftplay/error";
 import moment from "esoftplay/moment";
 import Constants from 'expo-constants';
+
 const axios = require('axios');
 const { manifest } = Constants;
 
 export default class ecurl {
   timeout = 55000;
+  maxRetry = 2;
   timeoutContext: any = null;
   isDebug = esp.config("isDebug");
   post: any;
@@ -28,6 +29,7 @@ export default class ecurl {
 
   constructor(uri?: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number) {
     this.header = {}
+    this.maxRetry = 2;
     this.setUri = this.setUri.bind(this);
     this.setUrl = this.setUrl.bind(this);
     this.buildUri = this.buildUri.bind(this);
@@ -58,7 +60,6 @@ export default class ecurl {
     this.cancelTimeout()
     this.timeoutContext = setTimeout(() => {
       if (this.abort?.cancel) {
-        // reportApiError(`Request timeout`, this.url + this.uri)
         this.closeConnection()
         LibProgress.hide()
       }
@@ -169,6 +170,7 @@ export default class ecurl {
           url: this.url + this.uri + (token_uri || 'get_token'),
           method: "POST",
           cancelToken: this.abort.token,
+          transformResponse: [(data) => { return data; }],
           headers: {
             ...this.header,
             ["Content-Type"]: "application/x-www-form-urlencoded;charset=UTF-8"
@@ -190,8 +192,8 @@ export default class ecurl {
             }, debug)
         }).catch((r: string) => {
           this.cancelTimeout();
+          LibToastProperty.show("Koneksi internet anda tidak stabil, silahkan coba beberapa saat lagi")
           LibProgress.hide()
-          this.onFetchFailed(r)
         })
       }
     }
@@ -269,7 +271,7 @@ export default class ecurl {
     return signature
   }
 
-  public async custom(uri: string, post?: any, onDone?: (res: any, timeout: boolean) => void, debug?: number): Promise<void> {
+  async custom(uri: string, post?: any, onDone?: (res: any, timeout: boolean) => void, debug?: number): Promise<void> {
     const str: any = LibNet_status.state().get()
     if (str.isOnline) {
       if (post) {
@@ -278,47 +280,45 @@ export default class ecurl {
         }).join('&');
         this.post = ps
       }
-      uri = this.buildUri(uri);
+      this.setUri(uri)
       if ((/^[A-z]+:\/\//g).test(uri)) {
         this.setUrl(uri)
         this.setUri("")
       } else {
-        this.setUri(uri)
         this.setUrl(esp.config("url"))
       }
       await this.setHeader()
       var options: any = {
-        url: this.url + this.uri,
+        signal: this.signal,
         method: !this.post ? "GET" : "POST",
-        cancelToken: this.abort.token,
         headers: {
           ...this.header,
           ["Content-Type"]: "application/x-www-form-urlencoded;charset=UTF-8"
         },
-        data: !this.post ? undefined : this.post,
+        body: this.post,
         Cache: "no-store",
         Pragma: "no-cache",
         ['Cache-Control']: "no-store",
         mode: "cors",
         _post: post
       }
-      if (debug == 1) {
-        esp.log(this.url + this.uri, { ...options, cancelToken: undefined })
-      }
+      if (debug == 1)
+        esp.log(this.url + this.uri, options)
       this.fetchConf = { url: this.url + this.uri, options: options }
-      // this.initTimeout()
-      axios(options).then(async (res: any) => {
-        // this.cancelTimeout()
-        if (res.data) {
-          if (onDone) onDone(res.data, false)
-          this.onDone(res.data)
+      fetch(this.url + this.uri, options).then(async (res) => {
+        var resText = await res.text()
+        var resJson = (resText.startsWith("{") || resText.startsWith("[")) ? JSON.parse(resText) : null
+        if (resJson) {
+          if (onDone) onDone(resJson, false)
+          this.onDone(resJson)
+        } else {
+          this.onFetchFailed(resText)
+          LibProgress.hide()
+          this.onError(resText)
         }
+      }).catch((e) => {
         LibProgress.hide()
-      }).catch((r: string) => {
-        // this.cancelTimeout()
-        this.onFetchFailed(r)
-        LibProgress.hide()
-        this.onError(r)
+        this.onFetchFailed(e)
       })
     }
   }
@@ -355,31 +355,59 @@ export default class ecurl {
       url: this.url + this.uri,
       method: !this.post ? "GET" : "POST",
       headers: this.header,
+      transformResponse: [(data) => { return data; }],
       data: !this.post ? undefined : this.post,
       cancelToken: this.abort.token,
       cache: "no-store",
+
       Pragma: "no-cache",
       ["Cache-Control"]: 'no-cache, no-store, must-revalidate',
       ["Expires"]: 0,
       mode: "cors",
       _post: post
     }
-    // if (debug == 1) {
-    // console.log(this.url + this.uri, { ...options, cancelToken: undefined })
-    // }
+    if (debug == 1) {
+      esp.log(this.url + this.uri, { ...options, cancelToken: undefined })
+    }
 
     if (esp.isDebug('apitest') && manifest?.packagerOpts?.dev && LogStateProperty) {
       const allData = LogStateProperty.state().get() || []
       const logEnable = LogStateProperty.enableLog().get()
-
-      const complete_uri = this.uri;
+      let uriOrigin = this.uri
+      if (this.uri == '' && this.url != '') {
+        uriOrigin = this.url.replace(/(https?:\/\/)/g, '')
+        let uriArray = uriOrigin.split('/')
+        let domain = uriArray[0]
+        if (!domain.startsWith('api.')) {
+          uriOrigin = ''
+        } else {
+          let uri = uriArray.slice(1, uriArray.length - 1).join('/')
+          let get = uriArray[uriArray.length - 1];
+          let newGet = '';
+          if (get && get.includes('?')) {
+            let rebuildGet = get.split('?')
+            for (let i = 0; i < rebuildGet.length; i++) {
+              const element = rebuildGet[i];
+              if (!element.includes('=')) {
+                newGet += '?id=' + element
+              } else {
+                newGet += (newGet.includes('?') ? '&' : '?') + element
+              }
+            }
+          } else {
+            newGet = get;
+          }
+          uriOrigin = uri + newGet
+        }
+      }
+      const complete_uri = uriOrigin
       const _uri = complete_uri.includes('?') ? complete_uri.split('?')[0] : complete_uri
       const _get = complete_uri.includes('?') ? complete_uri.split('?')[1].split('&').map((x: any) => x.split('=')).map((t: any) => {
         return ({ [t[0]]: [t[1]] })
       }) : []
       const get = Object.assign({}, ..._get)
       const _post = post && Object.keys(post).map((key) => {
-        return ({ [key]: [post[key]] })
+        return ({ [key]: [decodeURI(post[key])] })
       }) || []
       const postNew = Object.assign({}, ..._post)
 
@@ -387,11 +415,12 @@ export default class ecurl {
         const data = {
           [_uri]: {
             secure: this.isSecure,
+            time: moment().format('YYYY-MM-DD HH:mm:ss'),
             get: get,
-            post: postNew
+            post: postNew,
           }
         }
-        let dt = LibObject.push(allData, data)()
+        let dt = LibObject.unshift(allData, data)()
         if (logEnable) {
           LogStateProperty.state().set(dt)
         }
@@ -405,9 +434,17 @@ export default class ecurl {
       this.onFetched(res.data, onDone, onFailed, debug)
     }).catch((e: any) => {
       this.cancelTimeout()
-      this.onFetched(e, onDone, onFailed, debug)
+      if (this.maxRetry > 0) {
+        this.init(uri, post, onDone, onFailed, debug)
+        this.maxRetry = this.maxRetry - 1
+      } else {
+        LibToastProperty.show("Koneksi internet anda tidak stabil, silahkan coba beberapa saat lagi")
+        LibProgress.hide()
+      }
     })
   }
+
+
 
   protected onFetched(resText: string | Object, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number): void {
     var resJson = typeof resText == 'string' && ((resText.startsWith("{") && resText.endsWith("}")) || (resText.startsWith("[") && resText.endsWith("]"))) ? JSON.parse(resText) : resText

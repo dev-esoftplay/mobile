@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { LibCurl, UserClass, esp } from 'esoftplay';
+import { LibCurl, UserClass } from 'esoftplay';
+import esp from 'esoftplay/esp';
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 import { default as UserRoutes } from './modules/user/routes';
@@ -49,16 +50,16 @@ export function reportApiError(fetch: any, error: any) {
       disable_web_page_preview: true
     }
     new LibCurl().custom('https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage', post)
-    return
+  } else {
+    config?.errorReport?.telegramIds?.forEach?.((id: string) => {
+      let post = {
+        text: msg,
+        chat_id: id,
+        disable_web_page_preview: true
+      }
+      new LibCurl().custom('https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage', post)
+    })
   }
-  config?.errorReport?.telegramIds?.forEach?.((id: string) => {
-    let post = {
-      text: msg,
-      chat_id: id,
-      disable_web_page_preview: true
-    }
-    new LibCurl().custom('https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage', post)
-  })
 }
 
 export function getError() {

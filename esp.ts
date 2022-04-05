@@ -8,6 +8,7 @@ import routers from './cache/routers';
 import './oneplusfixfont';
 LogBox.ignoreLogs(['YellowBox has been replaced with LogBox. Please call LogBox.ignoreLogs() instead.']);
 LogBox.ignoreLogs(['VirtualizedLists should never be nested inside plain ScrollViews with the same orientation - use another VirtualizedList-backed container instead.']);
+LogBox.ignoreLogs([`Got a component with the name 'm'`]);
 let app = require('../../app.json');
 let conf = require('../../config.json');
 let lconf

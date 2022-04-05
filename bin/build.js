@@ -27,7 +27,7 @@ if (fs.existsSync(packjson)) {
 	/* ADD SCRIPTS.PRESTART AND SCRIPTS.POSTSTOP */
 
 	if (args[0] == "install") {
-		$package.scripts.start = "esp start && expo start --dev-client"
+		$package.scripts.start = "esp start && expo start"
 		fs.writeFile(packjson, JSON.stringify($package, null, 2), (err) => {
 			if (err) throw err;
 			console.log('package.json has been updated');
@@ -210,10 +210,9 @@ yarn-error.log\n\
 import * as ErrorReport from 'esoftplay/error';
 import * as Notifications from 'expo-notifications';
 import React, { useEffect, useRef } from 'react';
-import { enableScreens, enableFreeze } from 'react-native-screens';
+import { enableScreens } from 'react-native-screens';
 const { globalIdx } = require('esoftplay/global');
 enableScreens();
-enableFreeze(true);
 
 Notifications.addNotificationResponseReceivedListener(x => LibNotification.onAction(x));
 
@@ -258,7 +257,6 @@ export default function App() {
 			'dayjs',
 			'react-fast-compare',
 			'react-native-gesture-handler',
-			'react-native-fast-image',
 			'react-native-awesome-gallery',
 			'react-native-picker-scrollview',
 			'react-native-pinch-zoom-view-movable',
@@ -311,11 +309,8 @@ export default function App() {
 				cmd += "&& yarn add " + installDevLibs.join(" ") + " --dev "
 			if (installExpoLibs.length > 0)
 				cmd += "&& expo install " + installExpoLibs.join(" ")
-			cmd += " && node ./node_modules/esoftplay/bin/router.js"
+			// cmd += " && npm i -s esoftplay"
 			execSync(cmd)
-			// if (fs.existsSync("../../node_modules/esoftplay/bin/router.js")) {
-			// 	execSync("node ../../node_modules/esoftplay/bin/router.js")
-			// }
 			console.log('App.js has been replace to App.tsx');
 			// /* bugfix AsyncStorage @firebase, remove this section if firebase has update the AsyncStorage */
 			// if (fs.existsSync('../@firebase/app/dist/index.rn.cjs.js')) {
