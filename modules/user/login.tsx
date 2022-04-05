@@ -6,7 +6,6 @@ import {
 import { StatusBar } from 'expo-status-bar';
 import React from "react";
 import { Image, KeyboardAvoidingView, Pressable, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
-const config = esp.config();
 
 
 
