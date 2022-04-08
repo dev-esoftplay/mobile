@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LibCurl, UserClass } from 'esoftplay';
 import esp from 'esoftplay/esp';
 import Constants from 'expo-constants';
-import { Platform } from 'react-native';
+import { Alert, Platform } from 'react-native';
 import { default as UserRoutes } from './modules/user/routes';
 let pack = require('../../package.json');
 let app = require('../../app.json');
@@ -53,11 +53,16 @@ export function reportApiError(fetch: any, error: any) {
   } else {
     config?.errorReport?.telegramIds?.forEach?.((id: string) => {
       let post = {
-        text: msg,
+        text: msg.slice(0, 4000),
         chat_id: id,
         disable_web_page_preview: true
       }
-      new LibCurl().custom('https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage', post)
+      new LibCurl().custom('https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage', post, (res) => {
+        // debug sementara sampe tahu masalahnya
+        if (user.username.includes("@fisip.net")) {
+          Alert.alert("DEBUG Telegram api error", res, [{ text: 'OK' }])
+        }
+      })
     })
   }
 }

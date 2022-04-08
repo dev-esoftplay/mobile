@@ -289,6 +289,7 @@ export default class ecurl {
       }
       await this.setHeader()
       var options: any = {
+        url: this.url + this.uri
         signal: this.signal,
         method: !this.post ? "GET" : "POST",
         headers: {
@@ -317,6 +318,7 @@ export default class ecurl {
           this.onError(resText)
         }
       }).catch((e) => {
+        this.onError(e)
         LibProgress.hide()
         this.onFetchFailed(e)
       })
