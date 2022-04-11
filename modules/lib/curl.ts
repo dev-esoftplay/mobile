@@ -372,7 +372,7 @@ export default class ecurl {
       esp.log(this.url + this.uri, { ...options, cancelToken: undefined })
     }
 
-    if (esp.isDebug('apitest') && manifest?.packagerOpts?.dev && LogStateProperty) {
+    if (manifest?.packagerOpts?.dev && LogStateProperty) {
       const allData = LogStateProperty.state().get() || []
       const logEnable = LogStateProperty.enableLog().get()
       let uriOrigin = this.uri
@@ -440,6 +440,7 @@ export default class ecurl {
         this.init(uri, post, onDone, onFailed, debug)
         this.maxRetry = this.maxRetry - 1
       } else {
+        this.onError(e?.response)
         LibToastProperty.show("Koneksi internet anda tidak stabil, silahkan coba beberapa saat lagi")
         LibProgress.hide()
       }
