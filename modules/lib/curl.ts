@@ -434,16 +434,39 @@ export default class ecurl {
     axios(options).then(async (res: any) => {
       this.cancelTimeout()
       this.onFetched(res.data, onDone, onFailed, debug)
-    }).catch((e: any) => {
+    }).catch((error: any) => {
       this.cancelTimeout()
-      if (this.maxRetry > 0) {
-        this.init(uri, post, onDone, onFailed, debug)
-        this.maxRetry = this.maxRetry - 1
+
+      if (error.response) {
+        /*
+         * The request was made and the server responded with a
+         * status code that falls out of the range of 2xx
+         */
+        console.log(error.response.data);
+        console.log(error.response.status);
+        console.log(error.response.headers);
+        this.onError(JSON.stringify(error.response))
+        LibToastProperty.show('Terjadi kesalahan, biar ' + esp.appjson()?.expo?.name + ' bereskan, silahkan coba beberapa saat lagi atau kembali ke halaman utama')
+      } else if (error.request) {
+        /*
+         * The request was made but no response was received, `error.request`
+         * is an instance of XMLHttpRequest in the browser and an instance
+         * of http.ClientRequest in Node.js
+         */
+
+        if (this.maxRetry > 0) {
+          this.init(uri, post, onDone, onFailed, debug)
+          this.maxRetry = this.maxRetry - 1
+        } else {
+          LibToastProperty.show("Koneksi internet anda tidak stabil, silahkan coba beberapa saat lagi")
+          console.log(error.request);
+        }
       } else {
-        this.onError(e?.response)
-        LibToastProperty.show("Koneksi internet anda tidak stabil, silahkan coba beberapa saat lagi")
-        LibProgress.hide()
+        // Something happened in setting up the request and triggered an Error
+        this.onError(JSON.stringify(error.message))
+        console.log('Error', error.message);
       }
+      LibProgress.hide()
     })
   }
 
@@ -491,9 +514,9 @@ export default class ecurl {
   private onError(msg: string): void {
     esp.log("\x1b[31m", msg)
     esp.log("\x1b[0m")
-    if (esp.isDebug('') && msg == '') {
-      return
-    }
+    // if (esp.isDebug('') && msg == '') {
+    //   return
+    // }
     delete this.fetchConf.options.cancelToken
     reportApiError(this.fetchConf.options, msg)
     LibProgress.hide()
