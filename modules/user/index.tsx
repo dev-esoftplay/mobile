@@ -1,11 +1,11 @@
 // withHooks
 // noPage
 
-import React, { useEffect, useMemo } from "react";
-import { Alert, View } from "react-native";
-import Navs from "../../cache/navs";
 import { esp, LibDialog, LibImage, LibNet_status, LibProgress, LibStyle, LibToast, LibUpdaterProperty, LibVersion, LibWorker, LibWorkloop, LibWorkview, UseDeeplink, UserClass, UserLoading, UserMain, UserRoutes, useSafeState, _global } from 'esoftplay';
 import * as Font from "expo-font";
+import React, { useEffect, useMemo } from "react";
+import { View } from "react-native";
+import Navs from "../../cache/navs";
 
 
 export interface UserIndexProps {
@@ -46,14 +46,9 @@ export default function m(props: UserIndexProps): any {
   }
 
   useMemo(() => {
-    const timeout = setTimeout(() => {
-      Alert.alert("Yey...! Pembaharuan sudah selesai", "Silahkan mulai ulang aplikasi kamu", [
-        {
-          onPress: () => LibUpdaterProperty.install(),
-          text: "Mulai Ulang Sekarang"
-        }
-      ], { cancelable: false })
-    }, 30 * 1000);
+    // const timeout = setTimeout(() => {
+    //   setLoading(false)
+    // }, 15 * 1000);
     if (esp.config('firebase').hasOwnProperty('apiKey')) {
       try {
         const chatFirebase = require('../chatting/firebase')?.default
@@ -65,14 +60,9 @@ export default function m(props: UserIndexProps): any {
     }
     UserClass.isLogin(async () => {
       await setFonts()
-      LibUpdaterProperty.check((isNew) => {
-        if (isNew) {
-          LibUpdaterProperty.install()
-        } else {
-          clearTimeout(timeout)
-          setLoading(false)
-        }
-      })
+      LibUpdaterProperty.check((isNew) => { })
+      // clearTimeout(timeout)
+      setLoading(false)
     })
   }, [])
 

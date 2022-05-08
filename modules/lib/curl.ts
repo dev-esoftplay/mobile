@@ -3,7 +3,6 @@ import { reportApiError } from "esoftplay/error";
 import moment from "esoftplay/moment";
 import Constants from 'expo-constants';
 
-const axios = require('axios');
 const { manifest } = Constants;
 
 export default class ecurl {
@@ -167,33 +166,30 @@ export default class ecurl {
         }
         let ps = Object.keys(_post).map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(_post[key])).join('&');
         var options: any = {
-          url: this.url + this.uri + (token_uri || 'get_token'),
+          signal: this.signal,
           method: "POST",
-          cancelToken: this.abort.token,
-          transformResponse: [(data) => { return data; }],
           headers: {
             ...this.header,
             ["Content-Type"]: "application/x-www-form-urlencoded;charset=UTF-8"
           },
-          data: ps,
+          body: ps,
           cache: "no-store",
           _post: _post
         }
-        this.initTimeout();
-        axios(options).then(async (res: any) => {
-          this.cancelTimeout();
-          let resText = res.data;
+        fetch(this.url + this.uri + (token_uri || 'get_token'), options).then(async (res) => {
+          let resText = await res.text()
           this.onFetched(resText,
             (res, msg) => {
               this.init(uri, { ...post, access_token: res }, onDone, onFailed, debug);
             }, (msg) => {
               if (onFailed)
-                onFailed(this.refineErrorMessage(msg), false)
+                onFailed(msg, false)
             }, debug)
-        }).catch((r: string) => {
-          this.cancelTimeout();
-          LibToastProperty.show("Koneksi internet anda tidak stabil, silahkan coba beberapa saat lagi")
+        }).catch((r) => {
           LibProgress.hide()
+          this.onFetchFailed(r)
+          // if (onFailed)
+          //   onFailed(r, true)
         })
       }
     }
@@ -289,7 +285,6 @@ export default class ecurl {
       }
       await this.setHeader()
       var options: any = {
-        url: this.url + this.uri,
         signal: this.signal,
         method: !this.post ? "GET" : "POST",
         headers: {
@@ -313,14 +308,39 @@ export default class ecurl {
           if (onDone) onDone(resJson, false)
           this.onDone(resJson)
         } else {
+          // Alert.alert(this.alertTimeout.title, this.alertTimeout.message, [
+          //   {
+          //     text: this.alertTimeout.ok,
+          //     style: 'cancel',
+          //     onPress: () => this.custom(uri, post, onDone, debug)
+          //   },
+          //   {
+          //     text: this.alertTimeout.cancel,
+          //     style: 'destructive',
+          //     onPress: () => { }
+          //   }
+          // ])
           this.onFetchFailed(resText)
           LibProgress.hide()
           this.onError(resText)
         }
       }).catch((e) => {
-        this.onError(e)
         LibProgress.hide()
+        // Alert.alert(this.alertTimeout.title, this.alertTimeout.message, [
+        //   {
+        //     text: this.alertTimeout.ok,
+        //     style: 'cancel',
+        //     onPress: () => this.custom(uri, post, onDone, debug)
+        //   },
+        //   {
+        //     text: this.alertTimeout.cancel,
+        //     style: 'destructive',
+        //     onPress: () => { }
+        //   }
+        // ])
         this.onFetchFailed(e)
+        // if (onDone)
+        //   onDone(e, true)
       })
     }
   }
@@ -351,26 +371,23 @@ export default class ecurl {
       this.setUrl(esp.config("url"))
     }
     await this.setHeader();
-    if (!upload)
+    if (upload)
+      this.header["Content-Type"] = "multipart/form-data"
+    else
       this.header["Content-Type"] = "application/x-www-form-urlencoded;charset=UTF-8"
     var options: any = {
-      url: this.url + this.uri,
+      signal: this.signal,
       method: !this.post ? "GET" : "POST",
       headers: this.header,
-      transformResponse: [(data) => { return data; }],
-      data: !this.post ? undefined : this.post,
-      cancelToken: this.abort.token,
+      body: this.post,
       cache: "no-store",
-
       Pragma: "no-cache",
       ["Cache-Control"]: 'no-cache, no-store, must-revalidate',
       ["Expires"]: 0,
       mode: "cors",
       _post: post
     }
-    if (debug == 1) {
-      esp.log(this.url + this.uri, { ...options, cancelToken: undefined })
-    }
+
 
     if (manifest?.packagerOpts?.dev && LogStateProperty) {
       const allData = LogStateProperty.state().get() || []
@@ -429,45 +446,42 @@ export default class ecurl {
       }
     }
 
-    this.fetchConf = { url: this.url + this.uri, options: options }
     this.initTimeout(upload ? 120000 : undefined)
-    axios(options).then(async (res: any) => {
-      this.cancelTimeout()
-      this.onFetched(res.data, onDone, onFailed, debug)
-    }).catch((error: any) => {
-      this.cancelTimeout()
+    if (debug == 1) esp.log(this.url + this.uri, options)
+    this.fetchConf = { url: this.url + this.uri, options: options }
 
-      if (error.response) {
-        /*
-         * The request was made and the server responded with a
-         * status code that falls out of the range of 2xx
-         */
-        console.log(error.response.data);
-        console.log(error.response.status);
-        console.log(error.response.headers);
-        this.onError(JSON.stringify(error.response))
-        LibToastProperty.show('Terjadi kesalahan, biar ' + esp.appjson()?.expo?.name + ' bereskan, silahkan coba beberapa saat lagi atau kembali ke halaman utama')
-      } else if (error.request) {
-        /*
-         * The request was made but no response was received, `error.request`
-         * is an instance of XMLHttpRequest in the browser and an instance
-         * of http.ClientRequest in Node.js
-         */
-
-        if (this.maxRetry > 0) {
-          this.init(uri, post, onDone, onFailed, debug)
-          this.maxRetry = this.maxRetry - 1
-        } else {
-          LibToastProperty.show("Koneksi internet anda tidak stabil, silahkan coba beberapa saat lagi")
-          console.log(error.request);
-        }
-      } else {
-        // Something happened in setting up the request and triggered an Error
-        this.onError(JSON.stringify(error.message))
-        console.log('Error', error.message);
-      }
+    // if (Platform.OS == 'android' && Platform.Version <= 22) {
+    //   var res = await fetch(this.url + this.uri, options);
+    //   let resText = await res.text()
+    //   this.onFetched(resText, onDone, onFailed, debug)
+    // } else
+    //   if (!upload) {
+    //     LibWorker.curl(this.url + this.uri, options, async (resText) => {
+    //       if (typeof resText == 'string') {
+    //         this.onFetched(resText, onDone, onFailed, debug)
+    //       }
+    //     })
+    //   } else {
+    fetch(this.url + this.uri, options).then(async (res) => {
+      let resText = await res.text()
+      this.onFetched(resText, onDone, onFailed, debug)
+    }).catch((r) => {
+      // Alert.alert(this.alertTimeout.title, this.alertTimeout.message, [
+      //   {
+      //     text: this.alertTimeout.ok,
+      //     style: 'cancel',
+      //     onPress: () => this.init(uri, post, onDone, onFailed, debug)
+      //   },
+      //   {
+      //     text: this.alertTimeout.cancel,
+      //     style: 'destructive',
+      //     onPress: () => { }
+      //   }
+      // ])
+      this.onFetchFailed(r)
       LibProgress.hide()
     })
+    // }
   }
 
 
