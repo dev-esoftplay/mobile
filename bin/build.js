@@ -308,7 +308,7 @@ export default function App() {
 				cmd += "&& yarn add " + installDevLibs.join(" ") + " --dev "
 			if (installExpoLibs.length > 0)
 				cmd += "&& expo install " + installExpoLibs.join(" ")
-			// cmd += " && npm i -s esoftplay"
+			cmd += " && node ./node_modules/esoftplay/bin/router.js"
 			execSync(cmd)
 			console.log('App.js has been replace to App.tsx');
 			// /* bugfix AsyncStorage @firebase, remove this section if firebase has update the AsyncStorage */
