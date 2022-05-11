@@ -5,6 +5,7 @@ const fs = require('fs');
 const DIR = "../../"
 const packjson = DIR + "package.json"
 const appjson = DIR + "app.json"
+const easjson = DIR + "eas.json"
 const confjson = DIR + "config.json"
 const gitignore = DIR + ".gitignore"
 const babelconfig = DIR + "babel.config.js"
@@ -116,6 +117,35 @@ if (fs.existsSync(packjson)) {
 			fs.writeFileSync(pathJSTimer, JSTimers)
 		}
 
+		const easconfg = `{
+"cli": {
+	"version": ">= 0.52.0"
+},
+"build": {
+	"development": {
+		"developmentClient": true,
+		"distribution": "internal",
+		"ios": {
+			"simulator": true
+		}
+	},
+	"preview": {
+		"distribution": "internal",
+		"ios": {
+			"simulator": true
+		}
+	},
+	"production": {}
+},
+"submit": {
+	"production": {}
+}
+}`
+
+		fs.writeFile(easjson, easconfg, (err) => {
+			if (err) throw err;
+			console.log('eas.json has been updated');
+		})
 
 		const babelconf = `module.exports = function (api) {
 	api.cache(true);
@@ -210,6 +240,7 @@ yarn-error.log\n\
 import * as ErrorReport from 'esoftplay/error';
 import * as Notifications from 'expo-notifications';
 import React, { useEffect, useRef } from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { enableScreens } from 'react-native-screens';
 const { globalIdx } = require('esoftplay/global');
 enableScreens();
@@ -224,7 +255,11 @@ export default function App() {
 		ErrorReport.getError()
 	}, [])
 
-	return <Home />
+	return (
+		<GestureHandlerRootView style={{ flex: 1 }}>
+			<Home />
+		</GestureHandlerRootView>
+	)
 }`;
 		let expoLib = [
 			'@expo/vector-icons',
@@ -257,6 +292,7 @@ export default function App() {
 			'react-fast-compare',
 			'react-native-gesture-handler',
 			'react-native-awesome-gallery',
+			'react-native-fast-image',
 			'react-native-picker-scrollview',
 			'react-native-pinch-zoom-view-movable',
 			'react-native-reanimated',

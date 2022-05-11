@@ -4,7 +4,8 @@
 import { esp, LibStyle, LibWorker, LibWorkloop, useSafeState } from 'esoftplay';
 import * as FileSystem from 'expo-file-system';
 import React, { useMemo } from 'react';
-import { Image, PixelRatio, Platform, View } from 'react-native';
+import { PixelRatio, Platform, View } from 'react-native';
+import FastImage from 'react-native-fast-image'
 const sh = require("shorthash")
 
 export interface LibPictureSource {
@@ -86,6 +87,18 @@ export default function m(props: LibPictureProps): any {
   let { width, height } = props.style
   const valid = b_uri?.includes?.(esp.config('domain'))
 
+  let resizeMode
+  if (props?.style?.resizeMode == 'cover')
+    resizeMode = FastImage.resizeMode.cover
+  else if (props?.style?.resizeMode == 'contain')
+    resizeMode = FastImage.resizeMode.contain
+  else if (props?.resizeMode == 'cover')
+    resizeMode = FastImage.resizeMode.cover
+  else if (props?.resizeMode == 'contain')
+    resizeMode = FastImage.resizeMode.contain
+  else
+    resizeMode = FastImage.resizeMode.cover
+
   if (props.source.hasOwnProperty("uri") && (!width || !height)) {
     if (width) {
       height = width
@@ -120,11 +133,11 @@ export default function m(props: LibPictureProps): any {
     if (typeof props.source != 'number' && !b_uri) {
       return <View style={props.style} />
     }
-    return <Image {...props} />
+    return <FastImage {...props} resizeMode={resizeMode} />
   }
 
   if (!valid || (!props.source.hasOwnProperty("uri"))) {
-    return <Image {...props} />
+    return <FastImage {...props} resizeMode={resizeMode} />
   }
 
   if (uri == '') {
@@ -134,6 +147,6 @@ export default function m(props: LibPictureProps): any {
   }
 
   return (
-    <Image key={b_uri + uri} {...props} source={{ uri: uri }} style={props.style} />
+    <FastImage key={b_uri + uri} {...props} source={{ uri: uri }} style={props.style} resizeMode={resizeMode} />
   )
 }

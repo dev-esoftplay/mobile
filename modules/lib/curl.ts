@@ -24,8 +24,6 @@ export default class ecurl {
     cancel: "Tutup"
   }
 
-  abort = axios.CancelToken.source();
-
   constructor(uri?: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number) {
     this.header = {}
     this.maxRetry = 2;
@@ -58,10 +56,10 @@ export default class ecurl {
   protected initTimeout(customTimeout?: number): void {
     this.cancelTimeout()
     this.timeoutContext = setTimeout(() => {
-      if (this.abort?.cancel) {
-        this.closeConnection()
-        LibProgress.hide()
-      }
+      // if (this.abort?.cancel) {
+      //   this.closeConnection()
+      //   LibProgress.hide()
+      // }
     }, customTimeout ?? this.timeout);
   }
 
@@ -130,7 +128,7 @@ export default class ecurl {
   }
 
   protected closeConnection(): void {
-    this?.abort?.cancel('Oops, Sepertinya ada gangguan jaringan... Silahkan coba beberapa saat lagi');
+    // this?.abort?.cancel('Oops, Sepertinya ada gangguan jaringan... Silahkan coba beberapa saat lagi');
   }
 
   protected onDone(result: any, msg?: string): void {
@@ -166,7 +164,6 @@ export default class ecurl {
         }
         let ps = Object.keys(_post).map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(_post[key])).join('&');
         var options: any = {
-          signal: this.signal,
           method: "POST",
           headers: {
             ...this.header,
@@ -285,7 +282,6 @@ export default class ecurl {
       }
       await this.setHeader()
       var options: any = {
-        signal: this.signal,
         method: !this.post ? "GET" : "POST",
         headers: {
           ...this.header,
@@ -376,7 +372,6 @@ export default class ecurl {
     else
       this.header["Content-Type"] = "application/x-www-form-urlencoded;charset=UTF-8"
     var options: any = {
-      signal: this.signal,
       method: !this.post ? "GET" : "POST",
       headers: this.header,
       body: this.post,
@@ -537,6 +532,15 @@ export default class ecurl {
   }
 
   protected getTimeByTimeZone(timeZone: string): number {
-    return moment(new Date()).tz(timeZone).toMiliseconds();
+    let localTimezoneOffset = new Date().getTimezoneOffset()
+    let serverTimezoneOffset = -420 // -420 for Asia/Jakarta
+    let diff
+    if (localTimezoneOffset < serverTimezoneOffset) {
+      diff = localTimezoneOffset - serverTimezoneOffset
+    } else {
+      diff = (serverTimezoneOffset - localTimezoneOffset) * -1
+    }
+    let time = new Date().getTime() + (diff * 60 * 1000 * -1);
+    return time;
   }
 }

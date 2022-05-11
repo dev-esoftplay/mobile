@@ -5,6 +5,8 @@ const fs = require('fs');
 const exec = require('child_process').execSync;
 const path = require('path');
 const os = require('os')
+const readline = require('readline');
+
 
 const DIR = "./"
 const appjson = DIR + "app.json"
@@ -557,21 +559,109 @@ function command(command) {
 }
 
 function build() {
+	const types = [
+		{
+			name: "1. IOS (Development) - Simulator",
+			cmd: "eas build --platform ios --profile development",
+			pre: () => {
+				jsEng(appjson, false)
+				jsEng(appdebug, false)
+				jsEng(applive, false)
+				consoleSucces("Hermes dinonaktifkan")
+			}
+		},
+		{
+			name: "2. IOS (Test) - Simulator",
+			cmd: "eas build --platform ios --profile preview",
+			pre: () => {
+				jsEng(appjson, true)
+				jsEng(appdebug, true)
+				jsEng(applive, true)
+				consoleSucces("Hermes diaktifkan")
+			}
+		},
+		{
+			name: "3. IOS (Release) - ipa",
+			cmd: "eas build --platform ios --profile production",
+			pre: () => {
+				jsEng(appjson, true)
+				jsEng(appdebug, true)
+				jsEng(applive, true)
+				consoleSucces("Hermes diaktifkan")
+			}
+		},
+		{
+			name: "4. Android (Development) - apk",
+			cmd: "eas build --platform android --profile development",
+			pre: () => {
+				jsEng(appjson, false)
+				jsEng(appdebug, false)
+				jsEng(applive, false)
+				consoleSucces("Hermes dinonaktifkan")
+			}
+		},
+		{
+			name: "5. Android (Test) - apk",
+			cmd: "eas build --platform android --profile preview",
+			pre: () => {
+				jsEng(appjson, true)
+				jsEng(appdebug, true)
+				jsEng(applive, true)
+				consoleSucces("Hermes dinonaktifkan")
+			}
+		},
+		{
+			name: "6. Android (Release) - aab",
+			cmd: "eas build --platform android --profile production",
+			pre: () => {
+				jsEng(appjson, true)
+				jsEng(appdebug, true)
+				jsEng(applive, true)
+				consoleSucces("Hermes dinonaktifkan")
+			}
+		}
+	]
+
+	function jsEng(file, isHermes) {
+		if (fs.existsSync(file)) {
+			var txt = fs.readFileSync(file, 'utf8');
+			let isJSON = txt.startsWith('{') || txt.startsWith('[')
+			if (!isJSON) {
+				consoleError('app.json tidak valid')
+				return
+			}
+			let app = JSON.parse(txt)
+			app.expo.jsEngine = isHermes ? "hermes" : "jsc"
+			fs.writeFileSync(file, JSON.stringify(app, undefined, 2))
+		} else {
+			consoleError(file)
+		}
+	}
+
 	if (args[0] == "build") {
-		askPerm("Yakin akan membuild app " + (args[1] ? args[1] : "") + (args[2] ? " " + (args[2]) : "") + "?", () => {
-			if (args[1] == "debug" || args[1] == "live") {
-				switchStatus(args[1])
-				console.log('+ status ' + args[1])
+		let d
+		const rl = readline.createInterface({
+			input: process.stdin,
+			output: process.stdout
+		});
+
+		rl.question("Pilih build type :\n\n" + types.map((x) => x.name).join("\n") + '\n\nMasukkan nomor build type: ', function (idx) {
+			d = types[idx - 1]
+			rl.close();
+		});
+
+		rl.on("close", function () {
+			if (d) {
+				let cmd = d.cmd
+				let pre = d.pre
+				if (pre) { pre() }
+				consoleSucces("⚙⚙⚙ ... \n" + cmd)
+				command(cmd);
+			} else {
+				consoleError("Build type tidak ditemukan")
 			}
-			if (args[2] == "offline" || args[2] == "online") {
-				switchMode(args[2])
-				console.log('+ mode ' + args[2])
-			}
-			command("expo build:android")
-			command("expo build:ios")
-			command("expo build:android -t app-bundle")
-			consoleError("silahkan cek build pada halaman https://expo.io/builds")
-		})
+		});
+
 	}
 }
 
@@ -625,6 +715,7 @@ function doInc(file) {
 		consoleSucces(file + " Versi yang lama " + app.expo.version)
 		app.expo.android.versionCode = lastVersion + 1
 		app.expo.ios.buildNumber = String(lastVersion + 1)
+		app.expo.runtimeVersion = lastVersion + 1
 		app.expo.version = args[1] || ('0.' + String(lastVersion + 1))
 		consoleSucces(file + " Berhasil diupdate ke versi " + app.expo.version)
 		fs.writeFileSync(file, JSON.stringify(app, undefined, 2))
@@ -669,6 +760,7 @@ function help() {
 		"\n - u|update                    : untuk update esp module ke versi terakhir",
 		"\n - u|update all                : untuk update semua esp module ke versi terakhir",
 		"\n - start                       : start esoftplay framework",
+		"\n - b|build                     : untuk build app .ipa .apk .aab",
 		"\n - f|file                      : untuk check status file",
 		"\n - c|check                     : untuk check status",
 		"\n - create-master [moduleName]  : untuk create master module terpisah",
@@ -681,7 +773,6 @@ function help() {
 		"\n - p|publish [notes]           : untuk mempublish dan menambahkan id",
 		"\n - bcl|backup-config-live      : untuk backup config live",
 		"\n - bcd|backup-config-debug     : untuk backup config debug",
-		// "\n - b|build                     : untuk build app .ipa .apk .aab",
 		// "\n - build debug                 : untuk build app .ipa .apk .aab status DEBUG",
 		// "\n - build debug offline         : untuk build app .ipa .apk .aab status DEBUG mode OFFLINE",
 		// "\n - build debug online          : untuk build app .ipa .apk .aab status DEBUG mode ONLINE",
