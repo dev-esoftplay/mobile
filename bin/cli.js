@@ -571,7 +571,7 @@ function build() {
 			}
 		},
 		{
-			name: "2. IOS (Test) - Simulator",
+			name: "2. IOS (Preview) - Simulator",
 			cmd: "eas build --platform ios --profile preview",
 			pre: () => {
 				jsEng(appjson, true)
@@ -581,7 +581,7 @@ function build() {
 			}
 		},
 		{
-			name: "3. IOS (Release) - ipa",
+			name: "3. IOS (Production) - ipa",
 			cmd: "eas build --platform ios --profile production",
 			pre: () => {
 				jsEng(appjson, true)
@@ -601,7 +601,7 @@ function build() {
 			}
 		},
 		{
-			name: "5. Android (Test) - apk",
+			name: "5. Android (Preview) - apk",
 			cmd: "eas build --platform android --profile preview",
 			pre: () => {
 				jsEng(appjson, true)
@@ -611,7 +611,7 @@ function build() {
 			}
 		},
 		{
-			name: "6. Android (Release) - aab",
+			name: "6. Android (Production) - aab",
 			cmd: "eas build --platform android --profile production",
 			pre: () => {
 				jsEng(appjson, true)
