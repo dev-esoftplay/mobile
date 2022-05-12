@@ -607,7 +607,7 @@ function build() {
 				jsEng(appjson, true)
 				jsEng(appdebug, true)
 				jsEng(applive, true)
-				consoleSucces("Hermes dinonaktifkan")
+				consoleSucces("Hermes diaktifkan")
 			}
 		},
 		{
@@ -617,7 +617,7 @@ function build() {
 				jsEng(appjson, true)
 				jsEng(appdebug, true)
 				jsEng(applive, true)
-				consoleSucces("Hermes dinonaktifkan")
+				consoleSucces("Hermes diaktifkan")
 			}
 		}
 	]
@@ -715,7 +715,7 @@ function doInc(file) {
 		consoleSucces(file + " Versi yang lama " + app.expo.version)
 		app.expo.android.versionCode = lastVersion + 1
 		app.expo.ios.buildNumber = String(lastVersion + 1)
-		app.expo.runtimeVersion = lastVersion + 1
+		app.expo.runtimeVersion = String(lastVersion + 1)
 		app.expo.version = args[1] || ('0.' + String(lastVersion + 1))
 		consoleSucces(file + " Berhasil diupdate ke versi " + app.expo.version)
 		fs.writeFileSync(file, JSON.stringify(app, undefined, 2))

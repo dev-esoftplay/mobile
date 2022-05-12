@@ -28,7 +28,7 @@ if (fs.existsSync(packjson)) {
 	/* ADD SCRIPTS.PRESTART AND SCRIPTS.POSTSTOP */
 
 	if (args[0] == "install") {
-		$package.scripts.start = "esp start && expo start"
+		$package.scripts.start = "esp start && expo start --dev-client"
 		fs.writeFile(packjson, JSON.stringify($package, null, 2), (err) => {
 			if (err) throw err;
 			console.log('package.json has been updated');
@@ -277,6 +277,7 @@ export default function App() {
 			'expo-clipboard',
 			'expo-constants',
 			'expo-document-picker',
+			'expo-dev-client',
 			'expo-file-system',
 			'expo-font',
 			'expo-image-manipulator',
