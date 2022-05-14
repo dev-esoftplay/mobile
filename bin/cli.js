@@ -558,12 +558,46 @@ function command(command) {
 	}
 }
 
+
+function devClientPre(file) {
+	if (fs.existsSync(file)) {
+		var txt = fs.readFileSync(file, 'utf8');
+		let isJSON = txt.startsWith('{') || txt.startsWith('[')
+		if (!isJSON) {
+			consoleError('app.json tidak valid')
+			return
+		}
+		let app = JSON.parse(txt)
+		app.expo.name = app.expo.name.includes("DC-") ? app.expo.name : ("DC-" + app.expo.name)
+		fs.writeFileSync(file, JSON.stringify(app, undefined, 2))
+	} else {
+		consoleError(file)
+	}
+}
+function devClientPos(file) {
+	if (fs.existsSync(file)) {
+		var txt = fs.readFileSync(file, 'utf8');
+		let isJSON = txt.startsWith('{') || txt.startsWith('[')
+		if (!isJSON) {
+			consoleError('app.json tidak valid')
+			return
+		}
+		let app = JSON.parse(txt)
+		app.expo.name = app.expo.name.replace("DC-", "")
+		fs.writeFileSync(file, JSON.stringify(app, undefined, 2))
+	} else {
+		consoleError(file)
+	}
+}
+
+
 function build() {
 	const types = [
 		{
 			name: "1. IOS (Development) - Simulator",
 			cmd: "eas build --platform ios --profile development",
 			pre: () => {
+				devClientPre(appjson)
 				jsEng(appjson, false)
 				jsEng(appdebug, false)
 				jsEng(applive, false)
@@ -574,6 +608,7 @@ function build() {
 			name: "2. IOS (Preview) - Simulator",
 			cmd: "eas build --platform ios --profile preview",
 			pre: () => {
+				devClientPos(appjson)
 				jsEng(appjson, true)
 				jsEng(appdebug, true)
 				jsEng(applive, true)
@@ -584,6 +619,7 @@ function build() {
 			name: "3. IOS (Production) - ipa",
 			cmd: "eas build --platform ios --profile production",
 			pre: () => {
+				devClientPos(appjson)
 				jsEng(appjson, true)
 				jsEng(appdebug, true)
 				jsEng(applive, true)
@@ -594,6 +630,7 @@ function build() {
 			name: "4. Android (Development) - apk",
 			cmd: "eas build --platform android --profile development",
 			pre: () => {
+				devClientPre(appjson)
 				jsEng(appjson, false)
 				jsEng(appdebug, false)
 				jsEng(applive, false)
@@ -604,6 +641,7 @@ function build() {
 			name: "5. Android (Preview) - apk",
 			cmd: "eas build --platform android --profile preview",
 			pre: () => {
+				devClientPos(appjson)
 				jsEng(appjson, true)
 				jsEng(appdebug, true)
 				jsEng(applive, true)
@@ -614,6 +652,7 @@ function build() {
 			name: "6. Android (Production) - aab",
 			cmd: "eas build --platform android --profile production",
 			pre: () => {
+				devClientPos(appjson)
 				jsEng(appjson, true)
 				jsEng(appdebug, true)
 				jsEng(applive, true)
@@ -638,8 +677,8 @@ function build() {
 		}
 	}
 
-	if (args[0] == "build") {
-		let d
+	if (args[0] == "build" || args[0] == "b") {
+		let d = false
 		const rl = readline.createInterface({
 			input: process.stdin,
 			output: process.stdout
@@ -654,9 +693,12 @@ function build() {
 			if (d) {
 				let cmd = d.cmd
 				let pre = d.pre
-				if (pre) { pre() }
+				if (pre) pre()
 				consoleSucces("⚙⚙⚙ ... \n" + cmd)
-				command(cmd);
+				command(cmd)
+				devClientPos(appjson)
+			} else if (d === false) {
+				consoleError("Build Canceled")
 			} else {
 				consoleError("Build type tidak ditemukan")
 			}

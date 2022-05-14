@@ -241,9 +241,10 @@ import * as ErrorReport from 'esoftplay/error';
 import * as Notifications from 'expo-notifications';
 import React, { useEffect, useRef } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { enableScreens } from 'react-native-screens';
+import { enableScreens, enableFreeze } from 'react-native-screens';
 const { globalIdx } = require('esoftplay/global');
 enableScreens();
+enableFreeze();
 
 Notifications.addNotificationResponseReceivedListener(x => LibNotification.onAction(x));
 
@@ -272,7 +273,6 @@ export default function App() {
 			'buffer',
 			'expo-av',
 			'expo-application',
-			'expo-blur',
 			'expo-camera',
 			'expo-clipboard',
 			'expo-constants',
