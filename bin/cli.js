@@ -16,6 +16,7 @@ const packjson = DIR + "package.json"
 const confjson = DIR + "config.json"
 const conflive = DIR + "config.live.json"
 const confdebug = DIR + "config.debug.json"
+const gitignore = DIR + ".gitignore"
 
 const gplist = DIR + "GoogleService-Info.plist"
 const gplistlive = DIR + "GoogleService-Info.live.plist"
@@ -590,6 +591,21 @@ function devClientPos(file) {
 	}
 }
 
+function configAvailable(enabled) {
+	if (fs.existsSync(gitignore)) {
+		let _git = fs.readFileSync(gitignore, 'utf8')
+		const ignore = "config.json"
+		const notignore = "#config.json"
+		if (enabled) {
+			_git = _git.replace(ignore, notignore)
+		} else {
+			_git = _git.replace(notignore, ignore)
+		}
+		fs.writeFileSync(gitignore, _git, { encoding: 'utf8' })
+	} else {
+		consoleError(gitignore)
+	}
+}
 
 function build() {
 	const types = [
@@ -597,6 +613,7 @@ function build() {
 			name: "1. IOS (Development) - Simulator",
 			cmd: "eas build --platform ios --profile development",
 			pre: () => {
+				configAvailable(true)
 				devClientPre(appjson)
 				jsEng(appjson, false)
 				jsEng(appdebug, false)
@@ -608,6 +625,7 @@ function build() {
 			name: "2. IOS (Preview) - Simulator",
 			cmd: "eas build --platform ios --profile preview",
 			pre: () => {
+				configAvailable(true)
 				devClientPos(appjson)
 				jsEng(appjson, true)
 				jsEng(appdebug, true)
@@ -619,6 +637,7 @@ function build() {
 			name: "3. IOS (Production) - ipa",
 			cmd: "eas build --platform ios --profile production",
 			pre: () => {
+				configAvailable(true)
 				devClientPos(appjson)
 				jsEng(appjson, true)
 				jsEng(appdebug, true)
@@ -630,6 +649,7 @@ function build() {
 			name: "4. Android (Development) - apk",
 			cmd: "eas build --platform android --profile development",
 			pre: () => {
+				configAvailable(true)
 				devClientPre(appjson)
 				jsEng(appjson, false)
 				jsEng(appdebug, false)
@@ -641,6 +661,7 @@ function build() {
 			name: "5. Android (Preview) - apk",
 			cmd: "eas build --platform android --profile preview",
 			pre: () => {
+				configAvailable(true)
 				devClientPos(appjson)
 				jsEng(appjson, true)
 				jsEng(appdebug, true)
@@ -652,6 +673,7 @@ function build() {
 			name: "6. Android (Production) - aab",
 			cmd: "eas build --platform android --profile production",
 			pre: () => {
+				configAvailable(true)
 				devClientPos(appjson)
 				jsEng(appjson, true)
 				jsEng(appdebug, true)
@@ -696,6 +718,7 @@ function build() {
 				if (pre) pre()
 				consoleSucces("⚙⚙⚙ ... \n" + cmd)
 				command(cmd)
+				configAvailable(false)
 				devClientPos(appjson)
 			} else if (d === false) {
 				consoleError("Build Canceled")
