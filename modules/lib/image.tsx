@@ -160,7 +160,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
           max = 1
         }
         if (max == 1) {
-          ImagePicker.launchImageLibraryAsync({ presentationStyle: 0 }).then(async (x: any) => {
+          ImagePicker.launchImageLibraryAsync({ presentationStyle: ImagePicker.UIImagePickerPresentationStyle.FULL_SCREEN }).then(async (x: any) => {
             if (!x.cancelled) {
               if (options && options.crop) {
                 m.showCropper(x.uri, options.crop.forceCrop, options.crop.ratio, options.crop?.message, async (x) => {

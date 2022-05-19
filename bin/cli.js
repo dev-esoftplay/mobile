@@ -94,6 +94,9 @@ switch (args[0]) {
 		createMaster(args[1])
 		break;
 	case "start":
+		jsEng(appjson, false)
+		jsEng(appdebug, false)
+		jsEng(applive, false)
 		excludeModules()
 		execution();
 		break;
@@ -136,6 +139,23 @@ function consoleFunc(msg, success) {
 		consoleSucces(msg)
 	} else {
 		consoleError(msg)
+	}
+}
+
+
+function jsEng(file, isHermes) {
+	if (fs.existsSync(file)) {
+		var txt = fs.readFileSync(file, 'utf8');
+		let isJSON = txt.startsWith('{') || txt.startsWith('[')
+		if (!isJSON) {
+			consoleError('app.json tidak valid')
+			return
+		}
+		let app = JSON.parse(txt)
+		app.expo.jsEngine = isHermes ? "hermes" : "jsc"
+		fs.writeFileSync(file, JSON.stringify(app, undefined, 2))
+	} else {
+		consoleError(file)
 	}
 }
 
@@ -393,6 +413,9 @@ function readToJSON(path) {
 }
 
 function publish(notes) {
+	jsEng(appjson, true)
+	jsEng(appdebug, true)
+	jsEng(applive, true)
 	let status = "-"
 	let ajson = readToJSON(appjson)
 	let pack = readToJSON(packjson)
@@ -682,22 +705,6 @@ function build() {
 			}
 		}
 	]
-
-	function jsEng(file, isHermes) {
-		if (fs.existsSync(file)) {
-			var txt = fs.readFileSync(file, 'utf8');
-			let isJSON = txt.startsWith('{') || txt.startsWith('[')
-			if (!isJSON) {
-				consoleError('app.json tidak valid')
-				return
-			}
-			let app = JSON.parse(txt)
-			app.expo.jsEngine = isHermes ? "hermes" : "jsc"
-			fs.writeFileSync(file, JSON.stringify(app, undefined, 2))
-		} else {
-			consoleError(file)
-		}
-	}
 
 	if (args[0] == "build" || args[0] == "b") {
 		let d = false

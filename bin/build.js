@@ -286,6 +286,7 @@ export default function App() {
 			'expo-media-library',
 			'expo-notifications',
 			'expo-status-bar',
+			'expo-splash-screen',
 			'expo-secure-store',
 			'expo-updates',
 			'immhelper',
