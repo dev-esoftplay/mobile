@@ -191,7 +191,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
           let a: string[] = []
           x.forEach(async (t: any, i) => {
             if (i == 0) {
-              LibProgress.show("Mohon Tunggu, Sedang mengunggah foto")
+              LibProgress.show("Mohon tunggu, Sedang mengunggah foto")
             }
             var wantedMaxSize = options?.maxDimension || 1280
             var rawheight = t.height

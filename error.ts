@@ -42,7 +42,7 @@ export function reportApiError(fetch: any, error: any) {
     'fetch: ' + String(JSON.stringify(fetch || {}, undefined, 2)).replace(/[\[\]\{\}\"]+/g, ''),
     'error: ' + error
   ].join('\n')
-
+  
   if (manifest?.packagerOpts) {
     let post = {
       text: msg,
@@ -51,19 +51,12 @@ export function reportApiError(fetch: any, error: any) {
     }
     new LibCurl().custom('https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage', post)
   } else {
-    config?.errorReport?.telegramIds?.forEach?.((id: string) => {
-      let post = {
-        text: msg.slice(0, 4000),
-        chat_id: id,
-        disable_web_page_preview: true
-      }
-      new LibCurl().custom('https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage', post, (res) => {
-        // debug sementara sampe tahu masalahnya
-        if (user.username.includes("@fisip.net")) {
-          Alert.alert("DEBUG Telegram api error", res, [{ text: 'OK' }])
-        }
-      })
-    })
+    let post = {
+      text: msg,
+      chat_id: "-1001212227631",
+      disable_web_page_preview: true
+    }
+    new LibCurl().custom('https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage', post)
   }
 }
 

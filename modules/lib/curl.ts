@@ -527,7 +527,7 @@ export default class ecurl {
     //   return
     // }
     delete this.fetchConf.options.cancelToken
-    reportApiError(this.fetchConf.options, msg)
+    reportApiError(this.fetchConf, msg)
     LibProgress.hide()
   }
 
