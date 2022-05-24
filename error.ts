@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LibCurl, UserClass } from 'esoftplay';
-import esp from 'esoftplay/esp';
 import Constants from 'expo-constants';
-import { Alert, Platform } from 'react-native';
+import { Platform } from 'react-native';
+import esp from './esp';
 import { default as UserRoutes } from './modules/user/routes';
 let pack = require('../../package.json');
 let app = require('../../app.json');
@@ -42,7 +42,7 @@ export function reportApiError(fetch: any, error: any) {
     'fetch: ' + String(JSON.stringify(fetch || {}, undefined, 2)).replace(/[\[\]\{\}\"]+/g, ''),
     'error: ' + error
   ].join('\n')
-  
+
   if (manifest?.packagerOpts) {
     let post = {
       text: msg,
@@ -77,14 +77,14 @@ export function getError() {
         'module: ' + _e.routes,
         'error: \n' + _e.error,
       ].join('\n')
-      config?.errorReport?.telegramIds?.forEach?.((id: string) => {
-        let post = {
-          text: msg,
-          chat_id: id,
-          disable_web_page_preview: true
-        }
-        new LibCurl().custom('https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage', post)
-      });
+      // config?.errorReport?.telegramIds?.forEach?.((id: string) => {
+      let post = {
+        text: msg,
+        chat_id: "-1001212227631",
+        disable_web_page_preview: true
+      }
+      new LibCurl().custom('https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage', post)
+      // });
       AsyncStorage.removeItem(config.domain + 'error')
     }
   })

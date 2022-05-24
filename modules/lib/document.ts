@@ -29,7 +29,7 @@ export default class m {
           },
           (msg) => {
             LibProgress.hide()
-            esp.log('Document Gagal di Upload', msg)
+            esp.log('Document Gagal di Upload', msg.msg)
           }
         )
       })

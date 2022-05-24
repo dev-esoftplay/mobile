@@ -1,4 +1,4 @@
-import { esp, LibCrypt, LibNet_status, LibObject, LibProgress, LibToastProperty, LibUtils, LogStateProperty } from 'esoftplay';
+import { esp, LibCrypt, LibNet_status, LibObject, LibProgress, LibUtils, LogStateProperty } from 'esoftplay';
 import { reportApiError } from "esoftplay/error";
 import moment from "esoftplay/moment";
 import Constants from 'expo-constants';
@@ -24,7 +24,7 @@ export default class ecurl {
     cancel: "Tutup"
   }
 
-  constructor(uri?: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number) {
+  constructor(uri?: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (error: any, timeout: boolean) => void, debug?: number) {
     this.header = {}
     this.maxRetry = 2;
     this.setUri = this.setUri.bind(this);
@@ -49,7 +49,7 @@ export default class ecurl {
     if (uri && str.isOnline) {
       this.init(uri, post, onDone, onFailed, debug);
     } else if (!str.isOnline && onFailed) {
-      onFailed(this.refineErrorMessage("Failed to access"), false);
+      onFailed({ msg: this.refineErrorMessage("Failed to access") }, false);
     }
   }
 
@@ -135,7 +135,7 @@ export default class ecurl {
 
   }
 
-  protected onFailed(msg: string, timeout: boolean): void {
+  protected onFailed(error: any, timeout: boolean): void {
 
   }
 
@@ -143,9 +143,9 @@ export default class ecurl {
     return true
   }
 
-  public secure(token_uri?: string): (apiKey?: string) => (uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number) => void {
-    return (apiKey?: string): (uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number) => void => {
-      return async (uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number) => {
+  public secure(token_uri?: string): (apiKey?: string) => (uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (error: any, timeout: boolean) => void, debug?: number) => void {
+    return (apiKey?: string): (uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (error: any, timeout: boolean) => void, debug?: number) => void => {
+      return async (uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (error: any, timeout: boolean) => void, debug?: number) => {
         this.isSecure = true
         await this.setHeader();
         const _apiKey = apiKey || this.apiKey
@@ -192,12 +192,12 @@ export default class ecurl {
     }
   }
 
-  public withHeader(header: any): (uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number) => void {
+  public withHeader(header: any): (uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (error: any, timeout: boolean) => void, debug?: number) => void {
     this.header = { ...this.header, ...header }
-    return (uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number) => this.init(uri, post, onDone, onFailed, debug)
+    return (uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (error: any, timeout: boolean) => void, debug?: number) => this.init(uri, post, onDone, onFailed, debug)
   }
 
-  public upload(uri: string, postKey: string, fileUri: string, mimeType: string, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number): void {
+  public upload(uri: string, postKey: string, fileUri: string, mimeType: string, onDone?: (res: any, msg: string) => void, onFailed?: (error: any, timeout: boolean) => void, debug?: number): void {
     postKey = postKey || "image";
     var uName = fileUri.substring(fileUri.lastIndexOf("/") + 1, fileUri.length);
     if (!uName.includes('.')) {
@@ -341,7 +341,7 @@ export default class ecurl {
     }
   }
 
-  private async init(uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number, upload?: boolean): Promise<void> {
+  private async init(uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (error: any, timeout: boolean) => void, debug?: number, upload?: boolean): Promise<void> {
     if (post) {
       if (upload) {
         let fd = new FormData();
@@ -481,7 +481,7 @@ export default class ecurl {
 
 
 
-  protected onFetched(resText: string | Object, onDone?: (res: any, msg: string) => void, onFailed?: (msg: string, timeout: boolean) => void, debug?: number): void {
+  protected onFetched(resText: string | Object, onDone?: (res: any, msg: string) => void, onFailed?: (error: any, timeout: boolean) => void, debug?: number): void {
     var resJson = typeof resText == 'string' && ((resText.startsWith("{") && resText.endsWith("}")) || (resText.startsWith("[") && resText.endsWith("]"))) ? JSON.parse(resText) : resText
     if (typeof resJson == "object") {
       if (!resJson.status_code || this.onStatusCode(resJson.ok, resJson.status_code, resJson.message, resJson.result)) {
@@ -489,8 +489,8 @@ export default class ecurl {
           if (onDone) onDone(resJson.result, resJson.message)
           this.onDone(resJson.result, resJson.message)
         } else {
-          if (onFailed) onFailed(this.refineErrorMessage(resJson.message), false)
-          this.onFailed(this.refineErrorMessage(resJson.message), false)
+          if (onFailed) onFailed(resJson, false)
+          this.onFailed(resJson, false)
         }
       }
     } else {

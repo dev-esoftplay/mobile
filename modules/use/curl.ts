@@ -16,7 +16,7 @@ export default function m(initialWithLoading?: boolean, withProgressText?: strin
     }, (msg) => {
       LibProgress.hide()
       setLoading(false)
-      setError(msg)
+      setError(msg.msg)
     }, debug)
   }
   return [curl, loading, error]

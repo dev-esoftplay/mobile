@@ -221,8 +221,8 @@ class m extends LibComponent<LibImageProps, LibImageState> {
                   LibProgress.hide()
                 }
               },
-              (msg: string) => {
-                console.log(msg, "NOOO")
+              (msg: any) => {
+                console.log(msg.msg, "NOOO")
                 if (x.length - 1 == i)
                   LibProgress.hide()
               }, 1)
@@ -259,9 +259,9 @@ class m extends LibComponent<LibImageProps, LibImageState> {
               r(res);
               LibProgress.hide()
             },
-            (msg: string) => {
+            (msg: any) => {
               LibProgress.hide()
-              r(msg);
+              r(msg.msg);
             }, 1)
         }, 1);
       }
