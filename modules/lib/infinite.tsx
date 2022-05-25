@@ -134,12 +134,12 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
         },
         (msg) => {
           if (this.props.isDebug) {
-            esp.log(msg.msg)
+            esp.log(msg.message)
           }
           this.page = page
           this.isStop = true
           this.setState({
-            error: msg.msg,
+            error: msg.message,
           })
         }, this.props.isDebug
       )

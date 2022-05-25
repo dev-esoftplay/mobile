@@ -74,7 +74,7 @@ export default class m extends LibComponent<LibRollProps, LibRollState>{
             })
           },
           (_msg) => {
-            this.setState({ msg: _msg.msg })
+            this.setState({ msg: _msg.message })
           }
         )
       else

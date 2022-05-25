@@ -111,7 +111,7 @@ export default class eclass {
                 AsyncStorage.setItem("token", String(token))
                 resolve(res)
               }, (msg) => {
-                resolve(msg.msg)
+                resolve(msg.message)
               })
           })
         }

@@ -90,7 +90,7 @@ export default class euserLogin extends LibComponent<UserLoginProps, UserLoginSt
         },
         (msg) => {
           // console.log("gagal => " + msg, email)
-          this.onFailedLogin(msg.msg)
+          this.onFailedLogin(msg.message)
           this.setState({ isLoading: false, email: "" })
         }, 1
       )
