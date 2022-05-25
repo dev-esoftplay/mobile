@@ -5,13 +5,13 @@ import React, { useRef } from 'react';
 import { Pressable, View } from 'react-native';
 import Gallery from 'react-native-awesome-gallery';
 
-export interface ContentGalleryArgs {
+export interface LibGalleryArgs {
 
 }
-export interface ContentGalleryProps {
+export interface LibGalleryProps {
 
 }
-export default function m(props: ContentGalleryProps): any {
+export default function m(props: LibGalleryProps): any {
   let images = LibNavigation.getArgs(props, "images", [])
   const image = LibNavigation.getArgs(props, "image", "")
   const index = LibNavigation.getArgs(props, "index", 0)

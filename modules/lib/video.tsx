@@ -6,14 +6,14 @@ import React from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 
-export interface ContentVideoArgs {
+export interface LibVideoArgs {
 
 }
-export interface ContentVideoProps {
+export interface LibVideoProps {
   code: string,
   style?: any
 }
-export default function m(props: ContentVideoProps): any {
+export default function m(props: LibVideoProps): any {
   const code = props.code
 
   if (!code) {
