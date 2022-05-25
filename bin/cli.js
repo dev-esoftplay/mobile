@@ -312,13 +312,15 @@ function createMaster(module_name) {
 		if (fs.existsSync("./assets"))
 			shell("rm -r ./assets")
 		shell("mkdir -p assets")
-		shell("cp -r ../mobile/" + assetsModule + "/* ./assets/")
+		if (fs.existsSync('../mobile/' + assetsModule + '/*'))
+			shell("cp -r ../mobile/" + assetsModule + "/* ./assets/")
 		
 		/* copy fonts */
 		if (fs.existsSync("./fonts"))
 			shell("rm -r ./fonts")
 		shell("mkdir -p fonts")
-		shell("cp -r ../mobile/" + assetsFonts + "/* ./fonts/")
+		if (fs.existsSync('../mobile/' + assetsFonts + '/*'))
+			shell("cp -r ../mobile/" + assetsFonts + "/* ./assets/")
 		
 		/* copy lang */
 		if (fs.existsSync("../mobile/assets/locale/id.json")) {
@@ -338,7 +340,7 @@ function createMaster(module_name) {
 		
 		if (fs.existsSync("./package.json")) {
 			const packJson = require("./package.json")
-			const letterVersion = ["abcdefghijklmnopqrstuvwxyz"]
+			const letterVersion = "abcdefghijklmnopqrstuvwxyz"
 			const version = packJson.version
 			const letter = version.match(/([a-z])/g)
 			const number = version.replace(/-/g, "").replace(letter, "")
@@ -357,10 +359,11 @@ function createMaster(module_name) {
 				nextNumber = Number(nextNumber) + 1
 				nextVersion += nextNumber
 			}
+		
 			const newPackJson = { ...packJson, version: nextVersion }
 			fs.writeFileSync("./package.json", JSON.stringify(newPackJson, undefined, 2))
 			shell("npm publish")
-			console.log("\\nnpm install --save esoftplay-" + moduleName + "@" + nextVersion + "\\n")
+			console.log("\nnpm install --save esoftplay-" + moduleName + "@" + nextVersion + "\n")
 		}`
 		if (!fs.existsSync(PATH + "master/")) {
 			fs.mkdirSync(PATH + "master")
