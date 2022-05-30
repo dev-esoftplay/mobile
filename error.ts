@@ -34,7 +34,7 @@ export function reportApiError(fetch: any, error: any) {
   const user = UserClass.state().get()
   let config = esp.config()
   let msg = [
-    'slug: ' + "#" + app.expo.slug,
+    'slug: ' + "#" + manifest?.slug,
     'dev: ' + Platform.OS + ' - ' + Constants.deviceName,
     'app/pub_id: ' + Constants.appOwnership + '/' + (config?.publish_id || '-'),
     'user_id: ' + user?.id || user?.user_id || '-',
@@ -66,24 +66,28 @@ export function getError() {
     if (e) {
       let _e = JSON.parse(e)
       let msg = [
-        'slug: ' + "#" + app.expo.slug,
-        'name: ' + app.expo.name + ' - sdk' + pack.dependencies.expo,
+        'slug: ' + "#" + manifest?.slug,
+        'name: ' + manifest?.name + ' - sdk' + pack?.dependencies?.expo,
         'domain: ' + config.domain + config.uri,
-        'package: ' + (Platform.OS == 'ios' ? app.expo.ios.bundleIdentifier : app.expo.android.package) + ' - v' + (Platform.OS == 'ios' ? app.expo.ios.buildNumber : app.expo.android.versionCode),
+        'package: ' + (Platform.OS == 'ios' ? manifest?.ios?.bundleIdentifier : manifest?.android?.package) + ' - v' + (Platform.OS == 'ios' ? app.expo.ios.buildNumber : app.expo.android.versionCode),
         'device: ' + Platform.OS + ' | ' + Constants.deviceName,
-        'app/pub_id: ' + Constants.appOwnership + '/' + (config?.publish_id || '-'),
+        'native/pub_id: ' + manifest?.sdkVersion + '/' + (config?.publish_id || '-'),
         'user_id: ' + _e?.user?.id || _e?.user?.user_id || '-',
         'username: ' + _e?.user?.username || '-',
         'module: ' + _e.routes,
         'error: \n' + _e.error,
       ].join('\n')
       // config?.errorReport?.telegramIds?.forEach?.((id: string) => {
-      let post = {
-        text: msg,
-        chat_id: "-1001212227631",
-        disable_web_page_preview: true
-      }
-      new LibCurl().custom('https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage', post)
+      // if (msg.includes(`Invariant Violation: "main" has not been registered. This can happen if`)) {
+      //   // remove error that unsolved
+      // } else {
+        let post = {
+          text: msg,
+          chat_id: "-1001212227631",
+          disable_web_page_preview: true
+        }
+        new LibCurl().custom('https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage', post)
+      // }
       // });
       AsyncStorage.removeItem(config.domain + 'error')
     }

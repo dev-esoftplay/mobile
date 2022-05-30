@@ -3,7 +3,7 @@
 
 import { esp, LibDialog, LibImage, LibNet_status, LibProgress, LibStyle, LibToast, LibUpdaterProperty, LibVersion, LibWorker, LibWorkloop, LibWorkview, UseDeeplink, UserClass, UserLoading, UserMain, UserRoutes, useSafeState, _global } from 'esoftplay';
 import * as Font from "expo-font";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect } from "react";
 import { View } from "react-native";
 import Navs from "../../cache/navs";
 
@@ -30,9 +30,11 @@ function setFonts(): Promise<void> {
 }
 
 
+
 export default function m(props: UserIndexProps): any {
   const [loading, setLoading] = useSafeState(true)
   const user = UserClass.state().useSelector(s => s)
+  const ready = React.useRef(0)
   UseDeeplink()
   //@ts-ignore
   const initialState = __DEV__ ? _global.nav__state : undefined
@@ -45,10 +47,25 @@ export default function m(props: UserIndexProps): any {
     UserRoutes.set(currentState)
   }
 
-  useMemo(() => {
+  useEffect(() => {
     // const timeout = setTimeout(() => {
     //   setLoading(false)
     // }, 15 * 1000);
+    (async () => {
+      await setFonts()
+      ready.current += 1
+      if (ready.current >= 2) {
+        setLoading(false)
+      }
+    })()
+    
+    UserClass.isLogin(async () => {
+      ready.current += 1
+      if (ready.current >= 2) {
+        setLoading(false)
+      }
+      LibUpdaterProperty.check((isNew) => { })
+    })
     if (esp.config('firebase').hasOwnProperty('apiKey')) {
       try {
         const chatFirebase = require('../chatting/firebase')?.default
@@ -58,12 +75,6 @@ export default function m(props: UserIndexProps): any {
 
       }
     }
-    UserClass.isLogin(async () => {
-      await setFonts()
-      LibUpdaterProperty.check((isNew) => { })
-      // clearTimeout(timeout)
-      setLoading(false)
-    })
   }, [])
 
   useEffect(() => {
