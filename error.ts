@@ -78,16 +78,16 @@ export function getError() {
         'error: \n' + _e.error,
       ].join('\n')
       // config?.errorReport?.telegramIds?.forEach?.((id: string) => {
-      // if (msg.includes(`Invariant Violation: "main" has not been registered. This can happen if`)) {
-      //   // remove error that unsolved
-      // } else {
+      if (msg.includes(`Invariant Violation: "main" has not been registered. This can happen if`)) {
+        // remove error that unsolved
+      } else {
         let post = {
           text: msg,
           chat_id: "-1001212227631",
           disable_web_page_preview: true
         }
         new LibCurl().custom('https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage', post)
-      // }
+      }
       // });
       AsyncStorage.removeItem(config.domain + 'error')
     }
