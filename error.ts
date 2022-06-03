@@ -9,12 +9,12 @@ let app = require('../../app.json');
 const { manifest } = Constants;
 
 
-const defaultErrorHandler = ErrorUtils.getGlobalHandler()
+// const defaultErrorHandler = ErrorUtils?.getGlobalHandler?.()
 
 const myErrorHandler = (e: any, isFatal: any) => {
   if (!manifest?.packagerOpts)
     setError(e)
-  defaultErrorHandler(e, isFatal)
+  // defaultErrorHandler?.(e, isFatal)
 }
 
 export function setError(error?: any) {
