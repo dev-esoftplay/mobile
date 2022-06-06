@@ -52,8 +52,8 @@ if (fs.existsSync(packjson)) {
 				"group_id": 4,
 				"salt": "CHANGE_INTO_YOUR_OWN_SALT",
 				"home": {
-					"public": "content/index",
-					"member": "content/index"
+					"public": "main/index",
+					"member": "main/index"
 				}
 			}
 		}
