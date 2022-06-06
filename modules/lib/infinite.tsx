@@ -25,6 +25,7 @@ export interface LibInfiniteProps {
   ItemSeparatorComponent?: any,
   ListEmptyComponent?: any,
   ListFooterComponent?: any,
+  ListEndedComponent?: any,
   ListHeaderComponent?: any,
   columnWrapperStyle?: any,
   onScroll?: (e: any) => void,
@@ -134,12 +135,12 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
         },
         (msg) => {
           if (this.props.isDebug) {
-            esp.log(msg.message)
+            esp.log(msg)
           }
           this.page = page
           this.isStop = true
           this.setState({
-            error: msg.message,
+            error: msg?.message,
           })
         }, this.props.isDebug
       )
@@ -200,7 +201,7 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
               maxToRenderPerBatch={10}
               windowSize={10}
               ListFooterComponent={
-                (!this.isStop) ? <View style={{ padding: 20 }} ><LibLoading /></View> : <View style={{ height: 50 }} />
+                (!this.isStop) ? <View style={{ padding: 20 }} ><LibLoading /></View> : (this.props?.ListEndedComponent || <View style={{ height: 50 }} />)
               }
               onEndReachedThreshold={0.5}
               onEndReached={() => {
