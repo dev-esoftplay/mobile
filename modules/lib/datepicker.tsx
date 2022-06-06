@@ -1,11 +1,10 @@
 // withHooks
 // noPage
 
-import { LibLoading, LibStyle, LibToastProperty, useSafeState } from 'esoftplay';
+import { LibLoading, LibScrollpicker, LibStyle, LibToastProperty, useSafeState } from 'esoftplay';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useRef } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
-import ScrollPicker from 'react-native-picker-scrollview';
 export interface LibDatepickerProps {
   minDate: string,
   maxDate: string,
@@ -165,7 +164,7 @@ export default function m(props: LibDatepickerProps): any {
       </View>
       <View style={{ height: 175, flexDirection: 'row' }} >
         <View style={{ width: showDateView ? undefined : 0, flex: showDateView ? 1 : 0, }} >
-          <ScrollPicker
+          <LibScrollpicker
             ref={refDate}
             dataSource={dates}
             selectedIndex={dates.indexOf(date)}
@@ -178,7 +177,7 @@ export default function m(props: LibDatepickerProps): any {
           />
         </View>
         <View style={{ width: showMonthView ? undefined : 0, flex: showMonthView ? 1 : 0, }} >
-          <ScrollPicker
+          <LibScrollpicker
             ref={refMonth}
             dataSource={months}
             selectedIndex={months.indexOf(month)}
@@ -191,7 +190,7 @@ export default function m(props: LibDatepickerProps): any {
           />
         </View>
         <View style={{ width: showYearView ? undefined : 0, flex: showYearView ? 1 : 0, }} >
-          <ScrollPicker
+          <LibScrollpicker
             ref={refYear}
             dataSource={years}
             selectedIndex={years.indexOf(year)}

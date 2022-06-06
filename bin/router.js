@@ -584,6 +584,8 @@ function createRouter() {
         staticImport.splice(2, 0, item)
       } else if (task == 'style') {
         staticImport.splice(9, 0, item)
+      } else if (task == 'scrollpicker') {
+        staticImport.splice(10, 0, item)
       } else {
         staticImport.push(item);
       }

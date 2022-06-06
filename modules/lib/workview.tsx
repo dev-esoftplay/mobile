@@ -23,7 +23,7 @@ export default function m(props: LibWorkviewProps): any {
         ref={_global.LibWorkerBase}
         style={{ width: 0, height: 0 }}
         javaScriptEnabled={true}
-        injectedJavaScript={`\nwindow.ReactNativeWebView.postMessage("BaseWorkerIsReady")\n` + _global.injectedJavaScripts.join('\n') + '\n'}
+        injectedJavaScript={`\nwindow.ReactNativeWebView.postMessage("BaseWorkerIsReady")\n` + _global.injectedJavaScripts.join('\n') + '\ntrue;'}
         originWhitelist={["*"]}
         source={{ uri: esp.config("protocol") + "://" + esp.config("domain") + esp.config("uri") + "dummyPageToBypassCORS" }}
         onMessage={LibWorker.onMessage('BaseWorkerIsReady')}

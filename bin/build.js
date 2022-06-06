@@ -270,7 +270,6 @@ export default function App() {
 			'react-native-gesture-handler',
 			'react-native-awesome-gallery',
 			'react-native-fast-image',
-			'react-native-picker-scrollview',
 			'react-native-pinch-zoom-view-movable',
 			'react-native-reanimated',
 			'react-native-safe-area-context',

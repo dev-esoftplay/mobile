@@ -1,4 +1,4 @@
-import { esp, LibCrypt, LibNet_status, LibObject, LibProgress, LibUtils, LogStateProperty } from 'esoftplay';
+import { esp, LibCrypt, LibNet_status, LibObject, LibProgress, LibToastProperty, LibUtils, LogStateProperty } from 'esoftplay';
 import { reportApiError } from "esoftplay/error";
 import moment from "esoftplay/moment";
 import Constants from 'expo-constants';
@@ -6,7 +6,9 @@ import Constants from 'expo-constants';
 const { manifest } = Constants;
 
 export default class ecurl {
-  timeout = 55000;
+  controller = new AbortController()
+  signal = this.controller.signal
+  timeout = 30000;
   maxRetry = 2;
   timeoutContext: any = null;
   isDebug = esp.config("isDebug");
@@ -56,10 +58,11 @@ export default class ecurl {
   protected initTimeout(customTimeout?: number): void {
     this.cancelTimeout()
     this.timeoutContext = setTimeout(() => {
-      // if (this.abort?.cancel) {
-      //   this.closeConnection()
-      //   LibProgress.hide()
-      // }
+      if (typeof this?.controller?.abort == 'function') {
+        this.closeConnection()
+        LibProgress.hide()
+        LibToastProperty.show(this.refineErrorMessage('timeout exceeded'))
+      }
     }, customTimeout ?? this.timeout);
   }
 
@@ -128,6 +131,7 @@ export default class ecurl {
   }
 
   protected closeConnection(): void {
+    this.controller?.abort?.()
     // this?.abort?.cancel('Oops, Sepertinya ada gangguan jaringan... Silahkan coba beberapa saat lagi');
   }
 
@@ -165,6 +169,7 @@ export default class ecurl {
         let ps = Object.keys(_post).map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(_post[key])).join('&');
         var options: any = {
           method: "POST",
+          signal: this.signal,
           headers: {
             ...this.header,
             ["Content-Type"]: "application/x-www-form-urlencoded;charset=UTF-8"
@@ -173,7 +178,9 @@ export default class ecurl {
           cache: "no-store",
           _post: _post
         }
+        this.initTimeout(this.timeout);
         fetch(this.url + this.uri + (token_uri || 'get_token'), options).then(async (res) => {
+          this.cancelTimeout()
           let resText = await res.text()
           this.onFetched(resText,
             (res, msg) => {
@@ -183,6 +190,7 @@ export default class ecurl {
                 onFailed(msg, false)
             }, debug)
         }).catch((r) => {
+          this.cancelTimeout()
           LibProgress.hide()
           this.onFetchFailed(r)
           // if (onFailed)
@@ -283,6 +291,7 @@ export default class ecurl {
       await this.setHeader()
       var options: any = {
         method: !this.post ? "GET" : "POST",
+        signal: this.signal,
         headers: {
           ...this.header,
           ["Content-Type"]: "application/x-www-form-urlencoded;charset=UTF-8"
@@ -297,7 +306,9 @@ export default class ecurl {
       if (debug == 1)
         esp.log(this.url + this.uri, options)
       this.fetchConf = { url: this.url + this.uri, options: options }
+      this.initTimeout(this.timeout);
       fetch(this.url + this.uri, options).then(async (res) => {
+        this.cancelTimeout()
         var resText = await res.text()
         var resJson = (resText.startsWith("{") || resText.startsWith("[")) ? JSON.parse(resText) : null
         if (resJson) {
@@ -321,6 +332,7 @@ export default class ecurl {
           this.onError(resText)
         }
       }).catch((e) => {
+        this.cancelTimeout()
         LibProgress.hide()
         // Alert.alert(this.alertTimeout.title, this.alertTimeout.message, [
         //   {
@@ -375,6 +387,7 @@ export default class ecurl {
       method: !this.post ? "GET" : "POST",
       headers: this.header,
       body: this.post,
+      signal: this.signal,
       cache: "no-store",
       Pragma: "no-cache",
       ["Cache-Control"]: 'no-cache, no-store, must-revalidate',
@@ -441,7 +454,7 @@ export default class ecurl {
       }
     }
 
-    this.initTimeout(upload ? 120000 : undefined)
+    this.initTimeout(upload ? 120000 : this.timeout)
     if (debug == 1) esp.log(this.url + this.uri, options)
     this.fetchConf = { url: this.url + this.uri, options: options }
 
@@ -458,6 +471,7 @@ export default class ecurl {
     //     })
     //   } else {
     fetch(this.url + this.uri, options).then(async (res) => {
+      this.cancelTimeout()
       let resText = await res.text()
       this.onFetched(resText, onDone, onFailed, debug)
     }).catch((r) => {
@@ -473,6 +487,12 @@ export default class ecurl {
       //     onPress: () => { }
       //   }
       // ])
+      if (this.maxRetry > 0) {
+        this.init(uri, post, onDone, onFailed, debug)
+        this.maxRetry = this.maxRetry - 1
+      } else {
+        LibToastProperty.show("Koneksi internet anda tidak stabil, silahkan coba beberapa saat lagi")
+      }
       this.onFetchFailed(r)
       LibProgress.hide()
     })

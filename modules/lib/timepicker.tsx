@@ -1,11 +1,10 @@
 // withHooks 
 // noPage
 
-import { LibStyle, useSafeState } from 'esoftplay';
+import { LibScrollpicker, LibStyle, useSafeState } from 'esoftplay';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useRef } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
-import ScrollPicker from 'react-native-picker-scrollview';
 
 export interface LibTimepickerProps {
   /* hh:mm:ss */
@@ -54,7 +53,7 @@ export default function m(props: LibTimepickerProps): any {
       } else if (minTime && selectedTime < minTime) {
         toTime = minTime;
       }
-      if (toTime != null){
+      if (toTime != null) {
         scrollTo(toTime);
         setSelectedTime(toTime);
       }
@@ -79,7 +78,7 @@ export default function m(props: LibTimepickerProps): any {
       <View style={{ width: 180, flex: 1, height: 175, alignSelf: 'center' }} >
         <View style={{ height: 175, flexDirection: 'row', alignItems: 'center' }} >
           <View style={{ width: showHour ? undefined : 0, flex: showHour ? 1 : 0, }} >
-            <ScrollPicker
+            <LibScrollpicker
               ref={refHour}
               dataSource={time.hours}
               selectedIndex={time.hours.indexOf(sHour)}
@@ -93,7 +92,7 @@ export default function m(props: LibTimepickerProps): any {
           </View>
           <Text style={{ width: showHourMinute ? undefined : 0, fontSize: 30, marginBottom: 5 }} >:</Text>
           <View style={{ width: showHourMinute ? undefined : 0, flex: showHourMinute ? 1 : 0 }} >
-            <ScrollPicker
+            <LibScrollpicker
               ref={refMinute}
               dataSource={time.minutes}
               selectedIndex={time.minutes.indexOf(sMinute)}
@@ -107,7 +106,7 @@ export default function m(props: LibTimepickerProps): any {
           </View>
           <Text style={{ width: showHourMinuteSecond ? undefined : 0, fontSize: 30, marginBottom: 5 }} >:</Text>
           <View style={{ width: showHourMinuteSecond ? undefined : 0, flex: showHourMinuteSecond ? 1 : 0, }} >
-            <ScrollPicker
+            <LibScrollpicker
               ref={refSecond}
               dataSource={time.seconds}
               selectedIndex={time.seconds.indexOf(sSecond)}

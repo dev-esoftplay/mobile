@@ -48,7 +48,7 @@ export default class m extends Component<LibWorkerProps, LibWorkerState> {
               return `"` + param + `"`
             return param
           })
-          return (`window.ReactNativeWebView.postMessage(JSON.stringify({ data: ` + name + `(` + _params.join(", ") + `), id: ` + id + ` }))`)
+          return (`window.ReactNativeWebView.postMessage(JSON.stringify({ data: ` + name + `(` + _params.join(", ") + `), id: ` + id + ` }));true;`)
         }
         , '', res)
     }
@@ -73,7 +73,7 @@ export default class m extends Component<LibWorkerProps, LibWorkerState> {
               return `"` + param + `"`
             return param
           })
-          return (`(async () => window.ReactNativeWebView.postMessage(JSON.stringify({ data: await ` + name + `(` + _params.join(", ") + `), id: ` + id + ` })))()`)
+          return (`(async () => window.ReactNativeWebView.postMessage(JSON.stringify({ data: await ` + name + `(` + _params.join(", ") + `), id: ` + id + ` })))();true;`)
         }
         , '', res)
     }
@@ -102,7 +102,7 @@ export default class m extends Component<LibWorkerProps, LibWorkerState> {
             return `"` + param + `"`
           return param
         })
-        return (`(async () => window.ReactNativeWebView.postMessage(JSON.stringify({ data: await ` + nameFunction + `(` + _params.join(", ") + `), id: ` + id + ` })))()`)
+        return (`(async () => window.ReactNativeWebView.postMessage(JSON.stringify({ data: await ` + nameFunction + `(` + _params.join(", ") + `), id: ` + id + ` })))();true;`)
       }
       , '', res)
   }
@@ -122,7 +122,7 @@ export default class m extends Component<LibWorkerProps, LibWorkerState> {
           return param
         })
 
-        const out = nameFunction + `\nwindow.ReactNativeWebView.postMessage(JSON.stringify({ data: tempFunction` + `(` + _params.join(",") + `), id: ` + id + ` }))`
+        const out = nameFunction + `\nwindow.ReactNativeWebView.postMessage(JSON.stringify({ data: tempFunction` + `(` + _params.join(",") + `), id: ` + id + ` }));true;`
         return out
       }
       , '', res)
