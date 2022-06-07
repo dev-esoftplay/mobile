@@ -13,7 +13,8 @@ const tsconfig = DIR + "tsconfig.json"
 const appjs = DIR + "App.js"
 const appts = DIR + "App.tsx"
 const pathJSTimer = DIR + "node_modules/react-native/Libraries/Core/Timers/JSTimers.js"
-
+const lowercasePrompt = 'if (/^[a-z]/.test(component.name)) {'
+const pathLowercasePrompt = DIR + 'node_modules/@react-navigation/core/src/useNavigationBuilder.tsx'
 /**
  * function ini untuk mengambil name autocomplete dari @expo/vector-icons untuk library LibIcon
  * function akan di injectkan di folder @expo/vector-icons/build dengan nama file esoftplay_icons.ts
@@ -115,6 +116,16 @@ if (fs.existsSync(packjson)) {
 			let JSTimers = fs.readFileSync(pathJSTimer, { encoding: 'utf8' })
 			JSTimers = JSTimers.replace('const MAX_TIMER_DURATION_MS = 60 * 1000;', 'const MAX_TIMER_DURATION_MS = 10000 * 1000;')
 			fs.writeFileSync(pathJSTimer, JSTimers)
+		}
+
+		/* hide prompt lowercase */
+		if (fs.existsSync(pathLowercasePrompt)) {
+			console.log('Fixing lowercase prompt')
+			let useNavigationBuilder = fs.readFileSync(pathLowercasePrompt, { encoding: 'utf8' })
+			useNavigationBuilder = useNavigationBuilder.replace(lowercasePrompt, lowercasePrompt + '\nreturn;')
+			fs.writeFileSync(pathLowercasePrompt, useNavigationBuilder)
+		} else {
+			console.log('Path not exists')
 		}
 
 		const easconfg = `{

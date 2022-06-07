@@ -6,9 +6,33 @@ import _assets from './cache/assets';
 import navs from './cache/navigations';
 import routers from './cache/routers';
 import './oneplusfixfont';
-LogBox.ignoreLogs(['YellowBox has been replaced with LogBox. Please call LogBox.ignoreLogs() instead.']);
-LogBox.ignoreLogs(['VirtualizedLists should never be nested inside plain ScrollViews with the same orientation - use another VirtualizedList-backed container instead.']);
-LogBox.ignoreLogs([`Got a component with the name 'm'`]);
+const ignoreWarns = [
+  "Setting a timer for a long period of time",
+  "VirtualizedLists should never be nested inside plain ScrollViews with the same orientation",
+  "ViewPropTypes will be removed",
+  "AsyncStorage has been extracted from react-native",
+  "EventEmitter.removeListener",
+  "Got a component with the name 'm'",
+  "Did not receive response to shouldStartLoad in time",
+  "startLoadWithResult invoked with invalid lockldentifier:",
+];
+
+const err = console.error;
+console.error = (...arg) => {
+  for (let i = 0; i < ignoreWarns.length; i++) {
+      if (arg[0].startsWith(ignoreWarns[i])) return;
+  }
+  err(...arg);
+};
+
+const warn = console.warn;
+console.warn = (...arg) => {
+  for (let i = 0; i < ignoreWarns.length; i++) {
+      if (arg[0].startsWith(ignoreWarns[i])) return;
+  }
+  warn(...arg);
+};
+LogBox.ignoreLogs(ignoreWarns);
 let app = require('../../app.json');
 let conf = require('../../config.json');
 let lconf
