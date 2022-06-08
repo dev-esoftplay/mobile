@@ -401,6 +401,25 @@ declare module "esoftplay" {
     function home(): any;
     function log(message?: any, ...optionalParams: any[]): void;
     function routes(): any;
+    const logColor : {
+      reset: string,
+      black: string,
+      red: string,
+      green: string,
+      yellow: string,
+      blue: string,
+      magenta: string,
+      cyan: string,
+      white: string,
+      backgroundBlack: string,
+      backgroundRed: string,
+      backgroundGreen: string,
+      backgroundYellow: string,
+      backgroundBlue: string,
+      backgroundMagenta: string,
+      backgroundCyan: string,
+      backgroundWhite: string,
+    }
   }
   interface useGlobalReturn<T> {
     useState: () => [T, (newState: T | ((a:T) => T)) => T | undefined, () => void],
