@@ -1,9 +1,9 @@
 // withHooks
 // noPage
 
-import { esp, LibDialog, LibImage, LibNet_status, LibProgress, LibStyle, LibToast, LibUpdaterProperty, LibVersion, LibWorker, LibWorkloop, LibWorkview, UseDeeplink, UserClass, UserLoading, UserMain, UserRoutes, useSafeState, _global } from 'esoftplay';
+import { esp, LibDialog, LibImage, LibNet_status, LibProgress, LibStyle, LibToast, LibVersion, LibWorker, LibWorkloop, LibWorkview, UseDeeplink, UserClass, UserLoading, UserMain, UserRoutes, useSafeState, _global } from 'esoftplay';
 import * as Font from "expo-font";
-import React, { useEffect } from "react";
+import React, { useEffect, useLayoutEffect } from "react";
 import { View } from "react-native";
 import Navs from "../../cache/navs";
 
@@ -47,7 +47,7 @@ export default function m(props: UserIndexProps): any {
     UserRoutes.set(currentState)
   }
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     // const timeout = setTimeout(() => {
     //   setLoading(false)
     // }, 15 * 1000);
@@ -64,7 +64,7 @@ export default function m(props: UserIndexProps): any {
       if (ready.current >= 2) {
         setLoading(false)
       }
-      LibUpdaterProperty.check((isNew) => { })
+      // LibUpdaterProperty.check((isNew) => { })
     })
     if (esp.config('firebase').hasOwnProperty('apiKey')) {
       try {
