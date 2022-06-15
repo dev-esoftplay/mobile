@@ -55,7 +55,7 @@ var SuffixHooksProperty = ('Property').trim()
 var Persistor = {};
 var Extender = {};
 var NavsExclude = {};
-var NavsOptions = {};
+var NavsOrientation = {};
 var grabClass = null;
 var delReducer = true;
 var countLoop = 0; // jumlah file yang telah dihitung
@@ -75,6 +75,7 @@ const Stack = createNativeStackNavigator();
 export default function m(props): any{
   const { user, initialState, handler } = props
   const econf = esp.config()
+  const appOrientation = econf?.orientation ? String(econf.orientation) : 'portrait'
   return(
     <NavigationContainer
       ref={(r) => LibNavigation.setRef(r)}
@@ -84,7 +85,7 @@ export default function m(props): any{
       <Stack.Navigator
         headerMode="none"
         initialRouteName={(user?.id || user?.user_id) ? econf.home.member : econf.home.public}
-        screenOptions={{ headerShown: false, contentStyle: { backgroundColor: 'white' }, stackAnimation: 'default', stackPresentation: 'push' }}>
+        screenOptions={{ orientation: appOrientation, headerShown: false, contentStyle: { backgroundColor: 'white' }, stackAnimation: 'default', stackPresentation: 'push' }}>
 `+ navs + `
       </Stack.Navigator>
     </NavigationContainer>
@@ -133,8 +134,8 @@ checks.forEach(modules => {
                 } else {
                   NavsExclude[module + '/' + file.slice(0, file.lastIndexOf('.'))] = false
                 }
-                if ((/\n?(?:(?:\/\/\s{0,})|(?:\/\*\s{0,}))landscapeOrientation/).exec(data)) {
-                  NavsOptions[module + '/' + file.slice(0, file.lastIndexOf('.'))] = true
+                if (m = (/\n?(?:(?:\/\/\s{0,})|(?:\/\*\s{0,}))orientation:([a-zAZ_]+)/).exec(data)) {
+                  NavsOrientation[module + '/' + file.slice(0, file.lastIndexOf('.'))] = m?.[1]
                 }
                 if (isIndexed) {
                   if (n = (/\n?(?:(?:\/\/\s{0,})|(?:\/\*\s{0,}))useLibs/).exec(data)) {
@@ -650,12 +651,12 @@ function createRouter() {
   let importer = []
   let screens = []
   Navigations.forEach((nav) => {
-    const options = NavsOptions[nav]
+    const orientation = NavsOrientation[nav]
     const [module, task] = nav.split('/')
     const comp = ucword(module) + ucword(task)
     importer.push(comp)
-    if (options)
-      screens.push("\t\t\t\t<Stack.Screen name={\"" + nav + "\"} options={{ orientation: 'landscape' }} component={" + comp + "} />")
+    if (orientation)
+      screens.push("\t\t\t\t<Stack.Screen name={\"" + nav + "\"} options={{ orientation: '" + orientation + "' }} component={" + comp + "} />")
     else
       screens.push("\t\t\t\t<Stack.Screen name={\"" + nav + "\"} component={" + comp + "} />")
   })

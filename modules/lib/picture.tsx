@@ -5,7 +5,7 @@ import { esp, LibStyle, LibWorker, LibWorkloop, useSafeState } from 'esoftplay';
 import * as FileSystem from 'expo-file-system';
 import React, { useMemo } from 'react';
 import { PixelRatio, Platform, View } from 'react-native';
-import FastImage from 'react-native-fast-image'
+import FastImage from 'react-native-fast-image';
 const sh = require("shorthash")
 
 export interface LibPictureSource {
@@ -99,12 +99,12 @@ export default function m(props: LibPictureProps): any {
   else
     resizeMode = FastImage.resizeMode.cover
 
-  if (props.source.hasOwnProperty("uri") && (!width || !height)) {
-    if (width) {
-      height = width
-    } else {
-      width = height
-    }
+  if (!width || !height) {
+    // if (width) {
+    //   height = width
+    // } else {
+    //   width = height
+    // }
     console.warn("Width and Height is Required");
   }
 
