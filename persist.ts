@@ -1,17 +1,17 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { fastFilter, fastLoop } from './fast'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { fastFilter, fastLoop } from './fast';
 
 export default (() => {
   let obj: any = {}
   let setter = {}
   return (key: string, def?: any): any[] => {
     const r = useRef(true)
-    const [a, b] = useState(def)
+    const [state, setState] = useState(def)
 
     useMemo(() => { if (!setter[key]) setter[key] = [] }, [])
 
-    function c(value: any) {
+    function set(value: any) {
       if (r.current) {
         if (value != undefined)
           AsyncStorage.setItem(key, JSON.stringify(value));
@@ -21,9 +21,10 @@ export default (() => {
       }
     }
 
-    function e(callback?: (a?: typeof def) => void) {
+    function updater(callback?: (a?: typeof def) => void) {
       if (obj[key]) {
         clearTimeout(obj[key])
+        delete obj[key]
       }
       obj[key] = setTimeout(() => {
         if (r.current)
@@ -32,28 +33,28 @@ export default (() => {
             if (x) {
               const xx = JSON.parse(x)
               if (callback) callback(xx)
-              c(xx)
+              set(xx)
             } else {
               if (callback) callback(def)
-              c(def)
+              set(def)
             }
           })
       }, 100);
     }
 
-    function d() {
+    function del() {
       AsyncStorage.removeItem(key)
     }
 
-    useEffect(() => {
-      setter[key].push(b)
-      e()
+    useLayoutEffect(() => {
+      setter[key].push(setState)
+      updater()
       return () => {
         r.current = false
         setter[key] = fastFilter(setter[key], (x) => x !== b);
       }
     }, [])
 
-    return [a, c, e, d]
+    return [state, set, updater, del]
   }
 })()

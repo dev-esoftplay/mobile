@@ -55,6 +55,7 @@ var SuffixHooksProperty = ('Property').trim()
 var Persistor = {};
 var Extender = {};
 var NavsExclude = {};
+var NavsOptions = {};
 var grabClass = null;
 var delReducer = true;
 var countLoop = 0; // jumlah file yang telah dihitung
@@ -127,10 +128,13 @@ checks.forEach(modules => {
                 var isHooks = false
                 var isUseLibs = false
                 /* REGEX HOOKS */
-                if (n = (/\n?(?:(?:\/\/\s{0,})|(?:\/\*\s{0,}))noPage/).exec(data)) {
+                if ((/\n?(?:(?:\/\/\s{0,})|(?:\/\*\s{0,}))noPage/).exec(data)) {
                   NavsExclude[module + '/' + file.slice(0, file.lastIndexOf('.'))] = true
                 } else {
                   NavsExclude[module + '/' + file.slice(0, file.lastIndexOf('.'))] = false
+                }
+                if ((/\n?(?:(?:\/\/\s{0,})|(?:\/\*\s{0,}))landscapeOrientation/).exec(data)) {
+                  NavsOptions[module + '/' + file.slice(0, file.lastIndexOf('.'))] = true
                 }
                 if (isIndexed) {
                   if (n = (/\n?(?:(?:\/\/\s{0,})|(?:\/\*\s{0,}))useLibs/).exec(data)) {
@@ -646,10 +650,14 @@ function createRouter() {
   let importer = []
   let screens = []
   Navigations.forEach((nav) => {
+    const options = NavsOptions[nav]
     const [module, task] = nav.split('/')
     const comp = ucword(module) + ucword(task)
     importer.push(comp)
-    screens.push("\t\t\t\t<Stack.Screen name={\"" + nav + "\"} component={" + comp + "} />")
+    if (options)
+      screens.push("\t\t\t\t<Stack.Screen name={\"" + nav + "\"} options={{ orientation: 'landscape' }} component={" + comp + "} />")
+    else
+      screens.push("\t\t\t\t<Stack.Screen name={\"" + nav + "\"} component={" + comp + "} />")
   })
 
   let N = Nav5(importer.join(", "), screens.join("\n"))
