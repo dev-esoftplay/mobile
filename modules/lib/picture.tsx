@@ -3,7 +3,7 @@
 
 import { esp, LibStyle, LibWorker, LibWorkloop, useSafeState } from 'esoftplay';
 import * as FileSystem from 'expo-file-system';
-import React, { useMemo } from 'react';
+import { useLayoutEffect } from 'react';
 import { PixelRatio, Platform, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 const sh = require("shorthash")
@@ -100,15 +100,15 @@ export default function m(props: LibPictureProps): any {
     resizeMode = FastImage.resizeMode.cover
 
   if (!width || !height) {
-    // if (width) {
-    //   height = width
-    // } else {
-    //   width = height
-    // }
+    if (width) {
+      height = width
+    } else {
+      width = height
+    }
     console.warn("Width and Height is Required");
   }
 
-  useMemo(() => {
+  useLayoutEffect(() => {
     if (!valid || (Platform.OS == 'android' && Platform.Version <= 22)) {
       return
     }

@@ -1,7 +1,7 @@
 // withHooks
 // noPage
 
-import { esp, LibDialog, LibImage, LibNet_status, LibProgress, LibStyle, LibToast, LibVersion, LibWorker, LibWorkloop, LibWorkview, UseDeeplink, UserClass, UserLoading, UserMain, UserRoutes, useSafeState, _global } from 'esoftplay';
+import { ChattingFirebase, esp, LibDialog, LibImage, LibNet_status, LibProgress, LibStyle, LibToast, LibUpdaterProperty, LibVersion, LibWorker, LibWorkloop, LibWorkview, UseDeeplink, UserClass, UserLoading, UserMain, UserRoutes, useSafeState, _global } from 'esoftplay';
 import * as Font from "expo-font";
 import React, { useEffect, useLayoutEffect } from "react";
 import { View } from "react-native";
@@ -58,23 +58,22 @@ export default function m(props: UserIndexProps): any {
         setLoading(false)
       }
     })()
-    
+
     UserClass.isLogin(async () => {
       ready.current += 1
       if (ready.current >= 2) {
         setLoading(false)
       }
-      // LibUpdaterProperty.check((isNew) => { })
     })
     if (esp.config('firebase').hasOwnProperty('apiKey')) {
       try {
-        const chatFirebase = require('../chatting/firebase')?.default
-        if (chatFirebase)
-          chatFirebase?.signInAnonymously?.();
+        if (ChattingFirebase)
+          ChattingFirebase?.signInAnonymously?.();
       } catch (error) {
 
       }
     }
+    LibUpdaterProperty.check((isNew) => { })
   }, [])
 
   useEffect(() => {

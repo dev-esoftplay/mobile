@@ -103,7 +103,7 @@ const n = () => {
     }
 
     function subscribe(func: any) {
-      R.useEffect(() => {
+      R.useLayoutEffect(() => {
         subscriber[_idx].push(func);
         return () => {
           subscriber[_idx] = fastFilter(subscriber?.[_idx], (f) => f !== func)
