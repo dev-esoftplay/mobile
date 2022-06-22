@@ -211,7 +211,7 @@ function createMaster(module_name) {
 		} else {
 			throw "Mohon install esoftplay package terlebih dahulu"
 		}
-		
+
 		function injectConfig(configPath) {
 			if (fs.existsSync(configPath)) {
 				const exsConf = require(configPath)
@@ -220,12 +220,12 @@ function createMaster(module_name) {
 				fs.writeFileSync(configPath, JSON.stringify({..._cf}, undefined, 2))
 			}
 		}
-		
+
 		/* injectConfig */
 		injectConfig("../../config.json")
 		injectConfig("../../config.live.json")
 		injectConfig("../../config.debug.json")
-		
+
 		/* move assets */
 		if (fs.existsSync("./assets/")) {
 			if (!fs.existsSync("../../assets/" + moduleName))
@@ -234,7 +234,7 @@ function createMaster(module_name) {
 				shell("cp -r -n ./assets/* ../../assets/" + moduleName + "/")
 			} catch (error) { }
 		}
-		
+
 		if (fs.existsSync("./fonts/")) {
 			if (!fs.existsSync("../../" + assetsFonts))
 				shell("mkdir -p ../../" + assetsFonts)
@@ -242,18 +242,18 @@ function createMaster(module_name) {
 				shell("cp -r -n ./fonts/* ../../" + assetsFonts + "/")
 			} catch (error) { }
 		}
-		
+
 		/* inject lang */
 		if (fs.existsSync("./id.json")) {
 			let moduleLang = require("./id.json")
 			if (fs.existsSync("../../assets/locale/id.json")) {
 				let projectLang = require("../../assets/locale/id.json")
-				let _lg = merge(moduleLang, projectLang) 
+				let _lg = merge(moduleLang, projectLang)
 				moduleLang = {..._lg}
 			}
 			fs.writeFileSync("../../assets/locale/id.json", JSON.stringify(moduleLang, undefined, 2))
 		}
-		
+
 		/* inject libs */
 		if (fs.existsSync("./libs.json")) {
 			let libs = require("./libs.json")
@@ -300,33 +300,33 @@ function createMaster(module_name) {
 		const shell = require('child_process').execSync;
 		const assetsModule = "assets/" + moduleName
 		const assetsFonts = "assets/fonts"
-		
+
 		/* copy module */
 		if (fs.existsSync("./" + moduleName))
 			shell("rm -r ./" + moduleName)
 		shell("cp -r ../mobile/modules/" + moduleName + " ./")
-		
+
 		/* copy assets */
 		if (fs.existsSync("./assets"))
 			shell("rm -r ./assets")
 		shell("mkdir -p assets")
 		if (fs.existsSync('../mobile/' + assetsModule + '/*'))
 			shell("cp -r ../mobile/" + assetsModule + "/* ./assets/")
-		
+
 		/* copy fonts */
 		if (fs.existsSync("./fonts"))
 			shell("rm -r ./fonts")
 		shell("mkdir -p fonts")
 		if (fs.existsSync('../mobile/' + assetsFonts + '/*'))
 			shell("cp -r ../mobile/" + assetsFonts + "/* ./assets/")
-		
+
 		/* copy lang */
 		if (fs.existsSync("../mobile/assets/locale/id.json")) {
 			if (fs.existsSync("./id.json"))
 				shell("rm ./id.json")
 			shell("cp ../mobile/assets/locale/id.json .")
 		}
-		
+
 		/* copy config */
 		if (fs.existsSync("../mobile/config.json")) {
 			const confMobile = require("../mobile/config.json")
@@ -334,8 +334,14 @@ function createMaster(module_name) {
 				const confMaster = { [moduleName]: confMobile.config[moduleName] }
 				fs.writeFileSync("./config.json", JSON.stringify(confMaster, undefined, 2))
 			}
+			/* copy config font */
+			if (confMobile.config.hasOwnProperty("fonts")) {
+				const config = require("./config.json")
+				const confMaster = { ['fonts']: confMobile.config['fonts'] }
+				fs.writeFileSync("./config.json", JSON.stringify(Object.assign(config, confMaster), undefined, 2))
+			}
 		}
-		
+
 		if (fs.existsSync("./package.json")) {
 			const packJson = require("./package.json")
 			const letterVersion = "abcdefghijklmnopqrstuvwxyz"
@@ -357,7 +363,7 @@ function createMaster(module_name) {
 				nextNumber = Number(nextNumber) + 1
 				nextVersion += nextNumber
 			}
-		
+
 			const newPackJson = { ...packJson, version: nextVersion }
 			fs.writeFileSync("./package.json", JSON.stringify(newPackJson, undefined, 2))
 			shell("npm publish")
@@ -368,7 +374,8 @@ function createMaster(module_name) {
 			fs.mkdirSync(PATH + "master/assets")
 			fs.mkdirSync(PATH + "master/" + module_name)
 			fs.writeFileSync(PATH + "master/index.js", index)
-			fs.writeFileSync(PATH + "master/libs.js", libs)
+			fs.writeFileSync(PATH + "master/config.json", `{}`)
+			fs.writeFileSync(PATH + "master/libs.json", libs)
 			fs.writeFileSync(PATH + "master/mover.js", mover)
 			fs.writeFileSync(PATH + "master/package.json", packjson)
 			fs.writeFileSync(PATH + "master/publisher.js", publisher)
