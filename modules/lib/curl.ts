@@ -9,7 +9,7 @@ export default class ecurl {
   controller = new AbortController()
   signal = this.controller.signal
   timeout = 30000;
-  maxRetry = 2;
+  maxRetry = 3;
   timeoutContext: any = null;
   isDebug = esp.config("isDebug");
   post: any;
@@ -46,7 +46,6 @@ export default class ecurl {
     this.withHeader = this.withHeader.bind(this);
     this.initTimeout = this.initTimeout.bind(this);
     this.cancelTimeout = this.cancelTimeout.bind(this);
-    // this.createApiTesterUris = this.createApiTesterUris.bind(this)
     const str: any = LibNet_status.state().get();
     if (uri && str.isOnline) {
       this.init(uri, post, onDone, onFailed, debug);
@@ -88,35 +87,6 @@ export default class ecurl {
     this.uri = uri
   }
 
-  //   createApiTesterUris(): void {
-
-  //     if (esp.isDebug('onlyAvailableOnDebug')) {
-  //       setTimeout(() => {
-  //         const options = this.fetchConf.options
-  //         const msg = this.uri.replace('/', '.').split('?')[0] + `
-  // /* RARE USAGE : to simulate LibCurl().secure() : default false */
-  // const IS_SECURE_POST = `+ this.isSecure + `
-
-  // const EXTRACT = []
-  // const EXTRACT_CHECK = []
-
-  // const GET = {`+ JSON.stringify(LibUtils.getUrlParams(options?.url) || '') + `
-  // }
-
-  // const POST = {`+ options._post + `
-  // }
-  // module.exports = { POST, GET, IS_SECURE_POST, EXTRACT, EXTRACT_CHECK }
-  //       `
-  //         let post = {
-  //           text: msg,
-  //           chat_id: '-626800023',
-  //           disable_web_page_preview: true
-  //         }
-  //         this.custom('https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage', post)
-  //       }, 1000);
-  //     }
-  //   }
-
   protected setApiKey(apiKey: string): void {
     this.apiKey = apiKey
   }
@@ -132,7 +102,6 @@ export default class ecurl {
 
   protected closeConnection(): void {
     this.controller?.abort?.()
-    // this?.abort?.cancel('Oops, Sepertinya ada gangguan jaringan... Silahkan coba beberapa saat lagi');
   }
 
   protected onDone(result: any, msg?: string): void {
@@ -192,9 +161,8 @@ export default class ecurl {
         }).catch((r) => {
           this.cancelTimeout()
           LibProgress.hide()
+          LibToastProperty.show('Koneksi internet kamu tidak stabil, silahkan coba beberapa saat lagi')
           this.onFetchFailed(r)
-          // if (onFailed)
-          //   onFailed(r, true)
         })
       }
     }
@@ -266,7 +234,6 @@ export default class ecurl {
         payload = this.encodeGetValue(_uri.includes('?') ? _uri.substring(_uri.indexOf('?') + 1, _uri.length) : '');
         _uri = _uri.includes('?') ? _uri.substring(0, _uri.indexOf('?')) : _uri;
       }
-      // console.log("HASH", method, _uri, payload, typeof payload == 'string' ? this.urlEncode(payload) : payload)
       signature = method + ':' + _uri + ':' + LibUtils.shorten(typeof payload == 'string' ? this.urlEncode(payload) : payload);
     }
     return signature
@@ -315,18 +282,6 @@ export default class ecurl {
           if (onDone) onDone(resJson, false)
           this.onDone(resJson)
         } else {
-          // Alert.alert(this.alertTimeout.title, this.alertTimeout.message, [
-          //   {
-          //     text: this.alertTimeout.ok,
-          //     style: 'cancel',
-          //     onPress: () => this.custom(uri, post, onDone, debug)
-          //   },
-          //   {
-          //     text: this.alertTimeout.cancel,
-          //     style: 'destructive',
-          //     onPress: () => { }
-          //   }
-          // ])
           this.onFetchFailed(resText)
           LibProgress.hide()
           this.onError(resText)
@@ -334,21 +289,7 @@ export default class ecurl {
       }).catch((e) => {
         this.cancelTimeout()
         LibProgress.hide()
-        // Alert.alert(this.alertTimeout.title, this.alertTimeout.message, [
-        //   {
-        //     text: this.alertTimeout.ok,
-        //     style: 'cancel',
-        //     onPress: () => this.custom(uri, post, onDone, debug)
-        //   },
-        //   {
-        //     text: this.alertTimeout.cancel,
-        //     style: 'destructive',
-        //     onPress: () => { }
-        //   }
-        // ])
         this.onFetchFailed(e)
-        // if (onDone)
-        //   onDone(e, true)
       })
     }
   }
@@ -458,45 +399,22 @@ export default class ecurl {
     if (debug == 1) esp.log(this.url + this.uri, options)
     this.fetchConf = { url: this.url + this.uri, options: options }
 
-    // if (Platform.OS == 'android' && Platform.Version <= 22) {
-    //   var res = await fetch(this.url + this.uri, options);
-    //   let resText = await res.text()
-    //   this.onFetched(resText, onDone, onFailed, debug)
-    // } else
-    //   if (!upload) {
-    //     LibWorker.curl(this.url + this.uri, options, async (resText) => {
-    //       if (typeof resText == 'string') {
-    //         this.onFetched(resText, onDone, onFailed, debug)
-    //       }
-    //     })
-    //   } else {
     fetch(this.url + this.uri, options).then(async (res) => {
       this.cancelTimeout()
       let resText = await res.text()
       this.onFetched(resText, onDone, onFailed, debug)
     }).catch((r) => {
-      // Alert.alert(this.alertTimeout.title, this.alertTimeout.message, [
-      //   {
-      //     text: this.alertTimeout.ok,
-      //     style: 'cancel',
-      //     onPress: () => this.init(uri, post, onDone, onFailed, debug)
-      //   },
-      //   {
-      //     text: this.alertTimeout.cancel,
-      //     style: 'destructive',
-      //     onPress: () => { }
-      //   }
-      // ])
       if (this.maxRetry > 0) {
-        this.init(uri, post, onDone, onFailed, debug)
-        this.maxRetry = this.maxRetry - 1
+        setTimeout(() => {
+          this.init(uri, post, onDone, onFailed, debug)
+          this.maxRetry = this.maxRetry - 1
+        }, 100);
       } else {
-        LibToastProperty.show("Koneksi internet anda tidak stabil, silahkan coba beberapa saat lagi")
+        LibToastProperty.show("Koneksi internet kamu tidak stabil, silahkan coba beberapa saat lagi")
       }
       this.onFetchFailed(r)
       LibProgress.hide()
     })
-    // }
   }
 
 
@@ -534,7 +452,7 @@ export default class ecurl {
         out = 'Terjadi kesalahan, biar ' + esp.appjson()?.expo?.name + ' bereskan, silahkan coba beberapa saat lagi atau kembali ke halaman utama'
       }
       if (ltext.includes('timeout exceeded')) {
-        out = 'Koneksi internet anda tidak stabil, silahkan coba beberapa saat lagi'
+        out = 'Koneksi internet kamu tidak stabil, silahkan coba beberapa saat lagi'
       }
     }
     return out
@@ -543,9 +461,6 @@ export default class ecurl {
   private onError(msg: string): void {
     esp.log("\x1b[31m", msg)
     esp.log("\x1b[0m")
-    // if (esp.isDebug('') && msg == '') {
-    //   return
-    // }
     delete this.fetchConf.options.cancelToken
     reportApiError(this.fetchConf, msg)
     LibProgress.hide()

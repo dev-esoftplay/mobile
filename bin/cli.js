@@ -310,15 +310,15 @@ function createMaster(module_name) {
 		if (fs.existsSync("./assets"))
 			shell("rm -r ./assets")
 		shell("mkdir -p assets")
-		if (fs.existsSync('../mobile/' + assetsModule + '/*'))
-			shell("cp -r ../mobile/" + assetsModule + "/* ./assets/")
+		if (fs.existsSync('../mobile/' + assetsModule + '/'))
+			shell("cp -r ../mobile/" + assetsModule + "/ ./assets/")
 
 		/* copy fonts */
 		if (fs.existsSync("./fonts"))
 			shell("rm -r ./fonts")
 		shell("mkdir -p fonts")
-		if (fs.existsSync('../mobile/' + assetsFonts + '/*'))
-			shell("cp -r ../mobile/" + assetsFonts + "/* ./assets/")
+		if (fs.existsSync('../mobile/' + assetsFonts + '/'))
+			shell("cp -r ../mobile/" + assetsFonts + "/* ./fonts/")
 
 		/* copy lang */
 		if (fs.existsSync("../mobile/assets/locale/id.json")) {
