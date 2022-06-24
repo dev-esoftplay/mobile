@@ -1,6 +1,5 @@
-import { esp, LibCrypt, LibNet_status, LibObject, LibProgress, LibToastProperty, LibUtils, LogStateProperty } from 'esoftplay';
+import { esp, LibCrypt, LibNet_status, LibProgress, LibToastProperty, LibUtils, LogStateProperty } from 'esoftplay';
 import { reportApiError } from "esoftplay/error";
-import moment from "esoftplay/moment";
 import Constants from 'expo-constants';
 
 const { manifest } = Constants;
@@ -337,62 +336,9 @@ export default class ecurl {
       _post: post
     }
 
-
-    if (manifest?.packagerOpts?.dev && LogStateProperty) {
-      const allData = LogStateProperty.state().get() || []
-      const logEnable = LogStateProperty.enableLog().get()
-      let uriOrigin = this.uri
-      if (this.uri == '' && this.url != '') {
-        uriOrigin = this.url.replace(/(https?:\/\/)/g, '')
-        let uriArray = uriOrigin.split('/')
-        let domain = uriArray[0]
-        if (!domain.startsWith('api.')) {
-          uriOrigin = ''
-        } else {
-          let uri = uriArray.slice(1, uriArray.length - 1).join('/')
-          let get = uriArray[uriArray.length - 1];
-          let newGet = '';
-          if (get && get.includes('?')) {
-            let rebuildGet = get.split('?')
-            for (let i = 0; i < rebuildGet.length; i++) {
-              const element = rebuildGet[i];
-              if (!element.includes('=')) {
-                newGet += '?id=' + element
-              } else {
-                newGet += (newGet.includes('?') ? '&' : '?') + element
-              }
-            }
-          } else {
-            newGet = get;
-          }
-          uriOrigin = uri + newGet
-        }
-      }
-      const complete_uri = uriOrigin
-      const _uri = complete_uri.includes('?') ? complete_uri.split('?')[0] : complete_uri
-      const _get = complete_uri.includes('?') ? complete_uri.split('?')[1].split('&').map((x: any) => x.split('=')).map((t: any) => {
-        return ({ [t[0]]: [t[1]] })
-      }) : []
-      const get = Object.assign({}, ..._get)
-      const _post = post && Object.keys(post).map((key) => {
-        return ({ [key]: [decodeURI(post[key])] })
-      }) || []
-      const postNew = Object.assign({}, ..._post)
-
-      if (_uri != '') {
-        const data = {
-          [_uri]: {
-            secure: this.isSecure,
-            time: moment().format('YYYY-MM-DD HH:mm:ss'),
-            get: get,
-            post: postNew,
-          }
-        }
-        let dt = LibObject.unshift(allData, data)()
-        if (logEnable) {
-          LogStateProperty.state().set(dt)
-        }
-      }
+    //api_logger
+    if (LogStateProperty) {
+      LogStateProperty.doLogCurl(this.uri, this.url, post, this.isSecure)
     }
 
     this.initTimeout(upload ? 120000 : this.timeout)

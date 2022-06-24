@@ -30,7 +30,8 @@ export function setError(error?: any) {
 }
 
 export function reportApiError(fetch: any, error: any) {
-
+  let routes = UserRoutes.state().get()
+  let lastIndex = routes?.routes?.length - 1 ?? 0
   const user = UserClass.state().get()
   let config = esp.config()
   let msg = [
@@ -39,6 +40,7 @@ export function reportApiError(fetch: any, error: any) {
     'app/pub_id: ' + Constants.appOwnership + '/' + (config?.publish_id || '-'),
     'user_id: ' + user?.id || user?.user_id || '-',
     'username: ' + user?.username || '-',
+    'module:' + routes?.routes?.[lastIndex]?.name,
     'fetch: ' + String(JSON.stringify(fetch || {}, undefined, 2)).replace(/[\[\]\{\}\"]+/g, ''),
     'error: ' + error
   ].join('\n')
@@ -79,6 +81,8 @@ export function getError() {
       ].join('\n')
       // config?.errorReport?.telegramIds?.forEach?.((id: string) => {
       if (msg.includes(`Invariant Violation: "main" has not been registered. This can happen if`)) {
+        // remove error that unsolved
+      } else if (msg.includes(`deleteAdsCache`)) {
         // remove error that unsolved
       } else {
         let post = {
