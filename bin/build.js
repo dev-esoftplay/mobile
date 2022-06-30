@@ -228,8 +228,7 @@ yarn-error.log\n\
 import * as ErrorReport from 'esoftplay/error';
 import * as Notifications from 'expo-notifications';
 import React, { useEffect, useRef } from 'react';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { enableScreens, enableFreeze } from 'react-native-screens';
+import { enableFreeze, enableScreens } from 'react-native-screens';
 const { globalIdx } = require('esoftplay/global');
 enableScreens();
 enableFreeze();
@@ -244,11 +243,7 @@ export default function App() {
 		ErrorReport.getError()
 	}, [])
 
-	return (
-		<GestureHandlerRootView style={{ flex: 1 }}>
-			<Home />
-		</GestureHandlerRootView>
-	)
+	return (<Home />)
 }`;
 		let expoLib = [
 			'@expo/vector-icons',
