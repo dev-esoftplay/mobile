@@ -2,11 +2,10 @@
 
 import {
   esp, LibComponent, LibCrypt,
-  LibCurl, LibIcon, LibList, LibNotification, LibObject, LibStatusbar, LibStyle, LibUtils, useGlobalReturn, useGlobalState,
+  LibCurl, LibIcon, LibList, LibNotification, LibObject, LibStatusbar, LibStyle, LibUtils, LibWorkloop, useGlobalReturn, useGlobalState,
   UserClass, UserNotification_item
 } from "esoftplay";
 import * as Notifications from 'expo-notifications';
-import React from "react";
 import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import { fastFilter } from "../../fast";
 //@ts-ignore
@@ -86,7 +85,7 @@ class m extends LibComponent<UserNotificationProps, UserNotificationState> {
       (res: any) => {
         m.user_notification_parseData(res.list, uri)
         if (res.next != "") {
-          m.user_notification_fetchData(res.next, post)
+          LibWorkloop.execNextTix(m.user_notification_fetchData, [res.next, post])
         }
       }, (msg) => {
       }
