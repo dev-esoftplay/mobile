@@ -36,13 +36,13 @@ export function reportApiError(fetch: any, error: any) {
   let config = esp.config()
   let msg = [
     'slug: ' + "#" + manifest?.slug,
+    'error: ' + error,
     'dev: ' + Platform.OS + ' - ' + Constants.deviceName,
     'app/pub_id: ' + Constants.appOwnership + '/' + (config?.publish_id || '-'),
     'user_id: ' + user?.id || user?.user_id || '-',
     'username: ' + user?.username || '-',
     'module:' + routes?.routes?.[lastIndex]?.name,
     'fetch: ' + String(JSON.stringify(fetch || {}, undefined, 2)).replace(/[\[\]\{\}\"]+/g, ''),
-    'error: ' + error
   ].join('\n')
 
   if (manifest?.packagerOpts) {
@@ -69,6 +69,7 @@ export function getError() {
       let _e = JSON.parse(e)
       let msg = [
         'slug: ' + "#" + manifest?.slug,
+        'error: \n' + _e.error,
         'name: ' + manifest?.name + ' - sdk' + pack?.dependencies?.expo,
         'domain: ' + config.domain + config.uri,
         'package: ' + (Platform.OS == 'ios' ? manifest?.ios?.bundleIdentifier : manifest?.android?.package) + ' - v' + (Platform.OS == 'ios' ? app.expo.ios.buildNumber : app.expo.android.versionCode),
@@ -77,7 +78,6 @@ export function getError() {
         'user_id: ' + _e?.user?.id || _e?.user?.user_id || '-',
         'username: ' + _e?.user?.username || '-',
         'module: ' + _e.routes,
-        'error: \n' + _e.error,
       ].join('\n')
       // config?.errorReport?.telegramIds?.forEach?.((id: string) => {
       if (msg.includes(`Invariant Violation: "main" has not been registered. This can happen if`)) {
