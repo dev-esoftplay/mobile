@@ -1,11 +1,10 @@
 // noPage
 
 import { LibStyle, LibUtils } from 'esoftplay';
-import React from 'react';
 import { Text, View } from 'react-native';
 
 
-export interface UserNotificationProps {
+export interface UserNotification_itemProps {
   created: string,
   id: number,
   message: string,
@@ -17,7 +16,7 @@ export interface UserNotificationProps {
   updated: string,
   user_id: number,
 }
-export default function m(props: UserNotificationProps): any {
+export default function m(props: UserNotification_itemProps): any {
   return (
     <View style={[{ padding: 16, flexDirection: "row", backgroundColor: "white", marginBottom: 3, marginHorizontal: 0, width: LibStyle.width }, LibStyle.elevation(1.5)]} >
       <View style={{}} >

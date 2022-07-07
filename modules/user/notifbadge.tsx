@@ -1,8 +1,7 @@
 // noPage
 
 
-import { LibComponent, LibStyle, UserNotification } from "esoftplay";
-import React from "react";
+import { LibComponent, LibStyle } from "esoftplay";
 import { Text, TouchableOpacity, View } from "react-native";
 
 export interface UserNotifbadgeProps {
@@ -25,7 +24,6 @@ export default class Enotifbadge extends LibComponent<UserNotifbadgeProps, UserN
 
   componentDidMount(): void {
     super.componentDidMount()
-    UserNotification.user_notification_loadData()
   }
 
   render(): any {

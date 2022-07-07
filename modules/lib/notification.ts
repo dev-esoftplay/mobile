@@ -1,6 +1,8 @@
+import { useGlobalReturn } from 'esoftplay';
 // noPage
 
-import { esp, LibCrypt, LibCurl, LibNavigation, UserClass, UserNotification, _global } from "esoftplay";
+import { esp, LibCrypt, LibCurl, LibNavigation, LibObject, useGlobalState, UserClass, UserNotification, _global } from "esoftplay";
+import { fastFilter } from "esoftplay/fast";
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
 import { Alert, Linking, Platform } from "react-native";
@@ -28,7 +30,6 @@ import moment from '../../moment';
 
 Notifications.setNotificationHandler({
   handleNotification: async (notif) => {
-    UserNotification.user_notification_loadData();
     return ({
       shouldShowAlert: true,
       shouldPlaySound: true,
@@ -38,10 +39,151 @@ Notifications.setNotificationHandler({
   },
 });
 
+const lastUrlState = useGlobalState<any>(undefined)
+
+function mainUrl(): string {
+  const { protocol, domain, uri } = esp.config()
+  return protocol + "://" + domain + uri;
+}
+
+function readAll(ids: (string | number)[]) {
+  let url = mainUrl() + "user/push-read";
+  const { salt } = esp.config()
+  let post: any = {
+    notif_id: ids.join(','),
+    user_id: "",
+    secretkey: new LibCrypt().encode(salt + "|" + moment().format("YYYY-MM-DD hh:mm:ss"))
+  }
+  new LibCurl(url, post)
+}
+
+function splitArray(array: any[], maxLength: number): any[] {
+  const parts = maxLength // items per chunk    
+  const splitedArray = array.reduce((resultArray: any, item, index) => {
+    const chunkIndex = Math.floor(index / parts)
+    if (!resultArray[chunkIndex]) {
+      resultArray[chunkIndex] = [] // start a new chunk
+    }
+    resultArray[chunkIndex].push(item)
+    return resultArray
+  }, [])
+  return splitedArray
+}
+
 export default class m {
 
+  static state(): useGlobalReturn<any> {
+    return lastUrlState
+  }
+
+  static loadData(isFirst?: boolean): void {
+    // console.log('LOADDATA', isFirst)
+    let _uri = mainUrl() + "user/push-notif/desc"
+    const lastUrl = lastUrlState.get()
+    if (lastUrl == -1) {
+      return
+    }
+    if (lastUrl && !isFirst) {
+      _uri = lastUrl
+    }
+    const user = UserClass.state().get()
+    if (!user?.id) {
+      Notifications.setBadgeCountAsync(0)
+    }
+    const { salt } = esp.config()
+    let post: any = {
+      user_id: "",
+      secretkey: new LibCrypt().encode(salt + "|" + moment().format("YYYY-MM-DD hh:mm:ss"))
+    }
+    if (user) {
+      post["user_id"] = user.id || user.user_id
+      post["group_id"] = user.group_id || esp.config('group_id')
+    }
+
+    // console.log(esp.logColor.cyan, 'curl: ' + _uri, esp.logColor.reset)
+    new LibCurl(_uri, post,
+      (res: any) => {
+        // console.log(esp.logColor.green, 'next: ' + res.next, '\n length: ' + res?.list?.length, res.list[0].message, esp.logColor.reset)
+        if (res?.list?.length > 0) {
+          const urls: string[] = UserNotification.state().get().urls
+          // console.log(urls)
+          if (urls && urls.indexOf(_uri) < 0) {
+            let { data, unread } = UserNotification.state().get()
+            // console.log(nUnread+" => nUnread")
+            let nUnread
+            if (isFirst) {
+              nUnread = fastFilter(res.list, (row) => row.status != 2).length
+              UserNotification.state().set({
+                data: res.list,
+                urls: [],
+                unread: nUnread
+              })
+            } else {
+              nUnread = unread + fastFilter(res.list, (row) => row.status != 2).length
+              data.push(...res.list)
+              UserNotification.state().set({
+                data: data,
+                urls: [_uri, ...urls],
+                unread: nUnread
+              })
+            }
+            Notifications.setBadgeCountAsync(nUnread)
+          }
+        }
+        if (res.next) {
+          lastUrlState.set(res.next)
+        } else {
+          lastUrlState.set(-1)
+        }
+      }, (msg) => {
+
+      }
+    )
+  }
+
+  static add(id: number, user_id: number, group_id: number, title: string, message: string, params: string, status: 0 | 1 | 2, created?: string, updated?: string): void {
+    const item = { id, user_id, group_id, title, message, params, status, created, updated }
+    let data = UserNotification.state().get().data
+    data.unshift(item)
+    UserNotification.state().set({
+      ...UserNotification.state().get(),
+      data: data
+    })
+  }
+
+  static drop(): void {
+    UserNotification.state().reset()
+  }
+
+  static markRead(id?: string | number, ..._ids: (string | number)[]): void {
+    // console.log("markRead")
+    let { data, unread, urls } = UserNotification.state().get()
+    let nUnread = unread > 0 ? unread - 1 : 0
+    let ids = [id, ..._ids]
+    // console.log(ids)
+    ids.forEach((id) => {
+      const index = data.findIndex((row) => String(row.id) == String(id))
+      if (index > -1) {
+        data = LibObject.set(data, 2)(index, 'status')
+        nUnread = unread > 0 ? unread - 1 : 0
+      }
+    })
+    // console.log(JSON.stringify(data))
+    UserNotification.state().set({
+      urls,
+      data: data,
+      unread: nUnread
+    })
+    Notifications.setBadgeCountAsync(nUnread)
+    const idsToPush = splitArray(ids, 200)
+    idsToPush.forEach((ids) => {
+      readAll(ids)
+    })
+  }
+
+
   static onAction(notification: any): void {
-    UserNotification.user_notification_loadData()
+    m.loadData(true)
     const data = m.getData(notification)
     function doOpen(data: any) {
       if (!_global.NavsIsReady) {
@@ -62,7 +204,7 @@ export default class m {
     return x?.notification?.request?.content?.data
   }
 
-  static listen(dataRef: any): () => void {
+  static listen(dataRef: any): void {
     if (esp.config('notification') == 1) {
       if (Platform.OS == 'android')
         Notifications.setNotificationChannelAsync(
@@ -70,7 +212,7 @@ export default class m {
           {
             sound: 'default',
             enableLights: true,
-            description: "this is description",
+            description: "Please enable notifications permissions",
             name: esp.appjson().expo.name,
             importance: Notifications.AndroidImportance.MAX,
             showBadge: true,
@@ -79,11 +221,8 @@ export default class m {
           }
         )
       UserClass.pushToken();
-      dataRef.receive = Notifications.addNotificationReceivedListener((x) => {
-        UserNotification.user_notification_loadData()
-      })
+      dataRef.receive = Notifications.addNotificationReceivedListener(() => { })
     }
-    else return () => { }
   }
 
   static requestPermission(callback?: (token: any) => void): Promise<any> {
@@ -130,18 +269,7 @@ export default class m {
     if (!data) return
     if (typeof data == 'string')
       data = JSON.parse(data)
-    const crypt = new LibCrypt();
-    const salt = esp.config("salt");
-    const config = esp.config();
-    let uri = config.protocol + "://" + config.domain + config.uri + "user/push-read"
-    new LibCurl(uri, {
-      notif_id: data.id,
-      secretkey: crypt.encode(salt + "|" + moment().format("YYYY-MM-DD hh:mm:ss"))
-    }, () => {
-      UserNotification.user_notification_loadData();
-    }, () => {
-
-    })
+    m.markRead(data.id)
     let param = data;
     if (param.action)
       switch (param.action) {
@@ -175,17 +303,7 @@ export default class m {
   }
 
   static openNotif(data: any): void {
-    const salt = esp.config("salt");
-    const config = esp.config();
-    let uri = config.protocol + "://" + config.domain + config.uri + "user/push-read"
-    new LibCurl(uri, {
-      notif_id: data.id,
-      secretkey: new LibCrypt().encode(salt + "|" + moment().format("YYYY-MM-DD hh:mm:ss"))
-    }, () => {
-      UserNotification.user_notification_setRead(data.id)
-    }, () => {
-      // esp.log(msg)
-    })
+    m.markRead(data.id)
     let param = JSON.parse(data.params)
     switch (param.action) {
       case "alert":

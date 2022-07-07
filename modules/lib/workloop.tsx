@@ -1,6 +1,6 @@
 // noPage
 
-import { esp, LibComponent, UserClass, UserNotification } from 'esoftplay';
+import { esp, LibComponent, LibNotification, UserClass } from 'esoftplay';
 import React from 'react';
 import { InteractionManager, View } from 'react-native';
 import { WebView } from 'react-native-webview';
@@ -73,13 +73,12 @@ export default (() => {
         })
       }
     }
-
     componentDidMount(): void {
       super.componentDidMount(); 
       const user = UserClass.state().get()
       if (user){
         if(esp.config().notification == 1){
-          UserNotification.user_notification_loadData()
+          LibNotification.loadData(true)
         }
       }
     }
