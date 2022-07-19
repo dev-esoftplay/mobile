@@ -16,7 +16,7 @@ export default (() => {
         if (value != undefined)
           AsyncStorage.setItem(key, JSON.stringify(value));
         else
-          d()
+          del()
         fastLoop(setter[key], (cc) => cc(value))
       }
     }
@@ -51,7 +51,7 @@ export default (() => {
       updater()
       return () => {
         r.current = false
-        setter[key] = fastFilter(setter[key], (x) => x !== b);
+        setter[key] = fastFilter(setter[key], (x) => x !== setState);
       }
     }, [])
 
