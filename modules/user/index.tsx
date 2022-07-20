@@ -1,7 +1,7 @@
 // withHooks
 // noPage
 
-import { ChattingFirebase, esp, LibDialog, LibImage, LibNet_status, LibProgress, LibStyle, LibToast, LibUpdaterProperty, LibVersion, LibWorker, LibWorkloop, LibWorkview, UseDeeplink, UserClass, UserLoading, UserMain, UserRoutes, useSafeState, _global } from 'esoftplay';
+import { ChattingFirebase, esp, LibDialog, LibImage, LibNet_status, LibProgress, LibStyle, LibToast, LibUpdaterProperty, LibVersion, LibWorker, LibWorkloop, LibWorkview, UseDeeplink, useGlobalReturn, useGlobalState, UserClass, UserLoading, UserMain, UserRoutes, useSafeState, _global } from 'esoftplay';
 import * as Font from "expo-font";
 import React, { useEffect, useLayoutEffect } from "react";
 import { View } from "react-native";
@@ -30,11 +30,16 @@ function setFonts(): Promise<void> {
 }
 
 
-
+const state = useGlobalState(null)
+export function workerState(): useGlobalReturn<any> {
+  return state
+}
 export default function m(props: UserIndexProps): any {
   const [loading, setLoading] = useSafeState(true)
+  const worker = state.useSelector((x) => x)
   const user = UserClass.state().useSelector(s => s)
   const ready = React.useRef(0)
+  const workerReady = React.useRef(false)
   UseDeeplink()
   //@ts-ignore
   const initialState = __DEV__ ? _global.nav__state : undefined
@@ -51,17 +56,24 @@ export default function m(props: UserIndexProps): any {
     // const timeout = setTimeout(() => {
     //   setLoading(false)
     // }, 15 * 1000);
+    if (worker == 1 && !workerReady.current) {
+      ready.current += 1
+      workerReady.current = true
+      if (ready.current >= 3) {
+        setLoading(false)
+      }
+    }
     (async () => {
       await setFonts()
       ready.current += 1
-      if (ready.current >= 2) {
+      if (ready.current >= 3) {
         setLoading(false)
       }
     })()
 
     UserClass.isLogin(async () => {
       ready.current += 1
-      if (ready.current >= 2) {
+      if (ready.current >= 3) {
         setLoading(false)
       }
     })
@@ -74,7 +86,7 @@ export default function m(props: UserIndexProps): any {
       }
     }
     LibUpdaterProperty.check((isNew) => { })
-  }, [])
+  }, [worker])
 
   useEffect(() => {
     if (!loading) {
@@ -83,7 +95,7 @@ export default function m(props: UserIndexProps): any {
       }, 0);
     }
   }, [loading])
-  
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={{ flex: 1 }}>
