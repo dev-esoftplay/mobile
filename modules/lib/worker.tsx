@@ -1,6 +1,6 @@
 // noPage
 
-import { _global } from 'esoftplay';
+import { LibNavigation, _global } from 'esoftplay';
 import React, { Component } from "react";
 import { Platform } from 'react-native';
 
@@ -152,6 +152,7 @@ export default class m extends Component<LibWorkerProps, LibWorkerState> {
     return (e: any) => {
       if (e.nativeEvent.data == withRefName) {
         _global.LibWorkerReady += 1
+        LibNavigation.reset()
         return
       }
       const dt = e.nativeEvent.data

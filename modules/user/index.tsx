@@ -83,15 +83,19 @@ export default function m(props: UserIndexProps): any {
       }, 0);
     }
   }, [loading])
-
-  if (loading) return <UserLoading />
+  
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={{ flex: 1 }}>
         <LibWorker />
         <LibWorkview />
         <LibWorkloop />
-        <Navs user={user} initialState={initialState} handler={handler} />
+        {
+          loading ?
+            <UserLoading />
+            :
+            <Navs user={user} initialState={initialState} handler={handler} />
+        }
         <LibNet_status />
         <LibDialog style={'default'} />
         <LibImage />
