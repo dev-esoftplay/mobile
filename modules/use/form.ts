@@ -2,7 +2,7 @@
 // noPage
 
 import { useSafeState } from 'esoftplay';
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import { fastFilter } from './../../fast';
 
 export default (() => {
@@ -20,7 +20,7 @@ export default (() => {
       });
     }
 
-    useEffect(() => {
+    useLayoutEffect(() => {
       if (!dt['setter-' + formName]) {
         dt['setter-' + formName] = []
       }
