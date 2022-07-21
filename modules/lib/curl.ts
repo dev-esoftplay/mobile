@@ -9,6 +9,7 @@ export default class ecurl {
   signal = this.controller.signal
   timeout = 30000;
   maxRetry = 3;
+  resStatus?: number = undefined
   timeoutContext: any = null;
   isDebug = esp.config("isDebug");
   post: any;
@@ -276,6 +277,7 @@ export default class ecurl {
       fetch(this.url + this.uri, options).then(async (res) => {
         this.cancelTimeout()
         var resText = await res.text()
+        this.resStatus = res.status
         var resJson = (resText.startsWith("{") || resText.startsWith("[")) ? JSON.parse(resText) : null
         if (resJson) {
           if (onDone) onDone(resJson, false)
@@ -347,6 +349,7 @@ export default class ecurl {
 
     fetch(this.url + this.uri, options).then(async (res) => {
       this.cancelTimeout()
+      this.resStatus = res.status
       let resText = await res.text()
       this.onFetched(resText, onDone, onFailed, debug)
     }).catch((r) => {
@@ -407,7 +410,14 @@ export default class ecurl {
   private onError(msg: string): void {
     esp.log("\x1b[31m", msg)
     esp.log("\x1b[0m")
+    this.fetchConf.options["status_code"] = this.resStatus
     delete this.fetchConf.options.cancelToken
+    delete this.fetchConf.options.signal
+    delete this.fetchConf.options.cache
+    delete this.fetchConf.options.Pragma
+    delete this.fetchConf.options.Expires
+    delete this.fetchConf.options.mode
+    delete this.fetchConf.options["Cache-Control"]
     reportApiError(this.fetchConf, msg)
     LibProgress.hide()
   }
