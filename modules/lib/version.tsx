@@ -1,10 +1,8 @@
 
-// noPage
-
-import { esp, LibComponent, LibCurl, LibDialog, LibIcon, LibNavigation, LibStyle, LibTextstyle, LibUtils } from 'esoftplay';
+import { esp, LibComponent, LibCurl, LibDialog, LibIcon, LibNavigation, LibStyle, LibTextstyle } from 'esoftplay';
 import Constants from 'expo-constants';
 import React from 'react';
-import { BackHandler, Linking, Platform, TouchableOpacity, View } from 'react-native';
+import { BackHandler, ImageBackground, Linking, Platform, TouchableOpacity } from 'react-native';
 export interface LibVersionProps {
 
 }
@@ -42,36 +40,37 @@ export default class m extends LibComponent<LibVersionProps, LibVersionState> {
 
   static onDone(res: any, msg: string): void {
     const { title, version, android, ios } = res
-
+    console.log(res)
     function isAvailableNewVersion(newVersion: string): boolean {
       let oldVersion = m.appVersion()
       return newVersion > oldVersion
     }
 
     if (isAvailableNewVersion(version)) {
+      console.log("IS AVAILABLE", version)
       LibNavigation.backToRoot()
       LibNavigation.replace("lib/version", { res, msg: msg == 'success' ? 'Update to a new version now' : msg })
     }
 
   }
   static check(): void {
-    new LibCurl("public_version", null, m.onDone)
+    new LibCurl("public_version?syafiq=1", null, m.onDone)
   }
 
   render(): any {
     const { res: { title, version, android, ios }, msg } = LibNavigation.getArgsAll(this.props)
     const link = Platform.OS == 'ios' ? ios : android
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', borderStartColor: 'white', paddingHorizontal: 17 }} >
+      <ImageBackground source={esp.assets("splash.png")} blurRadius={100} style={{ flex: 1, justifyContent: 'center', alignItems: 'center', borderStartColor: 'white', paddingHorizontal: 17 }} >
         <LibIcon.SimpleLineIcons name="info" size={60} />
         <LibTextstyle textStyle="headline" text={title || 'A new version is available'} style={{ textAlign: 'center', marginTop: 10 }} />
-        <LibTextstyle textStyle="callout" text={LibUtils.ucwords(msg)} style={{ textAlign: 'center', marginTop: 10, color: '#888' }} />
+        <LibTextstyle textStyle="callout" text={msg} style={{ textAlign: 'center', marginTop: 10, color: '#333' }} />
         <TouchableOpacity
           onPress={() => { Linking.canOpenURL(link) && Linking.openURL(link) }}
           style={{ marginTop: 20, borderRadius: 10, paddingHorizontal: 17, paddingVertical: 10, backgroundColor: LibStyle.colorPrimary }} >
           <LibTextstyle textStyle="body" text="Update Sekarang" />
         </TouchableOpacity>
-      </View>
+      </ImageBackground>
     )
   }
 }
