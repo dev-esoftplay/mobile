@@ -4,7 +4,7 @@
 import { ChattingFirebase, esp, LibDialog, LibImage, LibNet_status, LibProgress, LibStyle, LibToast, LibUpdaterProperty, LibVersion, LibWorker, LibWorkloop, LibWorkview, UseDeeplink, useGlobalReturn, useGlobalState, UserClass, UserLoading, UserMain, UserRoutes, useSafeState, _global } from 'esoftplay';
 import * as Font from "expo-font";
 import React, { useEffect, useLayoutEffect } from "react";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Navs from "../../cache/navs";
 
@@ -56,24 +56,30 @@ export default function m(props: UserIndexProps): any {
     // const timeout = setTimeout(() => {
     //   setLoading(false)
     // }, 15 * 1000);
+    let limitReady = 3
+    if (Platform.OS == 'android')
+      if (Platform.Version <= 22) {
+        limitReady = 2
+      }
+
     if (worker == 1 && !workerReady.current) {
       ready.current += 1
       workerReady.current = true
-      if (ready.current >= 3) {
+      if (ready.current >= limitReady) {
         setLoading(false)
       }
     }
     (async () => {
       await setFonts()
       ready.current += 1
-      if (ready.current >= 3) {
+      if (ready.current >= limitReady) {
         setLoading(false)
       }
     })()
 
     UserClass.isLogin(async () => {
       ready.current += 1
-      if (ready.current >= 3) {
+      if (ready.current >= limitReady) {
         setLoading(false)
       }
     })

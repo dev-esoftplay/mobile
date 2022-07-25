@@ -40,14 +40,12 @@ export default class m extends LibComponent<LibVersionProps, LibVersionState> {
 
   static onDone(res: any, msg: string): void {
     const { title, version, android, ios } = res
-    console.log(res)
     function isAvailableNewVersion(newVersion: string): boolean {
       let oldVersion = m.appVersion()
       return newVersion > oldVersion
     }
 
     if (isAvailableNewVersion(version)) {
-      console.log("IS AVAILABLE", version)
       LibNavigation.backToRoot()
       LibNavigation.replace("lib/version", { res, msg: msg == 'success' ? 'Update to a new version now' : msg })
     }
