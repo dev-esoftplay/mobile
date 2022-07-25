@@ -52,7 +52,7 @@ export default class m extends LibComponent<LibVersionProps, LibVersionState> {
 
   }
   static check(): void {
-    new LibCurl("public_version?syafiq=1", null, m.onDone)
+    new LibCurl("public_version", null, m.onDone)
   }
 
   render(): any {
