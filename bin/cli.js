@@ -665,7 +665,19 @@ function build() {
 			}
 		},
 		{
-			name: "3. IOS (Production) - ipa",
+			name: "3. IOS (Preview) - Non Simulator",
+			cmd: "eas build --platform ios --profile preview_build",
+			pre: () => {
+				configAvailable(true)
+				devClientPos(appjson)
+				jsEng(appjson, true)
+				jsEng(appdebug, true)
+				jsEng(applive, true)
+				consoleSucces("Hermes diaktifkan")
+			}
+		},
+		{
+			name: "4. IOS (Production) - ipa",
 			cmd: "eas build --platform ios --profile production",
 			pre: () => {
 				configAvailable(true)
@@ -677,7 +689,7 @@ function build() {
 			}
 		},
 		{
-			name: "4. Android (Development) - apk",
+			name: "5. Android (Development) - apk",
 			cmd: "eas build --platform android --profile development",
 			pre: () => {
 				configAvailable(true)
@@ -689,7 +701,7 @@ function build() {
 			}
 		},
 		{
-			name: "5. Android (Preview) - apk",
+			name: "6. Android (Preview) - apk",
 			cmd: "eas build --platform android --profile preview",
 			pre: () => {
 				configAvailable(true)
@@ -701,7 +713,7 @@ function build() {
 			}
 		},
 		{
-			name: "6. Android (Production) - aab",
+			name: "7. Android (Production) - aab",
 			cmd: "eas build --platform android --profile production",
 			pre: () => {
 				configAvailable(true)

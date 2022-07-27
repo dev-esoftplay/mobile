@@ -1,5 +1,6 @@
 // withHooks
 
+import { FlashList } from "@shopify/flash-list";
 import { LibIcon, LibLoading, LibNavigation, LibObject, LibStyle, LibTextstyle, useSafeState } from 'esoftplay';
 import * as MediaLibrary from 'expo-media-library';
 import React, { useEffect } from 'react';
@@ -70,6 +71,8 @@ export default function m(props: LibImage_multiProps): any {
           setPhotos(LibObject.set(photos, item.selected == 1 ? 0 : 1)(index, "selected"))
     }} />
   )
+  const AutoLayoutViewNativeComponent = require("@shopify/flash-list/src/native/auto-layout/AutoLayoutViewNativeComponent")
+  const List = !!AutoLayoutViewNativeComponent ? FlashList : FlatList
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }} >
@@ -87,7 +90,7 @@ export default function m(props: LibImage_multiProps): any {
         </TouchableOpacity>
       </View>
       <View style={{ flex: 1 }} >
-        <FlatList
+        <List
           data={photos}
           keyExtractor={(_: any, i) => _.uri}
           getItemLayout={getItemLayout}

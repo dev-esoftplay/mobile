@@ -146,6 +146,12 @@ if (fs.existsSync(packjson)) {
 			"simulator": true
 		}
 	},
+	"preview_build": {
+		"distribution": "internal",
+		"android": {
+			"buildType": "apk"
+		}
+	},
 	"production": {}
 },
 "submit": {
@@ -253,6 +259,7 @@ export default function App() {
 			'@react-navigation/native-stack',
 			'@react-navigation/native',
 			'@react-navigation/stack',
+			'@shopify/flash-list',
 			'buffer',
 			'expo-application',
 			'expo-camera',

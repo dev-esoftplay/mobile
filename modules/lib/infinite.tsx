@@ -1,10 +1,10 @@
 // noPage
 
+import { FlashList } from "@shopify/flash-list";
 import { esp, LibComponent, LibCurl, LibListItemLayout, LibLoading, LibStyle, LibTextstyle } from 'esoftplay';
 import React from 'react';
 import isEqual from 'react-fast-compare';
 import { FlatList, View } from 'react-native';
-
 
 export interface LibInfiniteProps {
   url: string,
@@ -172,13 +172,15 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
   render(): any {
     const { data, error } = this.state
     const { errorView, refreshEnabled } = this.props
+    const AutoLayoutViewNativeComponent = require("@shopify/flash-list/src/native/auto-layout/AutoLayoutViewNativeComponent")
+    const List = !!AutoLayoutViewNativeComponent ? FlashList : FlatList
     return (
       <View style={{ flex: 1 }} >
         {
           (!data || data.length) == 0 && !this.isStop ?
             this.props.LoadingView || <LibLoading />
             :
-            <FlatList
+            <List
               ref={this.flatlist}
               data={data || []}
               onRefresh={((refreshEnabled == undefined) || refreshEnabled) && (() => this.loadData())}

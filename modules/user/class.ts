@@ -59,11 +59,11 @@ export default class eclass {
   }
 
   static delete(): Promise<void> {
-    return new Promise((r) => {
+    return new Promise(async(r) => {
       Notifications.setBadgeCountAsync(0)
-      state.set(undefined)
-      AsyncStorage.removeItem("user_notification");
-      AsyncStorage.removeItem("user");
+      state.reset()
+      await AsyncStorage.removeItem("user_notification");
+      await AsyncStorage.removeItem("user");
       new UserData().deleteAll()
       if (esp.config('notification') == 1) {
         UserClass.pushToken()

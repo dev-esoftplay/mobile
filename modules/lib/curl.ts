@@ -268,7 +268,6 @@ export default class ecurl {
         Pragma: "no-cache",
         ['Cache-Control']: "no-store",
         mode: "cors",
-        _post: post
       }
       if (debug == 1)
         esp.log(this.url + this.uri, options)
@@ -335,7 +334,6 @@ export default class ecurl {
       ["Cache-Control"]: 'no-cache, no-store, must-revalidate',
       ["Expires"]: 0,
       mode: "cors",
-      _post: post
     }
 
     //api_logger
@@ -418,6 +416,8 @@ export default class ecurl {
     delete this.fetchConf.options.Expires
     delete this.fetchConf.options.mode
     delete this.fetchConf.options["Cache-Control"]
+    delete this.fetchConf.options["Content-Type"]
+    delete this.fetchConf.options.token
     reportApiError(this.fetchConf, msg)
     LibProgress.hide()
   }
