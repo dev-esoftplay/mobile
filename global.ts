@@ -24,7 +24,7 @@ export interface useGlobalConnect<T> {
 }
 
 _global.useGlobalUserDelete = {}
-
+_global.useGlobalStateReady = 0
 class Context {
   idx = 0
   increment = () => this.idx++
@@ -35,134 +35,131 @@ class Context {
 
 export const globalIdx = new Context()
 
-const n = () => {
-  let subscriber = {}
-  let debouceTime
-  let persistKeys: any = {}
 
-  function m<T>(initValue: T, o?: useGlobalOption): useGlobalReturn<T> {
-    const _idx = globalIdx.idx
-    if (!subscriber[_idx])
-      subscriber[_idx] = [];
-    let value: T = initValue;
+let subscriber = {}
+let debouceTime
+let persistKeys: any = {}
 
-    // rehidryte instant
-    if (o?.persistKey) {
-      rehidryte(o.persistKey, (p) => {
-        if (typeof p == 'string') set(JSON.parse(p))
+export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): useGlobalReturn<T> {
+  const _idx = globalIdx.idx
+  if (!subscriber[_idx])
+    subscriber[_idx] = [];
+  let value: T = initValue;
 
-      })
-    }
+  // rehidryte instant
+  if (o?.persistKey) {
+    rehidryte(o.persistKey, (p) => {
+      if (typeof p == 'string') set(JSON.parse(p))
 
-    /* register to userData to automatically reset state and persist */
-    if (o?.isUserData) {
-      function resetFunction() {
-        set(initValue)
-      }
-      if (o?.persistKey) {
-        const UserData = require('./modules/user/data').default
-        UserData.register(o?.persistKey)
-      }
-      _global.useGlobalUserDelete[_idx] = resetFunction
-    }
+    })
+  }
 
-    function set(ns: T) {
-      const isChange = !isEqual(value, ns)
-      if (isChange) {
-        value = ns
-        fastLoop(subscriber?.[_idx], (c) => { c?.(ns) })
-        if (o?.persistKey) {
-          AsyncStorage.setItem(o.persistKey, JSON.stringify(ns))
-        }
-        if (o?.listener)
-          o.listener(ns)
-      }
-    };
-
-    function del() {
-      if (o?.persistKey) {
-        AsyncStorage.removeItem(o.persistKey)
-      }
+  /* register to userData to automatically reset state and persist */
+  if (o?.isUserData) {
+    function resetFunction() {
       set(initValue)
     }
-
-    function useSelector(se: (state: T) => any): void {
-      let [l, s] = R.useState<any>(se(value));
-
-      let sl = R.useCallback(
-        (ns: T) => {
-          let n = se(ns);
-          !isEqual(l, n) && s(n);
-        },
-        [l]
-      );
-
-      subscribe(sl)
-
-      return l;
+    if (o?.persistKey) {
+      const UserData = require('./modules/user/data').default
+      UserData.register(o?.persistKey)
     }
+    _global.useGlobalUserDelete[_idx] = resetFunction
+  }
 
-    function subscribe(func: any) {
-      R.useLayoutEffect(() => {
-        subscriber[_idx].push(func);
-        return () => {
-          subscriber[_idx] = fastFilter(subscriber?.[_idx], (f) => f !== func)
-        };
-      }, [func]);
-    }
-
-    function get(param?: string, ...params: string[]): any {
-      let out: any = value;
-      if (param) {
-        const _params = [param, ...params]
-        if (_params.length > 0)
-          for (let i = 0; i < _params.length; i++) {
-            if (out && _params[i] != undefined)
-              out = out?.[_params[i]];
-          }
+  function set(ns: T) {
+    const isChange = !isEqual(value, ns)
+    if (isChange) {
+      value = ns
+      fastLoop(subscriber?.[_idx], (c) => { c?.(ns) })
+      if (o?.persistKey) {
+        AsyncStorage.setItem(o.persistKey, JSON.stringify(ns))
       }
-      return out;
+      if (o?.listener)
+        o.listener(ns)
     }
+  };
 
-
-    function useState(): [T, (newState: T) => void, () => void] {
-      let [l, sl] = R.useState<T>(value);
-
-      subscribe(sl)
-
-      return [l, set, del];
-    };
-
-    function _connect(props: useGlobalConnect<T>): any {
-      const [state] = useState()
-      const children = props.render(state)
-      return children ? R.cloneElement(children) : null
+  function del() {
+    if (o?.persistKey) {
+      AsyncStorage.removeItem(o.persistKey)
     }
-
-    globalIdx.increment()
-    return { useState, get, set, useSelector, reset: del, connect: _connect };
+    set(initValue)
   }
 
-  function debounce(func: () => any, delay: number): void {
-    clearTimeout(debouceTime)
-    debouceTime = setTimeout(() => func(), delay)
+  function useSelector(se: (state: T) => any): void {
+    let [l, s] = R.useState<any>(se(value));
+
+    let sl = R.useCallback(
+      (ns: T) => {
+        let n = se(ns);
+        !isEqual(l, n) && s(n);
+      },
+      [l]
+    );
+
+    subscribe(sl)
+
+    return l;
   }
 
-  function rehidryte(key: string, func: (e: string) => void) {
-    persistKeys[key] = func
-    debounce(() => {
-      AsyncStorage.multiGet(Object.keys(persistKeys), (e, v) => {
-        if (v && !e) {
-          v.forEach((iv, i) => {
-            persistKeys[iv[0]]?.(iv[1])
-          })
-        } else {
-          
+  function subscribe(func: any) {
+    R.useLayoutEffect(() => {
+      subscriber[_idx].push(func);
+      return () => {
+        subscriber[_idx] = fastFilter(subscriber?.[_idx], (f) => f !== func)
+      };
+    }, [func]);
+  }
+
+  function get(param?: string, ...params: string[]): any {
+    let out: any = value;
+    if (param) {
+      const _params = [param, ...params]
+      if (_params.length > 0)
+        for (let i = 0; i < _params.length; i++) {
+          if (out && _params[i] != undefined)
+            out = out?.[_params[i]];
         }
-      })
-    }, 100)
+    }
+    return out;
   }
-  return m
+
+
+  function useState(): [T, (newState: T) => void, () => void] {
+    let [l, sl] = R.useState<T>(value);
+
+    subscribe(sl)
+
+    return [l, set, del];
+  };
+
+  function _connect(props: useGlobalConnect<T>): any {
+    const [state] = useState()
+    const children = props.render(state)
+    return children ? R.cloneElement(children) : null
+  }
+
+  globalIdx.increment()
+  return { useState, get, set, useSelector, reset: del, connect: _connect };
 }
 
-export default n()
+function debounce(func: () => any, delay: number): void {
+  clearTimeout(debouceTime)
+  debouceTime = setTimeout(() => func(), delay)
+}
+
+function rehidryte(key: string, func: (e: string) => void) {
+  persistKeys[key] = func
+  debounce(() => {
+    AsyncStorage.multiGet(Object.keys(persistKeys), (e, v) => {
+      if (v && !e) {
+        v.forEach((iv, i) => {
+          persistKeys[iv[0]]?.(iv[1])
+        })
+        _global.useGlobalStateReady = 1
+      } else {
+        _global.useGlobalStateReady = 1
+      }
+    })
+  }, 100)
+}

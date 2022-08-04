@@ -1,12 +1,12 @@
 // withHooks
 // noPage
 
-import { ChattingFirebase, esp, LibDialog, LibImage, LibNet_status, LibProgress, LibStyle, LibToast, LibUpdaterProperty, LibVersion, LibWorker, LibWorkloop, LibWorkview, UseDeeplink, useGlobalReturn, useGlobalState, UserClass, UserLoading, UserMain, UserRoutes, useSafeState, _global } from 'esoftplay';
+import { ChattingFirebase, esp, LibDialog, LibImage, LibNet_status, LibProgress, LibStyle, LibToast, LibUpdaterProperty, LibVersion, LibWorker, LibWorkloop, LibWorkview, UseDeeplink, UserClass, UserHook, UserLoading, UserRoutes, useSafeState, _global } from 'esoftplay';
 import * as Font from "expo-font";
 import React, { useEffect, useLayoutEffect } from "react";
 import { Platform, View } from "react-native";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import Navs from "../../cache/navs";
+import Navs from '../../cache/navs';
 
 export interface UserIndexProps {
 
@@ -30,16 +30,28 @@ function setFonts(): Promise<void> {
 }
 
 
-const state = useGlobalState(null)
-export function workerState(): useGlobalReturn<any> {
-  return state
+function isWorkerReady(onReady: () => void): void {
+  if (_global.LibWorkerReady < 1) {
+    setTimeout(() => isWorkerReady(onReady), 30)
+  } else {
+    onReady()
+  }
 }
-export default function m(props: UserIndexProps): any {
+
+function isGlobalStateReady(onReady: () => void) {
+  const _global = require('../../_global')
+  if (_global.useGlobalStateReady < 1) {
+    setTimeout(() => isGlobalStateReady(onReady), 30)
+  } else {
+    onReady()
+  }
+}
+
+
+export default function UserIndex(props: UserIndexProps): any {
   const [loading, setLoading] = useSafeState(true)
-  const worker = state.useSelector((x) => x)
   const user = UserClass.state().useSelector(s => s)
   const ready = React.useRef(0)
-  const workerReady = React.useRef(false)
   UseDeeplink()
   //@ts-ignore
   const initialState = __DEV__ ? _global.nav__state : undefined
@@ -53,24 +65,34 @@ export default function m(props: UserIndexProps): any {
   }
 
   useLayoutEffect(() => {
-    // const timeout = setTimeout(() => {
-    //   setLoading(false)
-    // }, 15 * 1000);
-    let limitReady = 3
-    if (Platform.OS == 'android')
-      if (Platform.Version <= 22) {
-        limitReady = 2
-      }
+    ready.current = 0
 
-    if (worker == 1 && !workerReady.current) {
+    let limitReady = 4
+    if (Platform.OS == 'android') {
+      if (Platform.Version <= 22) {
+        limitReady = 3
+      }
+    }
+
+    if (limitReady == 4) {
+      isWorkerReady(() => {
+        ready.current += 1
+        if (ready.current >= limitReady) {
+          setLoading(false)
+        }
+      })
+    }
+
+    isGlobalStateReady(() => {
       ready.current += 1
-      workerReady.current = true
       if (ready.current >= limitReady) {
         setLoading(false)
       }
-    }
+    });
+
     (async () => {
       await setFonts()
+
       ready.current += 1
       if (ready.current >= limitReady) {
         setLoading(false)
@@ -83,6 +105,7 @@ export default function m(props: UserIndexProps): any {
         setLoading(false)
       }
     })
+
     if (esp.config('firebase').hasOwnProperty('apiKey')) {
       try {
         if (ChattingFirebase)
@@ -91,8 +114,9 @@ export default function m(props: UserIndexProps): any {
 
       }
     }
+    
     LibUpdaterProperty.check((isNew) => { })
-  }, [worker])
+  }, [])
 
   useEffect(() => {
     if (!loading) {
@@ -118,7 +142,7 @@ export default function m(props: UserIndexProps): any {
         <LibDialog style={'default'} />
         <LibImage />
         <LibProgress />
-        <UserMain />
+        <UserHook />
         <LibToast />
       </View>
       <View style={{ backgroundColor: LibStyle.colorNavigationBar || 'white', height: LibStyle.isIphoneX ? 35 : 0 }} />

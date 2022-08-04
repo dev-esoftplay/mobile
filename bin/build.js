@@ -230,7 +230,7 @@ yarn-error.log\n\
 			console.log('.gitignore has been created');
 		});
 
-		const AppJS = `import { esp, LibNotification } from 'esoftplay';
+		const AppJS = `import * as Esoftplay from 'esoftplay';
 import * as ErrorReport from 'esoftplay/error';
 import * as Notifications from 'expo-notifications';
 import React, { useEffect, useRef } from 'react';
@@ -239,10 +239,10 @@ const { globalIdx } = require('esoftplay/global');
 enableScreens();
 enableFreeze();
 
-Notifications.addNotificationResponseReceivedListener(x => LibNotification.onAction(x));
+Notifications.addNotificationResponseReceivedListener(x => Esoftplay.LibNotification.onAction(x));
 
 export default function App() {
-	const Home = useRef(esp.home()).current
+	const Home = useRef(Esoftplay.esp.home()).current
 
 	useEffect(() => {
 		globalIdx.reset()
@@ -259,7 +259,6 @@ export default function App() {
 			'@react-navigation/native-stack',
 			'@react-navigation/native',
 			'@react-navigation/stack',
-			'@shopify/flash-list',
 			'buffer',
 			'expo-application',
 			'expo-camera',
@@ -288,7 +287,8 @@ export default function App() {
 			'react-native-safe-area-context',
 			'react-native-screens',
 			'react-native-webview',
-			'shorthash'
+			'shorthash',
+			'usestable'
 		]
 		if ($config.config.hasOwnProperty('excludePackages')) {
 			if ($config.config.excludePackages) {

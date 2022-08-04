@@ -1,7 +1,7 @@
 // noPage
 
 
-import { FlashList } from "@shopify/flash-list";
+// import { FlashList } from "@shopify/flash-list";
 import { LibComponent } from "esoftplay";
 import React from "react";
 import { FlatList, View } from 'react-native';
@@ -76,8 +76,8 @@ export default class EList extends LibComponent<LibListProps, LibListState> {
       if (this.props.staticHeight)
         return ({ getItemLayout: (data, index) => this.props.staticHeight ? ({ length: this.props.staticHeight, offset: this.props.staticHeight, index: index }) : undefined })
     }
-    const AutoLayoutViewNativeComponent = require("@shopify/flash-list/src/native/auto-layout/AutoLayoutViewNativeComponent")
-    const List = !!AutoLayoutViewNativeComponent ? FlashList : FlatList
+    // const AutoLayoutViewNativeComponent = require("@shopify/flash-list/src/native/auto-layout/AutoLayoutViewNativeComponent")
+    const List = /* !!AutoLayoutViewNativeComponent ? FlashList : */ FlatList
     return (
       <View ref={(e) => this.view = e} style={[{ flex: 1 }]} >
         <List

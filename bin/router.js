@@ -569,8 +569,8 @@ function createRouter() {
   var Task = "";
   var nav = "";
   var staticImport = []
-
-  staticImport.push("const isEqual = require('react-fast-compare');\n")
+  
+  staticImport.push("var isEqual = require('react-fast-compare');\n")
   staticImport.push("export function applyStyle(style){ return style };\n")
   staticImport.push("export { default as useGlobalState } from '../../../node_modules/esoftplay/global';\n")
   staticImport.push("export { default as usePersistState } from '../../../node_modules/esoftplay/persist';\n")
@@ -587,25 +587,25 @@ function createRouter() {
       var item = "import { default as _" + ucword(module) + ucword(task) + " } from '../../." + Modules[module][task] + "';\n"
       if (HookModules.includes(nav)) {
         item += "" +
-          "import * as " + ucword(module) + ucword(task) + SuffixHooksProperty + " from '../../." + Modules[module][task] + "';\n" +
-          "const " + ucword(module) + ucword(task) + " = React.memo(_" + ucword(module) + ucword(task) + ", isEqual); \n" +
-          "export { " + ucword(module) + ucword(task) + SuffixHooksProperty + ", " + ucword(module) + ucword(task) + " };\n"
+        "import * as " + ucword(module) + ucword(task) + SuffixHooksProperty + " from '../../." + Modules[module][task] + "';\n" +
+        "var " + ucword(module) + ucword(task) + " = stable(_" + ucword(module) + ucword(task) + "); \n" +
+        "export { " + ucword(module) + ucword(task) + SuffixHooksProperty + ", " + ucword(module) + ucword(task) + " };\n"
       } else if (UseLibs.includes(nav)) {
         item += "" +
-          "import * as " + ucword(module) + ucword(task) + SuffixHooksProperty + " from '../../." + Modules[module][task] + "';\n" +
-          "const " + ucword(module) + ucword(task) + " = _" + ucword(module) + ucword(task) + "; \n" +
-          "export { " + ucword(module) + ucword(task) + SuffixHooksProperty + ", " + ucword(module) + ucword(task) + " };\n"
+        "import * as " + ucword(module) + ucword(task) + SuffixHooksProperty + " from '../../." + Modules[module][task] + "';\n" +
+        "var " + ucword(module) + ucword(task) + " = _" + ucword(module) + ucword(task) + "; \n" +
+        "export { " + ucword(module) + ucword(task) + SuffixHooksProperty + ", " + ucword(module) + ucword(task) + " };\n"
       } else {
         item += "export { _" + ucword(module) + ucword(task) + " as " + ucword(module) + ucword(task) + " };\n"
       }
       if (module == 'lib' && task == 'component') {
-        staticImport.splice(0, 0, item)
+        staticImport.splice(2, 0, item)
       } else if (module == 'lib' && task == 'style') {
-        staticImport.splice(0, 0, item)
+        staticImport.splice(4, 0, item)
       } else if (module == 'lib' && task == 'worker') {
-        staticImport.splice(2, 0, item)
+        staticImport.splice(4, 0, item)
       } else if (module == 'lib' && task == 'navigation') {
-        staticImport.splice(2, 0, item)
+        staticImport.splice(4, 0, item)
       } else if (task == 'style') {
         staticImport.splice(9, 0, item)
       } else if (task == 'scrollpicker') {
@@ -615,9 +615,9 @@ function createRouter() {
       }
     }
   }
-  staticImport.splice(0, 0, "export { default as createCache } from '../../../node_modules/esoftplay/_cache';\n")
-  staticImport.splice(0, 0, "export { default as _global } from '../../../node_modules/esoftplay/_global';\n")
-  staticImport.splice(0, 0, "import React from 'react';\n")
+  staticImport.splice(2, 0, "export { default as createCache } from '../../../node_modules/esoftplay/_cache';\n")
+  staticImport.splice(2, 0, "export { default as _global } from '../../../node_modules/esoftplay/_global';\n")
+  staticImport.splice(2, 0, "import { stable } from 'usestable';\n")
   const x = staticImport.join('')
   if (isChange(tmpDir + 'index.js', x))
     fs.writeFile(tmpDir + 'index.js', x, { flag: 'w' }, function (err) {

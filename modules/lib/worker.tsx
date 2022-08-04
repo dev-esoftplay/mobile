@@ -1,8 +1,9 @@
 // noPage
 
-import { UserIndexProperty, _global } from 'esoftplay';
+import { _global } from 'esoftplay';
 import React, { Component } from "react";
 import { Platform } from 'react-native';
+
 
 export interface LibWorkerInit {
   task: string,
@@ -16,17 +17,16 @@ export interface LibWorkerProps {
 export interface LibWorkerState {
 
 }
-
 _global.LibWorkerBase = React.createRef()
 _global.LibWorkerTasks = new Map()
 _global.injectedJavaScripts = []
 _global.LibWorkerReady = 0
 _global.LibWorkerCount = 0
+
 export default class m extends Component<LibWorkerProps, LibWorkerState> {
   constructor(props: LibWorkerProps) {
     super(props)
   }
-
   static delete(taskId: string): void {
     _global.LibWorkerTasks.delete(taskId)
   }
@@ -152,7 +152,6 @@ export default class m extends Component<LibWorkerProps, LibWorkerState> {
     return (e: any) => {
       if (e.nativeEvent.data == withRefName) {
         _global.LibWorkerReady += 1
-        UserIndexProperty.workerState().set(1)
         return
       }
       const dt = e.nativeEvent.data

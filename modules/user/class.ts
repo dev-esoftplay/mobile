@@ -1,14 +1,14 @@
 // noPage
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { esp, LibCrypt, LibCurl, LibNotification, useGlobalReturn, useGlobalState, UserClass, UserData } from 'esoftplay';
+import { esp, LibCrypt, LibCurl, LibNotification, useGlobalReturn, UserClass, UserData } from 'esoftplay';
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
+import useGlobalState from '../../global';
 import moment from "../../moment";
 
-
-const state = useGlobalState(undefined)
+const state = useGlobalState?.(null, { persistKey: "user" })
 
 export default class eclass {
   static state(): useGlobalReturn<any> {
@@ -16,33 +16,15 @@ export default class eclass {
   }
   static create(user: any): Promise<void> {
     return new Promise((r, j) => {
-      state.set(user)
-      AsyncStorage.setItem("user", new LibCrypt().encode(JSON.stringify(user)))
-      if (esp.config('notification') == 1) {
-        UserClass.pushToken()
-      }
-      r();
+      state?.set?.(user)
+      r(user)
     })
   }
 
   static load(callback?: (user?: any | null) => void): Promise<any> {
     return new Promise((r, j) => {
-      AsyncStorage.getItem("user").then((user: string) => {
-        if (user) {
-          const usr = (user[0] == '{' && user[user.length - 1] == '}') ? JSON.parse(user) : JSON.parse(new LibCrypt().decode(user))
-          if (usr) {
-            r(usr);
-            state.set(usr)
-            if (callback) callback(usr)
-          } else {
-            j()
-            if (callback) callback(null)
-          }
-        } else {
-          j()
-          if (callback) callback(null)
-        }
-      })
+      if (callback) callback(state?.get?.())
+      r((state?.get?.()))
     })
   }
 
@@ -59,11 +41,10 @@ export default class eclass {
   }
 
   static delete(): Promise<void> {
-    return new Promise(async(r) => {
+    return new Promise(async (r) => {
       Notifications.setBadgeCountAsync(0)
       state.reset()
       await AsyncStorage.removeItem("user_notification");
-      await AsyncStorage.removeItem("user");
       new UserData().deleteAll()
       if (esp.config('notification') == 1) {
         UserClass.pushToken()
@@ -74,7 +55,7 @@ export default class eclass {
 
   static pushToken(): Promise<any> {
     return new Promise((resolve, reject) => {
-      if (Constants.appOwnership == 'expo' && !esp.isDebug()) {
+      if (Constants.appOwnership == 'expo' && !esp.isDebug('')) {
         resolve(undefined)
         return
       }

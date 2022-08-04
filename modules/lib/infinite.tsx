@@ -1,6 +1,6 @@
 // noPage
 
-import { FlashList } from "@shopify/flash-list";
+// import { FlashList } from "@shopify/flash-list";
 import { esp, LibComponent, LibCurl, LibListItemLayout, LibLoading, LibStyle, LibTextstyle } from 'esoftplay';
 import React from 'react';
 import isEqual from 'react-fast-compare';
@@ -172,8 +172,8 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
   render(): any {
     const { data, error } = this.state
     const { errorView, refreshEnabled } = this.props
-    const AutoLayoutViewNativeComponent = require("@shopify/flash-list/src/native/auto-layout/AutoLayoutViewNativeComponent")
-    const List = !!AutoLayoutViewNativeComponent ? FlashList : FlatList
+    // const AutoLayoutViewNativeComponent = require("@shopify/flash-list/src/native/auto-layout/AutoLayoutViewNativeComponent")
+    const List = /* !!AutoLayoutViewNativeComponent ? FlashList : */ FlatList
     return (
       <View style={{ flex: 1 }} >
         {
