@@ -118,7 +118,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
         if (finalStatus != 'granted') {
           Alert.alert(esp.appjson().expo.name + " tidak dapat mengakses kamera ", "Mohon Pastikan anda memberikan izin " + esp.appjson().expo.name + " untuk dapat mengambil foto")
         }
-        ImagePicker.launchCameraAsync({ presentationStyle: 0 }).then(async (result: any) => {
+        ImagePicker.launchCameraAsync({ presentationStyle: ImagePicker.UIImagePickerPresentationStyle.FULL_SCREEN }).then(async (result: any) => {
           if (!result)
             result = ImagePicker?.getPendingResultAsync()
           if (!result?.cancelled) {

@@ -151,6 +151,10 @@ export default class ecurl {
         fetch(this.url + this.uri + (token_uri || 'get_token'), options).then(async (res) => {
           this.cancelTimeout()
           let resText = await res.text()
+          if (res.status == 200 && resText == "") {
+            if (onFailed) onFailed("Koneksi internet kamu tidak stabil, silahkan coba lagi", false)
+            return
+          }
           this.onFetched(resText,
             (res, msg) => {
               this.init(uri, { ...post, access_token: res }, onDone, onFailed, debug);
@@ -161,7 +165,7 @@ export default class ecurl {
         }).catch((r) => {
           this.cancelTimeout()
           LibProgress.hide()
-          LibToastProperty.show('Koneksi internet kamu tidak stabil, silahkan coba beberapa saat lagi')
+          LibToastProperty.show('Koneksi internet kamu tidak stabil, silahkan coba lagi')
           this.onFetchFailed(r)
         })
       }
@@ -349,6 +353,10 @@ export default class ecurl {
       this.cancelTimeout()
       this.resStatus = res.status
       let resText = await res.text()
+      if (res.status == 200 && resText == "") {
+        if (onFailed) onFailed("Koneksi internet kamu tidak stabil, silahkan coba lagi", false)
+        return
+      }
       this.onFetched(resText, onDone, onFailed, debug)
     }).catch((r) => {
       if (this.maxRetry > 0) {
@@ -357,7 +365,7 @@ export default class ecurl {
           this.maxRetry = this.maxRetry - 1
         }, 100);
       } else {
-        LibToastProperty.show("Koneksi internet kamu tidak stabil, silahkan coba beberapa saat lagi")
+        LibToastProperty.show("Koneksi internet kamu tidak stabil, silahkan coba lagi")
       }
       this.onFetchFailed(r)
       LibProgress.hide()
@@ -396,10 +404,10 @@ export default class ecurl {
         ltext.includes('error')
       ) {
         // reportApiError(this.fetchConf.options, resText)
-        out = 'Terjadi kesalahan, biar ' + esp.appjson()?.expo?.name + ' bereskan, silahkan coba beberapa saat lagi atau kembali ke halaman utama'
+        out = 'Terjadi kesalahan, biar ' + esp.appjson()?.expo?.name + ' bereskan, silahkan coba lagi atau kembali ke halaman utama'
       }
       if (ltext.includes('timeout exceeded')) {
-        out = 'Koneksi internet kamu tidak stabil, silahkan coba beberapa saat lagi'
+        out = 'Koneksi internet kamu tidak stabil, silahkan coba lagi'
       }
     }
     return out

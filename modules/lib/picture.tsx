@@ -36,7 +36,7 @@ const getCacheEntry = async (uri: string, toSize: number): Promise<{ exists: boo
   return { exists, path };
 };
 
-const fetchPicture = LibWorker.registerJobAsync('lib_picture_fetch', (url: string, toSize: number) => {
+const fetchPicture = LibWorker?.registerJobAsync?.('lib_picture_fetch', (url: string, toSize: number) => {
   'show source';
   return new Promise((resolve, reject) => {
     fetch(url, { mode: 'cors' })
@@ -119,7 +119,7 @@ export default function m(props: LibPictureProps): any {
         if (exists) {
           setUri(path)
         } else {
-          fetchPicture([b_uri, PixelRatio.getPixelSizeForLayoutSize(toSize)], (uri) => {
+          fetchPicture?.([b_uri, PixelRatio.getPixelSizeForLayoutSize(toSize)], (uri) => {
             setUri("data:image/png;base64," + uri)
             if (!props.noCache)
               LibWorkloop.execNextTix(FileSystem.writeAsStringAsync, [path, uri, { encoding: "base64" }])

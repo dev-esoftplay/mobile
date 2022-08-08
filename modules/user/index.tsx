@@ -32,7 +32,7 @@ function setFonts(): Promise<void> {
 
 function isWorkerReady(onReady: () => void): void {
   if (_global.LibWorkerReady < 1) {
-    setTimeout(() => isWorkerReady(onReady), 30)
+    setTimeout(() => isWorkerReady(onReady), 10)
   } else {
     onReady()
   }
@@ -41,7 +41,7 @@ function isWorkerReady(onReady: () => void): void {
 function isGlobalStateReady(onReady: () => void) {
   const _global = require('../../_global')
   if (_global.useGlobalStateReady < 1) {
-    setTimeout(() => isGlobalStateReady(onReady), 30)
+    setTimeout(() => isGlobalStateReady(onReady), 10)
   } else {
     onReady()
   }
@@ -65,8 +65,6 @@ export default function UserIndex(props: UserIndexProps): any {
   }
 
   useLayoutEffect(() => {
-    ready.current = 0
-
     let limitReady = 4
     if (Platform.OS == 'android') {
       if (Platform.Version <= 22) {
@@ -92,13 +90,12 @@ export default function UserIndex(props: UserIndexProps): any {
 
     (async () => {
       await setFonts()
-
       ready.current += 1
       if (ready.current >= limitReady) {
         setLoading(false)
       }
     })()
-
+    
     UserClass.isLogin(async () => {
       ready.current += 1
       if (ready.current >= limitReady) {

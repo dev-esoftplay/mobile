@@ -49,8 +49,13 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
   // rehidryte instant
   if (o?.persistKey) {
     rehidryte(o.persistKey, (p) => {
-      if (typeof p == 'string') set(JSON.parse(p))
-
+      if (typeof p == 'string') {
+        if (p.startsWith("{") || p.startsWith("["))
+          set(JSON.parse(p))
+        else {
+          set(p);
+        }
+      }
     })
   }
 

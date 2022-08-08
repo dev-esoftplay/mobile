@@ -92,9 +92,9 @@ switch (args[0]) {
 		createMaster(args[1])
 		break;
 	case "start":
-		jsEng(appjson, true)
-		jsEng(appdebug, true)
-		jsEng(applive, true)
+		jsEng(appjson, false)
+		jsEng(appdebug, false)
+		jsEng(applive, false)
 		excludeModules()
 		execution();
 		break;
