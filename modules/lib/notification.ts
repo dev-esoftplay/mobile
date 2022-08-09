@@ -79,7 +79,10 @@ export default class m {
   static loadData(isFirst?: boolean): void {
     // console.log('LOADDATA', isFirst)
     let _uri = mainUrl() + "user/push-notif/desc"
-    const lastUrl = lastUrlState.get()
+    let lastUrl = lastUrlState.get()
+    if (isFirst) {
+      lastUrl = undefined
+    }
     if (lastUrl == -1) {
       return
     }
@@ -105,7 +108,10 @@ export default class m {
       (res: any) => {
         // console.log(esp.logColor.green, 'next: ' + res.next, '\n length: ' + res?.list?.length, res.list[0].message, esp.logColor.reset)
         if (res?.list?.length > 0) {
-          const urls: string[] = UserNotification.state().get().urls
+          let urls: string[] = UserNotification.state().get().urls
+          if (isFirst) {
+            urls = []
+          }
           // console.log(urls)
           if (urls && urls.indexOf(_uri) < 0) {
             let { data, unread } = UserNotification.state().get()
@@ -131,8 +137,10 @@ export default class m {
           }
         }
         if (res.next) {
+          // console.log(res.next)
           lastUrlState.set(res.next)
         } else {
+          // console.log(-1)
           lastUrlState.set(-1)
         }
       }, (msg) => {

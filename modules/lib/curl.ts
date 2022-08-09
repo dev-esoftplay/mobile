@@ -50,7 +50,7 @@ export default class ecurl {
     if (uri && str.isOnline) {
       this.init(uri, post, onDone, onFailed, debug);
     } else if (!str.isOnline && onFailed) {
-      onFailed({ msg: this.refineErrorMessage("Failed to access") }, false);
+      onFailed({ message: this.refineErrorMessage("Failed to access") }, false);
     }
   }
 
@@ -152,7 +152,7 @@ export default class ecurl {
           this.cancelTimeout()
           let resText = await res.text()
           if (res.status == 200 && resText == "") {
-            if (onFailed) onFailed("Koneksi internet kamu tidak stabil, silahkan coba lagi", false)
+            if (onFailed) onFailed({ message: "Koneksi internet kamu tidak stabil, silahkan coba lagi" }, false)
             return
           }
           this.onFetched(resText,
@@ -354,7 +354,7 @@ export default class ecurl {
       this.resStatus = res.status
       let resText = await res.text()
       if (res.status == 200 && resText == "") {
-        if (onFailed) onFailed("Koneksi internet kamu tidak stabil, silahkan coba lagi", false)
+        if (onFailed) onFailed({ message: "Koneksi internet kamu tidak stabil, silahkan coba lagi" }, false)
         return
       }
       this.onFetched(resText, onDone, onFailed, debug)
