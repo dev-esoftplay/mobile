@@ -17,6 +17,9 @@ export default class eclass {
   static create(user: any): Promise<void> {
     return new Promise((r, j) => {
       state?.set?.(user)
+      if (esp.config('notification') == 1) {
+        UserClass.pushToken()
+      }
       r(user)
     })
   }
