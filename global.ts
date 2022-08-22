@@ -24,6 +24,7 @@ export interface useGlobalConnect<T> {
 }
 
 _global.useGlobalUserDelete = {}
+_global.useGlobalSubscriber = {}
 _global.useGlobalStateReady = 0
 class Context {
   idx = 0
@@ -35,28 +36,20 @@ class Context {
 
 export const globalIdx = new Context()
 
-
-let subscriber = {}
-let debouceTime
-let persistKeys: any = {}
-
 export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): useGlobalReturn<T> {
   const _idx = globalIdx.idx
-  if (!subscriber[_idx])
-    subscriber[_idx] = [];
+  if (!_global.useGlobalSubscriber[_idx])
+    _global.useGlobalSubscriber[_idx] = [];
   let value: T = initValue;
-
+  
   // rehidryte instant
   if (o?.persistKey) {
-    rehidryte(o.persistKey, (p) => {
-      if (typeof p == 'string') {
+    AsyncStorage.getItem(o.persistKey).then((p) => {
+      if (p) {
         if (p.startsWith("{") || p.startsWith("["))
-          try {
-            set(JSON.parse(p))
-          } catch (error) { }
-        else {
-          set(p);
-        }
+          try { set(JSON.parse(p)) } catch (error) { }
+        else
+          try { set(p) } catch (error) { }
       }
     })
   }
@@ -77,7 +70,7 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
     const isChange = !isEqual(value, ns)
     if (isChange) {
       value = ns
-      fastLoop(subscriber?.[_idx], (c) => { c?.(ns) })
+      fastLoop(_global.useGlobalSubscriber?.[_idx], (c) => { c?.(ns) })
       if (o?.persistKey) {
         AsyncStorage.setItem(o.persistKey, JSON.stringify(ns))
       }
@@ -111,9 +104,9 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
 
   function subscribe(func: any) {
     R.useLayoutEffect(() => {
-      subscriber[_idx].push(func);
+      _global.useGlobalSubscriber[_idx].push(func);
       return () => {
-        subscriber[_idx] = fastFilter(subscriber?.[_idx], (f) => f !== func)
+        _global.useGlobalSubscriber[_idx] = fastFilter(_global.useGlobalSubscriber?.[_idx], (f) => f !== func)
       };
     }, [func]);
   }
@@ -145,26 +138,8 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
     const children = props.render(state)
     return children ? R.cloneElement(children) : null
   }
-
+  
   globalIdx.increment()
+  _global.useGlobalStateReady = 1
   return { useState, get, set, useSelector, reset: del, connect: _connect };
-}
-
-function debounce(func: () => any, delay: number): void {
-  clearTimeout(debouceTime)
-  debouceTime = setTimeout(() => func(), delay)
-}
-
-function rehidryte(key: string, func: (e: string) => void) {
-  persistKeys[key] = func
-  debounce(() => {
-    AsyncStorage.multiGet(Object.keys(persistKeys), (e, v) => {
-      if (v && !e) {
-        v.forEach((iv, i) => { persistKeys[iv[0]]?.(iv[1]) })
-        _global.useGlobalStateReady = 1
-      } else {
-        _global.useGlobalStateReady = 1
-      }
-    })
-  }, 100)
 }
