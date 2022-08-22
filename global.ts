@@ -104,7 +104,7 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
 
   function subscribe(func: any) {
     R.useLayoutEffect(() => {
-      _global.useGlobalSubscriber[_idx].push(func);
+      _global.useGlobalSubscriber?.[_idx]?.push?.(func);
       return () => {
         _global.useGlobalSubscriber[_idx] = fastFilter(_global.useGlobalSubscriber?.[_idx], (f) => f !== func)
       };
