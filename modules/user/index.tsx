@@ -38,15 +38,6 @@ function isWorkerReady(onReady: () => void): void {
   }
 }
 
-function isGlobalStateReady(onReady: () => void) {
-  const _global = require('../../_global')
-  if (_global.useGlobalStateReady < 1) {
-    setTimeout(() => isGlobalStateReady(onReady), 10)
-  } else {
-    onReady()
-  }
-}
-
 
 export default function UserIndex(props: UserIndexProps): any {
   const [loading, setLoading] = useSafeState(true)
@@ -65,14 +56,14 @@ export default function UserIndex(props: UserIndexProps): any {
   }
 
   useLayoutEffect(() => {
-    let limitReady = 4
+    let limitReady = 3
     if (Platform.OS == 'android') {
       if (Platform.Version <= 22) {
-        limitReady = 3
+        limitReady = 2
       }
     }
 
-    if (limitReady == 4) {
+    if (limitReady == 3) {
       isWorkerReady(() => {
         ready.current += 1
         if (ready.current >= limitReady) {
@@ -80,14 +71,7 @@ export default function UserIndex(props: UserIndexProps): any {
         }
       })
     }
-
-    isGlobalStateReady(() => {
-      ready.current += 1
-      if (ready.current >= limitReady) {
-        setLoading(false)
-      }
-    });
-
+    
     (async () => {
       await setFonts()
       ready.current += 1

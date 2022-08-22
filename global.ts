@@ -140,6 +140,5 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
   }
   
   globalIdx.increment()
-  _global.useGlobalStateReady = 1
   return { useState, get, set, useSelector, reset: del, connect: _connect };
 }
