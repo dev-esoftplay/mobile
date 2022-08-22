@@ -51,7 +51,9 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
     rehidryte(o.persistKey, (p) => {
       if (typeof p == 'string') {
         if (p.startsWith("{") || p.startsWith("["))
-          set(JSON.parse(p))
+          try {
+            set(JSON.parse(p))
+          } catch (error) { }
         else {
           set(p);
         }
@@ -158,9 +160,7 @@ function rehidryte(key: string, func: (e: string) => void) {
   debounce(() => {
     AsyncStorage.multiGet(Object.keys(persistKeys), (e, v) => {
       if (v && !e) {
-        v.forEach((iv, i) => {
-          persistKeys[iv[0]]?.(iv[1])
-        })
+        v.forEach((iv, i) => { persistKeys[iv[0]]?.(iv[1]) })
         _global.useGlobalStateReady = 1
       } else {
         _global.useGlobalStateReady = 1

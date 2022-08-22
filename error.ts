@@ -84,6 +84,8 @@ export function getError() {
         // remove error that unsolved
       } else if (msg.includes(`deleteAdsCache`)) {
         // remove error that unsolved
+      } else if (msg.includes(`SyntaxError: JSON Parse error: Unexpected token:`)) {
+        // remove error that unsolved
       } else {
         let post = {
           text: msg,
