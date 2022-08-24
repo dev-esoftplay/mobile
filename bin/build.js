@@ -7,6 +7,7 @@ const packjson = DIR + "package.json"
 const appjson = DIR + "app.json"
 const easjson = DIR + "eas.json"
 const confjson = DIR + "config.json"
+const conflivejson = DIR + "config.live.json"
 const gitignore = DIR + ".gitignore"
 const babelconfig = DIR + "babel.config.js"
 const tsconfig = DIR + "tsconfig.json"
@@ -61,6 +62,10 @@ if (fs.existsSync(packjson)) {
 		fs.writeFile(confjson, JSON.stringify($config, null, 2), (err) => {
 			if (err) throw err;
 			console.log('config.json has been created');
+		});
+		fs.writeFile(conflivejson, JSON.stringify($config, null, 2), (err) => {
+			if (err) throw err;
+			console.log('config.live.json has been created');
 		});
 
 		let $appjson = {}
@@ -270,6 +275,7 @@ export default function App() {
 			'expo-font',
 			'expo-image-manipulator',
 			'expo-image-picker',
+			'expo-linear-gradient',
 			'expo-media-library',
 			'expo-notifications',
 			'expo-status-bar',

@@ -1,4 +1,4 @@
-import { esp, LibCrypt, LibNet_status, LibProgress, LibToastProperty, LibUtils, LogStateProperty } from 'esoftplay';
+import { esp, LibCrypt, LibNet_status, LibProgress, LibToastProperty, LibUtils } from 'esoftplay';
 import { reportApiError } from "esoftplay/error";
 import Constants from 'expo-constants';
 
@@ -341,6 +341,7 @@ export default class ecurl {
     }
 
     //api_logger
+    const LogStateProperty  = require('../log/state')?.LogStateProperty
     if (LogStateProperty) {
       LogStateProperty.doLogCurl(this.uri, this.url, post, this.isSecure)
     }
