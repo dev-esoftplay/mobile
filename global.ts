@@ -25,7 +25,7 @@ export interface useGlobalConnect<T> {
 
 _global.useGlobalUserDelete = {}
 _global.useGlobalSubscriber = {}
-_global.useGlobalStateReady = 0
+
 class Context {
   idx = 0
   increment = () => this.idx++
@@ -71,7 +71,7 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
     if (isChange) {
       value = ns
       fastLoop(_global.useGlobalSubscriber?.[_idx], (c) => { c?.(ns) })
-      if (o?.persistKey) {
+      if (o?.persistKey && ns) {
         AsyncStorage.setItem(o.persistKey, JSON.stringify(ns))
       }
       if (o?.listener)
