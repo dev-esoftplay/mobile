@@ -225,6 +225,7 @@ config.json\n\
 config.debug.json\n\
 config.live.json\n\
 node_modules/\n\
+web-build/\n\
 npm-debug.*\n\
 package-lock.json\n\
 yarn.lock\n\
