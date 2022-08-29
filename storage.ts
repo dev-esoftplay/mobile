@@ -34,10 +34,12 @@ export default class Storage {
   getItem(key: string): Promise<string | null> {
     return new Promise(async (r, j) => {
       const path = this.getDBPath(key)
-      FileSystem.getInfoAsync(key).then((info) => {
+      FileSystem.getInfoAsync(path).then((info) => {
         if (info.exists) {
           FileSystem.readAsStringAsync(path, { encoding: 'utf8' }).then((value) => {
             r(JSON.parse(value))
+          }).catch((c) => {
+            r(c)
           })
         } else {
           r(null)

@@ -37,7 +37,6 @@ class Context {
 }
 
 export const globalIdx = new Context()
-let duplicateDelay = 500
 export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): useGlobalReturn<T> {
   const STORAGE = o?.inFile ? new Storage() : AsyncStorage
   const _idx = globalIdx.idx
@@ -47,35 +46,34 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
 
   if (o?.persistKey) {
     let persistKey = o?.persistKey
-    setTimeout(() => {
-      STORAGE.getItem(persistKey).then((p) => {
-        if (p) {
-          // if (persistKey == 'lib_apitest_debug') {
-          //   console.log(p)
-          // }
-          // const byteSize = str => new Blob([str]).size;
-          // function bytesToSize(bytes) {
-          //   var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-          //   if (bytes == 0) return '0 Byte';
-          //   var i = parseInt(String(Math.floor(Math.log(bytes) / Math.log(1024))));
-          //   return Math.round(bytes / Math.pow(1024, i)) + ' ' + sizes[i];
-          // }
-          // console.log(persistKey + ' => ' + bytesToSize(byteSize(p)))
-          if (p.includes("\\\\\\\\")) {
-            if (persistKey)
-              STORAGE.clear()
-            return
-          }
-          if (p.startsWith("{") || p.startsWith("["))
-            try { set(JSON.parse(p)) } catch (error) { }
-          else
-            try {
-              // @ts-ignore
-              set(p)
-            } catch (error) { }
+    STORAGE.getItem(persistKey).then((p) => {
+      if (p) {
+        // console.log(persistKey + " = " + p?.length)
+        // if (persistKey == 'lib_apitest_debug') {
+        //   console.log(p)
+        // }
+        // const byteSize = str => new Blob([str]).size;
+        // function bytesToSize(bytes) {
+        //   var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+        //   if (bytes == 0) return '0 Byte';
+        //   var i = parseInt(String(Math.floor(Math.log(bytes) / Math.log(1024))));
+        //   return Math.round(bytes / Math.pow(1024, i)) + ' ' + sizes[i];
+        // }
+        // console.log(persistKey + ' => ' + bytesToSize(byteSize(p)))
+        if (p.includes("\\\\\\\\")) {
+          if (persistKey)
+            STORAGE.clear()
+          return
         }
-      })
-    }, duplicateDelay * _idx);
+        if (p.startsWith("{") || p.startsWith("["))
+          try { set(JSON.parse(p)) } catch (error) { }
+        else
+          try {
+            // @ts-ignore
+            set(p)
+          } catch (error) { }
+      }
+    })
   }
 
   /* register to userData to automatically reset state and persist */

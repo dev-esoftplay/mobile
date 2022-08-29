@@ -8,7 +8,7 @@ export default class ecurl {
   controller = new AbortController()
   signal = this.controller.signal
   timeout = 30000;
-  maxRetry = 3;
+  // maxRetry = 3;
   resStatus?: number = undefined
   timeoutContext: any = null;
   isDebug = esp.config("isDebug");
@@ -28,7 +28,7 @@ export default class ecurl {
 
   constructor(uri?: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (error: any, timeout: boolean) => void, debug?: number) {
     this.header = {}
-    this.maxRetry = 2;
+    // this.maxRetry = 2;
     this.setUri = this.setUri.bind(this);
     this.setUrl = this.setUrl.bind(this);
     this.buildUri = this.buildUri.bind(this);
@@ -340,11 +340,7 @@ export default class ecurl {
       mode: "cors",
     }
 
-    //api_logger
-    const LogStateProperty  = require('../log/state')?.LogStateProperty
-    if (LogStateProperty) {
-      LogStateProperty.doLogCurl(this.uri, this.url, post, this.isSecure)
-    }
+    // api_logger
 
     this.initTimeout(upload ? 120000 : this.timeout)
     if (debug == 1) esp.log(this.url + this.uri, options)
@@ -360,14 +356,14 @@ export default class ecurl {
       }
       this.onFetched(resText, onDone, onFailed, debug)
     }).catch((r) => {
-      if (this.maxRetry > 0) {
-        setTimeout(() => {
-          this.init(uri, post, onDone, onFailed, debug)
-          this.maxRetry = this.maxRetry - 1
-        }, 100);
-      } else {
-        LibToastProperty.show("Koneksi internet kamu tidak stabil, silahkan coba lagi")
-      }
+      // if (this.maxRetry > 0) {
+      //   setTimeout(() => {
+      //     this.init(uri, post, onDone, onFailed, debug)
+      //     this.maxRetry = this.maxRetry - 1
+      //   }, 100);
+      // } else {
+      // }
+      LibToastProperty.show("Koneksi internet kamu tidak stabil, silahkan coba lagi")
       this.onFetchFailed(r)
       LibProgress.hide()
     })

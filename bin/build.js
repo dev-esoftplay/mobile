@@ -200,7 +200,7 @@ if (fs.existsSync(packjson)) {
 		"lib": [\n\
 			"es2017"\n\
 		],\n\
-		"module": "es2015",\n\
+		"module": "es2022",\n\
 		"moduleResolution": "node",    \n\
 		"noEmitHelpers": true,\n\
 		"noImplicitReturns": true,\n\
