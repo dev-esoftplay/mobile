@@ -436,6 +436,7 @@ declare module "esoftplay" {
   }
   interface useGlobalOption {
     persistKey?: string,
+    inFile?: boolean,
     listener?: (data: any) => void,
     isUserData?: boolean
   }

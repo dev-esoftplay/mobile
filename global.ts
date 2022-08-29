@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Storage from 'esoftplay/storage';
 import * as R from 'react';
 import { fastFilter, fastLoop } from './fast';
 const _global = require('./_global')
@@ -15,6 +16,7 @@ export interface useGlobalReturn<T> {
 
 export interface useGlobalOption {
   persistKey?: string,
+  inFile?: boolean,
   listener?: (data: any) => void,
   isUserData?: boolean
 }
@@ -24,7 +26,7 @@ export interface useGlobalConnect<T> {
 }
 
 _global.useGlobalUserDelete = {}
-_global.useGlobalSubscriber = {}
+let useGlobalSubscriber = {}
 
 class Context {
   idx = 0
@@ -35,23 +37,45 @@ class Context {
 }
 
 export const globalIdx = new Context()
-
+let duplicateDelay = 500
 export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): useGlobalReturn<T> {
+  const STORAGE = o?.inFile ? new Storage() : AsyncStorage
   const _idx = globalIdx.idx
-  if (!_global.useGlobalSubscriber[_idx])
-    _global.useGlobalSubscriber[_idx] = [];
+  if (!useGlobalSubscriber[_idx])
+    useGlobalSubscriber[_idx] = [];
   let value: T = initValue;
-  
-  // rehidryte instant
+
   if (o?.persistKey) {
-    AsyncStorage.getItem(o.persistKey).then((p) => {
-      if (p) {
-        if (p.startsWith("{") || p.startsWith("["))
-          try { set(JSON.parse(p)) } catch (error) { }
-        else
-          try { set(p) } catch (error) { }
-      }
-    })
+    let persistKey = o?.persistKey
+    setTimeout(() => {
+      STORAGE.getItem(persistKey).then((p) => {
+        if (p) {
+          // if (persistKey == 'lib_apitest_debug') {
+          //   console.log(p)
+          // }
+          // const byteSize = str => new Blob([str]).size;
+          // function bytesToSize(bytes) {
+          //   var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+          //   if (bytes == 0) return '0 Byte';
+          //   var i = parseInt(String(Math.floor(Math.log(bytes) / Math.log(1024))));
+          //   return Math.round(bytes / Math.pow(1024, i)) + ' ' + sizes[i];
+          // }
+          // console.log(persistKey + ' => ' + bytesToSize(byteSize(p)))
+          if (p.includes("\\\\\\\\")) {
+            if (persistKey)
+              STORAGE.clear()
+            return
+          }
+          if (p.startsWith("{") || p.startsWith("["))
+            try { set(JSON.parse(p)) } catch (error) { }
+          else
+            try {
+              // @ts-ignore
+              set(p)
+            } catch (error) { }
+        }
+      })
+    }, duplicateDelay * _idx);
   }
 
   /* register to userData to automatically reset state and persist */
@@ -70,9 +94,23 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
     const isChange = !isEqual(value, ns)
     if (isChange) {
       value = ns
-      fastLoop(_global.useGlobalSubscriber?.[_idx], (c) => { c?.(ns) })
-      if (o?.persistKey && ns) {
-        AsyncStorage.setItem(o.persistKey, JSON.stringify(ns))
+      fastLoop(useGlobalSubscriber?.[_idx], (c) => { c?.(ns) })
+      if (o?.persistKey && ns != undefined) {
+        let data: any
+        switch (typeof ns) {
+          case 'string':
+          case 'boolean':
+          case 'number':
+          case 'bigint':
+          case 'undefined':
+            data = String(ns)
+            break
+          case 'object':
+            if (ns != null || ns != undefined)
+              data = JSON.stringify(ns)
+            break;
+        }
+        STORAGE.setItem(o.persistKey, data)
       }
       if (o?.listener)
         o.listener(ns)
@@ -81,7 +119,7 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
 
   function del() {
     if (o?.persistKey) {
-      AsyncStorage.removeItem(o.persistKey)
+      STORAGE.removeItem(o.persistKey)
     }
     set(initValue)
   }
@@ -104,9 +142,9 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
 
   function subscribe(func: any) {
     R.useLayoutEffect(() => {
-      _global.useGlobalSubscriber?.[_idx]?.push?.(func);
+      useGlobalSubscriber?.[_idx]?.push?.(func);
       return () => {
-        _global.useGlobalSubscriber[_idx] = fastFilter(_global.useGlobalSubscriber?.[_idx], (f) => f !== func)
+        useGlobalSubscriber[_idx] = fastFilter(useGlobalSubscriber?.[_idx], (f) => f !== func)
       };
     }, [func]);
   }
@@ -138,7 +176,7 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
     const children = props.render(state)
     return children ? R.cloneElement(children) : null
   }
-  
+
   globalIdx.increment()
   return { useState, get, set, useSelector, reset: del, connect: _connect };
 }
