@@ -397,6 +397,7 @@ declare module "esoftplay" {
     function config(param?: string, ...params: string[]): any;
     function _config(): string | number | boolean;
     function mod(path: string): any;
+    function modProp(path: string): any;
     function reducer(): any;
     function versionName(): string;
     function navigations(): any;
@@ -630,11 +631,11 @@ function createRouter() {
     });
 
   let Props = 'function properties(modtask) {' + "\n\t" +
-    'var let = {}' + "\n\t" +
+    'var out = {}' + "\n\t" +
     'switch (modtask) {' + "\n" +
     TaskProperty + "\t" +
     '}' + "\n\t" +
-    'return let;' + "\n" +
+    'return out;' + "\n" +
     '}' + "\n" +
     'module.exports = properties;';
   if (isChange(tmpDir + "properties.js", Props)) {
