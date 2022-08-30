@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Storage from 'esoftplay/storage';
 import * as R from 'react';
 import { fastFilter, fastLoop } from './fast';
 const isEqual = require('react-fast-compare');
@@ -11,21 +12,22 @@ export interface UseCache_return<T> {
 
 export interface UseCache_options {
   persistKey?: string,
+  inFile?: boolean,
   listener?: (data: any) => void
 }
 export default (() => {
   let useCacheIdx = 0
-  let useCacheSubscriber = []
-  let value = []
+  let useCacheSubscriber: any[] = []
   return <T>(initValue: T, o?: UseCache_options): UseCache_return<T> => {
+    const STORAGE = o?.inFile ? new Storage() : AsyncStorage
     const _idx = useCacheIdx
     if (!useCacheSubscriber[_idx]) {
       useCacheSubscriber[_idx] = [];
     }
-    value[_idx] = initValue
+    let value = initValue
     // rehidryte instant
     if (o?.persistKey) {
-      AsyncStorage.getItem(o.persistKey).then((p) => {
+      STORAGE.getItem(o.persistKey).then((p) => {
         if (p)
           set(JSON.parse(p))
       })
@@ -33,14 +35,14 @@ export default (() => {
 
     function set(ns: T | ((x: T) => T)) {
       let isChange = false
-      if (!isEqual(value[_idx], ns)) {
+      if (!isEqual(value, ns)) {
         isChange = true
       }
       if (isChange) {
-        value[_idx] = ns instanceof Function ? ns(value[_idx]) : ns
-        fastLoop(useCacheSubscriber[_idx], (c: any) => c?.(value[_idx]))
+        value = ns instanceof Function ? ns(value) : ns
+        fastLoop(useCacheSubscriber[_idx], (c: any) => c?.(value))
         if (o?.persistKey) {
-          AsyncStorage.setItem(o.persistKey, JSON.stringify(value[_idx]))
+          STORAGE.setItem(o.persistKey, JSON.stringify(value))
         }
         if (o?.listener) {
           o?.listener?.(ns instanceof Function ? ns(value[_idx]) : ns)
@@ -50,7 +52,7 @@ export default (() => {
 
     function del() {
       if (o?.persistKey) {
-        AsyncStorage.removeItem(o.persistKey)
+        STORAGE.removeItem(o.persistKey)
       }
       set(initValue)
     }

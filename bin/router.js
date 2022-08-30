@@ -446,6 +446,7 @@ declare module "esoftplay" {
   }
   interface createCacheOption {
     persistKey?: string,
+    inFile?: boolean,
     listener?: (s:any)=> void
   }
   interface createCacheReturn<T> {
