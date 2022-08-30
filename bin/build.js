@@ -63,10 +63,12 @@ if (fs.existsSync(packjson)) {
 			if (err) throw err;
 			console.log('config.json has been created');
 		});
-		fs.writeFile(conflivejson, JSON.stringify($config, null, 2), (err) => {
-			if (err) throw err;
-			console.log('config.live.json has been created');
-		});
+		if (!fs.existsSync(conflivejson)) {
+			fs.writeFile(conflivejson, JSON.stringify($config, null, 2), (err) => {
+				if (err) throw err;
+				console.log('config.live.json has been created');
+			});
+		}
 
 		let $appjson = {}
 		if (fs.existsSync(appjson))

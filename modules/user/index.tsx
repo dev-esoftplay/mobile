@@ -87,15 +87,7 @@ export default function UserIndex(props: UserIndexProps): any {
       }
     })
 
-    if (esp.config('firebase').hasOwnProperty('apiKey')) {
-      try {
-        const ChattingFirebase = esp.mod('chatting/firebase')
-        if (ChattingFirebase)
-          ChattingFirebase?.signInAnonymously?.();
-      } catch (error) {
-
-      }
-    }
+    //esoftplay-chatting
     
     LibUpdaterProperty.check((isNew) => { })
   }, [])

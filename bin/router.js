@@ -568,9 +568,10 @@ var Navigations = [];
 
 function createRouter() {
   var Task = "";
+  var TaskProperty = "";
   var nav = "";
   var staticImport = []
-  
+
   staticImport.push("var isEqual = require('react-fast-compare');\n")
   staticImport.push("export function applyStyle(style){ return style };\n")
   staticImport.push("export { default as useGlobalState } from '../../../node_modules/esoftplay/global';\n")
@@ -584,18 +585,19 @@ function createRouter() {
         Navigations.push(nav);
       }
       Task += "\t\t" + 'case "' + nav + '":' + "\n\t\t\t" + 'Out = require("../../.' + Modules[module][task] + '").default' + "\n\t\t\t" + 'break;' + "\n";
+      TaskProperty += "\t\t" + 'case "' + nav + '":' + "\n\t\t\t" + 'Out = require("../../.' + Modules[module][task] + '")' + "\n\t\t\t" + 'break;' + "\n";
       /* ADD ROUTER EACH FILE FOR STATIC IMPORT */
       var item = "import { default as _" + ucword(module) + ucword(task) + " } from '../../." + Modules[module][task] + "';\n"
       if (HookModules.includes(nav)) {
         item += "" +
-        "import * as " + ucword(module) + ucword(task) + SuffixHooksProperty + " from '../../." + Modules[module][task] + "';\n" +
-        "var " + ucword(module) + ucword(task) + " = stable(_" + ucword(module) + ucword(task) + "); \n" +
-        "export { " + ucword(module) + ucword(task) + SuffixHooksProperty + ", " + ucword(module) + ucword(task) + " };\n"
+          "import * as " + ucword(module) + ucword(task) + SuffixHooksProperty + " from '../../." + Modules[module][task] + "';\n" +
+          "var " + ucword(module) + ucword(task) + " = stable(_" + ucword(module) + ucword(task) + "); \n" +
+          "export { " + ucword(module) + ucword(task) + SuffixHooksProperty + ", " + ucword(module) + ucword(task) + " };\n"
       } else if (UseLibs.includes(nav)) {
         item += "" +
-        "import * as " + ucword(module) + ucword(task) + SuffixHooksProperty + " from '../../." + Modules[module][task] + "';\n" +
-        "var " + ucword(module) + ucword(task) + " = _" + ucword(module) + ucword(task) + "; \n" +
-        "export { " + ucword(module) + ucword(task) + SuffixHooksProperty + ", " + ucword(module) + ucword(task) + " };\n"
+          "import * as " + ucword(module) + ucword(task) + SuffixHooksProperty + " from '../../." + Modules[module][task] + "';\n" +
+          "var " + ucword(module) + ucword(task) + " = _" + ucword(module) + ucword(task) + "; \n" +
+          "export { " + ucword(module) + ucword(task) + SuffixHooksProperty + ", " + ucword(module) + ucword(task) + " };\n"
       } else {
         item += "export { _" + ucword(module) + ucword(task) + " as " + ucword(module) + ucword(task) + " };\n"
       }
@@ -626,6 +628,22 @@ function createRouter() {
         return console.log(err);
       }
     });
+
+  let Props = 'function properties(modtask) {' + "\n\t" +
+    'var let = {}' + "\n\t" +
+    'switch (modtask) {' + "\n" +
+    TaskProperty + "\t" +
+    '}' + "\n\t" +
+    'return let;' + "\n" +
+    '}' + "\n" +
+    'module.exports = properties;';
+  if (isChange(tmpDir + "properties.js", Props)) {
+    fs.writeFile(tmpDir + "properties.js", Props, { flag: 'w' }, function (err) {
+      if (err) {
+        return console.log(err);
+      }
+    });
+  }
 
   Text = 'function routers(modtask) {' + "\n\t" +
     'var Out = {}' + "\n\t" +

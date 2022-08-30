@@ -4,7 +4,9 @@ import { LogBox, Platform } from 'react-native';
 import 'react-native-reanimated';
 import _assets from './cache/assets';
 import navs from './cache/navigations';
+import properties from './cache/properties';
 import routers from './cache/routers';
+
 import './oneplusfixfont';
 const ignoreWarns = [
   "Setting a timer for a long period of time",
@@ -148,6 +150,13 @@ export default (() => {
     }
     return routers(modtast.join("/"));
   }
+  function modProp(path: string): any {
+    var modtast = path.split("/");
+    if (modtast[1] == "") {
+      modtast[1] = "index";
+    }
+    return properties(modtast.join("/"));
+  }
 
   function _config(): string {
     var msg = ''
@@ -226,7 +235,7 @@ export default (() => {
     backgroundCyan: "\x1b[46m",
     backgroundWhite: "\x1b[47m",
   }
-  return { appjson, log, home, isDebug, navigations, langId, lang, config, assets, routes, mod, versionName, logColor }
+  return { appjson, log, home, isDebug, navigations, langId, lang, config, assets, routes, mod, versionName, logColor, modProp }
 })()
 
 // var a = esp.assets("bacground")     // mengambil file dari folder images
