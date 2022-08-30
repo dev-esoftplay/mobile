@@ -45,7 +45,7 @@ export default (() => {
           STORAGE.setItem(o.persistKey, JSON.stringify(value))
         }
         if (o?.listener) {
-          o?.listener?.(ns instanceof Function ? ns(value[_idx]) : ns)
+          o?.listener?.(ns instanceof Function ? ns(value) : ns)
         }
       }
     };
@@ -69,7 +69,7 @@ export default (() => {
 
 
     function useCache(): [T, (newCache: T | ((oldCache: T) => T)) => void, () => void] {
-      let l = R.useRef<T>(value[_idx]).current;
+      let l = R.useRef<T>(value).current;
 
       const sl = (ns: T | ((oldCache: T) => T)) => {
         l = ns instanceof Function ? ns(l) : ns
@@ -80,6 +80,6 @@ export default (() => {
       return [l, set, del];
     };
     useCacheIdx++
-    return { useCache, get: () => value[_idx], set: set };
+    return { useCache, get: () => value, set: set };
   }
 })()
