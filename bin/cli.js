@@ -223,10 +223,14 @@ function createMaster(module_name) {
 			throw "Mohon install esoftplay package terlebih dahulu"
 		}
 
+		function readAsJson(path) {
+			return JSON.parse(fs.readFileSync(path, { encoding: 'utf8' }))
+		}	
+
 		function injectConfig(configPath) {
 			if (fs.existsSync(configPath)) {
-				const exsConf = require(configPath)
-				const conf = require("./config.json")
+				const exsConf = readAsJson(configPath)
+				const conf = readAsJson("./config.json")
 				let _cf = merge({ config: conf }, exsConf)
 				fs.writeFileSync(configPath, JSON.stringify({..._cf}, undefined, 2))
 			}
@@ -256,9 +260,9 @@ function createMaster(module_name) {
 
 		/* inject lang */
 		if (fs.existsSync("./id.json")) {
-			let moduleLang = require("./id.json")
+			let moduleLang = readAsJson("./id.json")
 			if (fs.existsSync("../../assets/locale/id.json")) {
-				let projectLang = require("../../assets/locale/id.json")
+				let projectLang = readAsJson("../../assets/locale/id.json")
 				let _lg = merge(moduleLang, projectLang)
 				moduleLang = {..._lg}
 			}
@@ -267,7 +271,7 @@ function createMaster(module_name) {
 
 		/* inject libs */
 		if (fs.existsSync("./libs.json")) {
-			let libs = require("./libs.json")
+			let libs = readAsJson("./libs.json")
 			let libsToSkip = []
 			libs.forEach((element, index) => {
 				console.log(element.split("@")[0])
