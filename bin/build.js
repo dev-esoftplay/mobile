@@ -24,7 +24,10 @@ const pathLowercasePrompt = DIR + 'node_modules/@react-navigation/core/src/useNa
 
 if (fs.existsSync(packjson)) {
 	let txt = fs.readFileSync(packjson, 'utf8');
-	let $package = JSON.parse(txt);
+	let $package
+	try {
+		$package = JSON.parse(txt)
+	} catch (error) { }
 	let args = process.argv.slice(2);
 
 	/* ADD SCRIPTS.PRESTART AND SCRIPTS.POSTSTOP */
@@ -41,7 +44,9 @@ if (fs.existsSync(packjson)) {
 	if (args[0] == "install") {
 		let $config = {}
 		if (fs.existsSync(confjson))
-			$config = JSON.parse(fs.readFileSync(confjson, 'utf8')) || {};
+			try {
+				$config = JSON.parse(fs.readFileSync(confjson, 'utf8')) || {};
+			} catch (error) { }
 		if (!$config.hasOwnProperty('config')) {
 			$config.config = {
 				"domain": "domain.com",
@@ -72,7 +77,9 @@ if (fs.existsSync(packjson)) {
 
 		let $appjson = {}
 		if (fs.existsSync(appjson))
-			$appjson = JSON.parse(fs.readFileSync(appjson, 'utf8')) || {};
+			try {
+				$appjson = JSON.parse(fs.readFileSync(appjson, 'utf8')) || {};
+			} catch (error) { }
 		if (!$appjson.expo.hasOwnProperty('android')) {
 			$appjson.expo.android = {
 				"useNextNotificationsApi": true,
