@@ -646,8 +646,22 @@ function devClientPos(file) {
 function configAvailable(enabled) {
 	if (fs.existsSync(gitignore)) {
 		let _git = fs.readFileSync(gitignore, 'utf8')
-		const ignore = "config.json"
-		const notignore = "#config.json"
+		var ignore = "config.json"
+		var notignore = "#config.json"
+		if (enabled) {
+			_git = _git.replace(ignore, notignore)
+		} else {
+			_git = _git.replace(notignore, ignore)
+		}
+		var ignore = "config.live.json"
+		var notignore = "#config.live.json"
+		if (enabled) {
+			_git = _git.replace(ignore, notignore)
+		} else {
+			_git = _git.replace(notignore, ignore)
+		}
+		var ignore = "config.debug.json"
+		var notignore = "#config.debug.json"
 		if (enabled) {
 			_git = _git.replace(ignore, notignore)
 		} else {

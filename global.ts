@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { esp } from 'esoftplay';
 import Storage from 'esoftplay/storage';
 import * as R from 'react';
 import { fastFilter, fastLoop } from './fast';
@@ -48,30 +49,15 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
     let persistKey = o?.persistKey
     STORAGE.getItem(persistKey).then((p) => {
       if (p) {
-        // console.log(persistKey + " = " + p?.length)
-        // if (persistKey == 'lib_apitest_debug') {
-        //   console.log(p)
-        // }
-        // const byteSize = str => new Blob([str]).size;
-        // function bytesToSize(bytes) {
-        //   var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-        //   if (bytes == 0) return '0 Byte';
-        //   var i = parseInt(String(Math.floor(Math.log(bytes) / Math.log(1024))));
-        //   return Math.round(bytes / Math.pow(1024, i)) + ' ' + sizes[i];
-        // }
-        // console.log(persistKey + ' => ' + bytesToSize(byteSize(p)))
         if (p.includes("\\\\\\\\")) {
           if (persistKey)
             STORAGE.clear()
           return
         }
-        if (p.startsWith("{") || p.startsWith("["))
+        if (p != undefined && (p.startsWith("{") || p.startsWith("[")))
           try { set(JSON.parse(p)) } catch (error) { }
         else
-          try {
-            // @ts-ignore
-            set(p)
-          } catch (error) { }
+          try { /* @ts-ignore */ set(p) } catch (error) { }
       }
     })
   }
@@ -82,7 +68,7 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
       set(initValue)
     }
     if (o?.persistKey) {
-      const UserData = require('./modules/user/data').default
+      const UserData = esp.mod('user/data')
       UserData.register(o?.persistKey)
     }
     _global.useGlobalUserDelete[_idx] = resetFunction

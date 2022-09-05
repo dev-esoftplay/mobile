@@ -19,7 +19,7 @@ export interface LibCarrousel_snapProps {
   initialPage?: number,
   renderItem: (item: any, key: number | string, itemWidth: number) => any
 }
-export default function m(props: LibCarrousel_snapProps): any {
+export default function libcarrousel_snap(props: LibCarrousel_snapProps): any {
 
   const autoCycle = props.autoCycle || false
   const autoCycleDelay = props.autoCycleDelay || 4000

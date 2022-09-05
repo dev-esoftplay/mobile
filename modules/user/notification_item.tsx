@@ -16,7 +16,7 @@ export interface UserNotification_itemProps {
   updated: string,
   user_id: number,
 }
-export default function m(props: UserNotification_itemProps): any {
+export default function usernotification_item(props: UserNotification_itemProps): any {
   return (
     <View style={[{ padding: 16, flexDirection: "row", backgroundColor: "white", marginBottom: 3, marginHorizontal: 0, width: LibStyle.width }, LibStyle.elevation(1.5)]} >
       <View style={{}} >

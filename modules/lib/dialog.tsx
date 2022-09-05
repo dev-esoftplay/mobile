@@ -34,7 +34,7 @@ const state = useGlobalState<LibDialogProps>({
 })
 
 
-export default class m extends LibComponent<LibDialogProps, LibDialogState>{
+export default class libdialog extends LibComponent<LibDialogProps, LibDialogState>{
 
   static initState = {
     visible: false,

@@ -10,7 +10,7 @@ export interface LibEffectState {
 
 }
 
-export default class m extends LibComponent<LibEffectProps, LibEffectState> {
+export default class libeffect extends LibComponent<LibEffectProps, LibEffectState> {
   deps: any[] = []
 
   componentDidMount(): void {

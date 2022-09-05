@@ -47,7 +47,7 @@ export function check(callback: (isNew: boolean) => void): void {
   })
 }
 
-export default function m(props: LibUpdaterProps): any {
+export default function libupdater(props: LibUpdaterProps): any {
   return (
     <>
       {

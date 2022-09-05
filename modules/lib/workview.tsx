@@ -12,7 +12,7 @@ export interface LibWorkviewArgs {
 export interface LibWorkviewProps {
 
 }
-export default function m(props: LibWorkviewProps): any {
+export default function libworkview(props: LibWorkviewProps): any {
   if (Platform.OS == 'android')
     if (Platform.Version <= 22) {
       return null

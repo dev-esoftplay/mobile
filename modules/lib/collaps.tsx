@@ -15,7 +15,7 @@ export interface LibCollapsProps {
   children: any,
   style?: any
 }
-export default function m(props: LibCollapsProps): any {
+export default function libcollaps(props: LibCollapsProps): any {
   const animHeight = useSharedValue(-1)
   const bodyHeight = useSharedValue(1)
   const [expand, setExpand] = useSafeState(props.show)

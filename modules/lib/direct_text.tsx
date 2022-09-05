@@ -12,7 +12,7 @@ export interface LibDirect_textState {
 
 }
 
-export default class m extends LibComponent<LibDirect_textProps, LibDirect_textState> {
+export default class libdirect_text extends LibComponent<LibDirect_textProps, LibDirect_textState> {
   ref: React.RefObject<TextInput> = React.createRef()
   text = this.props.initialText
 

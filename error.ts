@@ -18,10 +18,10 @@ const myErrorHandler = (e: any, isFatal: any) => {
 }
 
 export function setError(error?: any) {
-  let config = esp.config()
-  let routes = UserRoutes.state().get()
-  const user = UserClass.state().get()
-  let lastIndex = routes?.routes?.length - 1 ?? 0
+  let config = esp?.config?.()
+  let routes = UserRoutes?.state()?.get?.()
+  const user = UserClass?.state()?.get?.()
+  let lastIndex = (routes?.routes?.length - 1) ?? 0
   let _e: any = {}
   _e['user'] = user
   _e['error'] = String(error)
@@ -30,10 +30,10 @@ export function setError(error?: any) {
 }
 
 export function reportApiError(fetch: any, error: any) {
-  let routes = UserRoutes.state().get()
+  let routes = UserRoutes?.state?.()?.get?.()
   let lastIndex = routes?.routes?.length - 1 ?? 0
-  const user = UserClass.state().get()
-  let config = esp.config()
+  const user = UserClass?.state?.()?.get?.()
+  let config = esp?.config?.()
   let msg = [
     'slug: ' + "#" + manifest?.slug,
     'error: ' + error,
@@ -51,19 +51,19 @@ export function reportApiError(fetch: any, error: any) {
       chat_id: '-626800023',
       disable_web_page_preview: true
     }
-    new LibCurl().custom('https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage', post)
+    new LibCurl()?.custom?.('https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage', post)
   } else {
     let post = {
       text: msg,
       chat_id: "-1001212227631",
       disable_web_page_preview: true
     }
-    new LibCurl().custom('https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage', post)
+    new LibCurl()?.custom?.('https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage', post)
   }
 }
 
 export function getError() {
-  let config = esp.config()
+  let config = esp?.config?.()
   AsyncStorage.getItem(config?.domain + 'error').then((e: any) => {
     if (e) {
       let _e = JSON.parse(e)

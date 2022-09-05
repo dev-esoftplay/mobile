@@ -45,7 +45,7 @@ export interface LibRollState {
   msg: string
 }
 
-export default class m extends LibComponent<LibRollProps, LibRollState>{
+export default class libroll extends LibComponent<LibRollProps, LibRollState>{
 
   constructor(props: LibRollProps) {
     super(props);

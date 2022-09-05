@@ -19,7 +19,7 @@ export interface LibSkeletonStatic {
 }
 
 
-export default class m extends LibComponent<LibSkeletonProps, LibSkeletonState> {
+export default class libskeleton extends LibComponent<LibSkeletonProps, LibSkeletonState> {
   constructor(props: LibSkeletonProps) {
     super(props);
   }
@@ -72,7 +72,7 @@ function Skeleton(props: LibSkeletonProps): any {
     }
   })
 
-  useEffect(() => {
+  /* sd */useEffect(() => {
     offset.value = -LibStyle.width * 0.75
     offset.value = withRepeat(withTiming(LibStyle.width * 0.5, { duration: props.duration || 1000 }), -1, props.reverse ?? false)
   }, [])

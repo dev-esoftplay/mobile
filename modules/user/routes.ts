@@ -4,7 +4,7 @@ import { useGlobalReturn, useGlobalState } from 'esoftplay';
 
 const state = useGlobalState(undefined)
 
-export default class m {
+export default class userroutes {
   static state(): useGlobalReturn<any> {
     return state
   }

@@ -9,7 +9,7 @@ export interface UserMainState {
 
 }
 
-export default class m extends LibComponent<UserMainProps, UserMainState> {
+export default class userhook extends LibComponent<UserMainProps, UserMainState> {
   constructor(props: UserMainProps) {
     super(props);
   }

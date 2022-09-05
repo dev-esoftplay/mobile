@@ -80,7 +80,7 @@ const fetchPicture = LibWorker?.registerJobAsync?.('lib_picture_fetch', (url: st
   })
 })
 
-export default function m(props: LibPictureProps): any {
+export default function libpicture(props: LibPictureProps): any {
   const [uri, setUri] = useSafeState('')
   let b_uri = props?.source?.uri?.replace?.('://api.', '://')
   b_uri = b_uri?.replace?.('://data.', '://')

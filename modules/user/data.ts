@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { _global } from 'esoftplay';
 import { fastFilter } from './../../fast';
 
-export default class m {
+export default class userdata {
   static register(name: string): void {
     AsyncStorage.getItem("user_data_dependent").then((x) => {
       let all = []

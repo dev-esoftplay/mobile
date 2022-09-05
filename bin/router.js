@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// @ts-check
+// @ts-nocheck
 /* EXECUTED ON `ESP START` TO BUILD FILE CACHES */
 const fs = require('fs');
 var checks = ['./node_modules/esoftplay/modules/', './modules/', './templates/'];
@@ -396,8 +396,8 @@ declare module "esoftplay" {
     function dispatch(action: any): any;
     function config(param?: string, ...params: string[]): any;
     function _config(): string | number | boolean;
-    function mod(path: string): any;
-    function modProp(path: string): any;
+    function mod<T extends AllRoutes>(module: T): ModType<T>;
+    function modProp<T extends AllRoutes>(module: T): ModPropType<T>;
     function reducer(): any;
     function versionName(): string;
     function navigations(): any;
@@ -526,7 +526,16 @@ declare module "esoftplay" {
       Text += "}";
     }
   }
-  Text += "\n\ttype LibNavigationRoutes = \"" + Navigations.join("\" | \"") + "\"\n"
+  Text += "\n\ttype LibNavigationRoutes = \"" + Navigations.join("\" |\n\t\t\t \"") + "\"\n"
+  Text += "\n\ttype AllRoutes = \"" + AllRoutes.join("\" |\n\t\t\t \"") + "\"\n"
+  Text += "\n\ttype ModType<T> =" + AllRoutes.map(v => {
+    const Words = v.split("/")
+    return `\t\tT extends "${v}" ? typeof ${ucword(Words[0]) + ucword(Words[1])} :`
+  }).join("\n") + "\nnever;\n"
+  Text += "\n\ttype ModPropType<T> =" + AllRoutes.map(v => {
+    const Words = v.split("/")
+    return `\t\tT extends "${v}" ? typeof ${ucword(Words[0]) + ucword(Words[1]) + "Property"} :`
+  }).join("\n") + "\nnever;\n"
   Text += "}"
 
   if (isChange(typesDir + "index.d.ts", Text)) {
@@ -567,6 +576,7 @@ function ucword(string) {
 }
 /* CREATE ROUTER LIST */
 var Navigations = [];
+var AllRoutes = []
 
 function createRouter() {
   var Task = "";
@@ -576,17 +586,18 @@ function createRouter() {
 
   staticImport.push("var isEqual = require('react-fast-compare');\n")
   staticImport.push("export function applyStyle(style){ return style };\n")
+  staticImport.push("export { default as esp } from '../../../node_modules/esoftplay/esp';\n")
   staticImport.push("export { default as useGlobalState } from '../../../node_modules/esoftplay/global';\n")
   staticImport.push("export { default as usePersistState } from '../../../node_modules/esoftplay/persist';\n")
   staticImport.push("export { default as useSafeState } from '../../../node_modules/esoftplay/state';\n")
-  staticImport.push("export { default as esp } from '../../../node_modules/esoftplay/esp';\n")
   for (const module in Modules) {
     for (const task in Modules[module]) {
       nav = module + '/' + task;
       if (NavsExclude[nav] == false) {
         Navigations.push(nav);
       }
-      Task += "\t\t" + 'case "' + nav + '":' + "\n\t\t\t" + 'Out = require("../../.' + Modules[module][task] + '").default' + "\n\t\t\t" + 'break;' + "\n";
+      AllRoutes.push(nav)
+      Task += "\t\t" + 'case "' + nav + '":' + "\n\t\t\t" + 'Out = require("../../.' + Modules[module][task] + '")?.default' + "\n\t\t\t" + 'break;' + "\n";
       TaskProperty += "\t\t" + 'case "' + nav + '":' + "\n\t\t\t" + 'Out = require("../../.' + Modules[module][task] + '")' + "\n\t\t\t" + 'break;' + "\n";
       /* ADD ROUTER EACH FILE FOR STATIC IMPORT */
       var item = "import { default as _" + ucword(module) + ucword(task) + " } from '../../." + Modules[module][task] + "';\n"
@@ -632,11 +643,11 @@ function createRouter() {
     });
 
   let Props = 'function properties(modtask) {' + "\n\t" +
-    'var out = {}' + "\n\t" +
+    'var Out = {}' + "\n\t" +
     'switch (modtask) {' + "\n" +
     TaskProperty + "\t" +
     '}' + "\n\t" +
-    'return out;' + "\n" +
+    'return Out;' + "\n" +
     '}' + "\n" +
     'module.exports = properties;';
   if (isChange(tmpDir + "properties.js", Props)) {

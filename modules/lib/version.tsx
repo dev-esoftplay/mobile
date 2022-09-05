@@ -10,7 +10,7 @@ export interface LibVersionState {
 
 }
 
-export default class m extends LibComponent<LibVersionProps, LibVersionState> {
+export default class libversion extends LibComponent<LibVersionProps, LibVersionState> {
 
   static appVersion(): string {
     let version: any = (Platform.OS == 'android' ? Constants.manifest.android.versionCode : Constants.manifest.ios.buildNumber)

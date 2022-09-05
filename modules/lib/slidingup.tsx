@@ -9,7 +9,7 @@ export interface LibSlidingupProps {
 export interface LibSlidingupState {
   show: boolean,
 }
-export default class m extends LibComponent<LibSlidingupProps, LibSlidingupState>{
+export default class libslidingup extends LibComponent<LibSlidingupProps, LibSlidingupState>{
 
   _show: boolean = false
   animValue: any = new Animated.Value(LibStyle.height)

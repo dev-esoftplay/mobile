@@ -70,7 +70,7 @@ function splitArray(array: any[], maxLength: number): any[] {
   return splitedArray
 }
 
-export default class m {
+export default class libnotification {
 
   static state(): useGlobalReturn<any> {
     return lastUrlState

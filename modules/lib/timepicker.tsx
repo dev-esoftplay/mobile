@@ -19,7 +19,7 @@ export interface LibTimepickerProps {
   type?: "hour" | "hourMinute" | "hourMinuteSecond"
 }
 
-export default function m(props: LibTimepickerProps): any {
+export default function libtimepicker(props: LibTimepickerProps): any {
 
   const _mode = props.mode || 24
   const refHour = useRef<any>(null)

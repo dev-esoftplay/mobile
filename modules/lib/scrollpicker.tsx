@@ -28,7 +28,7 @@ export interface LibScrollpickerState {
 const deviceWidth = Dimensions.get('window').width;
 const deviceHeight = Dimensions.get('window').height;
 
-export default class m extends LibComponent<LibScrollpickerProps, LibScrollpickerState> {
+export default class libscrollpicker extends LibComponent<LibScrollpickerProps, LibScrollpickerState> {
   itemHeight = 30;
   wrapperHeight = this.itemHeight * 5;
   timer: any;

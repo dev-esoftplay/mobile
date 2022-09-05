@@ -39,7 +39,7 @@ export interface LibCarrouselState {
   childrenLength: number,
 }
 
-export default class m extends LibComponent<LibCarrouselProps, LibCarrouselState> {
+export default class libcarrousel extends LibComponent<LibCarrouselProps, LibCarrouselState> {
 
   static defaultProps = {
     delay: 4000,

@@ -2,7 +2,7 @@
 
 import { update } from "immhelper";
 
-export default class m {
+export default class libobject {
   _value = undefined
 
   constructor(array: any) {

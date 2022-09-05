@@ -9,7 +9,7 @@ const state = useGlobalState({
   theme: 'light'
 }, { persistKey: 'lib_theme' })
 
-export default class m {
+export default class libtheme {
 
   static setTheme(themeName: string): void {
     esp.dispatch({

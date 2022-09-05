@@ -11,7 +11,7 @@ export interface LibImage_shadowProps {
   shadowRadius?: number,
   blurRadius?: number
 }
-export default function m(props: LibImage_shadowProps): any {
+export default function libimage_shadow(props: LibImage_shadowProps): any {
   let { height, width }: any = props.style
   if (!height || !width) throw new Error("width and height is required")
 
