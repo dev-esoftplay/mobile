@@ -5,7 +5,7 @@ import { LibNavigation, useGlobalReturn, useGlobalState } from 'esoftplay';
 
 const state = useGlobalState("id", { persistKey: 'lib_locale_lang' })
 
-export default class liblocale {
+export default class m {
 
   static state(): useGlobalReturn<any> {
     return state

@@ -43,7 +43,7 @@ export interface LibInputState {
   error?: string,
   helper?: string
 }
-export default class libinput extends LibComponent<LibInputProps, LibInputState>{
+export default class m extends LibComponent<LibInputProps, LibInputState>{
   text: string
   ref: any
   constructor(props: LibInputProps) {

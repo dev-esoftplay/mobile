@@ -10,7 +10,7 @@ export interface LibLoadingProps {
 export interface LibLoadingState {
 
 }
-export default class libloading extends LibComponent<LibLoadingProps, LibLoadingState>{
+export default class m extends LibComponent<LibLoadingProps, LibLoadingState>{
 
   constructor(props: LibLoadingProps) {
     super(props);

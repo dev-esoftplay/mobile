@@ -39,7 +39,7 @@ function isWorkerReady(onReady: () => void): void {
 }
 
 
-export default function UserIndex(props: UserIndexProps): any {
+export default function m(props: UserIndexProps): any {
   const [loading, setLoading] = useSafeState(true)
   const user = UserClass.state().useSelector(s => s)
   const ready = React.useRef(0)

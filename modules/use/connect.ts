@@ -18,7 +18,7 @@ export function get(id: string): any {
   return UseDataProperty.c?.a?.[id]
 }
 
-export default function useconnect<M>(id: string, def?: M): [M, (M) => void] {
+export default function m<M>(id: string, def?: M): [M, (M) => void] {
 
   if (!UseDataProperty.c.b) UseDataProperty.c.b = {}
   if (!UseDataProperty.c.b[id]) UseDataProperty.c.b[id] = []

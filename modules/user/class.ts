@@ -10,7 +10,7 @@ import moment from "../../moment";
 
 const state = useGlobalState?.(null, { persistKey: "user" })
 
-export default class eclass {
+export default class m {
   static state(): useGlobalReturn<any> {
     return state
   }

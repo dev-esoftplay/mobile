@@ -16,7 +16,7 @@ export interface LibSocialloginState {
 
 }
 
-export default class esocialLogin extends LibComponent<LibSocialloginProps, LibSocialloginState> {
+export default class m extends LibComponent<LibSocialloginProps, LibSocialloginState> {
   props: LibSocialloginProps
 
   constructor(props: LibSocialloginProps) {

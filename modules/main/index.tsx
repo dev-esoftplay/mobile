@@ -10,7 +10,7 @@ export interface MainIndexArgs {
 export interface MainIndexProps {
 
 }
-export default function mainindex(props: MainIndexProps): any {
+export default function m(props: MainIndexProps): any {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
       <Text>{"Hellow Esoftplay developer, jangan lupa bismillah dulu. (-̀ᴗ-́)و ̑̑"}</Text>

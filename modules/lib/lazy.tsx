@@ -9,7 +9,7 @@ import { InteractionManager } from 'react-native';
 export interface LibLazyProps {
   children?: any
 }
-export default function liblazy(props: LibLazyProps): any {
+export default function m(props: LibLazyProps): any {
   const [done, setDone] = useSafeState(false)
 
   useEffect(() => {

@@ -27,7 +27,7 @@ export default class Storage {
   }
 
   private getDBPath(key: string): string {
-    const path = `${CACHE_DIR}${key}.txt`;
+    const path = `${CACHE_DIR}${key.replace(/\\/g, "_")}.txt`;
     return path
   }
 

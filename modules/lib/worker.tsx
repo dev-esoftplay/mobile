@@ -23,7 +23,7 @@ _global.injectedJavaScripts = []
 _global.LibWorkerReady = 0
 _global.LibWorkerCount = 0
 
-export default class libworker extends Component<LibWorkerProps, LibWorkerState> {
+export default class m extends Component<LibWorkerProps, LibWorkerState> {
   constructor(props: LibWorkerProps) {
     super(props)
   }

@@ -27,7 +27,7 @@ function Imageitem(props: any): any {
   )
 }
 
-export default function libimage_multi(props: LibImage_multiProps): any {
+export default function m(props: LibImage_multiProps): any {
   const [photos, setPhotos] = useSafeState([])
   const [after, setAfter] = useSafeState(null)
   const [hasNextPage, setHasNextPage] = useSafeState(true)

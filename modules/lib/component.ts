@@ -3,7 +3,7 @@
 import { Component } from "react";
 const isEqual = require("react-fast-compare");
 
-export default class SaveComponent <K, S, U = any> extends Component<K, S, U>{
+export default class m <K, S, U = any> extends Component<K, S, U>{
   _isMounted: boolean = false
   state: any
   props: any

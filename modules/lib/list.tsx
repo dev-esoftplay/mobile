@@ -47,7 +47,7 @@ export interface LibListProps {
 export interface LibListState {
 }
 
-export default class EList extends LibComponent<LibListProps, LibListState> {
+export default class m extends LibComponent<LibListProps, LibListState> {
 
   view: any = React.createRef()
   flatlist = React.createRef<FlatList<View>>()

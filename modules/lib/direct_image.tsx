@@ -17,7 +17,7 @@ export interface LibDirect_imageState {
 
 }
 
-export default class libdirect_image extends LibComponent<LibDirect_imageProps, LibDirect_imageState> {
+export default class m extends LibComponent<LibDirect_imageProps, LibDirect_imageState> {
   ref: React.RefObject<Image> = React.createRef()
   source = this.props.defaultSource || ' '
 

@@ -5,7 +5,7 @@ import { esp, LibCurl, LibNavigation, LibUtils, _global } from 'esoftplay';
 import { useCallback, useEffect } from 'react';
 import { Alert, Linking } from 'react-native';
 
-export default function usedeeplink(defaultUrl?: string): void {
+export default function m(defaultUrl?: string): void {
   const doLink = useCallback(({ url }: { url: string }) => {
     const { domain, uri } = esp.config()
     if (url?.includes(defaultUrl || domain))

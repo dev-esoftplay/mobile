@@ -55,7 +55,7 @@ export interface LibInfiniteState {
   error: string
 }
 
-export default class libinfinite extends LibComponent<LibInfiniteProps, LibInfiniteState>{
+export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
 
   isStop: boolean = false
   page: number = 0

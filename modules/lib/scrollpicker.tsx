@@ -3,10 +3,10 @@
 import { LibComponent } from 'esoftplay';
 import React from 'react';
 import {
-  Dimensions,
-  Platform, ScrollView, StyleSheet,
-  Text,
-  View
+    Dimensions,
+    Platform, ScrollView, StyleSheet,
+    Text,
+    View
 } from 'react-native';
 
 export interface LibScrollpickerProps {
@@ -28,7 +28,7 @@ export interface LibScrollpickerState {
 const deviceWidth = Dimensions.get('window').width;
 const deviceHeight = Dimensions.get('window').height;
 
-export default class libscrollpicker extends LibComponent<LibScrollpickerProps, LibScrollpickerState> {
+export default class m extends LibComponent<LibScrollpickerProps, LibScrollpickerState> {
   itemHeight = 30;
   wrapperHeight = this.itemHeight * 5;
   timer: any;

@@ -7,7 +7,7 @@ import Constants from 'expo-constants';
 
 const { manifest } = Constants;
 
-export default class ecurl {
+export default class m {
   controller = new AbortController()
   signal = this.controller.signal
   timeout = 30000;

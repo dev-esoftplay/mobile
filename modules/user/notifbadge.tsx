@@ -14,7 +14,7 @@ export interface UserNotifbadgeState {
 }
 
 
-export default class Enotifbadge extends LibComponent<UserNotifbadgeProps, UserNotifbadgeState> {
+export default class m extends LibComponent<UserNotifbadgeProps, UserNotifbadgeState> {
 
   props: UserNotifbadgeProps
   constructor(props: UserNotifbadgeProps) {

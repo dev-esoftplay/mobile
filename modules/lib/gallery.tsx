@@ -11,7 +11,7 @@ export interface LibGalleryArgs {
 export interface LibGalleryProps {
 
 }
-export default function libgallery(props: LibGalleryProps): any {
+export default function m(props: LibGalleryProps): any {
   let images = LibNavigation.getArgs(props, "images", [])
   const image = LibNavigation.getArgs(props, "image", "")
   const index = LibNavigation.getArgs(props, "index", 0)

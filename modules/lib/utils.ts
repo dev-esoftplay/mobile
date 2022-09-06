@@ -19,7 +19,7 @@ export type LibUtilsTravelMode = 'driving' | 'walking'
 let installationIdDefault
 const installationId = createCache(installationIdDefault, { persistKey: 'installationId' })
 const cache = createCache<any>({ inDebounce: undefined })
-export default class eutils {
+export default class m {
 
   static checkUndefined(obj: any, cursorsAsString: string): boolean {
     var args = cursorsAsString.split('.')

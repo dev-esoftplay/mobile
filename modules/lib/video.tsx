@@ -13,7 +13,7 @@ export interface LibVideoProps {
   code: string,
   style?: any
 }
-export default function libvideo(props: LibVideoProps): any {
+export default function m(props: LibVideoProps): any {
   const code = props.code
 
   if (!code) {

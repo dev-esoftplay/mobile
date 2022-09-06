@@ -4,6 +4,6 @@
 
 export var c: any = {}
 
-export default function usedata(): void {
+export default function m(): void {
   
 }

@@ -20,7 +20,7 @@ export interface LibTabsState {
 }
 
 
-export default class libtabs extends LibComponent<LibTabsProps, LibTabsState> {
+export default class m extends LibComponent<LibTabsProps, LibTabsState> {
 
   length = React.Children.toArray(this.props.children).length
   scrollRef = React.createRef<ScrollView>()

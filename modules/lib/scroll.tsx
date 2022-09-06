@@ -52,7 +52,7 @@ export interface LibScrollState {
   data: any
 }
 
-export default class escroll extends LibComponent<LibScrollProps, LibScrollState> {
+export default class m extends LibComponent<LibScrollProps, LibScrollState> {
 
   flatscroll = React.createRef<ScrollView>();
   idxNumber = []

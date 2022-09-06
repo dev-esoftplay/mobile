@@ -3,7 +3,7 @@
 import { esp, LibCurl, LibProgress } from 'esoftplay';
 import * as DocumentPicker from 'expo-document-picker';
 
-export default class libdocument {
+export default class m {
 
   static pick(mimeType?: string): Promise<any> {
     return new Promise((r) => {

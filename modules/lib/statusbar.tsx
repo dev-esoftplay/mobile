@@ -8,7 +8,7 @@ export interface LibStatusbarProps {
   style: "dark" | "light"
   backgroundColor?: string
 }
-export default function libstatusbar(props: LibStatusbarProps): any {
+export default function m(props: LibStatusbarProps): any {
   return (
     <StatusBar translucent style={props.style} backgroundColor={props.backgroundColor} />
   )

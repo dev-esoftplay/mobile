@@ -14,7 +14,7 @@ export interface LibDatepickerProps {
   type?: "date" | "month" | "year"
 }
 
-export default function libdatepicker(props: LibDatepickerProps): any {
+export default function m(props: LibDatepickerProps): any {
 
   const refYear = useRef<any>(null)
   const refMonth = useRef<any>(null)

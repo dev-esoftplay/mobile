@@ -12,7 +12,7 @@ const { width } = Dimensions.get('window')
 export interface LibImage_cropProps {
 
 }
-export default function libimage_crop(props: LibImage_cropProps): any {
+export default function m(props: LibImage_cropProps): any {
   const { image, ratio, forceCrop, message } = LibNavigation.getArgsAll(props)
   const [_image, setImage] = useSafeState(image)
   const [counter, setCounter] = useSafeState(0)

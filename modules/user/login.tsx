@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import {
-  esp, LibComponent, LibCrypt,
-  LibCurl, LibStyle, UserClass
+    esp, LibComponent, LibCrypt,
+    LibCurl, LibStyle, UserClass
 } from "esoftplay";
 import { StatusBar } from 'expo-status-bar';
 import React from "react";
@@ -30,7 +30,7 @@ export interface UserLoginState {
   isLoading: boolean
 }
 
-export default class euserLogin extends LibComponent<UserLoginProps, UserLoginState> {
+export default class m extends LibComponent<UserLoginProps, UserLoginState> {
 
   inputUsername: any;
   inputPassword: any;

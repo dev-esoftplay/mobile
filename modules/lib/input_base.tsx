@@ -101,7 +101,7 @@ function unmask(name: string, text: string): string {
   return _text
 }
 
-export default function libinput_base(props: LibInput_baseProps): any {
+export default function m(props: LibInput_baseProps): any {
 
   LibInput_base_dataProperty.inputBaseRef[props.name] = useRef<TextInput>(null);
   LibInput_base_dataProperty.inputBaseData[props.name] = {

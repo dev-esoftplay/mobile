@@ -17,7 +17,7 @@ export interface LibTextstyleState {
 
 }
 
-export default class etextstyle extends LibComponent<LibTextstyleProps, LibTextstyleState>{
+export default class m extends LibComponent<LibTextstyleProps, LibTextstyleState>{
   props: any
 
   constructor(props: LibTextstyleProps) {

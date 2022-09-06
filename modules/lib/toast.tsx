@@ -37,7 +37,7 @@ export function show(message: string, timeout?: number): void {
   }, timeout || initState.timeout);
 }
 
-export default function libtoast(props: LibToastProps): any {
+export default function m(props: LibToastProps): any {
   const [data] = state.useState()
   const anim = useSharedValue(0)
 

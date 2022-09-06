@@ -1,10 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { esp } from 'esoftplay';
-import Storage from 'esoftplay/storage';
 import * as R from 'react';
 import { fastFilter, fastLoop } from './fast';
 const _global = require('./_global')
 const isEqual = require('react-fast-compare');
+
+
 
 export interface useGlobalReturn<T> {
   useState: () => [T, (newState: T) => void, () => void],
@@ -39,6 +39,7 @@ class Context {
 
 export const globalIdx = new Context()
 export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): useGlobalReturn<T> {
+  const Storage = require('./storage').default;
   const STORAGE = o?.inFile ? new Storage() : AsyncStorage
   const _idx = globalIdx.idx
   if (!useGlobalSubscriber[_idx])
@@ -68,8 +69,10 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
       set(initValue)
     }
     if (o?.persistKey) {
+      const esp = require('./esp').default;
       const UserData = esp.mod('user/data')
-      UserData.register(o?.persistKey)
+      if (UserData)
+        UserData?.register?.(o?.persistKey)
     }
     _global.useGlobalUserDelete[_idx] = resetFunction
   }

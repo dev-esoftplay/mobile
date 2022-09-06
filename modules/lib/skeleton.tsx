@@ -19,7 +19,7 @@ export interface LibSkeletonStatic {
 }
 
 
-export default class libskeleton extends LibComponent<LibSkeletonProps, LibSkeletonState> {
+export default class m extends LibComponent<LibSkeletonProps, LibSkeletonState> {
   constructor(props: LibSkeletonProps) {
     super(props);
   }

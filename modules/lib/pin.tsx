@@ -12,7 +12,7 @@ export interface LibPinProps {
   pinValue?: string,
   pinStyle?: any
 }
-export default function libpin(props: LibPinProps): any {
+export default function m(props: LibPinProps): any {
   const [pin, setPin] = useState<string[]>([])
   const input = useRef<TextInput>(null)
 
