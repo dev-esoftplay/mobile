@@ -33,7 +33,7 @@ export default class m {
 
   static isLogin(callback: (user?: any | null) => void): Promise<any> {
     return new Promise((r, j) => {
-      eclass.load().then((user) => {
+      m.load().then((user) => {
         r(user);
         if (callback) callback(user);
       }).catch((nouser) => {
