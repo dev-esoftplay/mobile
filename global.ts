@@ -55,10 +55,10 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
             STORAGE.clear()
           return
         }
-        if (p != undefined && (p.startsWith("{") || p.startsWith("[")))
+        if (p != undefined && typeof p == 'string' && (p.startsWith("{") || p.startsWith("[")))
           try { set(JSON.parse(p)) } catch (error) { }
         else
-          try { /* @ts-ignore */ set(p) } catch (error) { }
+          try { /* @ts-ignore */ set(eval(p)) } catch (error) { }
       }
     })
   }
@@ -85,17 +85,12 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
       if (o?.persistKey && ns != undefined) {
         let data: any
         switch (typeof ns) {
-          case 'string':
-          case 'boolean':
-          case 'number':
-          case 'bigint':
-          case 'undefined':
-            data = String(ns)
-            break
           case 'object':
             if (ns != null || ns != undefined)
               data = JSON.stringify(ns)
             break;
+          default:
+            data = String(ns)
         }
         STORAGE.setItem(o.persistKey, data)
       }
