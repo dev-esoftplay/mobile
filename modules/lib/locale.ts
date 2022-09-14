@@ -1,6 +1,7 @@
 // noPage
-
-import { LibNavigation, useGlobalReturn, useGlobalState } from 'esoftplay';
+import { useGlobalReturn } from 'esoftplay';
+import { LibNavigation } from 'esoftplay/cache/lib/navigation/import';
+import useGlobalState from 'esoftplay/global';
 
 
 const state = useGlobalState("id", { persistKey: 'lib_locale_lang' })

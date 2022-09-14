@@ -1,7 +1,10 @@
 // withHooks
 // noPage
+import { esp } from 'esoftplay';
+import { LibIcon } from 'esoftplay/cache/lib/icon/import';
+import { LibProgress } from 'esoftplay/cache/lib/progress/import';
+import { LibStyle } from 'esoftplay/cache/lib/style/import';
 
-import { esp, LibIcon, LibProgress, LibStyle } from 'esoftplay';
 import Constants from 'expo-constants';
 import * as Updates from 'expo-updates';
 import React from 'react';
@@ -28,18 +31,18 @@ export function checkAlertInstall(): void {
   check((isNew) => { if (isNew) alertInstall() })
 }
 
-export function check(callback: (isNew: boolean) => void): void {
+export function check(callback?: (isNew: boolean) => void): void {
   if (__DEV__) {
-    callback(false)
+    callback?.(false)
     return
   }
   Updates.checkForUpdateAsync().then(({ isAvailable }) => {
     if (!isAvailable) {
-      callback(false)
+      callback?.(false)
       LibProgress.hide()
     } else {
       Updates.fetchUpdateAsync().then(({ isNew }) => {
-        callback(isNew)
+        callback?.(isNew)
       }).catch((e) => {
         LibProgress.hide()
       })

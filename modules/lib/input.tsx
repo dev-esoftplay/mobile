@@ -1,5 +1,9 @@
 // noPage
-import { LibComponent, LibTextstyle, LibTheme, LibUtils } from 'esoftplay';
+import { LibComponent } from 'esoftplay/cache/lib/component/import';
+import { LibTextstyle } from 'esoftplay/cache/lib/textstyle/import';
+import { LibTheme } from 'esoftplay/cache/lib/theme/import';
+import { LibUtils } from 'esoftplay/cache/lib/utils/import';
+
 import React from 'react';
 import { TextInput, View } from 'react-native';
 

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 const fs = require('fs');
 const exec = require('child_process').execSync;
+const execAsync = require('child_process').exec;
 const path = require('path');
 const os = require('os')
 const readline = require('readline');
@@ -62,6 +63,14 @@ switch (args[0]) {
 	case "b":
 	case "build":
 		build()
+		break;
+	case "bc":
+	case "build-cancel":
+		buildPrepare(false)
+		break;
+	case "bp":
+	case "build-prepare":
+		buildPrepare(true)
 		break;
 	case "vn":
 	case "version-new":
@@ -643,6 +652,33 @@ function devClientPos(file) {
 	}
 }
 
+function buildPrepare(include = true) {
+	if (include) {
+		if (!fs.existsSync('./assets/esoftplaymodules')) {
+			fs.mkdirSync('./assets/esoftplaymodules')
+			command('cp -r ./modules/* ./assets/esoftplaymodules')
+		}
+
+		if (fs.existsSync('./node_modules/esoftplay/modules')) {
+			let comm = []
+			fs.readdirSync('./node_modules/esoftplay/modules').forEach((module) => {
+				if (!module.startsWith('.')) {
+					if (!fs.existsSync(`./modules/${module}`)) {
+						fs.mkdirSync(`./modules/${module}`)
+					}
+					comm.push(`cp -n ./node_modules/esoftplay/modules/${module}/* ./modules/${module}`)
+				}
+			});
+			consoleSucces("\n\nPLEASE COPY AND EXECUTE THE FOLLOWING COMMAND\n\n" + comm.join('\n') + "\n")
+		}
+	} else {
+		if (fs.existsSync('./assets/esoftplaymodules'))
+			command('rm -rf modules && mv ./assets/esoftplaymodules modules')
+		else
+			consoleError('')
+	}
+}
+
 function configAvailable(enabled) {
 	if (fs.existsSync(gitignore)) {
 		let _git = fs.readFileSync(gitignore, 'utf8')
@@ -898,6 +934,8 @@ function help() {
 		"\n - u|update all                : untuk update semua esp module ke versi terakhir",
 		"\n - start                       : start esoftplay framework",
 		"\n - b|build                     : untuk build app .ipa .apk .aab",
+		"\n - bp|build-prepare            : untuk prepare for esp b",
+		"\n - bc|build-cancel             : untuk cancel build prepare",
 		"\n - f|file                      : untuk check status file",
 		"\n - c|check                     : untuk check status",
 		"\n - create-master [moduleName]  : untuk create master module terpisah",

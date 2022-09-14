@@ -1,8 +1,10 @@
-//@ts-nocheck
 // noPage
-
 import { CommonActions, StackActions } from '@react-navigation/native';
-import { esp, LibNavigationRoutes, UserClass, UserRoutes, _global } from 'esoftplay';
+import { LibNavigationRoutes } from 'esoftplay';
+import { UserClass } from 'esoftplay/cache/user/class/import';
+import { UserRoutes } from 'esoftplay/cache/user/routes/import';
+import esp from 'esoftplay/esp';
+import _global from 'esoftplay/_global';
 import React from "react";
 
 export interface LibNavigationInjector {

@@ -1,7 +1,9 @@
 // noPage
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { esp, LibComponent, LibNavigation, LibStyle } from "esoftplay";
+import { esp } from 'esoftplay';
+import { LibComponent } from 'esoftplay/cache/lib/component/import';
+import { LibNavigation } from 'esoftplay/cache/lib/navigation/import';
+import { LibStyle } from 'esoftplay/cache/lib/style/import';
 import React from "react";
 import { ActivityIndicator, View } from "react-native";
 import { WebView } from 'react-native-webview';
@@ -61,7 +63,7 @@ export default class m extends LibComponent<LibSocialloginProps, LibSocialloginS
           onMessage={(e: any) => {
             var data = e.nativeEvent.data
             if (data) {
-              esocialLogin.setUser(data)
+              m.setUser(data)
               onResult(JSON.parse(data))
             }
           }}

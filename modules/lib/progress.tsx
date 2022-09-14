@@ -1,6 +1,10 @@
 // noPage
+import { LibComponent } from 'esoftplay/cache/lib/component/import';
+import { LibStyle } from 'esoftplay/cache/lib/style/import';
+import { LibTextstyle } from 'esoftplay/cache/lib/textstyle/import';
+import { LibTheme } from 'esoftplay/cache/lib/theme/import';
+import useGlobalState from 'esoftplay/global';
 
-import { LibComponent, LibStyle, LibTextstyle, LibTheme, useGlobalState } from 'esoftplay';
 import React from 'react';
 import { ActivityIndicator, BackHandler, View } from 'react-native';
 
@@ -13,7 +17,7 @@ export interface LibProgressState {
 
 }
 
-const state = useGlobalState({
+const state = useGlobalState<LibProgressProps>({
   show: false,
   message: undefined
 })

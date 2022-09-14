@@ -1,6 +1,7 @@
 // noPage
+import { LibComponent } from 'esoftplay/cache/lib/component/import';
+import { LibTheme } from 'esoftplay/cache/lib/theme/import';
 
-import { LibComponent, LibTheme } from 'esoftplay';
 import React from 'react';
 import { ActivityIndicator, View } from 'react-native';
 

@@ -1,7 +1,13 @@
 // noPage
 
-// import { FlashList } from "@shopify/flash-list";
-import { esp, LibComponent, LibCurl, LibListItemLayout, LibLoading, LibStyle, LibTextstyle } from 'esoftplay';
+import { LibComponent } from 'esoftplay/cache/lib/component/import';
+import { LibCurl } from 'esoftplay/cache/lib/curl/import';
+import { LibListItemLayout } from 'esoftplay/cache/lib/list/import';
+import { LibLoading } from 'esoftplay/cache/lib/loading/import';
+import { LibStyle } from 'esoftplay/cache/lib/style/import';
+import { LibTextstyle } from 'esoftplay/cache/lib/textstyle/import';
+import esp from 'esoftplay/esp';
+
 import React from 'react';
 import isEqual from 'react-fast-compare';
 import { FlatList, View } from 'react-native';
@@ -58,7 +64,7 @@ export interface LibInfiniteState {
 export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
 
   isStop: boolean = false
-  page: number = 0
+  page: number | undefined = 0
   pages: number[]
   flatlist = React.createRef<FlatList<View>>()
 
@@ -208,7 +214,7 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
               onEndReachedThreshold={0.5}
               onEndReached={() => {
                 if (!this.isStop) {
-                  this.loadData(this.page + 1)
+                  this.loadData((this?.page || 0) + 1)
                 }
               }}
               {...this.props}

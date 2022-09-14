@@ -1,6 +1,6 @@
 // noPage
+import { LibComponent } from 'esoftplay/cache/lib/component/import';
 
-import { LibComponent } from 'esoftplay';
 import isEqual from 'react-fast-compare';
 
 export interface LibEffectProps {

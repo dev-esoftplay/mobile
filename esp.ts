@@ -1,4 +1,5 @@
-import { esp, LibLocale, UserRoutes } from 'esoftplay';
+import { LibLocale } from 'esoftplay/cache/lib/locale/import';
+import { UserRoutes } from 'esoftplay/cache/user/routes/import';
 import Constants from 'expo-constants';
 import { LogBox, Platform } from 'react-native';
 import 'react-native-reanimated';
@@ -40,22 +41,22 @@ LogBox.ignoreLogs(ignoreWarns);
 
 let app = require('../../app.json');
 let conf = require('../../config.json');
-let lconf
+let lconf: any
 try {
   lconf = require('../../config.live.json');
 } catch (error) {
 
 }
 
-export default (() => {
-  function mergeDeep(target, ...sources) {
+export default class esp {
+  static mergeDeep(target: any, ...sources: any[]) {
     target = Object(target);
     for (let source of sources) {
       source = Object(source);
       for (let key in source) {
         if (source.hasOwnProperty(key)) {
           if (source[key] && typeof source[key] === 'object') {
-            target[key] = mergeDeep(target[key], source[key]);
+            target[key] = esp.mergeDeep(target[key], source[key]);
           } else {
             target[key] = source[key];
           }
@@ -64,22 +65,21 @@ export default (() => {
     }
     return target;
   }
-  app = mergeDeep(app, conf)
-
-  function appjson(): any {
-    return app
+  
+  static appjson(): any {
+    return esp.mergeDeep(app, conf)
   }
 
-  function assets(path: string): any {
+  static assets(path: string): any {
     return _assets(path)
   }
 
-  function versionName(): string {
-    return (Platform.OS == 'android' ? Constants.manifest.android.versionCode : Constants.manifest.ios.buildNumber) + '-' + config('publish_id')
+  static versionName(): string {
+    return (Platform.OS == 'android' ? Constants?.manifest?.android?.versionCode : Constants?.manifest?.ios?.buildNumber) + '-' + esp.config('publish_id')
   }
 
-  function config(param?: string, ...params: string[]): any {
-    let out: any = _config();
+  static config(param?: string, ...params: string[]): any {
+    let out: any = esp._config();
     if (param) {
       var _params = [param, ...params]
       if (_params.length > 0)
@@ -95,14 +95,14 @@ export default (() => {
     return out;
   }
 
-  function isDebug(message: string): boolean {
+  static isDebug(message: string): boolean {
     if (!lconf) {
       return false
     }
     return conf.config.domain != lconf.config.domain
   }
 
-  function readDeepObj(obj: any) {
+  static readDeepObj(obj: any) {
     return function (param?: string, ...params: string[]): any {
       let out: any = obj
       if (param) {
@@ -119,12 +119,12 @@ export default (() => {
     }
   }
 
-  function lang(moduleTask: string, langName: string, ...stringToBe: string[]): string {
-    let string = esp.assets("locale/" + langId() + ".json")?.[moduleTask]?.[langName]
+  static lang(moduleTask: string, langName: string, ...stringToBe: string[]): string {
+    let string = esp.assets("locale/" + esp.langId() + ".json")?.[moduleTask]?.[langName]
     if (!string) {
       string = esp.assets("locale/id.json")[moduleTask][langName]
     }
-    function sprintf(string: string, index: number) {
+    function sprintf(string: string, index: number): string {
       if (stringToBe[index] != undefined) {
         string = string.replace("%s", stringToBe[index])
         if (string.includes("%s")) {
@@ -139,18 +139,18 @@ export default (() => {
     return string
   }
 
-  function langId(): string {
+  static langId(): string {
     return LibLocale.state().get()
   }
 
-  function mod(path: string): any {
+  static mod(path: string): any {
     var modtast = path.split("/");
     if (modtast[1] == "") {
       modtast[1] = "index";
     }
     return routers(modtast.join("/"));
   }
-  function modProp(path: string): any {
+  static modProp(path: string): any {
     var modtast = path.split("/");
     if (modtast[1] == "") {
       modtast[1] = "index";
@@ -158,7 +158,8 @@ export default (() => {
     return properties(modtast.join("/"));
   }
 
-  function _config(): string {
+  static _config(): string {
+    app = esp.mergeDeep(app, conf)
     var msg = ''
     if (!app.hasOwnProperty('config')) {
       msg = "tidak ada config"
@@ -202,21 +203,21 @@ export default (() => {
     return config;
   }
 
-  function navigations(): string[] {
+  static navigations(): string[] {
     return navs;
   }
-  function home(): any {
-    return mod('user/index');
+  static home(): any {
+    return esp.mod('user/index');
   }
-  function routes(): any {
+  static routes(): any {
     return UserRoutes.state().get();
   }
-  function log(message?: any, ...optionalParams: any[]) {
-    if (config("isDebug") == 1) {
+  static log(message?: any, ...optionalParams: any[]) {
+    if (esp.config("isDebug") == 1) {
       console.log(message, ...optionalParams, "\x1b[0m");
     }
   }
-  const logColor = {
+  static logColor = {
     reset: "\x1b[0m",
     black: "\x1b[30m",
     red: "\x1b[31m",
@@ -235,8 +236,7 @@ export default (() => {
     backgroundCyan: "\x1b[46m",
     backgroundWhite: "\x1b[47m",
   }
-  return { appjson, log, home, isDebug, navigations, langId, lang, config, assets, routes, mod, versionName, logColor, modProp }
-})()
+}
 
 // var a = esp.assets("bacground")     // mengambil file dari folder images
 // var b = esp.config("data", "name")  // mengambil value dari config (bisa ditentukan di app.json)

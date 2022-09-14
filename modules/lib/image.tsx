@@ -1,6 +1,12 @@
 // noPage
-
-import { esp, LibComponent, LibCurl, LibIcon, LibNavigation, LibProgress, LibStyle, useGlobalState } from 'esoftplay';
+import { esp } from 'esoftplay';
+import { LibComponent } from 'esoftplay/cache/lib/component/import';
+import { LibCurl } from 'esoftplay/cache/lib/curl/import';
+import { LibIcon } from 'esoftplay/cache/lib/icon/import';
+import { LibNavigation } from 'esoftplay/cache/lib/navigation/import';
+import { LibProgress } from 'esoftplay/cache/lib/progress/import';
+import { LibStyle } from 'esoftplay/cache/lib/style/import';
+import useGlobalState from 'esoftplay/global';
 import { Camera } from 'expo-camera';
 import * as ImageManipulator from 'expo-image-manipulator';
 import { SaveFormat } from 'expo-image-manipulator';
@@ -48,7 +54,7 @@ const initState = {
   image: undefined,
   maxDimension: 1280
 }
-const state = useGlobalState(initState)
+const state = useGlobalState<LibImageProps>(initState)
 
 class m extends LibComponent<LibImageProps, LibImageState> {
 

@@ -1,6 +1,10 @@
-// noPage
 
-import { LibStyle, LibUtils } from 'esoftplay';
+// withHooks
+// noPage
+import { } from 'esoftplay';
+import { LibStyle } from 'esoftplay/cache/lib/style/import';
+import { LibUtils } from 'esoftplay/cache/lib/utils/import';
+import React from 'react';
 import { Text, View } from 'react-native';
 
 

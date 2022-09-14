@@ -1,7 +1,9 @@
 // withHooks 
 // noPage
+import { useSafeState } from 'esoftplay';
+import { LibScrollpicker } from 'esoftplay/cache/lib/scrollpicker/import';
+import { LibStyle } from 'esoftplay/cache/lib/style/import';
 
-import { LibScrollpicker, LibStyle, useSafeState } from 'esoftplay';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useRef } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
@@ -47,7 +49,7 @@ export default function m(props: LibTimepickerProps): any {
 
   useEffect(() => {
     if (selectedTime) {
-      let toTime = null
+      let toTime: any = null
       if (maxTime && selectedTime > maxTime) {
         toTime = maxTime;
       } else if (minTime && selectedTime < minTime) {

@@ -1,7 +1,8 @@
 // noPage
-
 import NetInfo from '@react-native-community/netinfo';
-import { LibComponent, useGlobalReturn, useGlobalState } from "esoftplay";
+import { useGlobalReturn } from 'esoftplay';
+import { LibComponent } from 'esoftplay/cache/lib/component/import';
+import useGlobalState from 'esoftplay/global';
 import React from "react";
 import { Animated, Text } from "react-native";
 

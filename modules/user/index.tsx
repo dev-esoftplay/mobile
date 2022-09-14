@@ -1,12 +1,27 @@
 // withHooks
 // noPage
-
-import { esp, LibDialog, LibImage, LibNet_status, LibProgress, LibStyle, LibToast, LibUpdaterProperty, LibVersion, LibWorker, LibWorkloop, LibWorkview, UseDeeplink, UserClass, UserHook, UserLoading, UserRoutes, useSafeState, _global } from 'esoftplay';
+import { esp, useSafeState } from 'esoftplay';
+import { LibDialog } from 'esoftplay/cache/lib/dialog/import';
+import { LibImage } from 'esoftplay/cache/lib/image/import';
+import { LibNet_status } from 'esoftplay/cache/lib/net_status/import';
+import { LibProgress } from 'esoftplay/cache/lib/progress/import';
+import { LibStyle } from 'esoftplay/cache/lib/style/import';
+import { LibToast } from 'esoftplay/cache/lib/toast/import';
+import { LibUpdaterProperty } from 'esoftplay/cache/lib/updater/import';
+import { LibVersion } from 'esoftplay/cache/lib/version/import';
+import { LibWorkloop } from 'esoftplay/cache/lib/workloop/import';
+import Navs from 'esoftplay/cache/navs';
+import { UseDeeplink } from 'esoftplay/cache/use/deeplink/import';
+import { UserClass } from 'esoftplay/cache/user/class/import';
+import { UserHook } from 'esoftplay/cache/user/hook/import';
+import { UserLoading } from 'esoftplay/cache/user/loading/import';
+import { UserRoutes } from 'esoftplay/cache/user/routes/import';
+import Worker from 'esoftplay/libs/worker';
+import _global from 'esoftplay/_global';
 import * as Font from "expo-font";
-import React, { useEffect, useLayoutEffect } from "react";
+import React, { useEffect, useLayoutEffect } from 'react';
 import { Platform, View } from "react-native";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import Navs from '../../cache/navs';
 
 export interface UserIndexProps {
 
@@ -30,13 +45,17 @@ function setFonts(): Promise<void> {
 }
 
 
+
 function isWorkerReady(onReady: () => void): void {
-  if (_global.LibWorkerReady < 1) {
+  // @ts-ignore
+  if (_global.WorkerReady < 1) {
+    
     setTimeout(() => isWorkerReady(onReady), 10)
   } else {
     onReady()
   }
 }
+
 
 
 export default function m(props: UserIndexProps): any {
@@ -50,6 +69,7 @@ export default function m(props: UserIndexProps): any {
   function handler(currentState: any): void {
     //@ts-ignore
     if (__DEV__) {
+      //@ts-ignore
       _global.nav__state = currentState
     }
     UserRoutes.set(currentState)
@@ -57,6 +77,11 @@ export default function m(props: UserIndexProps): any {
 
   useLayoutEffect(() => {
     let limitReady = 3
+
+    if (esp.config("asyncWorker") == true) {
+      limitReady = 2
+    }
+
     if (Platform.OS == 'android') {
       if (Platform.Version <= 22) {
         limitReady = 2
@@ -64,6 +89,7 @@ export default function m(props: UserIndexProps): any {
     }
 
     if (limitReady == 3) {
+      
       isWorkerReady(() => {
         ready.current += 1
         if (ready.current >= limitReady) {
@@ -71,7 +97,7 @@ export default function m(props: UserIndexProps): any {
         }
       })
     }
-    
+
     (async () => {
       await setFonts()
       ready.current += 1
@@ -79,17 +105,16 @@ export default function m(props: UserIndexProps): any {
         setLoading(false)
       }
     })()
-    
+
     UserClass.isLogin(async () => {
       ready.current += 1
       if (ready.current >= limitReady) {
         setLoading(false)
       }
     })
-
     //esoftplay-chatting
-    
-    LibUpdaterProperty.check((isNew) => { })
+
+    LibUpdaterProperty.check()
   }, [])
 
   useEffect(() => {
@@ -103,24 +128,24 @@ export default function m(props: UserIndexProps): any {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={{ flex: 1 }}>
-        <LibWorker />
-        <LibWorkview />
-        <LibWorkloop />
+        <Worker.View />
         {
           loading ?
             <UserLoading />
             :
-            <Navs user={user} initialState={initialState} handler={handler} />
+            <>
+              <LibWorkloop />
+              <Navs user={user} initialState={initialState} handler={handler} />
+              <LibNet_status />
+              <LibDialog style={'default'} />
+              <LibImage />
+              <LibProgress />
+              <LibToast />
+              <UserHook />
+            </>
         }
-        <LibNet_status />
-        <LibDialog style={'default'} />
-        <LibImage />
-        <LibProgress />
-        <UserHook />
-        <LibToast />
       </View>
       <View style={{ backgroundColor: LibStyle.colorNavigationBar || 'white', height: LibStyle.isIphoneX ? 35 : 0 }} />
     </GestureHandlerRootView>
   )
 }
-

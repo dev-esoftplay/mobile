@@ -1,7 +1,10 @@
 // useLibs
 // noPage
-
-import { esp, LibCurl, LibNavigation, LibUtils, _global } from 'esoftplay';
+import { esp } from 'esoftplay';
+import { LibCurl } from 'esoftplay/cache/lib/curl/import';
+import { LibNavigation } from 'esoftplay/cache/lib/navigation/import';
+import { LibUtils } from 'esoftplay/cache/lib/utils/import';
+import _global from 'esoftplay/_global';
 import { useCallback, useEffect } from 'react';
 import { Alert, Linking } from 'react-native';
 

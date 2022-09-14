@@ -1,7 +1,7 @@
 /*  */
 // noPage
-
-import { esp, LibComponent } from "esoftplay";
+import { esp } from 'esoftplay';
+import { LibComponent } from 'esoftplay/cache/lib/component/import';
 import React from "react";
 import { Animated, Dimensions, Linking, Platform } from "react-native";
 import { WebView } from 'react-native-webview';

@@ -1,6 +1,7 @@
 // noPage
 
-import { LibComponent } from 'esoftplay';
+import { LibComponent } from 'esoftplay/cache/lib/component/import';
+
 
 export interface UserMainProps {
 

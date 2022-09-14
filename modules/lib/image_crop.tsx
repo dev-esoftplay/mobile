@@ -1,6 +1,13 @@
 // withHooks
+import { useSafeState } from 'esoftplay';
+import { LibIcon } from 'esoftplay/cache/lib/icon/import';
+import { LibNavigation } from 'esoftplay/cache/lib/navigation/import';
+import { LibProgress } from 'esoftplay/cache/lib/progress/import';
+import { LibStatusbar } from 'esoftplay/cache/lib/statusbar/import';
+import { LibStyle } from 'esoftplay/cache/lib/style/import';
+import { LibTextstyle } from 'esoftplay/cache/lib/textstyle/import';
+import { LibToastProperty } from 'esoftplay/cache/lib/toast/import';
 
-import { LibIcon, LibNavigation, LibProgress, LibStatusbar, LibStyle, LibTextstyle, LibToastProperty, useSafeState } from 'esoftplay';
 import * as ImageManipulator from "expo-image-manipulator";
 import React, { useEffect, useRef } from 'react';
 import { Dimensions, Image, Text, TouchableOpacity, View } from 'react-native';

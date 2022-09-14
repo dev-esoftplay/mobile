@@ -1,6 +1,10 @@
 // noPage
+import { LibComponent } from 'esoftplay/cache/lib/component/import';
+import { LibCurl } from 'esoftplay/cache/lib/curl/import';
+import { LibLoading } from 'esoftplay/cache/lib/loading/import';
+import { LibScroll } from 'esoftplay/cache/lib/scroll/import';
+import { LibTextstyle } from 'esoftplay/cache/lib/textstyle/import';
 
-import { LibComponent, LibCurl, LibLoading, LibScroll, LibTextstyle } from 'esoftplay';
 import React from 'react';
 import { View } from 'react-native';
 

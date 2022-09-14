@@ -1,9 +1,11 @@
 // noPage
+import { LibComponent } from 'esoftplay/cache/lib/component/import';
+import { LibStyle } from 'esoftplay/cache/lib/style/import';
+import { LibUtils } from 'esoftplay/cache/lib/utils/import';
 
-import { LibComponent, LibStyle, LibUtils } from 'esoftplay';
+import { fastFilter } from 'esoftplay/fast';
 import React from 'react';
 import { ScrollView, View } from 'react-native';
-import { fastFilter } from '../../fast';
 
 export interface LibTabsProps {
   tabIndex: number,
@@ -24,7 +26,7 @@ export default class m extends LibComponent<LibTabsProps, LibTabsState> {
 
   length = React.Children.toArray(this.props.children).length
   scrollRef = React.createRef<ScrollView>()
-  allIds = []
+  allIds: any[] = []
 
   constructor(props: LibTabsProps) {
     super(props);
@@ -40,7 +42,7 @@ export default class m extends LibComponent<LibTabsProps, LibTabsState> {
   arrayOfLimit(page: number, pageOffset: number): any[] {
     let limitBottom = page - pageOffset
     let limitTop = page + pageOffset + 1
-    let arr = []
+    let arr: any[] = []
     for (let i = limitBottom; i < limitTop; i++) {
       arr.push(i)
     }

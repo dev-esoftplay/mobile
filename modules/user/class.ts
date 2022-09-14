@@ -1,14 +1,19 @@
 // noPage
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { esp, LibCrypt, LibCurl, LibNotification, useGlobalReturn, UserClass, UserData } from 'esoftplay';
+import { esp, useGlobalReturn } from 'esoftplay';
+import { LibCrypt } from 'esoftplay/cache/lib/crypt/import';
+import { LibCurl } from 'esoftplay/cache/lib/curl/import';
+import { LibNotification } from 'esoftplay/cache/lib/notification/import';
+import { UserClass } from 'esoftplay/cache/user/class/import';
+import { UserData } from 'esoftplay/cache/user/data/import';
+
+import useGlobalState from 'esoftplay/global';
+import moment from "esoftplay/moment";
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
-import useGlobalState from '../../global';
-import moment from "../../moment";
 
-const state = useGlobalState?.(null, { persistKey: "user" })
+const state = useGlobalState(null, { persistKey: "user" })
 
 export default class m {
   static state(): useGlobalReturn<any> {

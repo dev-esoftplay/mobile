@@ -1,7 +1,7 @@
 // noPage
-
 import MaskedView from '@react-native-masked-view/masked-view';
-import { LibComponent, LibStyle } from 'esoftplay';
+import { LibComponent } from 'esoftplay/cache/lib/component/import';
+import { LibStyle } from 'esoftplay/cache/lib/style/import';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect } from 'react';
 import { View } from 'react-native';

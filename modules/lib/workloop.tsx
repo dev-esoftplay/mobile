@@ -1,6 +1,9 @@
 // noPage
+import { esp } from 'esoftplay';
+import { LibComponent } from 'esoftplay/cache/lib/component/import';
+import { LibNotification } from 'esoftplay/cache/lib/notification/import';
+import { UserClass } from 'esoftplay/cache/user/class/import';
 
-import { esp, LibComponent, LibNotification, UserClass } from 'esoftplay';
 import React from 'react';
 import { InteractionManager, View } from 'react-native';
 import { WebView } from 'react-native-webview';

@@ -1,6 +1,8 @@
 // withHooks
+import { LibIcon } from 'esoftplay/cache/lib/icon/import';
+import { LibNavigation } from 'esoftplay/cache/lib/navigation/import';
+import { LibStyle } from 'esoftplay/cache/lib/style/import';
 
-import { LibIcon, LibNavigation, LibStyle } from 'esoftplay';
 import React, { useRef } from 'react';
 import { Pressable, View } from 'react-native';
 import Gallery from 'react-native-awesome-gallery';

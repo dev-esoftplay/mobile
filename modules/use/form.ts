@@ -1,9 +1,8 @@
 // useLibs
 // noPage
-
 import { useSafeState } from 'esoftplay';
+import { fastFilter } from 'esoftplay/fast';
 import { useLayoutEffect } from 'react';
-import { fastFilter } from './../../fast';
 
 export default (() => {
   let dt = {}

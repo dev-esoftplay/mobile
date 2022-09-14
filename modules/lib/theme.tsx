@@ -1,8 +1,10 @@
 // noPage
+import { esp } from 'esoftplay';
+import { LibNavigation } from 'esoftplay/cache/lib/navigation/import';
+import { LibStyle } from 'esoftplay/cache/lib/style/import';
+import useGlobalState from 'esoftplay/global';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { esp, LibNavigation, LibStyle, useGlobalState } from 'esoftplay';
-
 const { colorPrimary, colorAccent } = LibStyle
 
 const state = useGlobalState({
@@ -12,10 +14,6 @@ const state = useGlobalState({
 export default class m {
 
   static setTheme(themeName: string): void {
-    esp.dispatch({
-      type: 'lib_theme_switch',
-      payload: themeName
-    })
     state.set({ theme: themeName })
     LibNavigation.reset()
     AsyncStorage.setItem('theme', themeName)

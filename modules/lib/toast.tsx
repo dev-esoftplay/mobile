@@ -1,7 +1,7 @@
 // withHooks
 // noPage
-
-import { LibStyle, useGlobalState } from 'esoftplay';
+import { LibStyle } from 'esoftplay/cache/lib/style/import';
+import useGlobalState from 'esoftplay/global';
 import React, { useEffect } from 'react';
 import { Text } from 'react-native';
 import Animated, { interpolate, useAnimatedProps, useSharedValue, withTiming } from 'react-native-reanimated';
@@ -15,7 +15,7 @@ const initState = {
   timeout: 3000
 }
 
-const state = useGlobalState(initState)
+const state = useGlobalState<any>(initState)
 
 let _timeout: any = undefined
 

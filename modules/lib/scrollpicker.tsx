@@ -1,12 +1,11 @@
 
-
-import { LibComponent } from 'esoftplay';
+import { LibComponent } from 'esoftplay/cache/lib/component/import';
 import React from 'react';
 import {
-    Dimensions,
-    Platform, ScrollView, StyleSheet,
-    Text,
-    View
+  Dimensions,
+  Platform, ScrollView, StyleSheet,
+  Text,
+  View
 } from 'react-native';
 
 export interface LibScrollpickerProps {

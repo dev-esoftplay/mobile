@@ -1,6 +1,5 @@
 // noPage
-
-import { LibComponent } from 'esoftplay';
+import { LibComponent } from 'esoftplay/cache/lib/component/import';
 import React from 'react';
 import { Image, Platform } from 'react-native';
 

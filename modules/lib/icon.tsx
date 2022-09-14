@@ -1,30 +1,30 @@
 // noPage
 
 import {
-    AntDesign, Entypo,
-    EvilIcons,
-    Feather,
-    FontAwesome,
-    Fontisto,
-    Foundation, Ionicons, MaterialCommunityIcons, MaterialIcons,
-    Octicons, SimpleLineIcons, Zocial
+  AntDesign, Entypo,
+  EvilIcons,
+  Feather,
+  FontAwesome,
+  Fontisto,
+  Foundation, Ionicons, MaterialCommunityIcons, MaterialIcons,
+  Octicons, SimpleLineIcons, Zocial
 } from '@expo/vector-icons';
 import {
-    AntDesignTypes,
-    EntypoTypes,
-    EvilIconsTypes,
-    FeatherTypes,
-    FontAwesomeTypes,
-    FontistoTypes,
-    FoundationTypes,
-    IoniconsTypes,
-    MaterialCommunityIconsTypes,
-    MaterialIconsTypes,
-    OcticonsTypes,
-    SimpleLineIconsTypes,
-    ZocialTypes
+  AntDesignTypes,
+  EntypoTypes,
+  EvilIconsTypes,
+  FeatherTypes,
+  FontAwesomeTypes,
+  FontistoTypes,
+  FoundationTypes,
+  IoniconsTypes,
+  MaterialCommunityIconsTypes,
+  MaterialIconsTypes,
+  OcticonsTypes,
+  SimpleLineIconsTypes,
+  ZocialTypes
 } from '@expo/vector-icons/build/esoftplay_icons';
-import { LibComponent } from 'esoftplay';
+import { LibComponent } from 'esoftplay/cache/lib/component/import';
 import React from 'react';
 
 export interface LibAntDesignIconProps {

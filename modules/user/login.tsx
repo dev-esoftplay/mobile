@@ -1,8 +1,12 @@
-import { Ionicons } from "@expo/vector-icons";
-import {
-    esp, LibComponent, LibCrypt,
-    LibCurl, LibStyle, UserClass
-} from "esoftplay";
+
+import { Ionicons } from '@expo/vector-icons';
+import { esp } from 'esoftplay';
+import { LibComponent } from 'esoftplay/cache/lib/component/import';
+import { LibCrypt } from 'esoftplay/cache/lib/crypt/import';
+import { LibCurl } from 'esoftplay/cache/lib/curl/import';
+import { LibStyle } from 'esoftplay/cache/lib/style/import';
+import { UserClass } from 'esoftplay/cache/user/class/import';
+
 import { StatusBar } from 'expo-status-bar';
 import React from "react";
 import { Image, KeyboardAvoidingView, Pressable, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";

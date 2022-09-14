@@ -1,6 +1,6 @@
 // noPage
-
-import { LibComponent, LibFocus } from 'esoftplay';
+import { LibComponent } from 'esoftplay/cache/lib/component/import';
+import { LibFocus } from 'esoftplay/cache/lib/focus/import';
 import React from 'react';
 import { Platform, ScrollView, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 
@@ -69,7 +69,7 @@ export default class m extends LibComponent<LibCarrouselProps, LibCarrouselState
     swipe: true,
     isLooped: true,
   };
-  
+
   isBackground: boolean = false
   offset: number = 0;
   timer: any;
@@ -143,7 +143,7 @@ export default class m extends LibComponent<LibCarrouselProps, LibCarrouselState
     const { size } = this.state;
     const { children: propsChildren, isLooped, pageStyle } = this.props;
     const children = React.Children.toArray(propsChildren);
-    const pages = [];
+    const pages: any[] = [];
 
     if (children && children.length > 1) {
       pages.push(...children);
@@ -335,7 +335,7 @@ export default class m extends LibComponent<LibCarrouselProps, LibCarrouselState
   }
 
   _renderBullets(pageLength: number): any {
-    const bullets = [];
+    const bullets: any[] = [];
     for (let i = 0; i < pageLength; i += 1) {
       bullets.push(
         <TouchableWithoutFeedback onPress={() => this.animateToPage(i)} key={`bullet${i}`}>

@@ -1,9 +1,11 @@
 // withHooks
 // noPage
-
-import { esp, LibStyle, LibWorker, LibWorkloop, useSafeState } from 'esoftplay';
+import { esp, useSafeState } from 'esoftplay';
+import { LibStyle } from 'esoftplay/cache/lib/style/import';
+import { LibWorkloop } from 'esoftplay/cache/lib/workloop/import';
+import Worker from 'esoftplay/libs/worker';
 import * as FileSystem from 'expo-file-system';
-import { useLayoutEffect } from 'react';
+import React, { useLayoutEffect } from 'react';
 import { PixelRatio, Platform, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 const sh = require("shorthash")
@@ -36,9 +38,10 @@ const getCacheEntry = async (uri: string, toSize: number): Promise<{ exists: boo
   return { exists, path };
 };
 
-const fetchPicture = LibWorker?.registerJobAsync?.('lib_picture_fetch', (url: string, toSize: number) => {
+const fetchPicture = Worker.registerJobAsync('lib_picture_fetch', (url: string, toSize: number) => {
   'show source';
   return new Promise((resolve, reject) => {
+    'show source';
     fetch(url, { mode: 'cors' })
       .then(response => response.blob())
       .then(blob => {
@@ -119,7 +122,7 @@ export default function m(props: LibPictureProps): any {
         if (exists) {
           setUri(path)
         } else {
-          fetchPicture?.([b_uri, PixelRatio.getPixelSizeForLayoutSize(toSize)], (uri) => {
+          fetchPicture([b_uri, PixelRatio.getPixelSizeForLayoutSize(toSize)], (uri) => {
             setUri("data:image/png;base64," + uri)
             if (!props.noCache)
               LibWorkloop.execNextTix(FileSystem.writeAsStringAsync, [path, uri, { encoding: "base64" }])

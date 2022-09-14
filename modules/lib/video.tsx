@@ -1,7 +1,7 @@
 // withHooks
 // noPage
-
-import { LibStyle, LibToastProperty } from 'esoftplay';
+import { LibStyle } from 'esoftplay/cache/lib/style/import';
+import { LibToastProperty } from 'esoftplay/cache/lib/toast/import';
 import React from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { WebView } from 'react-native-webview';

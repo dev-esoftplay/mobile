@@ -1,7 +1,7 @@
 // useLibs
 // noPage
-
-import { UseDataProperty } from 'esoftplay';
+import { } from 'esoftplay';
+import { UseDataProperty } from 'esoftplay/cache/use/data/import';
 import { useEffect, useState } from 'react';
 const isEqual = require('react-fast-compare');
 

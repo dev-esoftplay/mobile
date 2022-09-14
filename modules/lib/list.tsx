@@ -1,8 +1,8 @@
 // noPage
 
 
-// import { FlashList } from "@shopify/flash-list";
-import { LibComponent } from "esoftplay";
+// 
+import { LibComponent } from 'esoftplay/cache/lib/component/import';
 import React from "react";
 import { FlatList, View } from 'react-native';
 

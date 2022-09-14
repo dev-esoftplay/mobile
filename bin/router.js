@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // @ts-nocheck
 /* EXECUTED ON `ESP START` TO BUILD FILE CACHES */
+const { execSync } = require('child_process');
 const fs = require('fs');
 var checks = ['./node_modules/esoftplay/modules/', './modules/', './templates/'];
 var pathAsset = "./assets";
@@ -68,8 +69,9 @@ var Nav5 = (importer, navs) => {
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-\nimport { `+ importer + `, esp, _global } from "esoftplay";\n
-\nimport { LibNavigation } from "esoftplay";\n
+\nimport { esp, _global } from "esoftplay";\n
+${importer}
+\nimport { LibNavigation } from 'esoftplay/cache/lib/navigation/import';\n
 const Stack = createNativeStackNavigator();
 
 export default function m(props): any{
@@ -239,7 +241,7 @@ checks.forEach(modules => {
                       tmpTask[clsName]["class"] = m[1].replace(m[2], clsName).trim();
 
                       /* tambahkan fungsi Crypt */
-                      if (clsName == 'LibCrypt') {
+                      if (clsName === 'LibCrypt') {
                         tmpTask[clsName]["function"]['encode'] = 'encode(text: string): string;';
                         tmpTask[clsName]["function"]['decode'] = 'decode(text: string): string;';
                       }
@@ -378,7 +380,7 @@ if (isChange(tmpDir + "assets.js", Text))
 
 /* CREATE INDEX.D.TS */
 function createIndex() {
-
+  var PreText = ''
   var Text = `
 import { Component } from 'react';
 import { AntDesignTypes, EntypoTypes, EvilIconsTypes, FeatherTypes, FontAwesomeTypes, FontistoTypes, FoundationTypes, IoniconsTypes, MaterialCommunityIconsTypes, MaterialIconsTypes, OcticonsTypes, SimpleLineIconsTypes, ZocialTypes, } from '@expo/vector-icons/build/esoftplay_icons'
@@ -443,87 +445,102 @@ declare module "esoftplay" {
   }
   interface useGlobalConnect<T> {
     render: (props: T) => any,
-  }
-  interface createCacheOption {
-    persistKey?: string,
-    inFile?: boolean,
-    listener?: (s:any)=> void
-  }
-  interface createCacheReturn<T> {
-    useCache: () => [T, (newCache: T | ((oldCache: T) => T)) => void, () => void],
-    get: () => T,
-    set: (newCache: T | ((oldCache: T) => T)) => void
-  }
-  class LibCrypt {
-    encode(string: string): string
-    decode(string: string): string
-  }
-  function createCache<S>(initialCache?: S, option?: createCacheOption): createCacheReturn<S>;`;
+  }`;
   for (clsName in tmpTask) {
+    let ItemText = ""
+    if (clsName === 'LibCrypt') {
+      tmpTask[clsName]["class"] = "class LibCrypt"
+      tmpTask[clsName]["function"]['encode'] = 'encode(text: string): string;';
+      tmpTask[clsName]["function"]['decode'] = 'decode(text: string): string;';
+    }
     if (tmpTask[clsName]["class"]) {
-      // Text += "\n";
+
+      if (clsName !== "LibComponent")
+        ItemText += "import { LibComponent } from 'esoftplay/cache/lib/component/import';\n"
+      else if (clsName === "LibComponent") {
+        ItemText += "import { Component } from 'react';\n"
+      }
+
+      // ItemText += "\n";
       for (var i = 0; i < tmpTask[clsName]["type"].length; i++) {
-        Text += "\n  " + tmpTask[clsName]["type"][i].replace(/\n/g, "\n  ");
+        ItemText += "\n  " + tmpTask[clsName]["type"][i].replace(/\n/g, "\n  ");
       }
       for (var i = 0; i < tmpTask[clsName]["interface"].length; i++) {
-        Text += "\n  " + tmpTask[clsName]["interface"][i].replace(/\n/g, "\n  ");
+        ItemText += "\n  " + tmpTask[clsName]["interface"][i].replace(/\n/g, "\n  ");
       }
-      Text += "\n  " + tmpTask[clsName]["class"] + " {";
+      ItemText += "\n  export " + tmpTask[clsName]["class"] + " {";
       var isFilled = false;
       for (fun in tmpTask[clsName]["var"]) {
-        Text += "\n    " + tmpTask[clsName]["var"][fun];
+        ItemText += "\n     " + tmpTask[clsName]["var"][fun];
       }
       for (fun in tmpTask[clsName]["function"]) {
-        Text += "\n    " + tmpTask[clsName]["function"][fun];
+        ItemText += "\n     " + tmpTask[clsName]["function"][fun];
         isFilled = true;
       }
       if (isFilled) {
-        Text += "\n  ";
+        ItemText += "\n  ";
       }
-      // Text += "}\n";
-      Text += "}";
+      // ItemText += "}\n";
+      ItemText += "}";
     } else if (tmpTask[clsName]["hooks"]) {
       for (var i = 0; i < tmpTask[clsName]["interface"].length; i++) {
-        Text += "\n  " + tmpTask[clsName]["interface"][i].replace(/\n/g, "\n  ");
+        ItemText += "\n  export " + tmpTask[clsName]["interface"][i].replace(/\n/g, "\n  ");
       }
-      Text += "\n " + tmpTask[clsName]["hooks"];
+      ItemText += "\n export " + tmpTask[clsName]["hooks"];
       for (var i = 0; i < tmpTask[clsName]["type"].length; i++) {
-        Text += "\n    " + tmpTask[clsName]["type"][i].replace(/\n/g, "\n  ");
+        ItemText += "\n    export " + tmpTask[clsName]["type"][i].replace(/\n/g, "\n  ");
       }
       var isFilled = false;
-      Text += "\n " + tmpTask[clsName]["namespaces"] + " {";
+      ItemText += "\n export " + tmpTask[clsName]["namespaces"] + " {";
       for (fun in tmpTask[clsName]["var"]) {
-        Text += "\n    " + tmpTask[clsName]["var"][fun];
+        ItemText += "\n    export " + tmpTask[clsName]["var"][fun];
       }
       for (fun in tmpTask[clsName]["function"]) {
-        Text += "\n    " + tmpTask[clsName]["function"][fun];
+        ItemText += "\n    export " + tmpTask[clsName]["function"][fun];
         isFilled = true;
       }
       if (isFilled) {
-        Text += "\n  ";
+        ItemText += "\n  ";
       }
-      Text += "}";
+      ItemText += "}";
     } else if (tmpTask[clsName]["uselibs"]) {
       for (var i = 0; i < tmpTask[clsName]["interface"].length; i++) {
-        Text += "\n  " + tmpTask[clsName]["interface"][i].replace(/\n/g, "\n  ");
+        ItemText += "\n  export " + tmpTask[clsName]["interface"][i].replace(/\n/g, "\n  ");
       }
-      Text += "\n " + tmpTask[clsName]["uselibs"];
+      ItemText += "\n export " + tmpTask[clsName]["uselibs"];
       for (var i = 0; i < tmpTask[clsName]["type"].length; i++) {
-        Text += "\n  " + tmpTask[clsName]["type"][i].replace(/\n/g, "\n  ");
+        ItemText += "\n  export " + tmpTask[clsName]["type"][i].replace(/\n/g, "\n  ");
       }
       var isFilled = false;
-      Text += "\n " + tmpTask[clsName]["namespaces"] + " {";
+      ItemText += "\n export " + tmpTask[clsName]["namespaces"] + " {";
       for (fun in tmpTask[clsName]["var"]) {
-        Text += "\n    " + tmpTask[clsName]["var"][fun];
+        ItemText += "\n    export " + tmpTask[clsName]["var"][fun];
       }
       for (fun in tmpTask[clsName]["function"]) {
-        Text += "\n    " + tmpTask[clsName]["function"][fun];
+        ItemText += "\n    export " + tmpTask[clsName]["function"][fun];
         isFilled = true;
       }
       if (isFilled) {
-        Text += "\n  ";
+        ItemText += "\n  ";
       }
-      Text += "}";
+      ItemText += "}";
+    }
+    const [module, task] = clsName.split(/(?=[A-Z])/)
+    const nav = module?.toLowerCase() + '/' + task?.toLowerCase()
+
+    if (module && !fs.existsSync(tmpDir + module?.toLowerCase()))
+      fs.mkdirSync(tmpDir + module.toLowerCase());
+
+    if (!fs.existsSync(tmpDir + nav))
+      fs.mkdirSync(tmpDir + nav)
+
+    PreText += "import '" + tmpDir + nav + "/import.d';\n"
+    if (isChange(tmpDir + nav + '/import.d.ts', ItemText)) {
+      fs.writeFile(tmpDir + nav + '/import.d.ts', ItemText, { flag: 'w' }, function (err) {
+        if (err) {
+          return console.log(err);
+        }
+      });
     }
   }
   Text += "\n\ttype LibNavigationRoutes = \"" + Navigations.join("\" |\n\t\t\t \"") + "\"\n"
@@ -536,8 +553,8 @@ declare module "esoftplay" {
     const Words = v.split("/")
     return `\t\tT extends "${v}" ? typeof ${ucword(Words[0]) + ucword(Words[1]) + "Property"} :`
   }).join("\n") + "\nnever;\n"
-  Text += "}"
-
+  Text += "}\n"
+  Text = PreText + Text
   if (isChange(typesDir + "index.d.ts", Text)) {
     fs.writeFile(typesDir + "index.d.ts", Text, { flag: 'w' }, function (err) {
       if (err) {
@@ -549,10 +566,10 @@ declare module "esoftplay" {
 
 function isChange(path, compare) {
   let hasChanged = true
-  let old = fs.existsSync(path) && fs.readFileSync(path)
-  hasChanged = old.toString().length != compare.length
+  let old = fs.existsSync(path) ? fs.readFileSync(path, { encoding: 'utf8' }) : ""
+  hasChanged = old.length != compare.length
   if (hasChanged) {
-    console.log(path, 'CHANGED')
+    console.log(path, 'CHANGED', old.length, compare.length)
   }
   return hasChanged
 }
@@ -584,12 +601,16 @@ function createRouter() {
   var nav = "";
   var staticImport = []
 
-  staticImport.push("var isEqual = require('react-fast-compare');\n")
+  // staticImport.push("var isEqual = require('react-fast-compare');\n")
   staticImport.push("export function applyStyle(style){ return style };\n")
   staticImport.push("export { default as useGlobalState } from '../../../node_modules/esoftplay/global';\n")
   staticImport.push("export { default as usePersistState } from '../../../node_modules/esoftplay/persist';\n")
   staticImport.push("export { default as useSafeState } from '../../../node_modules/esoftplay/state';\n")
   staticImport.push("export { default as esp } from '../../../node_modules/esoftplay/esp';\n")
+  // staticImport.push("export { default as createCache } from '../../../node_modules/esoftplay/_cache';\n")
+  staticImport.push("export { default as _global } from '../../../node_modules/esoftplay/_global';\n")
+  staticImport.push("import { stable } from 'usestable';\n")
+
   for (const module in Modules) {
     for (const task in Modules[module]) {
       nav = module + '/' + task;
@@ -600,40 +621,53 @@ function createRouter() {
       Task += "\t\t" + 'case "' + nav + '":' + "\n\t\t\t" + 'Out = require("../../.' + Modules[module][task] + '")?.default' + "\n\t\t\t" + 'break;' + "\n";
       TaskProperty += "\t\t" + 'case "' + nav + '":' + "\n\t\t\t" + 'Out = require("../../.' + Modules[module][task] + '")' + "\n\t\t\t" + 'break;' + "\n";
       /* ADD ROUTER EACH FILE FOR STATIC IMPORT */
-      var item = "import { default as _" + ucword(module) + ucword(task) + " } from '../../." + Modules[module][task] + "';\n"
+      var item = "import { stable } from 'usestable';\nimport { default as _" + ucword(module) + ucword(task) + " } from '../../../../." + Modules[module][task] + "';\n"
       if (HookModules.includes(nav)) {
         item += "" +
-          "import * as " + ucword(module) + ucword(task) + SuffixHooksProperty + " from '../../." + Modules[module][task] + "';\n" +
+          "import * as " + ucword(module) + ucword(task) + SuffixHooksProperty + " from '../../../../." + Modules[module][task] + "';\n" +
           "var " + ucword(module) + ucword(task) + " = stable(_" + ucword(module) + ucword(task) + "); \n" +
           "export { " + ucword(module) + ucword(task) + SuffixHooksProperty + ", " + ucword(module) + ucword(task) + " };\n"
       } else if (UseLibs.includes(nav)) {
         item += "" +
-          "import * as " + ucword(module) + ucword(task) + SuffixHooksProperty + " from '../../." + Modules[module][task] + "';\n" +
+          "import * as " + ucword(module) + ucword(task) + SuffixHooksProperty + " from '../../../../." + Modules[module][task] + "';\n" +
           "var " + ucword(module) + ucword(task) + " = _" + ucword(module) + ucword(task) + "; \n" +
           "export { " + ucword(module) + ucword(task) + SuffixHooksProperty + ", " + ucword(module) + ucword(task) + " };\n"
       } else {
         item += "export { _" + ucword(module) + ucword(task) + " as " + ucword(module) + ucword(task) + " };\n"
       }
-      if (module == 'lib' && task == 'component') {
-        staticImport.splice(2, 0, item)
-      } else if (module == 'lib' && task == 'style') {
-        staticImport.splice(4, 0, item)
-      } else if (module == 'lib' && task == 'worker') {
-        staticImport.splice(4, 0, item)
-      } else if (module == 'lib' && task == 'navigation') {
-        staticImport.splice(4, 0, item)
-      } else if (task == 'style') {
-        staticImport.splice(9, 0, item)
-      } else if (task == 'scrollpicker') {
-        staticImport.splice(10, 0, item)
-      } else {
-        staticImport.push(item);
+
+      if (!fs.existsSync(tmpDir + module))
+        fs.mkdirSync(tmpDir + module);
+
+      if (!fs.existsSync(tmpDir + nav))
+        fs.mkdirSync(tmpDir + nav)
+
+      if (isChange(tmpDir + nav + "/import.js", item)) {
+        fs.writeFile(tmpDir + nav + '/import.js', item, { flag: 'w' }, function (err) {
+          if (err) {
+            return console.log(err);
+          }
+        });
       }
+
+      // if (module == 'lib' && task == 'component') {
+      //   staticImport.splice(2, 0, item)
+      // } else if (module == 'lib' && task == 'style') {
+      //   staticImport.splice(4, 0, item)
+      // } else if (module == 'lib' && task == 'worker') {
+      //   staticImport.splice(4, 0, item)
+      // } else if (module == 'lib' && task == 'navigation') {
+      //   staticImport.splice(4, 0, item)
+      // } else if (task == 'style') {
+      //   staticImport.splice(9, 0, item)
+      // } else if (task == 'scrollpicker') {
+      //   staticImport.splice(10, 0, item)
+      // } else {
+      //   staticImport.push(item);
+      // }
     }
   }
-  staticImport.splice(2, 0, "export { default as createCache } from '../../../node_modules/esoftplay/_cache';\n")
-  staticImport.splice(2, 0, "export { default as _global } from '../../../node_modules/esoftplay/_global';\n")
-  staticImport.splice(2, 0, "import { stable } from 'usestable';\n")
+
   const x = staticImport.join('')
   if (isChange(tmpDir + 'index.js', x))
     fs.writeFile(tmpDir + 'index.js', x, { flag: 'w' }, function (err) {
@@ -686,14 +720,14 @@ function createRouter() {
     const orientation = NavsOrientation[nav]
     const [module, task] = nav.split('/')
     const comp = ucword(module) + ucword(task)
-    importer.push(comp)
+    importer.push(`import { ${comp} } from ${'"esoftplay/cache/' + module + '/' + task + '/import"'}`)
     if (orientation)
       screens.push("\t\t\t\t<Stack.Screen name={\"" + nav + "\"} options={{ orientation: '" + orientation + "' }} component={" + comp + "} />")
     else
       screens.push("\t\t\t\t<Stack.Screen name={\"" + nav + "\"} component={" + comp + "} />")
   })
 
-  let N = Nav5(importer.join(", "), screens.join("\n"))
+  let N = Nav5(importer.join("\n"), screens.join("\n"))
   if (isChange(tmpDir + 'navs.tsx', N))
     fs.writeFile(tmpDir + "navs.tsx", N, { flag: 'w' }, function (err) {
       if (err) {

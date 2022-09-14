@@ -1,6 +1,11 @@
 // noPage
+import { LibComponent } from 'esoftplay/cache/lib/component/import';
+import { LibIcon, LibIconStyle } from 'esoftplay/cache/lib/icon/import';
+import { LibStyle } from 'esoftplay/cache/lib/style/import';
+import { LibTextstyle } from 'esoftplay/cache/lib/textstyle/import';
+import { LibTheme } from 'esoftplay/cache/lib/theme/import';
+import useGlobalState from 'esoftplay/global';
 
-import { LibComponent, LibIcon, LibIconStyle, LibStyle, LibTextstyle, LibTheme, useGlobalState } from 'esoftplay';
 import React from 'react';
 import { BackHandler, Keyboard, TouchableOpacity, View } from 'react-native';
 
@@ -104,7 +109,7 @@ export default class m extends LibComponent<LibDialogProps, LibDialogState>{
     state.set({
       visible: true,
       view: view,
-      style: undefined,
+      style: "default",
       icon: undefined,
       title: undefined,
       msg: undefined,

@@ -1,7 +1,6 @@
 // withHooks
 // noPage
-
-import { LibFocus } from "esoftplay";
+import { LibFocus } from 'esoftplay/cache/lib/focus/import';
 import React, { useEffect, useMemo, useRef } from 'react';
 import { ScrollView, View } from 'react-native';
 
@@ -122,8 +121,8 @@ export default function m(props: LibCarrousel_snapProps): any {
   }
 
   function prefixIndexs(): number[] {
-    let out = []
-    const dataLength = props.data.length
+    let out: any[] = []
+    const dataLength: number = (props.data.length || 0)
     if (props.loop) {
       if (dataLength == 1) {
         out.push(dataLength - 1)
@@ -144,7 +143,7 @@ export default function m(props: LibCarrousel_snapProps): any {
   }
 
   function prefix(): any {
-    let out = []
+    let out: any[] = []
     if (props.loop) {
       const dataLength = props.data.length
       if (dataLength == 1) {
@@ -166,7 +165,7 @@ export default function m(props: LibCarrousel_snapProps): any {
   }
 
   function suffixIndexs(): number[] {
-    let out = []
+    let out: any[] = []
     if (props.loop) {
       if (props.data.length == 1) {
         out.push(0)
@@ -186,7 +185,7 @@ export default function m(props: LibCarrousel_snapProps): any {
   }
 
   function suffix(): any {
-    let out = []
+    let out: any[] = []
     if (props.loop) {
       if (props.data.length == 1) {
         out.push(renderItem(props.data[0], 'x'))

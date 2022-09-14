@@ -1,5 +1,8 @@
 // noPage
-import { LibComponent, LibKeyboard_avoid, LibStyle } from 'esoftplay';
+import { LibComponent } from 'esoftplay/cache/lib/component/import';
+import { LibKeyboard_avoid } from 'esoftplay/cache/lib/keyboard_avoid/import';
+import { LibStyle } from 'esoftplay/cache/lib/style/import';
+
 import React from 'react';
 import { Animated, BackHandler, Keyboard, TouchableOpacity, View } from 'react-native';
 

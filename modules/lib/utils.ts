@@ -1,11 +1,14 @@
 // noPage
-
-import { createCache, esp, LibToastProperty } from "esoftplay";
+import { esp } from 'esoftplay';
+import { LibToastProperty } from 'esoftplay/cache/lib/toast/import';
+import { fastFilter, fastLoop } from 'esoftplay/fast';
+import useGlobalState from 'esoftplay/global';
+import moment from "esoftplay/moment";
+import * as Application from 'expo-application';
 import * as Clipboard from 'expo-clipboard';
+import * as SecureStore from 'expo-secure-store';
 import { Linking, Platform, Share } from "react-native";
 import shorthash from "shorthash";
-import moment from "../../moment";
-import { fastFilter, fastLoop } from './../../fast';
 const Buffer = require('buffer/').Buffer
 const isEqual = require("react-fast-compare");
 
@@ -17,9 +20,9 @@ export interface LibUtilsDate {
 
 export type LibUtilsTravelMode = 'driving' | 'walking'
 let installationIdDefault
-const installationId = createCache(installationIdDefault, { persistKey: 'installationId' })
-const cache = createCache<any>({ inDebounce: undefined })
-export default class m {
+const installationId = useGlobalState(installationIdDefault, { persistKey: 'deviceId' })
+const cache = useGlobalState<any>({ inDebounce: undefined })
+export default class eutils {
 
   static checkUndefined(obj: any, cursorsAsString: string): boolean {
     var args = cursorsAsString.split('.')
@@ -60,14 +63,12 @@ export default class m {
   }
 
   static getArgs(props: any, key: string, defOutput?: any): any {
-    console.warn('LibUtils.getArgs is deprecated, use LibNavigation.getArgs instead')
     if (defOutput == undefined) {
       defOutput = "";
     }
     return props?.route?.params?.[key] || defOutput;
   }
   static getArgsAll<S>(props: any, defOutput?: any): S {
-    console.warn('LibUtils.getArgsAll is deprecated, use LibNavigation.getArgsAll instead')
     if (defOutput == undefined) {
       defOutput = "";
     }
@@ -298,8 +299,7 @@ export default class m {
       hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
     }
     lum = lum || 0;
-    var rgb = "#",
-      c, i;
+    var rgb = "#", c, i;
     for (i = 0; i < 3; i++) {
       c = parseInt(hex.substr(i * 2, 2), 16);
       c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
@@ -332,11 +332,23 @@ export default class m {
   static getInstallationID(): string {
     let out = installationId.get()
     if (!out) {
-      out = ('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-      }))
-      installationId.set(out)
+      if (Platform.OS == "android")
+        return Application.androidId
+      if (Platform.OS == "ios") {
+        out = (async () => {
+          let code = await SecureStore.getItemAsync('installationId');
+          if (!code) {
+            code = ('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+              var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+              return v.toString(16);
+            }))
+          }
+          installationId.set(code);
+          SecureStore.setItemAsync('installationId', String(code));
+          return code;
+        })()
+        return out
+      }
     }
     return out
   }
@@ -356,5 +368,6 @@ export default class m {
     }
     return string
   }
-
 }
+
+// eutils.getInstallationID()

@@ -1,5 +1,13 @@
 
-import { esp, LibComponent, LibCurl, LibDialog, LibIcon, LibNavigation, LibStyle, LibTextstyle } from 'esoftplay';
+import { esp } from 'esoftplay';
+import { LibComponent } from 'esoftplay/cache/lib/component/import';
+import { LibCurl } from 'esoftplay/cache/lib/curl/import';
+import { LibDialog } from 'esoftplay/cache/lib/dialog/import';
+import { LibIcon } from 'esoftplay/cache/lib/icon/import';
+import { LibNavigation } from 'esoftplay/cache/lib/navigation/import';
+import { LibStyle } from 'esoftplay/cache/lib/style/import';
+import { LibTextstyle } from 'esoftplay/cache/lib/textstyle/import';
+
 import Constants from 'expo-constants';
 import React from 'react';
 import { BackHandler, ImageBackground, Linking, Platform, TouchableOpacity } from 'react-native';

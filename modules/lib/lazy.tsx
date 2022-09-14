@@ -1,7 +1,7 @@
 // withHooks
 // noPage
-
 import { useSafeState } from 'esoftplay';
+
 import { useEffect } from 'react';
 import { InteractionManager } from 'react-native';
 

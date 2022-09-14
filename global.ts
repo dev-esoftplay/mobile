@@ -1,10 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { UserData } from 'esoftplay/cache/user/data/import';
+import Storage from 'esoftplay/storage';
+import _global from 'esoftplay/_global';
 import * as R from 'react';
 import { fastFilter, fastLoop } from './fast';
-const _global = require('./_global')
 const isEqual = require('react-fast-compare');
-
-
 
 export interface useGlobalReturn<T> {
   useState: () => [T, (newState: T) => void, () => void],
@@ -27,7 +27,7 @@ export interface useGlobalConnect<T> {
 }
 
 _global.useGlobalUserDelete = {}
-let useGlobalSubscriber = {}
+_global.useGlobalSubscriber = {}
 
 class Context {
   idx = 0
@@ -39,22 +39,16 @@ class Context {
 
 export const globalIdx = new Context()
 export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): useGlobalReturn<T> {
-  const Storage = require('./storage').default;
   const STORAGE = o?.inFile ? new Storage() : AsyncStorage
-  const _idx = globalIdx.idx
-  if (!useGlobalSubscriber[_idx])
-    useGlobalSubscriber[_idx] = [];
+  const _idx = o?.persistKey || globalIdx.idx
+  if (!_global.useGlobalSubscriber[_idx])
+    _global.useGlobalSubscriber[_idx] = [];
   let value: T = initValue;
 
   if (o?.persistKey) {
     let persistKey = o?.persistKey
     STORAGE.getItem(persistKey).then((p) => {
       if (p) {
-        if (p.includes("\\\\\\\\")) {
-          if (persistKey)
-            STORAGE.clear()
-          return
-        }
         if (p != undefined && typeof p == 'string' && (p.startsWith("{") || p.startsWith("[")))
           try { set(JSON.parse(p)) } catch (error) { }
         else
@@ -69,8 +63,6 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
       set(initValue)
     }
     if (o?.persistKey) {
-      const esp = require('./esp').default;
-      const UserData = esp.mod('user/data')
       if (UserData)
         UserData?.register?.(o?.persistKey)
     }
@@ -81,7 +73,7 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
     const isChange = !isEqual(value, ns)
     if (isChange) {
       value = ns
-      fastLoop(useGlobalSubscriber?.[_idx], (c) => { c?.(ns) })
+      fastLoop(_global.useGlobalSubscriber?.[_idx], (c) => { c?.(ns) })
       if (o?.persistKey && ns != undefined) {
         let data: any
         switch (typeof ns) {
@@ -124,9 +116,9 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
 
   function subscribe(func: any) {
     R.useLayoutEffect(() => {
-      useGlobalSubscriber?.[_idx]?.push?.(func);
+      _global.useGlobalSubscriber?.[_idx]?.push?.(func);
       return () => {
-        useGlobalSubscriber[_idx] = fastFilter(useGlobalSubscriber?.[_idx], (f) => f !== func)
+        _global.useGlobalSubscriber[_idx] = fastFilter(_global.useGlobalSubscriber?.[_idx], (f) => f !== func)
       };
     }, [func]);
   }

@@ -1,6 +1,8 @@
 // noPage
+import { LibCurl } from 'esoftplay/cache/lib/curl/import';
+import { LibProgress } from 'esoftplay/cache/lib/progress/import';
+import esp from 'esoftplay/esp';
 
-import { esp, LibCurl, LibProgress } from 'esoftplay';
 import * as DocumentPicker from 'expo-document-picker';
 
 export default class m {
@@ -8,7 +10,7 @@ export default class m {
   static pick(mimeType?: string): Promise<any> {
     return new Promise((r) => {
       let _mimeType = mimeType || '*/*'
-      DocumentPicker.getDocumentAsync({ type: _mimeType }).then((doc) => {
+      DocumentPicker.getDocumentAsync({ type: _mimeType }).then((doc: any) => {
         const { type, uri, size, lastModified, output, file } = doc
         if (type != 'cancel' && uri) {
           r(doc)

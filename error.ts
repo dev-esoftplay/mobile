@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { LibCurl, UserClass } from 'esoftplay';
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
+import { LibCurl } from './cache/lib/curl/import';
+import { UserClass } from './cache/user/class/import';
 import esp from './esp';
 import { default as UserRoutes } from './modules/user/routes';
 let pack = require('../../package.json');

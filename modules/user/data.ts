@@ -1,8 +1,7 @@
 // noPage
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { _global } from 'esoftplay';
-import { fastFilter } from './../../fast';
+import { fastFilter } from 'esoftplay/fast';
+import _global from 'esoftplay/_global';
 
 export default class m {
   static register(name: string): void {
