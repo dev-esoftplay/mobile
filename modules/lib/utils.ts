@@ -329,13 +329,13 @@ export default class eutils {
     });
   }
 
-  static getInstallationID(): string {
-    let out = installationId.get()
-    if (!out) {
-      if (Platform.OS == "android")
-        return Application.androidId
-      if (Platform.OS == "ios") {
-        out = (async () => {
+  static getInstallationID(): Promise<string> {
+    return new Promise(async (resolve, reject) => {
+      let out = installationId.get()
+      if (!out) {
+        if (Platform.OS == "android")
+          resolve(String(Application.androidId))
+        if (Platform.OS == "ios") {
           let code = await SecureStore.getItemAsync('installationId');
           if (!code) {
             code = ('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -345,12 +345,11 @@ export default class eutils {
           }
           installationId.set(code);
           SecureStore.setItemAsync('installationId', String(code));
-          return code;
-        })()
-        return out
+          resolve(code);
+        }
       }
-    }
-    return out
+      resolve(out)
+    })
   }
 
   static sprintf(string: string, ...stringToBe: any[]): string {
@@ -369,5 +368,3 @@ export default class eutils {
     return string
   }
 }
-
-// eutils.getInstallationID()

@@ -6,7 +6,6 @@ import { LibCurl } from 'esoftplay/cache/lib/curl/import';
 import { LibNotification } from 'esoftplay/cache/lib/notification/import';
 import { UserClass } from 'esoftplay/cache/user/class/import';
 import { UserData } from 'esoftplay/cache/user/data/import';
-
 import useGlobalState from 'esoftplay/global';
 import moment from "esoftplay/moment";
 import Constants from 'expo-constants';
@@ -30,9 +29,18 @@ export default class m {
   }
 
   static load(callback?: (user?: any | null) => void): Promise<any> {
-    return new Promise((r, j) => {
-      if (callback) callback(state?.get?.())
-      r((state?.get?.()))
+    return new Promise(async (r, j) => {
+      AsyncStorage.getItem('user').then((user) => {
+        if (user) {
+          let juser = JSON.parse(user)
+          if (callback) callback(state?.get?.() || juser)
+          r((state?.get?.() || juser))
+        } else {
+          if (callback) callback(null)
+          r(null)
+        }
+      })
+
     })
   }
 
