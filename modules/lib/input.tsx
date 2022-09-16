@@ -222,6 +222,7 @@ export default class m extends LibComponent<LibInputProps, LibInputState>{
             allowFontScaling={false}
             {...this.props}
             style={[{
+              outlineWidth: 0,
               paddingVertical: 8,
               marginBottom: 2,
               paddingRight: suffix ? (suffix.length * 14) : 0,
