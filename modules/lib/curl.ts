@@ -350,12 +350,11 @@ export default class m {
       mode: "cors",
     }
 
-    //api_logger
-
+    
     this.initTimeout(upload ? 120000 : this.timeout)
     if (debug == 1) esp.log(this.url + this.uri, options)
     this.fetchConf = { url: this.url + this.uri, options: options }
-
+    
     fetch(this.url + this.uri, options).then(async (res) => {
       this.cancelTimeout()
       this.resStatus = res.status
@@ -364,6 +363,7 @@ export default class m {
         if (onFailed) onFailed({ message: "Koneksi internet kamu tidak stabil, silahkan coba lagi" }, false)
         return
       }
+      //api_logger
       this.onFetched(resText, onDone, onFailed, debug)
     }).catch((r) => {
       // if (this.maxRetry > 0) {

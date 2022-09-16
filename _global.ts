@@ -1,1 +1,2 @@
-export default {}
+const x: any = {}
+export default x

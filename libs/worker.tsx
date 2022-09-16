@@ -1,6 +1,6 @@
 import { esp } from "esoftplay";
 import _global from "esoftplay/_global";
-import React from "react";
+import React, { useRef } from "react";
 import { Platform, View } from 'react-native';
 import WebView from "react-native-webview";
 
@@ -13,6 +13,10 @@ _global.WorkerCount = 0
 const Worker = {
   delete(taskId: string) {
     _global.WorkerTasks.delete(taskId)
+  },
+  useWorker(name: string, func: (...fparams: any[]) => Promise<any>): (params: any[], res: (data: any) => void) => void {
+    const ref = useRef(Worker.registerJobAsync(name, func)).current
+    return ref
   },
   registerJob(name: string, func: Function): (params: any[], res: (data: any) => void) => void {
     'show source';
