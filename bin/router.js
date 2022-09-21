@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 // @ts-nocheck
 /* EXECUTED ON `ESP START` TO BUILD FILE CACHES */
-const { execSync } = require('child_process');
 const fs = require('fs');
 var checks = ['./node_modules/esoftplay/modules/', './modules/', './templates/'];
 var pathAsset = "./assets";
@@ -66,21 +65,25 @@ var tmpExp = ["LibCrypt"]; // nama2 class yang tidak perlu dibuat
 var Nav5 = (importer, navs) => {
   return (`
 // @ts-nocheck
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-\nimport { esp, _global } from "esoftplay";\n
+\nimport { _global } from "esoftplay";\n
+\nimport useGlobalState from "esoftplay/global";\n
 ${importer}
-\nimport { LibNavigation } from 'esoftplay/cache/lib/navigation/import';\n
 const Stack = createNativeStackNavigator();
 
-export default function m(props): any{
-  const { user, initialState, handler } = props
-  const econf = esp.config()
-  const appOrientation = econf?.orientation ? String(econf.orientation) : 'portrait'
-  return(
-    <NavigationContainer
-      ref={(r) => LibNavigation.setRef(r)}
+const config = require('../../../config.json')
+import { LibNavigation } from 'esoftplay/cache/lib/navigation/import';
+
+export default function m(props): any {
+	const { user, initialState, handler } = props
+	const econf = config.config
+	const [s] = LibNavigation.state().useState()
+	const appOrientation = econf?.orientation ? String(econf.orientation) : 'portrait'
+	return (
+		<NavigationContainer
+			ref={(r) => LibNavigation.setRef(r)}
       initialState={initialState}
       onReady={() => { _global.NavsIsReady = true }}
       onStateChange={handler} >
@@ -716,15 +719,18 @@ function createRouter() {
   });
   let importer = []
   let screens = []
+
   Navigations.forEach((nav) => {
+    const prefix = "{s['" + nav + "'] && "
+    const suffix = "}"
     const orientation = NavsOrientation[nav]
     const [module, task] = nav.split('/')
     const comp = ucword(module) + ucword(task)
     importer.push(`import { ${comp} } from ${'"esoftplay/cache/' + module + '/' + task + '/import"'}`)
     if (orientation)
-      screens.push("\t\t\t\t<Stack.Screen name={\"" + nav + "\"} options={{ orientation: '" + orientation + "' }} component={" + comp + "} />")
+      screens.push("\t\t\t\t" + prefix + "<Stack.Screen name={\"" + nav + "\"} options={{ orientation: '" + orientation + "' }} component={" + comp + "} />" + suffix)
     else
-      screens.push("\t\t\t\t<Stack.Screen name={\"" + nav + "\"} component={" + comp + "} />")
+      screens.push("\t\t\t\t" + prefix + "<Stack.Screen name={\"" + nav + "\"} component={" + comp + "} />" + suffix)
   })
 
   let N = Nav5(importer.join("\n"), screens.join("\n"))

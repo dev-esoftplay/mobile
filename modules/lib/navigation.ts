@@ -1,9 +1,10 @@
 // noPage
 import { CommonActions, StackActions } from '@react-navigation/native';
-import { LibNavigationRoutes } from 'esoftplay';
+import { LibNavigationRoutes, useGlobalReturn } from 'esoftplay';
 import { UserClass } from 'esoftplay/cache/user/class/import';
 import { UserRoutes } from 'esoftplay/cache/user/routes/import';
 import esp from 'esoftplay/esp';
+import useGlobalState from 'esoftplay/global';
 import _global from 'esoftplay/_global';
 import React from "react";
 
@@ -12,12 +13,38 @@ export interface LibNavigationInjector {
   children?: any
 }
 
+const config = require('../../../../config.json')
+
+let init = {
+  [config.config.home.member]: true,
+  [config.config.home.public]: true,
+}
+
+export const state = useGlobalState(init)
+function openNav(route: string, fun: Function) {
+  state.set(Object.assign({}, state.get(), { [route]: true }))
+  const open = () => {
+   /*  */ setTimeout(() => {
+    if (state.get()[route]) {
+      fun()
+    } else {
+      open()
+    }
+  });
+  }
+  open()
+}
+
 export default (() => {
   let libNavigationData: any = {}
   let libNavigationRedirect: any = {}
   return class m {
     static setRef(ref: any): void {
       _global.libNavigationRef = ref
+    }
+
+    static state(): useGlobalReturn<any> {
+      return state
     }
 
     static setNavigation(nav: any): void {
@@ -65,7 +92,9 @@ export default (() => {
     }
 
     static navigate<S>(route: LibNavigationRoutes, params?: S): void {
-      _global.libNavigationRef?.navigate?.(route, params)
+      openNav(route, () => {
+        _global.libNavigationRef?.navigate?.(route, params)
+      })
     }
 
     static getResultKey(props: any): number {
@@ -106,34 +135,40 @@ export default (() => {
             r(value)
           };
         }
-        m.push(route, params)
+        openNav(route, () => {
+          m.push(route, params)
+        })
       })
     }
 
-    static replace<S>(routeName: LibNavigationRoutes, params?: S): void {
-      _global.libNavigationRef.dispatch(
-        StackActions.replace(routeName, params)
-      )
-    }
-
-    static push<S>(routeName: LibNavigationRoutes, params?: S): void {
-      _global.libNavigationRef?.dispatch?.(
-        StackActions.push(
-          routeName,
-          params
+    static replace<S>(route: LibNavigationRoutes, params?: S): void {
+      openNav(route, () => {
+        _global.libNavigationRef.dispatch(
+          StackActions.replace(route, params)
         )
-      )
+      })
     }
 
-    static reset(routeName?: LibNavigationRoutes, ...routeNames: LibNavigationRoutes[]): void {
+    static push<S>(route: LibNavigationRoutes, params?: S): void {
+      openNav(route, () => {
+        _global.libNavigationRef?.dispatch?.(
+          StackActions.push(
+            route,
+            params
+          )
+        )
+      })
+    }
+
+    static reset(route?: LibNavigationRoutes, ...routes: LibNavigationRoutes[]): void {
       const user = UserClass.state().get()
-      let _routeName = [routeName || esp.config('home', (user && (user.id || user.user_id)) ? 'member' : 'public')]
-      if (routeNames && routeNames.length > 0) {
-        _routeName = [..._routeName, ...routeNames]
+      let _route = [route || esp.config('home', (user && (user.id || user.user_id)) ? 'member' : 'public')]
+      if (routes && routes.length > 0) {
+        _route = [..._route, ...routes]
       }
       const resetAction = CommonActions.reset({
-        index: _routeName.length - 1,
-        routes: _routeName.map((rn) => ({ name: rn }))
+        index: _route.length - 1,
+        routes: _route.map((rn) => ({ name: rn }))
       });
       _global.libNavigationRef?.dispatch?.(resetAction);
     }
@@ -144,7 +179,7 @@ export default (() => {
       _global.libNavigationRef?.dispatch?.(popAction)
     }
 
-    /* return `root` on initialRoute otherwise return the routeName was active  */
+    /* return `root` on initialRoute otherwise return the route was active  */
     static getCurrentRouteName(): string {
       return UserRoutes.getCurrentRouteName()
     }

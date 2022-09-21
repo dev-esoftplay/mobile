@@ -354,7 +354,7 @@ export default class m {
     this.initTimeout(upload ? 120000 : this.timeout)
     if (debug == 1) esp.log(this.url + this.uri, options)
     this.fetchConf = { url: this.url + this.uri, options: options }
-    
+    //api_init_time
     fetch(this.url + this.uri, options).then(async (res) => {
       this.cancelTimeout()
       this.resStatus = res.status

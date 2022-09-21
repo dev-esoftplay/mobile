@@ -83,22 +83,22 @@ const defaultStyle = {
   },
 }
 
-export default class m {
-  static isIphoneX: boolean = isIphoneX();
-  static STATUSBAR_HEIGHT: number = STATUSBAR_HEIGHT;
-  static STATUSBAR_HEIGHT_MASTER: number = STATUSBAR_HEIGHT_MASTER;
-  static colorPrimary: string = colorPrimary;
-  static colorPrimaryDark: string = colorPrimaryDark;
-  static colorNavigationBar: string = colorNavigationBar;
-  static colorAccent: string = colorAccent;
-  static colorGrey: string = colorGrey;
-  static colorRed: string = colorRed;
-  static colorTextPrimary: string = colorTextPrimary;
-  static colorTextBody: string = colorTextBody;
-  static colorTextCaption: string = colorTextCaption;
-  static colorLightGrey: string = colorLightGrey;
-  static elevation(val: number): any { return elevation(val) };
-  static width: number = width;
-  static height: number = height;
-  static defaultStyle: any = defaultStyle;
+export default {
+  isIphoneX: isIphoneX(),
+  STATUSBAR_HEIGHT: STATUSBAR_HEIGHT,
+  STATUSBAR_HEIGHT_MASTER: STATUSBAR_HEIGHT_MASTER,
+  colorPrimary: colorPrimary,
+  colorPrimaryDark: colorPrimaryDark,
+  colorNavigationBar: colorNavigationBar,
+  colorAccent: colorAccent,
+  colorGrey: colorGrey,
+  colorRed: colorRed,
+  colorTextPrimary: colorTextPrimary,
+  colorTextBody: colorTextBody,
+  colorTextCaption: colorTextCaption,
+  colorLightGrey: colorLightGrey,
+  elevation(val: number): any { return elevation(val) },
+  width: width,
+  height: height,
+  defaultStyle: defaultStyle,
 }

@@ -29,17 +29,17 @@ export interface useGlobalConnect<T> {
 _global.useGlobalUserDelete = {}
 _global.useGlobalSubscriber = {}
 
-class Context {
-  idx = 0
-  increment = () => this.idx++
-  reset = () => {
+const Context = {
+  idx: 0,
+  increment: function () { this.idx++ },
+  reset: function () {
     this.idx = 0
   }
 }
 
-export const globalIdx = new Context()
+export const globalIdx = Context
 export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): useGlobalReturn<T> {
-  const STORAGE = o?.inFile ? new Storage() : AsyncStorage
+  const STORAGE = o?.inFile ? Storage : AsyncStorage
   const _idx = o?.persistKey || globalIdx.idx
   if (!_global.useGlobalSubscriber[_idx])
     _global.useGlobalSubscriber[_idx] = [];

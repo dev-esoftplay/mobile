@@ -1,14 +1,7 @@
-import { LibLocale } from 'esoftplay/cache/lib/locale/import';
-import { UserRoutes } from 'esoftplay/cache/user/routes/import';
-import Constants from 'expo-constants';
-import { LogBox, Platform } from 'react-native';
+import { LogBox } from 'react-native';
 import 'react-native-reanimated';
-import _assets from './cache/assets';
-import navs from './cache/navigations';
-import properties from './cache/properties';
-import routers from './cache/routers';
-
 import './oneplusfixfont';
+
 const ignoreWarns = [
   "Setting a timer for a long period of time",
   "VirtualizedLists should never be nested inside plain ScrollViews with the same orientation",
@@ -48,8 +41,8 @@ try {
 
 }
 
-export default class esp {
-  static mergeDeep(target: any, ...sources: any[]) {
+const esp = {
+  mergeDeep(target: any, ...sources: any[]) {
     target = Object(target);
     for (let source of sources) {
       source = Object(source);
@@ -64,21 +57,20 @@ export default class esp {
       }
     }
     return target;
-  }
-  
-  static appjson(): any {
+  },
+  appjson(): any {
     return esp.mergeDeep(app, conf)
-  }
-
-  static assets(path: string): any {
+  },
+  assets(path: string): any {
+    const _assets = require('./cache/assets')
     return _assets(path)
-  }
-
-  static versionName(): string {
+  },
+  versionName(): string {
+    const Platform = require('react-native').Platform
+    const Constants = require('expo-constants').default
     return (Platform.OS == 'android' ? Constants?.manifest?.android?.versionCode : Constants?.manifest?.ios?.buildNumber) + '-' + esp.config('publish_id')
-  }
-
-  static config(param?: string, ...params: string[]): any {
+  },
+  config(param?: string, ...params: string[]): any {
     let out: any = esp._config();
     if (param) {
       var _params = [param, ...params]
@@ -93,16 +85,14 @@ export default class esp {
         }
     }
     return out;
-  }
-
-  static isDebug(message: string): boolean {
+  },
+  isDebug(message: string): boolean {
     if (!lconf) {
       return false
     }
     return conf.config.domain != lconf.config.domain
-  }
-
-  static readDeepObj(obj: any) {
+  },
+  readDeepObj(obj: any) {
     return function (param?: string, ...params: string[]): any {
       let out: any = obj
       if (param) {
@@ -117,9 +107,8 @@ export default class esp {
       }
       return out;
     }
-  }
-
-  static lang(moduleTask: string, langName: string, ...stringToBe: string[]): string {
+  },
+  lang(moduleTask: string, langName: string, ...stringToBe: string[]): string {
     let string = esp.assets("locale/" + esp.langId() + ".json")?.[moduleTask]?.[langName]
     if (!string) {
       string = esp.assets("locale/id.json")[moduleTask][langName]
@@ -137,28 +126,28 @@ export default class esp {
       string = sprintf(string, 0)
     }
     return string
-  }
-
-  static langId(): string {
+  },
+  langId(): string {
+    const LibLocale = esp.mod('lib/locale');
     return LibLocale.state().get()
-  }
-
-  static mod(path: string): any {
+  },
+  mod(path: string): any {
     var modtast = path.split("/");
     if (modtast[1] == "") {
       modtast[1] = "index";
     }
+    const routers = require('./cache/routers')
     return routers(modtast.join("/"));
-  }
-  static modProp(path: string): any {
+  },
+  modProp(path: string): any {
     var modtast = path.split("/");
     if (modtast[1] == "") {
       modtast[1] = "index";
     }
+    const properties = require('./cache/properties')
     return properties(modtast.join("/"));
-  }
-
-  static _config(): string {
+  },
+  _config(): string {
     app = esp.mergeDeep(app, conf)
     var msg = ''
     if (!app.hasOwnProperty('config')) {
@@ -201,23 +190,24 @@ export default class esp {
     config.webviewOpen = '<!DOCTYPE html> <html lang="en"> <head> <meta charset="utf-8" /> <meta name="viewport" content="width=device-width, initial-scale=1" /> <link href="' + config.content + 'user/editor_css" rel="stylesheet" /> <script type="text/javascript">var _ROOT="' + config.uri + '";var _URL="' + config.content + '";function _Bbc(a,b){var c="BS3load_func";if(!window[c+"i"]){window[c+"i"]=0};window[c+"i"]++;if(!b){b=c+"i"+window[c+"i"]};if(!window[c]){window[c]=b}else{window[c]+=","+b}window[b]=a;if(typeof BS3!="undefined"){window[b](BS3)}};</script> <style type="text/css">body {padding: 0 20px;}</style></head> <body>';
     config.webviewClose = '<script src="' + config.content + 'templates/admin/bootstrap/js/bootstrap.min.js"></script> </body> </html>';
     return config;
-  }
-
-  static navigations(): string[] {
+  },
+  navigations(): string[] {
+    const navs = require('./cache/navs').default
     return navs;
-  }
-  static home(): any {
+  },
+  home(): any {
     return esp.mod('user/index');
-  }
-  static routes(): any {
+  },
+  routes(): any {
+    const UserRoutes = esp.mod('user/routes');
     return UserRoutes.state().get();
-  }
-  static log(message?: any, ...optionalParams: any[]) {
+  },
+  log(message?: any, ...optionalParams: any[]) {
     if (esp.config("isDebug") == 1) {
       console.log(message, ...optionalParams, "\x1b[0m");
     }
-  }
-  static logColor = {
+  },
+  logColor: {
     reset: "\x1b[0m",
     black: "\x1b[30m",
     red: "\x1b[31m",
@@ -237,6 +227,8 @@ export default class esp {
     backgroundWhite: "\x1b[47m",
   }
 }
+
+export default esp
 
 // var a = esp.assets("bacground")     // mengambil file dari folder images
 // var b = esp.config("data", "name")  // mengambil value dari config (bisa ditentukan di app.json)

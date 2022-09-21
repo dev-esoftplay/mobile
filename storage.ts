@@ -17,20 +17,11 @@ const CACHE_DIR = `${FileSystem.cacheDirectory}lib-storage-cache/`;
   }
 })()
 
-export default class Storage {
-  constructor() {
-    this.getDBPath = this.getDBPath.bind(this);
-    this.setItem = this.setItem.bind(this);
-    this.getItem = this.getItem.bind(this)
-    this.removeItem = this.removeItem.bind(this);
-    this.clear = this.clear.bind(this);
-  }
-
-  private getDBPath(key: string): string {
+const Storage = {
+  getDBPath(key: string): string {
     const path = `${CACHE_DIR}${key.replace(/\//g, "-")}.txt`;
     return path
-  }
-
+  },
   getItem(key: string): Promise<string | null> {
     return new Promise(async (r, j) => {
       const path = this.getDBPath(key)
@@ -46,23 +37,21 @@ export default class Storage {
         }
       })
     })
-  }
-
+  },
   setItem(key: string, value: string): Promise<string> {
     return new Promise(async (r, j) => {
       const path = this.getDBPath(key)
       FileSystem.writeAsStringAsync(path, value, { encoding: 'utf8' })
     })
-  }
-
+  },
   removeItem(key: string): Promise<string> {
     return new Promise(async (r, j) => {
       const path = this.getDBPath(key)
       try { FileSystem.deleteAsync(path) } catch (error) { }
     })
-  }
-
+  },
   clear(): void {
     FileSystem.deleteAsync(CACHE_DIR)
   }
 }
+export default Storage;
