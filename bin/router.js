@@ -459,7 +459,7 @@ declare module "esoftplay" {
     if (tmpTask[clsName]["class"]) {
 
       if (clsName !== "LibComponent")
-        ItemText += "import { LibComponent } from 'esoftplay/cache/lib/component/import';\n"
+        ItemText += "import { LibComponent } from 'esoftplay/cache/lib/component/import';\nimport { LibNavigationRoutes, useGlobalReturn } from 'esoftplay';\n"
       else if (clsName === "LibComponent") {
         ItemText += "import { Component } from 'react';\n"
       }

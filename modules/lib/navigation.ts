@@ -26,13 +26,13 @@ function openNav(route: string, fun: Function) {
   const open = () => {
    /*  */ setTimeout(() => {
     if (state.get()[route]) {
-      fun()
+     /*  */ fun()
     } else {
-      open()
+      /*  */open()
     }
   });
   }
-  open()
+  /*  */open()
 }
 
 export default (() => {
@@ -166,11 +166,16 @@ export default (() => {
       if (routes && routes.length > 0) {
         _route = [..._route, ...routes]
       }
-      const resetAction = CommonActions.reset({
-        index: _route.length - 1,
-        routes: _route.map((rn) => ({ name: rn }))
-      });
-      _global.libNavigationRef?.dispatch?.(resetAction);
+      _route.forEach((route) => {
+        state.set(Object.assign({}, state.get(), { [route]: true }))
+      })
+      openNav(_route?.[_route?.length - 1], () => {
+        const resetAction = CommonActions.reset({
+          index: _route.length - 1,
+          routes: _route.map((rn) => ({ name: rn }))
+        });
+        _global.libNavigationRef?.dispatch?.(resetAction);
+      })
     }
 
     static back(deep?: number): void {
