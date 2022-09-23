@@ -38,7 +38,10 @@ function elevation(value: any): any {
   if (Platform.OS === "ios") {
     if (value == 0) return {}
     return { shadowColor: "black", shadowOffset: { width: 0, height: value / 2 }, shadowRadius: value, shadowOpacity: 0.24 }
+  } else if (Platform.OS == 'web') {
+    return { boxShadow: `${0 * value}px ${0.5 * value}px ${value}px ${'rgba(0,0,0,0.24)'}` }
   }
+
   return { elevation: value }
 }
 
