@@ -10,10 +10,11 @@ import { Alert, Linking } from 'react-native';
 
 export default function m(defaultUrl?: string): void {
   const doLink = useCallback(({ url }: { url: string }) => {
-    const { domain, uri } = esp.config()
+    const { domain, uri, protocol } = esp.config()
     if (url?.includes(defaultUrl || domain))
       LibUtils.debounce(() => {
         url = url.replace((domain + uri), (domain + uri + 'deeplink/'))
+        url = url.replace(/^[a-z]+\:\/\//g, protocol + "://")
         function removeLastDot(url: string) {
           if (url.substr(url.length - 1, 1) == '.') {
             url = url.substring(0, url.length - 1)
