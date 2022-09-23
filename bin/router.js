@@ -451,6 +451,9 @@ declare module "esoftplay" {
   }`;
   for (clsName in tmpTask) {
     let ItemText = ""
+    if (clsName == "LibIcon") {
+      ItemText += "import { EvilIconsTypes, AntDesignTypes, EvilIconsTypes, FeatherTypes, FontAwesomeTypes, FontistoTypes, FoundationTypes, MaterialIconsTypes, EntypoTypes, OcticonsTypes, ZocialTypes, SimpleLineIconsTypes, IoniconsTypes, MaterialCommunityIconsTypes } from '@expo/vector-icons/build/esoftplay_icons';\n"
+    }
     if (clsName === 'LibCrypt') {
       tmpTask[clsName]["class"] = "class LibCrypt"
       tmpTask[clsName]["function"]['encode'] = 'encode(text: string): string;';
