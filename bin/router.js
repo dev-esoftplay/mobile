@@ -69,7 +69,6 @@ import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 \nimport { _global } from "esoftplay";\n
-\nimport useGlobalState from "esoftplay/global";\n
 ${importer}
 const Stack = createNativeStackNavigator();
 
@@ -724,7 +723,7 @@ function createRouter() {
   let screens = []
 
   Navigations.forEach((nav) => {
-    const prefix = "{s['" + nav + "'] && "
+    const prefix = "{(s['" + nav + "'] || __DEV__ ) && "
     const suffix = "}"
     const orientation = NavsOrientation[nav]
     const [module, task] = nav.split('/')
