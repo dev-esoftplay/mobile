@@ -1,4 +1,5 @@
 // withHooks
+//noPage
 import { LibPicture } from 'esoftplay/cache/lib/picture/import';
 import esp from 'esoftplay/esp';
 import React from 'react';

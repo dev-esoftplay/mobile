@@ -10,10 +10,8 @@ import { LibToastProperty } from 'esoftplay/cache/lib/toast/import';
 
 import * as ImageManipulator from "expo-image-manipulator";
 import React, { useEffect, useRef } from 'react';
-import { Dimensions, Image, Text, TouchableOpacity, View } from 'react-native';
-// @ts-ignore
-import PinchZoomView from 'react-native-pinch-zoom-view-movable';
-const { width } = Dimensions.get('window')
+import { Image, Pressable, Text, TouchableOpacity, View } from 'react-native';
+import PanPinchView from "react-native-pan-pinch-view";
 
 
 export interface LibImage_cropProps {
@@ -83,9 +81,7 @@ export default function m(props: LibImage_cropProps): any {
   }, [])
 
   function reset() {
-    resize(image)
-    setCounter(counter + 1)
-    setCropCount(0)
+    LibNavigation.replace('lib/image_crop', LibNavigation.getArgsAll(props))
   }
 
   function capture() {
@@ -184,24 +180,32 @@ export default function m(props: LibImage_cropProps): any {
       <Image
         ref={imageRef}
         style={{ resizeMode: "contain", marginTop: marginTop, height: size, width: LibStyle.width }} source={{ uri: _image }} />
-      <View style={{ flex: 1, marginTop: -(LibStyle.height - marginTop - (LibStyle.isIphoneX ? 35 : 0)), alignItems: 'center', justifyContent: 'center' }} >
-        <PinchZoomView
+      <View style={{ flex: 1, marginTop: -(LibStyle.height - marginTop - (LibStyle.isIphoneX ? 35 : 0)) + LibStyle.STATUSBAR_HEIGHT, alignItems: 'center', justifyContent: 'center' }} >
+        <PanPinchView
           key={_image}
           minScale={0.5}
-          style={{ backgroundColor: "transparent", flex: undefined, width: LibStyle.height * 100, height: LibStyle.height * 100, alignSelf: 'center', justifyContent: 'center' }}
+          containerDimensions={{
+            width: LibStyle.width,
+            height: size,
+          }}
+          contentDimensions={{
+            width: ratioSize[0],
+            height: ratioSize[1]
+          }}
+          // style={{ backgroundColor: "transparent", flex: undefined, width: LibStyle.height * 100, height: LibStyle.height * 100, alignSelf: 'center', justifyContent: 'center' }}
           maxScale={2}>
-          <>
-            <View style={{ backgroundColor: "rgba(0,0,0,0.5 )", flex: 1 }} />
+          {/* <> */}
+          {/* <View style={{ backgroundColor: "rgba(0,0,0,0.5 )", flex: 1 }} />
             <View style={{ flexDirection: "row" }} >
-              <View style={{ backgroundColor: "rgba(0,0,0,0.5 )", flex: 1 }} />
-              <View ref={viewRef} style={{ height: ratioSize[1], width: ratioSize[0], backgroundColor: 'transparent', borderWidth: 1, borderColor: "black", borderStyle: 'dashed' }} >
-                <View style={{ flex: 1, backgroundColor: 'transparent', borderWidth: 1, borderColor: "white", borderStyle: 'dashed' }} />
-              </View>
-              <View style={{ backgroundColor: "rgba(0,0,0,0.5 )", flex: 1 }} />
+              <View style={{ backgroundColor: "rgba(0,0,0,0.5 )", flex: 1 }} /> */}
+          <View ref={viewRef} style={{ height: ratioSize[1], width: ratioSize[0], backgroundColor: 'transparent', borderWidth: 1.5, borderColor: "white", borderStyle: 'dashed' }} >
+            <View style={{ flex: 1, backgroundColor: 'transparent', borderWidth: 1.5, borderColor: "black", borderStyle: 'dashed' }} />
+          </View>
+          {/* <View style={{ backgroundColor: "rgba(0,0,0,0.5 )", flex: 1 }} />
             </View>
-            <View style={{ backgroundColor: "rgba(0,0,0,0.5 )", flex: 1 }} />
-          </>
-        </PinchZoomView>
+            <View style={{ backgroundColor: "rgba(0,0,0,0.5 )", flex: 1 }} /> */}
+          {/* </> */}
+        </PanPinchView>
       </View>
       <View style={{ position: "absolute", top: LibStyle.STATUSBAR_HEIGHT, left: 0, right: 0, height: 50, flexDirection: "row", justifyContent: 'space-between' }} >
         <TouchableOpacity
@@ -224,12 +228,11 @@ export default function m(props: LibImage_cropProps): any {
       </View>
       {
         // hint &
-        <TouchableOpacity
-          activeOpacity={1}
+        <Pressable
           onPress={() => setHint(!hint)}
           style={{ opacity: hint ? 1 : 0, position: 'absolute', left: 0, right: 0, bottom: 50, backgroundColor: 'rgba(0,0,0,0.5)', alignItems: 'center', justifyContent: 'center', padding: 30 }} >
           <Text style={{ color: "white", textAlign: 'center' }} >{message || "Geser dan cubit layar untuk menyesuaikan bagian foto yang ingin dipakai (pastikan bagian foto berada di dalam garis putus-putus) lalu crop jika sudah sesuai"}</Text>
-        </TouchableOpacity>
+        </Pressable>
       }
       {
         (!forceCrop || cropCount > 0) &&

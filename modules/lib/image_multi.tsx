@@ -1,6 +1,6 @@
 // withHooks
 
-// 
+//noPage
 import { useSafeState } from 'esoftplay';
 import { LibIcon } from 'esoftplay/cache/lib/icon/import';
 import { LibLoading } from 'esoftplay/cache/lib/loading/import';
