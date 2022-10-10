@@ -1,7 +1,7 @@
 // withHooks
 
 import React, { useEffect, useRef, useState } from "react";
-import { FlatList, Modal, Pressable, TextInput, View, ViewProps } from "react-native";
+import { FlatList, Modal, Platform, Pressable, TextInput, View, ViewProps } from "react-native";
 
 
 export interface LibDropdownArgs {
@@ -55,8 +55,9 @@ export default function m(props: LibDropdownProps) {
     <View ref={DropdownRef}>
       <Pressable onPress={togglePopup} >
         <TextInput
+          pointerEvents="none"
           editable={false}
-          style={[{ borderColor: '#ccc', borderWidth: 1, outlineWidth: 0, borderRadius: 4, fontSize: 16, padding: 10 }, props?.style]}
+          style={[{ borderColor: '#ccc', borderWidth: 1, borderRadius: 4, fontSize: 16, padding: 10 }, Platform.OS == 'web' ? { outlineWidth: 0 } : {}, props?.style]}
           placeholder={props?.label || 'Select'}
           value={currentValue?.value}
         />
