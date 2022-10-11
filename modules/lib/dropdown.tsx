@@ -1,8 +1,8 @@
 // withHooks
 
+import { LibStyle } from 'esoftplay/cache/lib/style/import';
 import React, { useEffect, useRef, useState } from "react";
 import { FlatList, Modal, Platform, Pressable, TextInput, View, ViewProps } from "react-native";
-
 
 export interface LibDropdownArgs {
 
@@ -18,6 +18,7 @@ export interface LibDropdownProps {
   options: LibDropdownOption[],
   renderItem: (item: LibDropdownOption, index: number) => any
   label?: string,
+  fixOffsetTop?: boolean,
   style?: ViewProps,
   popupStyle?: ViewProps,
   maxPopupHeight?: number,
@@ -45,30 +46,30 @@ export default function m(props: LibDropdownProps) {
       setPopUpSize({
         width: _w,
         left: _px,
-        top: parseInt(py + "", 10) + parseInt(h + "", 10),
+        top: py + (props?.style?.height || 40) + (Platform.OS == 'android' ? (props.fixOffsetTop ? -LibStyle.STATUSBAR_HEIGHT : 0) : 0),
         bottom: py,
       });
     });
     setIsOpen(!isOpen);
   };
   return (
-    <View ref={DropdownRef}>
-      <Pressable onPress={togglePopup} >
+    <View ref={DropdownRef} collapsable={false} >
+      <Pressable onPress={togglePopup} collapsable={false} >
         <TextInput
           pointerEvents="none"
           editable={false}
-          style={[{ borderColor: '#ccc', borderWidth: 1, borderRadius: 4, fontSize: 16, padding: 10 }, Platform.OS == 'web' ? { outlineWidth: 0 } : {}, props?.style]}
+          style={[{ height: 40, borderWidth: 1, borderRadius: 2, borderColor: '#ccc' }, Platform.OS == 'web' ? { outlineWidth: 0 } : {}, props?.style]}
           placeholder={props?.label || 'Select'}
           value={currentValue?.value}
         />
       </Pressable>
       <Modal visible={isOpen} transparent animationType="none">
         <Pressable onPress={() => setIsOpen(false)} style={{ flex: 1, alignItems: 'center' }}>
-          <View style={[{ position: 'absolute', shadowColor: '#000000', shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.24, shadowRadius: 8, borderRadius: 4, backgroundColor: '#fff', }, props.popupStyle, { top: popUpSize.top, width: popUpSize.width, left: popUpSize.left }]}>
+          <View style={[{ position: 'absolute', shadowColor: '#000000', shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.24, shadowRadius: 8, borderRadius: 4, backgroundColor: '#fff', ...LibStyle.elevation(2) }, props.popupStyle, { top: popUpSize.top, width: popUpSize.width, left: popUpSize.left }]}>
             <FlatList
               data={props.options}
               style={{ maxHeight: MAX_HEIGHT }}
-              keyExtractor={(item) => item.id.toString()}
+              keyExtractor={(item, idx) => idx.toString()}
               renderItem={({ item, index }) => props.renderItem(item, index)}
             />
           </View>
