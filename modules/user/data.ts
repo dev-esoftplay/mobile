@@ -6,12 +6,11 @@ import _global from 'esoftplay/_global';
 export default class m {
   static register(name: string): void {
     AsyncStorage.getItem("user_data_dependent").then((x) => {
-      let all = []
+      let all: string[] = []
       if (x) {
-        all = [...JSON.parse(x), name]
-      } else {
-        all.push(name)
+        all = fastFilter(JSON.parse(x), (x) => x != name)
       }
+      all.push(name)
       AsyncStorage.setItem("user_data_dependent", JSON.stringify(all))
     })
   }
