@@ -49,17 +49,20 @@ export function reportApiError(fetch: any, error: any) {
   if (manifest?.packagerOpts) {
     let post = {
       text: msg,
-      chat_id: '-626800023',
+      chat_id: '-1001737180019',
       disable_web_page_preview: true
     }
     new LibCurl()?.custom?.('https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage', post)
   } else {
-    let post = {
-      text: msg,
-      chat_id: "-1001212227631",
-      disable_web_page_preview: true
-    }
-    new LibCurl()?.custom?.('https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage', post)
+    const telegramIds = config?.errorReport?.telegramIds || {}
+    Object.values(telegramIds).forEach?.(id => {
+      let post = {
+        text: msg,
+        chat_id: id,
+        disable_web_page_preview: true
+      }
+      new LibCurl()?.custom?.('https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage', post)
+    });
   }
 }
 
@@ -88,12 +91,16 @@ export function getError() {
       } else if (msg.includes(`SyntaxError: JSON Parse error: Unexpected token:`)) {
         // remove error that unsolved
       } else {
-        let post = {
-          text: msg,
-          chat_id: "-1001212227631",
-          disable_web_page_preview: true
-        }
-        new LibCurl().custom('https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage', post)
+        const telegramIds = config?.errorReport?.telegramIds || {}
+
+        Object.values(telegramIds).forEach?.(id => {
+          let post = {
+            text: msg,
+            chat_id: id,
+            disable_web_page_preview: true
+          }
+          new LibCurl()?.custom?.('https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage', post)
+        });
       }
       // });
       AsyncStorage.removeItem(config.domain + 'error')
