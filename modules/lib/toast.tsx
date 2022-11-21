@@ -53,7 +53,7 @@ export default function m(props: LibToastProps): any {
   }, [data])
 
   return (
-    <Animated.View style={[{ position: 'absolute', top: LibStyle.STATUSBAR_HEIGHT + 70, left: 0, right: 0, marginVertical: 4, marginHorizontal: 13, borderRadius: 4, borderWidth: 1, borderColor: '#505050', backgroundColor: '#323232', paddingVertical: 13, paddingHorizontal: 16, }, style, LibStyle.elevation(2)]} >
+    <Animated.View style={[{ maxWidth: Math.min(500, LibStyle.width - 30), position: 'absolute', top: LibStyle.STATUSBAR_HEIGHT + 70, left: 0, right: 0, marginVertical: 4, marginHorizontal: 13, borderRadius: 4, borderWidth: 1, borderColor: '#505050', backgroundColor: '#323232', paddingVertical: 13, paddingHorizontal: 16, }, style, LibStyle.elevation(2)]} >
       <Text style={{ fontSize: 14, textAlign: "center", color: 'white' }} >{String(data?.message || '')}</Text>
     </Animated.View>
   )

@@ -71,14 +71,12 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 \nimport { _global } from "esoftplay";\n
 ${importer}
 const Stack = createNativeStackNavigator();
-
 const config = require('../../../config.json')
 import { LibNavigation } from 'esoftplay/cache/lib/navigation/import';
 
 export default function m(props): any {
 	const { user, initialState, handler } = props
 	const econf = config.config
-	const [s] = LibNavigation.state().useState()
 	const appOrientation = econf?.orientation ? String(econf.orientation) : 'portrait'
 	return (
 		<NavigationContainer
@@ -723,16 +721,14 @@ function createRouter() {
   let screens = []
 
   Navigations.forEach((nav) => {
-    const prefix = "{(s['" + nav + "'] || __DEV__ ) && "
-    const suffix = "}"
     const orientation = NavsOrientation[nav]
     const [module, task] = nav.split('/')
     const comp = ucword(module) + ucword(task)
     importer.push(`import { ${comp} } from ${'"esoftplay/cache/' + module + '/' + task + '/import"'}`)
     if (orientation)
-      screens.push("\t\t\t\t" + prefix + "<Stack.Screen name={\"" + nav + "\"} options={{ orientation: '" + orientation + "' }} component={" + comp + "} />" + suffix)
+      screens.push("\t\t\t\t" + "<Stack.Screen name={\"" + nav + "\"} options={{ orientation: '" + orientation + "' }} component={" + comp + "} />")
     else
-      screens.push("\t\t\t\t" + prefix + "<Stack.Screen name={\"" + nav + "\"} component={" + comp + "} />" + suffix)
+      screens.push("\t\t\t\t" + "<Stack.Screen name={\"" + nav + "\"} component={" + comp + "} />")
   })
 
   let N = Nav5(importer.join("\n"), screens.join("\n"))

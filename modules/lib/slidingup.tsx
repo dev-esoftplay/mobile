@@ -7,7 +7,8 @@ import React from 'react';
 import { Animated, BackHandler, Keyboard, TouchableOpacity, View } from 'react-native';
 
 export interface LibSlidingupProps {
-  onChangeShow?: (isShow: boolean) => void
+  onChangeShow?: (isShow: boolean) => void,
+  children?: any
 }
 export interface LibSlidingupState {
   show: boolean,

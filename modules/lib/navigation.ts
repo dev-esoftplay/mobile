@@ -1,10 +1,9 @@
 // noPage
 import { CommonActions, StackActions } from '@react-navigation/native';
-import { LibNavigationRoutes, useGlobalReturn } from 'esoftplay';
+import { LibNavigationRoutes } from 'esoftplay';
 import { UserClass } from 'esoftplay/cache/user/class/import';
 import { UserRoutes } from 'esoftplay/cache/user/routes/import';
 import esp from 'esoftplay/esp';
-import useGlobalState from 'esoftplay/global';
 import _global from 'esoftplay/_global';
 import React from "react";
 
@@ -13,38 +12,12 @@ export interface LibNavigationInjector {
   children?: any
 }
 
-const config = require('../../../../config.json')
-
-let init = {
-  [config.config.home.member]: true,
-  [config.config.home.public]: true,
-}
-
-export const state = useGlobalState(init)
-function openNav(route: string, fun: Function) {
-  state.set(Object.assign({}, state.get(), { [route]: true }))
-  const open = () => {
-   /*  */ setTimeout(() => {
-    if (state.get()[route]) {
-     /*  */ fun()
-    } else {
-      /*  */open()
-    }
-  });
-  }
-  /*  */open()
-}
-
 export default (() => {
   let libNavigationData: any = {}
   let libNavigationRedirect: any = {}
   return class m {
     static setRef(ref: any): void {
       _global.libNavigationRef = ref
-    }
-
-    static state(): useGlobalReturn<any> {
-      return state
     }
 
     static setNavigation(nav: any): void {
@@ -92,9 +65,7 @@ export default (() => {
     }
 
     static navigate<S>(route: LibNavigationRoutes, params?: S): void {
-      openNav(route, () => {
-        _global.libNavigationRef?.navigate?.(route, params)
-      })
+      _global.libNavigationRef?.navigate?.(route, params)
     }
 
     static getResultKey(props: any): number {
@@ -121,7 +92,7 @@ export default (() => {
       m.back()
     }
 
-    static navigateForResult<S>(route: LibNavigationRoutes, params?: S, key?: number): Promise<any> {
+    static navigateForResult<S>(route: LibNavigationRoutes, params?: S | any, key?: number): Promise<any> {
       if (!key) {
         key = 1
       }
@@ -130,34 +101,28 @@ export default (() => {
           params = {}
         }
         params['_senderKey'] = key
-        if (!libNavigationData.hasOwnProperty(key)) {
+        if (!libNavigationData.hasOwnProperty(key) && key != undefined) {
           libNavigationData[key] = (value: any) => {
             r(value)
           };
         }
-        openNav(route, () => {
-          m.push(route, params)
-        })
+        m.push(route, params)
       })
     }
 
     static replace<S>(route: LibNavigationRoutes, params?: S): void {
-      openNav(route, () => {
-        _global.libNavigationRef.dispatch(
-          StackActions.replace(route, params)
-        )
-      })
+      _global.libNavigationRef.dispatch(
+        StackActions.replace(route, params)
+      )
     }
 
     static push<S>(route: LibNavigationRoutes, params?: S): void {
-      openNav(route, () => {
-        _global.libNavigationRef?.dispatch?.(
-          StackActions.push(
-            route,
-            params
-          )
+      _global.libNavigationRef?.dispatch?.(
+        StackActions.push(
+          route,
+          params
         )
-      })
+      )
     }
 
     static reset(route?: LibNavigationRoutes, ...routes: LibNavigationRoutes[]): void {
@@ -166,16 +131,11 @@ export default (() => {
       if (routes && routes.length > 0) {
         _route = [..._route, ...routes]
       }
-      _route.forEach((route) => {
-        state.set(Object.assign({}, state.get(), { [route]: true }))
-      })
-      openNav(_route?.[_route?.length - 1], () => {
-        const resetAction = CommonActions.reset({
-          index: _route.length - 1,
-          routes: _route.map((rn) => ({ name: rn }))
-        });
-        _global.libNavigationRef?.dispatch?.(resetAction);
-      })
+      const resetAction = CommonActions.reset({
+        index: _route.length - 1,
+        routes: _route.map((rn) => ({ name: rn }))
+      });
+      _global.libNavigationRef?.dispatch?.(resetAction);
     }
 
     static back(deep?: number): void {
