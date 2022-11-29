@@ -7,11 +7,10 @@ import { LibProgress } from 'esoftplay/cache/lib/progress/import';
 import { LibToastProperty } from 'esoftplay/cache/lib/toast/import';
 import { LibUtils } from 'esoftplay/cache/lib/utils/import';
 import esp from 'esoftplay/esp';
-
 import { reportApiError } from "esoftplay/error";
 import Constants from 'expo-constants';
 
-import { LogStateProperty } from 'esoftplay/cache/log/state/import';
+//api_logger_import
 
 
 const { manifest } = Constants;
@@ -295,10 +294,6 @@ export default class m {
         this.resStatus = res.status
         var resJson = (resText.startsWith("{") || resText.startsWith("[")) ? JSON.parse(resText) : null
         if (resJson) {
-          if (LogStateProperty) {
-            var resJson = typeof resText == 'string' && ((resText.startsWith("{") && resText.endsWith("}")) || (resText.startsWith("[") && resText.endsWith("]"))) ? JSON.parse(resText) : resText
-            LogStateProperty.doLogCurl(this.uri, this.url, post, this.isSecure, resJson)
-          }
           if (onDone) onDone(resJson, false)
           this.onDone(resJson)
         } else {
@@ -369,10 +364,7 @@ export default class m {
         if (onFailed) onFailed({ message: "Koneksi internet kamu tidak stabil, silahkan coba lagi" }, false)
         return
       }
-      if (LogStateProperty) {
-        var resJson = typeof resText == 'string' && ((resText.startsWith("{") && resText.endsWith("}")) || (resText.startsWith("[") && resText.endsWith("]"))) ? JSON.parse(resText) : resText
-        LogStateProperty.doLogCurl(this.uri, this.url, post, this.isSecure, resJson)
-      }
+      //api_logger
       this.onFetched(resText, onDone, onFailed, debug)
     }).catch((r) => {
       // if (this.maxRetry > 0) {
