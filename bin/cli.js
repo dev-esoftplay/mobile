@@ -423,7 +423,7 @@ function consoleError(msg) {
 }
 
 function consoleSucces(msg) {
-	console.log("\x1b[32m", msg + " ✓", "\x1b[0m")
+	console.log("\x1b[32m", msg + " ✔", "\x1b[0m")
 }
 
 function checkApp() {
@@ -716,7 +716,9 @@ function build() {
 			{
 				name: "1. Web (for Hosting)",
 				cmd: "npx expo export:web",
-				pre: () => { }
+				pre: () => {
+
+				}
 			},
 		]
 		:
@@ -826,6 +828,8 @@ function build() {
 				if (pre) pre()
 				consoleSucces("⚙⚙⚙ ... \n" + cmd)
 				command(cmd)
+				if (fs.existsSync('./build/post.js'))
+					command('node ./build/post.js')
 				configAvailable(false)
 				devClientPos(appjson)
 			} else if (d === false) {
