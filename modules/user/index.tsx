@@ -16,6 +16,7 @@ import { UserClass } from 'esoftplay/cache/user/class/import';
 import { UserHook } from 'esoftplay/cache/user/hook/import';
 import { UserLoading } from 'esoftplay/cache/user/loading/import';
 import { UserRoutes } from 'esoftplay/cache/user/routes/import';
+import useGlobalState from 'esoftplay/global';
 import Worker from 'esoftplay/libs/worker';
 import _global from 'esoftplay/_global';
 import * as Font from "expo-font";
@@ -57,20 +58,20 @@ function isWorkerReady(onReady: () => void): void {
 }
 
 
-
+const route = useGlobalState<any>(undefined, { persistKey: 'user_index_routes_initial' })
 export default function m(props: UserIndexProps): any {
   const [loading, setLoading] = useSafeState(true)
   const user = UserClass.state().useSelector(s => s)
   const ready = React.useRef(0)
   UseDeeplink()
   //@ts-ignore
-  const initialState = __DEV__ ? _global.nav__state : undefined
+  const initialState = __DEV__ ? route.get() : undefined
 
   function handler(currentState: any): void {
     //@ts-ignore
     if (__DEV__) {
       //@ts-ignore
-      _global.nav__state = currentState
+      route.set(currentState)
     }
     UserRoutes.set(currentState)
   }
