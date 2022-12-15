@@ -21,7 +21,7 @@ import Worker from 'esoftplay/libs/worker';
 import _global from 'esoftplay/_global';
 import * as Font from "expo-font";
 import React, { useEffect, useLayoutEffect } from 'react';
-import { Platform, View } from "react-native";
+import { Platform, Pressable, Text, View } from "react-native";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export interface UserIndexProps {
@@ -50,7 +50,7 @@ function setFonts(): Promise<void> {
 function isWorkerReady(onReady: () => void): void {
   // @ts-ignore
   if (_global.WorkerReady < 1) {
-    
+
     setTimeout(() => isWorkerReady(onReady), 10)
   } else {
     onReady()
@@ -90,7 +90,7 @@ export default function m(props: UserIndexProps): any {
     }
 
     if (limitReady == 3) {
-      
+
       isWorkerReady(() => {
         ready.current += 1
         if (ready.current >= limitReady) {
@@ -143,6 +143,12 @@ export default function m(props: UserIndexProps): any {
               <LibProgress />
               <LibToast />
               <UserHook />
+              {
+                __DEV__ &&
+                <Pressable onPress={() => route.reset()} style={{ padding: 8, backgroundColor: 'indigo', alignItems: 'center', justifyContent: 'center' }} >
+                  <Text style={{ color: 'white' }} >RESET ROUTES</Text>
+                </Pressable>
+              }
             </>
         }
       </View>
