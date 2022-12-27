@@ -10,7 +10,7 @@ export interface LibKeyboard_avoidProps {
 }
 export default function m(props: LibKeyboard_avoidProps): any {
   return (
-    <KeyboardAvoidingView behavior={Platform.OS == 'android' ? 'height' : 'padding'} style={props.style} >
+    <KeyboardAvoidingView behavior={Platform.OS == 'android' ? 'height' : 'padding'} style={[{ flex: 1 }, props.style]} >
       {props.children}
     </KeyboardAvoidingView>
   )
