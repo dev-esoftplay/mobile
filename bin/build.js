@@ -254,10 +254,9 @@ import * as Notifications from 'expo-notifications';
 import React, { useEffect } from 'react';
 import { /* enableFreeze, */ enableScreens } from 'react-native-screens';
 		
-// enableFreeze()
+/* enableFreeze() */
 enableScreens()
 		
-
 Notifications.addNotificationResponseReceivedListener(x => LibNotification.onAction(x));
 
 export default function App() {
