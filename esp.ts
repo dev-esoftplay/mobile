@@ -17,7 +17,7 @@ const ignoreWarns = [
 const err = console.error;
 console.error = (...arg) => {
   for (let i = 0; i < ignoreWarns.length; i++) {
-    if (arg[0].startsWith(ignoreWarns[i])) return;
+    if (arg?.[0]?.startsWith?.(ignoreWarns[i])) return;
   }
   err(...arg);
 };
@@ -25,7 +25,7 @@ console.error = (...arg) => {
 const warn = console.warn;
 console.warn = (...arg) => {
   for (let i = 0; i < ignoreWarns.length; i++) {
-    if (arg[0].startsWith(ignoreWarns[i])) return;
+    if (arg?.[0]?.startsWith?.(ignoreWarns[i])) return;
   }
   warn(...arg);
 };
