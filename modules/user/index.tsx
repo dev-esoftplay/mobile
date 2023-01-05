@@ -14,6 +14,7 @@ import Navs from 'esoftplay/cache/navs';
 import { UseDeeplink } from 'esoftplay/cache/use/deeplink/import';
 import { UserClass } from 'esoftplay/cache/user/class/import';
 import { UserHook } from 'esoftplay/cache/user/hook/import';
+import { LibIcon } from 'esoftplay/cache/lib/icon/import';
 import { UserLoading } from 'esoftplay/cache/user/loading/import';
 import { UserRoutes } from 'esoftplay/cache/user/routes/import';
 import useGlobalState from 'esoftplay/global';
@@ -145,8 +146,8 @@ export default function m(props: UserIndexProps): any {
               <UserHook />
               {
                 __DEV__ &&
-                <Pressable onPress={() => route.reset()} style={{ padding: 8, backgroundColor: 'indigo', alignItems: 'center', justifyContent: 'center' }} >
-                  <Text style={{ color: 'white' }} >RESET ROUTES</Text>
+                <Pressable onPress={() => route.reset()} style={{ position: 'absolute', right: 10, top: LibStyle.height * 0.5, padding: 10, backgroundColor: 'indigo', alignItems: 'center', justifyContent: 'center', borderRadius: 50 }} >
+                  <LibIcon name='delete-variant' color='white' />
                 </Pressable>
               }
             </>
