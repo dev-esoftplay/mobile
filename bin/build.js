@@ -258,6 +258,7 @@ import { /* enableFreeze, */ enableScreens } from 'react-native-screens';
 enableScreens()
 		
 Notifications.addNotificationResponseReceivedListener(x => LibNotification.onAction(x));
+Notifications.addNotificationReceivedListener(x => LibNotification.onAction(x));
 
 export default function App() {
 	useEffect(() => {
