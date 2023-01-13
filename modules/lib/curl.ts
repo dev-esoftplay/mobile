@@ -351,7 +351,7 @@ export default class m {
       mode: "cors",
     }
 
-    
+
     this.initTimeout(upload ? 120000 : this.timeout)
     if (debug == 1) esp.log(this.url + this.uri, options)
     this.fetchConf = { url: this.url + this.uri, options: options }
@@ -374,7 +374,10 @@ export default class m {
       //   }, 100);
       // } else {
       // }
-      LibToastProperty.show("Koneksi internet kamu tidak stabil, silahkan coba lagi")
+      if (__DEV__) {
+        LibToastProperty.show(JSON.stringify(r))
+      } else
+        LibToastProperty.show("Koneksi internet kamu tidak stabil, silahkan coba lagi")
       this.onFetchFailed(r)
       LibProgress.hide()
     })
