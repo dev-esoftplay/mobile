@@ -669,11 +669,13 @@ function buildPrepare(include = true) {
 					comm.push(`cp -n ./node_modules/esoftplay/modules/${module}/* ./modules/${module}`)
 				}
 			});
+			comm.push('cp ./node_modules/esoftplay/libs/worker.tsx ./assets/')
+			comm.push('node ./node_modules/esoftplay/assets/prepare.mjs')
 			consoleSucces("\n\nPLEASE COPY AND EXECUTE THE FOLLOWING COMMAND\n\n" + comm.join('\n') + "\n")
 		}
 	} else {
 		if (fs.existsSync('./assets/esoftplaymodules'))
-			command('rm -rf modules && mv ./assets/esoftplaymodules modules')
+			command('rm -rf modules && mv ./assets/esoftplaymodules modules && rm -f ./assets/worker.tsx && node ./node_modules/esoftplay/assets/cancel.mjs')
 		else
 			consoleError('')
 	}
