@@ -375,7 +375,7 @@ export default class m {
       // } else {
       // }
       if (__DEV__) {
-        LibToastProperty.show(JSON.stringify(r))
+        console.warn(r)
       } else
         LibToastProperty.show("Koneksi internet kamu tidak stabil, silahkan coba lagi")
       this.onFetchFailed(r)
