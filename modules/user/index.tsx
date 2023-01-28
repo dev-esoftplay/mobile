@@ -18,7 +18,6 @@ import { LibIcon } from 'esoftplay/cache/lib/icon/import';
 import { UserLoading } from 'esoftplay/cache/user/loading/import';
 import { UserRoutes } from 'esoftplay/cache/user/routes/import';
 import useGlobalState from 'esoftplay/global';
-import Worker from 'esoftplay/libs/worker';
 import _global from 'esoftplay/_global';
 import * as Font from "expo-font";
 import React, { useEffect, useLayoutEffect } from 'react';
@@ -130,7 +129,6 @@ export default function m(props: UserIndexProps): any {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={{ flex: 1 }}>
-        <Worker.View />
         {
           loading ?
             <UserLoading />
