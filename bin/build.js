@@ -248,6 +248,7 @@ yarn-error.log\n\
 		});
 
 		const AppJS = `
+
 import { LibNotification } from 'esoftplay/cache/lib/notification/import';
 import { UserIndex } from 'esoftplay/cache/user/index/import';
 import * as ErrorReport from 'esoftplay/error';
@@ -270,10 +271,9 @@ export default function App() {
 	}, [])
 
 	return (
-		<>
-			<Worker.View />
+		<Worker.Provider>
 			<UserIndex />
-		</>
+		</Worker.Provider>
 	)
 }`;
 		let expoLib = [

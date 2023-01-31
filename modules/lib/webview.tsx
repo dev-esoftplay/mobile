@@ -6,7 +6,6 @@ import React from "react";
 import { Animated, Dimensions, Linking, Platform } from "react-native";
 import { WebView } from 'react-native-webview';
 let { width } = Dimensions.get("window");
-const config = esp.config();
 
 //modify webview error:  https://github.com/facebook/react-native/issues/10865
 
@@ -44,17 +43,18 @@ class ewebview extends LibComponent<LibWebviewProps, LibWebviewState> {
   _animatedValue: any;
   webview: any;
   heightMessage: any;
-
+  
   static defaultProps = {
     needAnimate: true,
     AnimationDuration: 500,
     defaultHeight: 100,
     needAutoResetHeight: true
   };
-
+  
   constructor(props: LibWebviewProps) {
     super(props);
     this.props = props
+    const config = esp.config();
     this.state = {
       height: props.defaultHeight,
       isFinish: false,
@@ -67,8 +67,9 @@ class ewebview extends LibComponent<LibWebviewProps, LibWebviewState> {
     this.resetHeight = this.resetHeight.bind(this)
     this.resetSmallHeight = this.resetSmallHeight.bind(this)
   }
-
+  
   static getDerivedStateFromProps(nextProps, prevState) {
+    const config = esp.config();
     return { source: nextProps.source && nextProps.source.hasOwnProperty("html") ? { html: config.webviewOpen + nextProps.source.html + config.webviewClose } : nextProps.source }
   }
 
