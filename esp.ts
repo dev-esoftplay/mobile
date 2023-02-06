@@ -31,8 +31,6 @@ console.warn = (...arg) => {
 };
 LogBox.ignoreLogs(ignoreWarns);
 
-
-
 let app = require('../../app.json');
 let conf = require('../../config.json');
 let lconf: any
@@ -41,6 +39,8 @@ try {
 } catch (error) {
 
 }
+if (conf?.config?.isDebug == 0)
+  LogBox.ignoreAllLogs();
 
 const esp = {
   mergeDeep(target: any, ...sources: any[]) {
