@@ -143,36 +143,40 @@ if (fs.existsSync(packjson)) {
 		}
 
 		const easconfg = `{
-"cli": {
-	"version": ">= 0.52.0"
-},
-"build": {
-	"development": {
-		"developmentClient": true,
-		"distribution": "internal",
-		"ios": {
-			"simulator": true,
-			"resourceClass": "m1-medium"
+	"cli": {
+		"version": ">= 0.52.0"
+	},
+	"build": {
+		"development": {
+			"developmentClient": true,
+			"distribution": "internal",
+			"ios": {
+				"simulator": true,
+				"resourceClass": "m1-medium"
+			}
+		},
+		"preview": {
+			"distribution": "internal",
+			"ios": {
+				"simulator": true,
+				"resourceClass": "m1-medium"
+			}
+		},
+		"preview_build": {
+			"distribution": "internal",
+			"android": {
+				"buildType": "apk"
+			}
+		},
+		"production": {
+			"ios": {
+				"resourceClass": "m1-medium"
+			}
 		}
 	},
-	"preview": {
-		"distribution": "internal",
-		"ios": {
-			"simulator": true,
-			"resourceClass": "m1-medium"
-		}
-	},
-	"preview_build": {
-		"distribution": "internal",
-		"android": {
-			"buildType": "apk"
-		}
-	},
-	"production": {}
-},
-"submit": {
-	"production": {}
-}
+	"submit": {
+		"production": {}
+	}
 }`
 
 		fs.writeFile(easjson, easconfg, (err) => {
