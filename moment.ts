@@ -17,6 +17,20 @@ function isNumeric(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
+function normalizeTimeOffset(date: Date) {
+  if (!(date instanceof Date)) {
+    date = dayjs(date).toDate()
+  }
+  let currentOffsetInMinutes = date.getTimezoneOffset();
+  let currentOffsetInHours = currentOffsetInMinutes / 60;
+  let currentGMT = -currentOffsetInHours;
+  let currentOffset = currentGMT * 60 * 60 * 1000;
+  let targetOffset = 7/* Asia/Jakarta */ * 60 * 60 * 1000;
+  let gmtDiff = targetOffset - currentOffset;
+  let originalTime = new Date(date.getTime() - gmtDiff);
+  return originalTime;
+}
+
 export default function moment(date?: string | Date | any) {
   let _date = isNumeric(date) ? new Date(date * 1000) : date
   return {
@@ -40,11 +54,11 @@ export default function moment(date?: string | Date | any) {
     },
     /* last chain */
     fromNow: () => {
-      const out = dayjs(_date).fromNow()
+      const out = dayjs(normalizeTimeOffset(_date)).fromNow()
       return out
     },
     format: (custom: string) => {
-      const out = dayjs(_date).format(custom)
+      const out = dayjs(normalizeTimeOffset(_date)).format(custom)
       return out
     },
     toDate: () => {
@@ -52,7 +66,7 @@ export default function moment(date?: string | Date | any) {
       return out
     },
     toMiliseconds: () => {
-      const out = String(dayjs(_date).valueOf())
+      const out = String(dayjs(normalizeTimeOffset(_date)).valueOf())
       return out
     },
     duration: (other_date: string | Date) => {

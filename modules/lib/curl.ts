@@ -6,8 +6,8 @@ import { LibNet_status } from 'esoftplay/cache/lib/net_status/import';
 import { LibProgress } from 'esoftplay/cache/lib/progress/import';
 import { LibToastProperty } from 'esoftplay/cache/lib/toast/import';
 import { LibUtils } from 'esoftplay/cache/lib/utils/import';
-import esp from 'esoftplay/esp';
 import { reportApiError } from "esoftplay/error";
+import esp from 'esoftplay/esp';
 import Constants from 'expo-constants';
 
 //api_logger_import
@@ -441,16 +441,14 @@ export default class m {
     LibProgress.hide()
   }
 
-  protected getTimeByTimeZone(timeZone: string): number {
-    let localTimezoneOffset = new Date().getTimezoneOffset()
-    let serverTimezoneOffset = -420 // -420 for Asia/Jakarta
-    let diff
-    if (localTimezoneOffset < serverTimezoneOffset) {
-      diff = localTimezoneOffset - serverTimezoneOffset
-    } else {
-      diff = (serverTimezoneOffset - localTimezoneOffset) * -1
-    }
-    let time = new Date().getTime() + (diff * 60 * 1000 * -1);
-    return time;
+  protected getTimeByTimeZone(GMT: number): number {
+    const date = new Date()
+    let currentOffsetInMinutes = date.getTimezoneOffset();
+    let currentOffsetInHours = currentOffsetInMinutes / 60;
+    let currentGMT = -currentOffsetInHours;
+    let currentOffset = currentGMT * 60 * 60 * 1000;
+    let targetOffset = 7/* Asia/Jakarta */ * 60 * 60 * 1000;
+    let gmtDiff = targetOffset - currentOffset;
+    return date.getTime() + gmtDiff
   }
 }
