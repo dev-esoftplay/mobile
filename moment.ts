@@ -57,8 +57,9 @@ export default function moment(date?: string | Date | any) {
       const out = dayjs(normalizeTimeOffset(_date)).fromNow()
       return out
     },
-    format: (custom: string) => {
-      const out = dayjs(normalizeTimeOffset(_date)).format(custom)
+    format: (custom: string, ignoreTimezone?: boolean) => {
+      const _d = ignoreTimezone? _date : normalizeTimeOffset(_date)
+      const out = dayjs(_d).format(custom)
       return out
     },
     toDate: () => {
