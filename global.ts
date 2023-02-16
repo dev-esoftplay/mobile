@@ -19,6 +19,7 @@ export interface useGlobalOption {
   persistKey?: string,
   inFile?: boolean,
   listener?: (data: any) => void,
+  jsonBeautify?: boolean,
   isUserData?: boolean
 }
 
@@ -79,7 +80,7 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
         switch (typeof ns) {
           case 'object':
             if (ns != null || ns != undefined)
-              data = JSON.stringify(ns)
+              data = o.jsonBeautify ? JSON.stringify(ns, undefined, 2) : JSON.stringify(ns)
             break;
           default:
             data = String(ns)
