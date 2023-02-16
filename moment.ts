@@ -16,8 +16,18 @@ const dayjsType: any = ["day", "week", "month", "quarter", "year", "hour", "minu
 function isNumeric(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
-
-function normalizeTimeOffset(date: Date) {
+export function setTimeOffset(date?: string | Date | any): Date {
+  const _date = (date instanceof Date ? date : (typeof date == 'string' ? new Date(date) : new Date()))
+  let currentOffsetInMinutes = _date.getTimezoneOffset();
+  let currentOffsetInHours = currentOffsetInMinutes / 60;
+  let currentGMT = -currentOffsetInHours;
+  let currentOffset = currentGMT * 60 * 60 * 1000;
+  let targetOffset = 7/* Asia/Jakarta */ * 60 * 60 * 1000;
+  let gmtDiff = targetOffset - currentOffset;
+  let timeWithOffset = new Date(_date.getTime() + gmtDiff);
+  return timeWithOffset
+}
+export function resetTimeOffset(date: Date): Date {
   if (!(date instanceof Date)) {
     date = dayjs(date).toDate()
   }
@@ -54,11 +64,11 @@ export default function moment(date?: string | Date | any) {
     },
     /* last chain */
     fromNow: () => {
-      const out = dayjs(normalizeTimeOffset(_date)).fromNow()
+      const out = dayjs(resetTimeOffset(_date)).fromNow()
       return out
     },
     format: (custom: string, ignoreTimezone?: boolean) => {
-      const _d = ignoreTimezone? _date : normalizeTimeOffset(_date)
+      const _d = ignoreTimezone ? _date : resetTimeOffset(_date)
       const out = dayjs(_d).format(custom)
       return out
     },
@@ -67,7 +77,7 @@ export default function moment(date?: string | Date | any) {
       return out
     },
     toMiliseconds: () => {
-      const out = String(dayjs(normalizeTimeOffset(_date)).valueOf())
+      const out = String(dayjs(resetTimeOffset(_date)).valueOf())
       return out
     },
     duration: (other_date: string | Date) => {
