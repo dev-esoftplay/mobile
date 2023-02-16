@@ -288,6 +288,7 @@ export default class m {
         esp.log(this.url + this.uri, options)
       this.fetchConf = { url: this.url + this.uri, options: options }
       this.initTimeout(this.timeout);
+      //api_init_time
       fetch(this.url + this.uri, options).then(async (res) => {
         this.cancelTimeout()
         var resText = await res.text()
@@ -301,6 +302,7 @@ export default class m {
           LibProgress.hide()
           this.onError(resText)
         }
+        //api_logger
       }).catch((e) => {
         this.cancelTimeout()
         LibProgress.hide()
