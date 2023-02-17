@@ -48,12 +48,19 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
 
   if (o?.persistKey) {
     let persistKey = o?.persistKey
-    STORAGE.getItem(persistKey).then((p) => {
+    STORAGE.getItem(persistKey).then((p: any) => {
       if (p) {
         if (p != undefined && typeof p == 'string' && (p.startsWith("{") || p.startsWith("[")))
           try { set(JSON.parse(p)) } catch (error) { }
-        else
-          try { /* @ts-ignore */ set(eval(p)) } catch (error) { }
+        else {
+          if (isNaN(p)) {
+            try { /* @ts-ignore */ set(p) } catch (error) { }
+          } if (p == "true" || p == "false") {
+            try { /* @ts-ignore */ set(eval(p)) } catch (error) { }
+          } else {
+            try { /* @ts-ignore */ set(eval(p)) } catch (error) { }
+          }
+        }
       }
     })
   }
