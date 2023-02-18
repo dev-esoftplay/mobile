@@ -53,10 +53,10 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
         if (p != undefined && typeof p == 'string' && (p.startsWith("{") || p.startsWith("[")))
           try { set(JSON.parse(p)) } catch (error) { }
         else {
-          if (isNaN(p)) {
-            try { /* @ts-ignore */ set(p) } catch (error) { }
-          } if (p == "true" || p == "false") {
+          if (p == "true" || p == "false") {
             try { /* @ts-ignore */ set(eval(p)) } catch (error) { }
+          } else if (isNaN(p)) {
+            try { /* @ts-ignore */ set(p) } catch (error) { }
           } else {
             try { /* @ts-ignore */ set(eval(p)) } catch (error) { }
           }
