@@ -669,8 +669,8 @@ function buildPrepare(include = true) {
 					comm.push(`cp -n ./node_modules/esoftplay/modules/${module}/* ./modules/${module}`)
 				}
 			});
-			comm.push('cp ./node_modules/esoftplay/libs/worker.tsx ./assets/')
-			comm.push('node ./node_modules/esoftplay/assets/prepare.mjs')
+			// comm.push('cp ./node_modules/esoftplay/libs/worker.tsx ./assets/')
+			// comm.push('node ./node_modules/esoftplay/assets/prepare.mjs')
 			consoleSucces("\n\nPLEASE COPY AND EXECUTE THE FOLLOWING COMMAND\n\n" + comm.join('\n') + "\n")
 		}
 	} else {

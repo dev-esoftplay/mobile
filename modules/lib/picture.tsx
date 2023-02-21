@@ -3,6 +3,7 @@
 import { esp, useSafeState } from 'esoftplay';
 import { LibStyle } from 'esoftplay/cache/lib/style/import';
 import { LibWorkloop } from 'esoftplay/cache/lib/workloop/import';
+import useGlobalState from 'esoftplay/global';
 import Worker from 'esoftplay/libs/worker';
 import * as FileSystem from 'expo-file-system';
 import React, { useLayoutEffect } from 'react';
@@ -31,11 +32,14 @@ const CACHE_DIR = `${FileSystem.cacheDirectory}lib-picture-cache/`;
   }
 })()
 
+const state = useGlobalState({}, { persistKey: 'lib_picture_paths', inFile: true })
 const getCacheEntry = async (uri: string, toSize: number): Promise<{ exists: boolean; path: string }> => {
-  const path = `${CACHE_DIR}${sh.unique(uri)}-${toSize}.png`;
-  const info = await FileSystem.getInfoAsync(path);
-  const { exists } = info;
-  return { exists, path };
+  const path = `${sh.unique(uri)}-${toSize}`;
+  let info = state.get(path);
+  if (!info) {
+    info = await (await FileSystem.getInfoAsync(`${CACHE_DIR}${path}.png`)).exists
+  }
+  return { exists: !!info, path: `${CACHE_DIR}${path}.png` };
 };
 
 const fetchPicture = Worker.registerJobAsync('lib_picture_fetch', (url: string, toSize: number) => {
@@ -83,6 +87,16 @@ const fetchPicture = Worker.registerJobAsync('lib_picture_fetch', (url: string, 
   })
 })
 
+function savePicture(b_uri: string, toSize: string, path: string, uri: string) {
+  FileSystem.writeAsStringAsync(path, uri, { encoding: "base64" })
+    .then(() => {
+      const _path = `${sh.unique(b_uri)}-${toSize}`;
+      let dt = state.get()
+      dt[_path] = 1
+      state.set(dt)
+    })
+}
+
 export default function m(props: LibPictureProps): any {
   const [uri, setUri] = useSafeState('')
   let b_uri = props?.source?.uri?.replace?.('://api.', '://')
@@ -125,7 +139,7 @@ export default function m(props: LibPictureProps): any {
           fetchPicture([b_uri, PixelRatio.getPixelSizeForLayoutSize(toSize)], (uri) => {
             setUri("data:image/png;base64," + uri)
             if (!props.noCache)
-              LibWorkloop.execNextTix(FileSystem.writeAsStringAsync, [path, uri, { encoding: "base64" }])
+              LibWorkloop.execNextTix(savePicture, [b_uri, toSize, path, uri, { encoding: "base64" }])
           })
         }
       })

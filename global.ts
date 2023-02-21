@@ -6,9 +6,10 @@ import * as R from 'react';
 import { fastFilter, fastLoop } from './fast';
 const isEqual = require('react-fast-compare');
 
+
 export interface useGlobalReturn<T> {
   useState: () => [T, (newState: T) => void, () => void],
-  get: () => T,
+  get: (param?: string, ...params: string[]) => T,
   set: (x: T) => void,
   reset: () => void,
   connect: (props: useGlobalConnect<T>) => any,

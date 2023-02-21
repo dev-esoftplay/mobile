@@ -429,14 +429,16 @@ declare module "esoftplay" {
       backgroundWhite: string,
     }
   }
+  
   interface useGlobalReturn<T> {
-    useState: () => [T, (newState: T | ((a:T) => T)) => T | undefined, () => void],
-    get: () => T,
+    useState: () => [T, (newState: T) => void, () => void],
+    get: (param?: string, ...params: string[]) => T,
     set: (x: T) => void,
     reset: () => void,
     connect: (props: useGlobalConnect<T>) => any,
     useSelector: (selector: (state: T) => any) => any;
   }
+  
   interface useGlobalOption {
     persistKey?: string,
     inFile?: boolean,
