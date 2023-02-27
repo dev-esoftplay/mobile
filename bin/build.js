@@ -151,15 +151,13 @@ if (fs.existsSync(packjson)) {
 			"developmentClient": true,
 			"distribution": "internal",
 			"ios": {
-				"simulator": true,
-				"resourceClass": "m1-medium"
+				"simulator": true			
 			}
 		},
 		"preview": {
 			"distribution": "internal",
 			"ios": {
-				"simulator": true,
-				"resourceClass": "m1-medium"
+				"simulator": true			
 			}
 		},
 		"preview_build": {
@@ -169,9 +167,6 @@ if (fs.existsSync(packjson)) {
 			}
 		},
 		"production": {
-			"ios": {
-				"resourceClass": "m1-medium"
-			}
 		}
 	},
 	"submit": {
