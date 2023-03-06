@@ -1,5 +1,5 @@
 // noPage
-
+import { FlashList } from "@shopify/flash-list";
 import { LibComponent } from 'esoftplay/cache/lib/component/import';
 import { LibCurl } from 'esoftplay/cache/lib/curl/import';
 import { LibListItemLayout } from 'esoftplay/cache/lib/list/import';
@@ -10,7 +10,7 @@ import esp from 'esoftplay/esp';
 
 import React from 'react';
 import isEqual from 'react-fast-compare';
-import { FlatList, View } from 'react-native';
+import { View } from 'react-native';
 
 export interface LibInfiniteProps {
   url: string,
@@ -66,7 +66,7 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
   isStop: boolean = false
   page: number | undefined = 0
   pages: number[]
-  flatlist = React.createRef<FlatList<View>>()
+  flatlist = React.createRef<FlashList<View>>()
 
   constructor(props: LibInfiniteProps) {
     super(props);
@@ -179,7 +179,7 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
     const { data, error } = this.state
     const { errorView, refreshEnabled } = this.props
     // const AutoLayoutViewNativeComponent = require("@shopify/flash-list/src/native/auto-layout/AutoLayoutViewNativeComponent")
-    const List = /* !!AutoLayoutViewNativeComponent ? FlashList : */ FlatList
+    const List = /* !!AutoLayoutViewNativeComponent ? FlashList : */ FlashList
     return (
       <View style={{ flex: 1 }} >
         {
@@ -205,6 +205,7 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
               }
               showsHorizontalScrollIndicator={false}
               showsVerticalScrollIndicator={false}
+              estimatedItemSize={this.props.staticHeight || 100}
               initialNumToRender={5}
               maxToRenderPerBatch={10}
               windowSize={10}

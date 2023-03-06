@@ -2,9 +2,10 @@
 
 
 // 
+import { FlashList } from "@shopify/flash-list";
 import { LibComponent } from 'esoftplay/cache/lib/component/import';
 import React from "react";
-import { FlatList, View } from 'react-native';
+import { View } from 'react-native';
 
 export interface LibListItemLayout {
   length: number,
@@ -50,7 +51,7 @@ export interface LibListState {
 export default class m extends LibComponent<LibListProps, LibListState> {
 
   view: any = React.createRef()
-  flatlist = React.createRef<FlatList<View>>()
+  flatlist = React.createRef<FlashList<View>>()
   constructor(props: LibListProps) {
     super(props);
     this.scrollToIndex = this.scrollToIndex.bind(this);
@@ -77,7 +78,7 @@ export default class m extends LibComponent<LibListProps, LibListState> {
         return ({ getItemLayout: (data, index) => this.props.staticHeight ? ({ length: this.props.staticHeight, offset: this.props.staticHeight, index: index }) : undefined })
     }
     // const AutoLayoutViewNativeComponent = require("@shopify/flash-list/src/native/auto-layout/AutoLayoutViewNativeComponent")
-    const List = /* !!AutoLayoutViewNativeComponent ? FlashList : */ FlatList
+    const List = /* !!AutoLayoutViewNativeComponent ? FlashList : */ FlashList
     return (
       <View ref={(e) => this.view = e} style={[{ flex: 1 }]} >
         <List
@@ -89,6 +90,7 @@ export default class m extends LibComponent<LibListProps, LibListState> {
           refreshing={false}
           nestedScrollEnabled
           initialNumToRender={5}
+          estimatedItemSize={this.props.staticHeight || 100}
           maxToRenderPerBatch={10}
           windowSize={10}
           {...this.props}

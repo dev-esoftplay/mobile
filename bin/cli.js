@@ -170,7 +170,7 @@ function jsEng(file, isHermes) {
 			return
 		}
 		let app = JSON.parse(txt)
-		app.expo.jsEngine = isHermes ? "hermes" : "jsc"
+		app.expo.jsEngine = isHermes ? "hermes" : "hermes"
 		fs.writeFileSync(file, JSON.stringify(app, undefined, 2))
 	} else {
 		consoleError(file)
