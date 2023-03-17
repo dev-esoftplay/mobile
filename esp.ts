@@ -205,7 +205,14 @@ const esp = {
   },
   log(message?: any, ...optionalParams: any[]) {
     if (esp.config("isDebug") == 1) {
-      console.log(message, ...optionalParams, "\x1b[0m");
+      let out = [message]
+      if (optionalParams)
+        out.push(...optionalParams)
+      out.forEach((x) => {
+        if (x != undefined)
+          console.log(JSON.stringify(x, undefined, 2), "\x1b[0m");
+        console.log(x, "\x1b[0m")
+      })
     }
   },
   logColor: {
