@@ -70,6 +70,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 \nimport { _global } from "esoftplay";\n
 ${importer}
+import { Platform } from 'react-native';
 const Stack = createNativeStackNavigator();
 const config = require('../../../config.json')
 import { LibNavigation } from 'esoftplay/cache/lib/navigation/import';
@@ -86,8 +87,9 @@ export default function m(props): any {
       onStateChange={handler} >
       <Stack.Navigator
         headerMode="none"
+        
         initialRouteName={(user?.id || user?.user_id) ? econf.home.member : econf.home.public}
-        screenOptions={{ orientation: appOrientation, headerShown: false, contentStyle: { backgroundColor: 'white' }, stackAnimation: 'default', stackPresentation: 'push' }}>
+        screenOptions={{ orientation: appOrientation, headerShown: false, contentStyle: { backgroundColor: 'white' }, animation: Platform.OS == 'ios' ? 'default' : 'none', stackPresentation: 'push' }}>
 `+ navs + `
       </Stack.Navigator>
     </NavigationContainer>
