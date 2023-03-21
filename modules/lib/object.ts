@@ -56,7 +56,7 @@ export default class m {
   }
 
   assign(obj1: any): (cursor?: string | number, ...cursors: (string | number)[]) => this {
-    return this.cursorBuilder("assign", this._value, obj1)
+    return this.cursorBuilder("assign", this._value, deepCopy(obj1))
   }
 
   value(): any {
@@ -82,8 +82,9 @@ export default class m {
     return cursorBuilder("batch", obj, callback)
   }
   static assign(obj: any, obj1: any): (cursor?: string | number, ...cursors: (string | number)[]) => any {
-    return cursorBuilder("assign", obj, obj1)
+    return cursorBuilder("assign", obj, deepCopy(obj1))
   }
+
   //   static deepMerge(obj: any, obj1: any) {
   //     return (cursor?: string | number, ...cursors: (string | number)[]) => {
   //       function mergeDeep(target: any, source: any): any {
@@ -123,3 +124,31 @@ function cursorBuilder(command: string, array: any, value: any, ...values: any[]
     return update(array, spec)
   }
 }
+
+
+
+function deepCopy(o) {
+  switch (typeof o) {
+    case 'object':
+      if (o === null) return null;
+      if (Array.isArray(o)) {
+        const l = o.length;
+        const newO = new Array(l);
+        for (let i = 0; i < l; i++) {
+          newO[i] = deepCopy(o[i]);
+        }
+        return newO;
+      } else {
+        const newO = Object.create(Object.getPrototypeOf(o));
+        for (let key in o) {
+          if (Object.prototype.hasOwnProperty.call(o, key)) {
+            newO[key] = deepCopy(o[key]);
+          }
+        }
+        return newO;
+      }
+    default:
+      return o;
+  }
+}
+
