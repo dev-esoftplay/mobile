@@ -66,10 +66,6 @@ export default function m(props: UserIndexProps): any {
   useLayoutEffect(() => {
     let limitReady = 2
 
-    if (esp.config("asyncWorker") == true) {
-      limitReady = 2
-    }
-
     if (Platform.OS == 'android') {
       if (Platform.Version <= 22) {
         limitReady = 2
