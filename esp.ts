@@ -45,14 +45,14 @@ if (conf?.config?.isDebug == 0)
 const esp = {
   mergeDeep(target: any, ...sources: any[]) {
     target = Object(target);
-    for (let source of sources) {
-      source = Object(source);
-      for (let key in source) {
-        if (source.hasOwnProperty(key)) {
-          if (source[key] && typeof source[key] === 'object') {
-            target[key] = esp.mergeDeep(target[key], source[key]);
+    for (const source of sources) {
+      const sourceObj = Object(source);
+      for (const [key, value] of Object.entries(sourceObj)) {
+        if (value ?? null !== null) {
+          if (value !== null && typeof value === "object") {
+            target[key] = esp.mergeDeep(target[key] ?? {}, value);
           } else {
-            target[key] = source[key];
+            target[key] = value;
           }
         }
       }

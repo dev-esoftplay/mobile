@@ -1,19 +1,23 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-export default function m(def?: any) {
-  const r = useRef<boolean>(true)
-  const [a, b] = useState(def)
+type UseRefStateResult<T> = [T | undefined, (value: T | undefined) => void];
 
-  function c(value: any) {
-    if (r.current) {
-      b(value)
+export default function useRefState<T = any>(defaultValue?: T): UseRefStateResult<T> {
+  const isMountedRef = useRef<boolean>(true);
+  const [state, setState] = useState<T | undefined>(defaultValue);
+
+  const updateState = useCallback((value: T | undefined) => {
+    if (isMountedRef.current) {
+      setState(value);
     }
-  }
+  }, []);
 
   useEffect(() => {
-    r.current = true
-    return () => { r.current = false }
-  }, [])
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
-  return [a, c]
-};
+  return [state, updateState];
+}

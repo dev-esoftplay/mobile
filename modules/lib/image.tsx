@@ -12,9 +12,7 @@ import * as ImageManipulator from 'expo-image-manipulator';
 import { SaveFormat } from 'expo-image-manipulator';
 import * as ImagePicker from 'expo-image-picker';
 import React from 'react';
-import {
-  ActivityIndicator, Alert, Image, TouchableOpacity, View
-} from 'react-native';
+import { ActivityIndicator, Alert, Image, TouchableOpacity, View } from 'react-native';
 const { height, width } = LibStyle;
 
 
@@ -99,11 +97,6 @@ class m extends LibComponent<LibImageProps, LibImageState> {
     }
   }
 
-  static showCropper(uri: string, forceCrop: boolean, ratio: string, message: string, result: (x: any) => void): void {
-    LibNavigation.navigateForResult("lib/image_crop", { image: uri, forceCrop, ratio, message }, 81793).then(result)
-  }
-
-
   static fromCamera(options?: LibImageCameraOptions): Promise<string> {
     return new Promise((_r) => {
       setTimeout(async () => {
@@ -124,24 +117,20 @@ class m extends LibComponent<LibImageProps, LibImageState> {
         if (finalStatus != 'granted') {
           Alert.alert(esp.appjson().expo.name + " tidak dapat mengakses kamera ", "Mohon Pastikan anda memberikan izin " + esp.appjson().expo.name + " untuk dapat mengambil foto")
         }
-        ImagePicker.launchCameraAsync({ presentationStyle: ImagePicker.UIImagePickerPresentationStyle.FULL_SCREEN }).then(async (result: any) => {
+        ImagePicker.launchCameraAsync({
+          allowsEditing: options && options.crop ? true : false,
+          aspect: options?.crop?.ratio?.split(':').map((x) => Number(x)),
+          quality: 1,
+          presentationStyle: ImagePicker.UIImagePickerPresentationStyle.FULL_SCREEN
+        }).then(async (result: any) => {
           if (!result)
             result = ImagePicker?.getPendingResultAsync()
           if (!result?.cancelled) {
-            if (options && options.crop) {
-              m.showCropper(result?.uri, options?.crop?.forceCrop, options?.crop?.ratio, options?.crop?.message, async (x) => {
-                let imageUri = await m.processImage(x, options?.maxDimension)
-                m.setResult(imageUri)
-                _r(imageUri)
-              })
-            } else {
-              let imageUri = await m.processImage(result, options?.maxDimension)
-              m.setResult(imageUri)
-              _r(imageUri)
-            }
+            let imageUri = await m.processImage(result, options?.maxDimension)
+            m.setResult(imageUri)
+            _r(imageUri)
           }
         })
-        // }
       }, 1);
     })
   }
@@ -166,34 +155,21 @@ class m extends LibComponent<LibImageProps, LibImageState> {
           max = 1
         }
         if (max == 1) {
-          ImagePicker.launchImageLibraryAsync({ presentationStyle: ImagePicker.UIImagePickerPresentationStyle.FULL_SCREEN }).then(async (x: any) => {
+          ImagePicker.launchImageLibraryAsync({
+            presentationStyle: ImagePicker.UIImagePickerPresentationStyle.FULL_SCREEN,
+            allowsEditing: options && options.crop ? true : false,
+            aspect: options?.crop?.ratio?.split(':').map((x) => Number(x)),
+            quality: 1,
+          }).then(async (x: any) => {
             if (!x.cancelled) {
-              if (options && options.crop) {
-                m.showCropper(x.uri, options.crop.forceCrop, options.crop.ratio, options.crop?.message, async (x) => {
-                  let imageUri = await m.processImage(x, options?.maxDimension)
-                  m.setResult(imageUri)
-                  _r(imageUri)
-                })
-              } else {
-                let imageUri = await m.processImage(x, options?.maxDimension)
-                m.setResult(imageUri)
-                _r(imageUri)
-              }
+              let imageUri = await m.processImage(x, options?.maxDimension)
+              m.setResult(imageUri)
+              _r(imageUri)
             }
           })
           return
         }
         LibNavigation.navigateForResult("lib/image_multi", { max: max }).then((x: any[]) => {
-          if (max == 1 && x.length == 1) {
-            if (options && options.crop) {
-              m.showCropper(x[0].uri, options.crop.forceCrop, options.crop.ratio, options.crop?.message, async (x) => {
-                let imageUri = await m.processImage(x, options?.maxDimension)
-                m.setResult(imageUri)
-                _r(imageUri)
-              })
-            }
-            return
-          }
           let a: string[] = []
           x.forEach(async (t: any, i) => {
             if (i == 0) {
@@ -360,7 +336,6 @@ class m extends LibComponent<LibImageProps, LibImageState> {
           )
         }}
       />
-
     );
   }
 }

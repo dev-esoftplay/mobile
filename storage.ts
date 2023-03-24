@@ -1,57 +1,49 @@
-// withHooks
-
 import * as FileSystem from 'expo-file-system';
-export interface LibStorageArgs {
 
-}
-export interface LibStorageProps {
-
-}
 const CACHE_DIR = `${FileSystem.cacheDirectory}lib-storage-cache/`;
 
-(() => {
+(async () => {
   try {
-    FileSystem.makeDirectoryAsync(CACHE_DIR).then().catch(e => { });
+    await FileSystem.makeDirectoryAsync(CACHE_DIR);
   } catch (e) {
     // do nothing
   }
-})()
+})();
 
 const Storage = {
   getDBPath(key: string): string {
     const path = `${CACHE_DIR}${key.replace(/\//g, "-")}.txt`;
-    return path
+    return path;
   },
-  getItem(key: string): Promise<string | null> {
-    return new Promise(async (r, j) => {
-      const path = this.getDBPath(key)
-      FileSystem.getInfoAsync(path).then((info) => {
-        if (info.exists) {
-          FileSystem.readAsStringAsync(path, { encoding: 'utf8' }).then((value) => {
-            r(JSON.parse(value))
-          }).catch((c) => {
-            r(c)
-          })
-        } else {
-          r(null)
-        }
-      })
-    })
+  async getItem(key: string): Promise<string | null> {
+    const path = this.getDBPath(key);
+    try {
+      const info = await FileSystem.getInfoAsync(path);
+      const { exists } = info;
+      if (exists) {
+        const value = await FileSystem.readAsStringAsync(path, { encoding: 'utf8' });
+        return JSON.parse(value);
+      }
+    } catch (error) {
+      return null;
+    }
+    return null;
   },
-  setItem(key: string, value: string): Promise<string> {
-    return new Promise(async (r, j) => {
-      const path = this.getDBPath(key)
-      FileSystem.writeAsStringAsync(path, value, { encoding: 'utf8' })
-    })
+  async setItem(key: string, value: string): Promise<string> {
+    const path = this.getDBPath(key);
+    await FileSystem.writeAsStringAsync(path, value, { encoding: 'utf8' });
+    return value;
   },
-  removeItem(key: string): Promise<string> {
-    return new Promise(async (r, j) => {
-      const path = this.getDBPath(key)
-      try { FileSystem.deleteAsync(path) } catch (error) { }
-    })
+  async removeItem(key: string): Promise<string> {
+    const path = this.getDBPath(key);
+    try {
+      await FileSystem.deleteAsync(path);
+    } catch (error) {}
+    return key;
   },
   clear(): void {
-    FileSystem.deleteAsync(CACHE_DIR)
-  }
-}
+    FileSystem.deleteAsync(CACHE_DIR);
+  },
+};
+
 export default Storage;

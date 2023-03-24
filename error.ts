@@ -19,16 +19,22 @@ const myErrorHandler = (e: any, isFatal: any) => {
 }
 
 export function setError(error?: any) {
-  let config = esp?.config?.()
-  let routes = UserRoutes?.state()?.get?.()
-  const user = UserClass?.state()?.get?.()
-  let lastIndex = (routes?.routes?.length - 1) ?? 0
-  let _e: any = {}
-  _e['user'] = user
-  _e['error'] = String(error)
-  _e['routes'] = routes?.routes?.[lastIndex]?.name
-  AsyncStorage.setItem(config?.domain + 'error', JSON.stringify(_e))
+  const config = esp?.config?.();
+  const routes = UserRoutes?.state()?.get?.();
+  const user = UserClass?.state()?.get?.();
+  const lastIndex = (routes?.routes?.length - 1) ?? 0;
+  const _e = {
+    user,
+    error: String(error),
+    routes: `${routes?.routes?.[lastIndex]?.name}`
+  };
+  try {
+    AsyncStorage.setItem(`${config?.domain}error`, JSON.stringify(_e));
+  } catch (e) {
+    console.error(e);
+  }
 }
+
 
 export function reportApiError(fetch: any, error: any) {
   let routes = UserRoutes?.state?.()?.get?.()
