@@ -10,7 +10,7 @@ import { reportApiError } from "esoftplay/error";
 import esp from 'esoftplay/esp';
 import Constants from 'expo-constants';
 
-//api_logger_import
+import { LogStateProperty } from 'esoftplay/cache/log/state/import';
 
 
 const { manifest } = Constants;
@@ -302,7 +302,10 @@ export default class m {
           LibProgress.hide()
           this.onError(resText)
         }
-        //api_logger
+        if (LogStateProperty) {
+        var resJson = typeof resText == 'string' && ((resText.startsWith("{") && resText.endsWith("}")) || (resText.startsWith("[") && resText.endsWith("]"))) ? JSON.parse(resText) : resText
+        LogStateProperty.doLogCurl(this.uri, this.url, post, this.isSecure, resJson)
+      }
       }).catch((e) => {
         this.cancelTimeout()
         LibProgress.hide()
@@ -366,7 +369,10 @@ export default class m {
         if (onFailed) onFailed({ message: "Koneksi internet kamu tidak stabil, silahkan coba lagi" }, false)
         return
       }
-      //api_logger
+      if (LogStateProperty) {
+        var resJson = typeof resText == 'string' && ((resText.startsWith("{") && resText.endsWith("}")) || (resText.startsWith("[") && resText.endsWith("]"))) ? JSON.parse(resText) : resText
+        LogStateProperty.doLogCurl(this.uri, this.url, post, this.isSecure, resJson)
+      }
       this.onFetched(resText, onDone, onFailed, debug)
     }).catch((r) => {
       // if (this.maxRetry > 0) {
