@@ -533,7 +533,7 @@ function publish(notes) {
 		var d = new Date();
 		d = new Date(d.getTime() - 3000000);
 		var date_format_str = d.getFullYear().toString() + "-" + ((d.getMonth() + 1).toString().length == 2 ? (d.getMonth() + 1).toString() : "0" + (d.getMonth() + 1).toString()) + "-" + (d.getDate().toString().length == 2 ? d.getDate().toString() : "0" + d.getDate().toString());
-		let stringBuilder = "#" + ajson.expo.slug + "\n" + cjson.config.domain + "\n" + os.userInfo().username + '@' + os.hostname() + "\n" + date_format_str + "\nsdk: " + pack.dependencies.expo
+		let stringBuilder = "#" + ajson.expo.slug + "\n" + cjson.config.domain + "\n" + os.userInfo().username + '@' + os.hostname() + "\n" + date_format_str + "\nsdk: " + pack.dependencies.expo + "\nruntimeVersion: " + ajson.expo.runtimeVersion
 		stringBuilder += "\nid: " + (last_id + 1)
 		let esplibs = Object.keys(pack.dependencies).filter((key) => key.includes("esoftplay"))
 		esplibs.forEach((key) => {
@@ -580,7 +580,6 @@ function doctor() {
 		output.isDebug = cjson.config.isDebug
 		output.publishId = cjson.config.publish_id || 0
 		output.status = status
-
 	}
 	if (fs.existsSync(appjson)) {
 		let ajson = readToJSON(appjson)
@@ -588,6 +587,7 @@ function doctor() {
 		output.visible = ajson.expo.version
 		output.ios = ajson.expo.ios.buildNumber
 		output.android = ajson.expo.android.versionCode
+		output['runtimeVersion'] = ajson.expo.runtimeVersion
 	}
 	console.log(JSON.stringify(output, undefined, 2))
 }
