@@ -80,6 +80,9 @@ if (fs.existsSync(packjson)) {
 			try {
 				$appjson = JSON.parse(fs.readFileSync(appjson, 'utf8')) || {};
 			} catch (error) { }
+		if (!$appjson.expo.hasOwnProperty('runtimeVersion')) {
+			$appjson.expo.runtimeVersion = 1
+		}
 		if (!$appjson.expo.hasOwnProperty('android')) {
 			$appjson.expo.android = {
 				"useNextNotificationsApi": true,
