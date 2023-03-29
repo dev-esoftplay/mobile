@@ -1,5 +1,5 @@
 import { LibLocale } from 'esoftplay/cache/lib/locale/import';
-import { LogBox } from 'react-native';
+import { LogBox, Platform } from 'react-native';
 import 'react-native-reanimated';
 import './oneplusfixfont';
 
@@ -28,11 +28,16 @@ console.warn = (...arg) => {
     if (arg?.[0]?.startsWith?.(ignoreWarns[i])) return;
   }
   warn(...arg);
-};
+};  
 LogBox.ignoreLogs(ignoreWarns);
 
 let app = require('../../app.json');
 let conf = require('../../config.json');
+if (!__DEV__) {
+  if (Platform.OS == 'web') {
+    conf.config.domain = window.location.hostname
+  }
+}
 let lconf: any
 try {
   lconf = require('../../config.live.json');
