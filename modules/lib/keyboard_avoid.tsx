@@ -5,7 +5,7 @@ import NavigationContainerRefContext from '@react-navigation/core/src/Navigation
 import NavigationContext from '@react-navigation/core/src/NavigationContext';
 import type { NavigationProp } from '@react-navigation/core/src/types';
 import React, { useRef, useState } from 'react';
-import { KeyboardAvoidingView, Platform, View } from 'react-native';
+import { KeyboardAvoidingView, Platform } from 'react-native';
 
 
 export interface LibKeyboard_avoidProps {
@@ -14,14 +14,14 @@ export interface LibKeyboard_avoidProps {
 }
 export default function m(props: LibKeyboard_avoidProps): any {
 
-  const isFocussed = useIsFocused();
+  // const isFocussed = useIsFocused();
 
-  const Custom = isFocussed ? KeyboardAvoidingView : View
+  // const Custom = isFocussed ? KeyboardAvoidingView : View
 
   return (
-    <Custom enabled={isFocussed} behavior={Platform.OS == 'android' ? 'height' : 'padding'} style={[{ flex: 1 }, props.style]} >
+    <KeyboardAvoidingView behavior={Platform.OS == 'android' ? 'height' : 'padding'} style={[{ flex: 1 }, props.style]} >
       {props.children}
-    </Custom>
+    </KeyboardAvoidingView>
   )
 }
 
