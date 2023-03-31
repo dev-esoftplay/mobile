@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import _global from 'esoftplay/_global';
 import { UserData } from 'esoftplay/cache/user/data/import';
 import Storage from 'esoftplay/storage';
-import _global from 'esoftplay/_global';
 import * as R from 'react';
 import { fastFilter, fastLoop } from './fast';
 const isEqual = require('react-fast-compare');
@@ -147,7 +147,9 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
 
 
   function useState(): [T, (newState: T) => void, () => void] {
-    let [l, sl] = R.useState<T>(value);
+    let [l, s] = R.useState<T>(value);
+
+    let sl = R.useCallback((ns: T) => { s(ns) }, []);
 
     subscribe(sl)
 
