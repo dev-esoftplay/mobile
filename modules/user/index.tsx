@@ -4,6 +4,7 @@ import { esp, useSafeState } from 'esoftplay';
 import { LibDialog } from 'esoftplay/cache/lib/dialog/import';
 import { LibIcon } from 'esoftplay/cache/lib/icon/import';
 import { LibImage } from 'esoftplay/cache/lib/image/import';
+import { LibNavigation } from 'esoftplay/cache/lib/navigation/import';
 import { LibNet_status } from 'esoftplay/cache/lib/net_status/import';
 import { LibProgress } from 'esoftplay/cache/lib/progress/import';
 import { LibStyle } from 'esoftplay/cache/lib/style/import';
@@ -20,8 +21,13 @@ import { UserRoutes } from 'esoftplay/cache/user/routes/import';
 import useGlobalState from 'esoftplay/global';
 import * as Font from "expo-font";
 import React, { useEffect, useLayoutEffect } from 'react';
-import { Platform, Pressable, View } from "react-native";
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { Platform, Pressable, View } from 'react-native';
+import { GestureHandlerRootView, PanGestureHandler } from 'react-native-gesture-handler';
+import Animated, {
+  useAnimatedGestureHandler,
+  useAnimatedStyle,
+  useSharedValue
+} from 'react-native-reanimated';
 
 export interface UserIndexProps {
 
@@ -86,7 +92,20 @@ export default function m(props: UserIndexProps): any {
         setLoading(false)
       }
     })
-    //esoftplay-chatting
+
+    if (esp.config('firebase').hasOwnProperty('apiKey')) {
+      try {
+        const Firestore = esp.mod('chatting/firestore')
+        Firestore()?.init?.()
+        if (user) {
+          const ChattingLib = esp.mod('chatting/lib')
+          ChattingLib().setUser()
+        }
+      } catch (error) {
+
+      }
+    }
+
 
     LibUpdaterProperty.check()
   }, [])
@@ -115,12 +134,7 @@ export default function m(props: UserIndexProps): any {
               <LibProgress />
               <LibToast />
               <UserHook />
-              {
-                __DEV__ &&
-                <Pressable onPress={() => route.reset()} style={{ position: 'absolute', right: 10, top: LibStyle.height * 0.5, padding: 10, backgroundColor: 'indigo', alignItems: 'center', justifyContent: 'center', borderRadius: 50 }} >
-                  <LibIcon name='delete-variant' color='white' />
-                </Pressable>
-              }
+              {__DEV__ && <Draggable />}
             </>
         }
       </View>
@@ -128,3 +142,42 @@ export default function m(props: UserIndexProps): any {
     </GestureHandlerRootView>
   )
 }
+
+
+
+
+const Draggable = () => {
+  const translateX = useSharedValue(0);
+  const translateY = useSharedValue(0);
+  const lastOffset = { x: 0, y: 0 };
+  const handleGestureEvent = useAnimatedGestureHandler({
+    onStart: (_, ctx: any) => {
+      ctx.offsetX = translateX.value;
+      ctx.offsetY = translateY.value;
+    },
+    onActive: (event, ctx) => {
+      translateX.value = ctx.offsetX + event.translationX;
+      translateY.value = ctx.offsetY + event.translationY;
+    },
+    onEnd: (event) => {
+      lastOffset.x += event.translationX;
+      lastOffset.y += event.translationY;
+    },
+  });
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateX: translateX.value }, { translateY: translateY.value }],
+    };
+  });
+  return (
+    <View style={{ position: 'absolute', right: 10 }}>
+      <PanGestureHandler onGestureEvent={handleGestureEvent}>
+        <Animated.View style={[animatedStyle]} >
+          <Pressable onPress={() => { route.reset(); LibNavigation.backToRoot() }} style={{ right: 10, top: LibStyle.height * 0.5, padding: 10, backgroundColor: 'indigo', alignItems: 'center', justifyContent: 'center', borderRadius: 50 }} >
+            <LibIcon name='delete-variant' color='white' />
+          </Pressable>
+        </Animated.View>
+      </PanGestureHandler>
+    </View>
+  );
+};
