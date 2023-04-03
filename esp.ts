@@ -28,7 +28,7 @@ console.warn = (...arg) => {
     if (arg?.[0]?.startsWith?.(ignoreWarns[i])) return;
   }
   warn(...arg);
-};  
+};
 LogBox.ignoreLogs(ignoreWarns);
 
 let app = require('../../app.json');
@@ -216,7 +216,8 @@ const esp = {
       out.forEach((x) => {
         if (x != undefined)
           console.log(JSON.stringify(x, undefined, 2), "\x1b[0m");
-        console.log(x, "\x1b[0m")
+        else
+          console.log(x, "\x1b[0m")
       })
     }
   },
