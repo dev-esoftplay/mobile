@@ -162,6 +162,8 @@ const esp = {
       msg = "config tidak ada domain"
     } else if (!app.config.hasOwnProperty('salt') || app.config.salt.length == 0) {
       msg = "config tidak ada salt"
+    } else if (!app.config.hasOwnProperty("experienceId") || app.config.experienceId.length == 0){
+      msg = "config experienceId harus diisi dengan @esoftplay/[slug]"
     }
     if (msg != '') {
       let error = new Error(msg);
