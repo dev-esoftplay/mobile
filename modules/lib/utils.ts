@@ -1,7 +1,6 @@
 // noPage
 import { esp } from 'esoftplay';
 import { LibToastProperty } from 'esoftplay/cache/lib/toast/import';
-import { fastFilter, fastLoop } from 'esoftplay/fast';
 import useGlobalState from 'esoftplay/global';
 import moment from "esoftplay/moment";
 import * as Application from 'expo-application';
@@ -53,9 +52,9 @@ export default class eutils {
   }
 
   static uniqueArray(array: any[]): any[] {
-    let cleanArray = []
-    fastLoop(array, (item) => {
-      if (fastFilter(cleanArray, (ca) => isEqual(ca, item)).length == 0) {
+    let cleanArray: any[] = []
+    array.forEach((item) => {
+      if (cleanArray.filter((ca) => isEqual(ca, item)).length == 0) {
         cleanArray.push(item)
       }
     })

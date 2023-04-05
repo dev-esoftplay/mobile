@@ -1,6 +1,7 @@
 
 // noPage
 import { useGlobalReturn } from 'esoftplay';
+import _global from 'esoftplay/_global';
 import { LibCrypt } from 'esoftplay/cache/lib/crypt/import';
 import { LibCurl } from 'esoftplay/cache/lib/curl/import';
 import { LibNavigation } from 'esoftplay/cache/lib/navigation/import';
@@ -8,10 +9,8 @@ import { LibObject } from 'esoftplay/cache/lib/object/import';
 import { UserClass } from 'esoftplay/cache/user/class/import';
 import { UserNotification } from 'esoftplay/cache/user/notification/import';
 import esp from 'esoftplay/esp';
-import { fastFilter } from "esoftplay/fast";
 import useGlobalState from 'esoftplay/global';
 import moment from 'esoftplay/moment';
-import _global from 'esoftplay/_global';
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
 import { Alert, Linking, Platform } from "react-native";
@@ -126,14 +125,14 @@ export default class m {
             // console.log(nUnread+" => nUnread")
             let nUnread
             if (isFirst) {
-              nUnread = fastFilter(res.list, (row) => row.status != 2).length
+              nUnread = res.list.filter((row) => row.status != 2).length
               UserNotification.state().set({
                 data: res.list,
                 urls: [],
                 unread: nUnread
               })
             } else {
-              nUnread = unread + fastFilter(res.list, (row) => row.status != 2).length
+              nUnread = unread + res.list.filter((row) => row.status != 2).length
               data.push(...res.list)
               UserNotification.state().set({
                 data: data,

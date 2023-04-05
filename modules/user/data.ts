@@ -1,6 +1,5 @@
 // noPage
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { fastFilter } from 'esoftplay/fast';
 import _global from 'esoftplay/_global';
 
 export default class m {
@@ -8,7 +7,7 @@ export default class m {
     AsyncStorage.getItem("user_data_dependent").then((x) => {
       let all: string[] = []
       if (x) {
-        all = fastFilter(JSON.parse(x), (x) => x != name)
+        all = JSON.parse(x).filter((x) => x != name)
       }
       all.push(name)
       AsyncStorage.setItem("user_data_dependent", JSON.stringify(all))
@@ -18,7 +17,7 @@ export default class m {
     AsyncStorage.getItem("user_data_dependent").then((x) => {
       let all = []
       if (x) {
-        all = fastFilter(JSON.parse(x), (x) => x != name)
+        all = JSON.parse(x).filter((x) => x != name)
       }
       AsyncStorage.setItem("user_data_dependent", JSON.stringify(all))
     })

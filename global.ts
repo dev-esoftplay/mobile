@@ -3,7 +3,6 @@ import _global from 'esoftplay/_global';
 import { UserData } from 'esoftplay/cache/user/data/import';
 import Storage from 'esoftplay/storage';
 import * as R from 'react';
-import { fastFilter, fastLoop } from './fast';
 const isEqual = require('react-fast-compare');
 
 
@@ -82,7 +81,7 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
     const isChange = !isEqual(value, ns)
     if (isChange) {
       value = ns
-      fastLoop(_global.useGlobalSubscriber?.[_idx], (c) => { c?.(ns) })
+      _global.useGlobalSubscriber?.[_idx].forEach((c) => { c?.(ns) })
       if (o?.persistKey && ns != undefined) {
         let data: any
         switch (typeof ns) {
@@ -127,7 +126,7 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
     R.useLayoutEffect(() => {
       _global.useGlobalSubscriber?.[_idx]?.push?.(func);
       return () => {
-        _global.useGlobalSubscriber[_idx] = fastFilter(_global.useGlobalSubscriber?.[_idx], (f) => f !== func)
+        _global.useGlobalSubscriber[_idx] = _global.useGlobalSubscriber?.[_idx].filter((f) => f !== func)
       };
     }, [func]);
   }

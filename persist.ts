@@ -1,6 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { fastFilter, fastLoop } from './fast';
 
 export default (() => {
   let obj: any = {}
@@ -17,7 +16,7 @@ export default (() => {
           AsyncStorage.setItem(key, JSON.stringify(value));
         else
           del()
-        fastLoop(setter[key], (cc) => cc(value))
+        setter[key].forEach((cc) => cc(value))
       }
     }
 
@@ -51,7 +50,7 @@ export default (() => {
       updater()
       return () => {
         r.current = false
-        setter[key] = fastFilter(setter[key], (x) => x !== setState);
+        setter[key] = setter[key].filter((x) => x !== setState);
       }
     }, [])
 

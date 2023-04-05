@@ -1,7 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Storage from 'esoftplay/storage';
 import * as R from 'react';
-import { fastFilter, fastLoop } from './fast';
 const isEqual = require('react-fast-compare');
 
 export interface UseCache_return<T> {
@@ -40,7 +39,7 @@ export default (() => {
       }
       if (isChange) {
         value = ns instanceof Function ? ns(value) : ns
-        fastLoop(useCacheSubscriber[_idx], (c: any) => c?.(value))
+        useCacheSubscriber[_idx].forEach((c: any) => c?.(value))
         if (o?.persistKey) {
           STORAGE.setItem(o.persistKey, JSON.stringify(value))
         }
@@ -62,7 +61,7 @@ export default (() => {
       R.useEffect(() => {
         useCacheSubscriber[_idx].push(sl);
         return () => {
-          useCacheSubscriber[_idx] = fastFilter(useCacheSubscriber[_idx], (f) => f !== sl)
+          useCacheSubscriber[_idx] = useCacheSubscriber[_idx].filter((f) => f !== sl);
         };
       }, [sl]);
     }

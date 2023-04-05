@@ -2,8 +2,6 @@
 import { LibComponent } from 'esoftplay/cache/lib/component/import';
 import { LibStyle } from 'esoftplay/cache/lib/style/import';
 import { LibUtils } from 'esoftplay/cache/lib/utils/import';
-
-import { fastFilter } from 'esoftplay/fast';
 import React from 'react';
 import { ScrollView, View } from 'react-native';
 
@@ -52,7 +50,7 @@ export default class m extends LibComponent<LibTabsProps, LibTabsState> {
   buildAllIds(page: number, pageOffset: number) {
     if (this.props.lazyTabOffset) {
       this.allIds.push(page)
-      this.allIds = fastFilter(this.allIds, (val) => this.arrayOfLimit(page, pageOffset).includes(val))
+      this.allIds = this.allIds.filter((val) => this.arrayOfLimit(page, pageOffset).includes(val))
     }
     else {
       this.allIds = this.arrayOfLimit(page, pageOffset)

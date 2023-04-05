@@ -1,7 +1,6 @@
 // useLibs
 // noPage
 import { useSafeState } from 'esoftplay';
-import { fastFilter } from 'esoftplay/fast';
 import { useLayoutEffect } from 'react';
 
 export default (() => {
@@ -26,7 +25,7 @@ export default (() => {
       dt['setter-' + formName].push(b)
       c(dt[formName])
       return () => {
-        dt['setter-' + formName] = fastFilter(dt['setter-' + formName], (x) => x !== b)
+        dt['setter-' + formName] = dt['setter-' + formName].filter((x) => x !== b)
       }
     }, [])
 
