@@ -835,6 +835,7 @@ function build() {
 					command('node ./build/post.js')
 				configAvailable(false)
 				devClientPos(appjson)
+				buildPrepare(false)
 			} else if (d === false) {
 				consoleError("Build Canceled")
 			} else {
