@@ -62,6 +62,7 @@ switch (args[0]) {
 		break
 	case "b":
 	case "build":
+		buildPrepare(true)
 		build()
 		break;
 	case "bc":
@@ -665,7 +666,7 @@ function buildPrepare(include = true) {
 					if (!fs.existsSync(`./modules/${module}`)) {
 						fs.mkdirSync(`./modules/${module}`)
 					}
-					command(`cp -n -v ./node_modules/esoftplay/modules/${module}/* ./modules/${module} || true`)
+					command(`cp -n ./node_modules/esoftplay/modules/${module}/* ./modules/${module} || true`)
 				}
 			});
 			consoleSucces("BUILD PREPARE SUCCESS..!")
