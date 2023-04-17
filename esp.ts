@@ -186,9 +186,9 @@ const esp = {
       theme: ["light", "dark"],
       comment_login: 1,
       notification: 0,
-      isDebug: __DEV__ ? 1 : 0,
       ...app.config
     }
+    
     if (!config.hasOwnProperty('url') || config.url.length == 0) {
       config.url = config.protocol + "://" + config.api + "." + config.domain + config.uri;
     }
