@@ -82,10 +82,7 @@ if (fs.existsSync(packjson)) {
 			} catch (error) { }
 		if (!$appjson.expo.hasOwnProperty('runtimeVersion')) {
 			$appjson.expo.runtimeVersion = 1
-		}
-		if (!$appjson.expo.hasOwnProperty('android')) {
 			$appjson.expo.android = {
-				"useNextNotificationsApi": true,
 				"package": "com.domain",
 				"versionCode": 1,
 				"intentFilters": [
@@ -120,7 +117,12 @@ if (fs.existsSync(packjson)) {
 				"associatedDomains": [
 					"applinks:*.domain.com",
 					"applinks:domain.com"
-				]
+				],
+				"infoPlist": {
+					"LSApplicationQueriesSchemes": [
+						"itms-apps"
+					]
+				}
 			}
 
 			fs.writeFile(appjson, JSON.stringify($appjson, null, 2), (err) => {
@@ -313,6 +315,7 @@ export default function App() {
 			'react-native-safe-area-context',
 			'react-native-screens',
 			'react-native-webview',
+			'sp-react-native-in-app-updates',
 			'shorthash',
 			'usestable'
 		]
@@ -369,22 +372,24 @@ export default function App() {
 			// 	fs.writeFileSync('../@firebase/app/dist/index.rn.cjs.js', firebaseText)
 			// }
 			// /* end AsyncStorage @firebase section */
-			if (fs.existsSync('../@expo/vector-icons')) {
-				let esoftplayIcon = ''
-				fs.readdir('../@expo/vector-icons/build', (err, files) => {
-					const dfiles = files.filter((file) => file.includes('d.ts'))
-					dfiles.map((dfile, i) => {
-						const rdfile = fs.readFileSync('../@expo/vector-icons/build/' + dfile, { encoding: 'utf8' })
-						const names = (/import\("\.\/createIconSet"\)\.Icon<((.*))\,.*>/g).exec(rdfile);
-						if (names && names[1].includes('|')) {
-							esoftplayIcon += 'export type ' + dfile.replace('.d.ts', 'Types') + ' = ' + names[1] + '\n';
-						}
+			if (appjson)
+
+				if (fs.existsSync('../@expo/vector-icons')) {
+					let esoftplayIcon = ''
+					fs.readdir('../@expo/vector-icons/build', (err, files) => {
+						const dfiles = files.filter((file) => file.includes('d.ts'))
+						dfiles.map((dfile, i) => {
+							const rdfile = fs.readFileSync('../@expo/vector-icons/build/' + dfile, { encoding: 'utf8' })
+							const names = (/import\("\.\/createIconSet"\)\.Icon<((.*))\,.*>/g).exec(rdfile);
+							if (names && names[1].includes('|')) {
+								esoftplayIcon += 'export type ' + dfile.replace('.d.ts', 'Types') + ' = ' + names[1] + '\n';
+							}
+						})
+						fs.writeFileSync('../@expo/vector-icons/build/esoftplay_icons.ts', esoftplayIcon)
 					})
-					fs.writeFileSync('../@expo/vector-icons/build/esoftplay_icons.ts', esoftplayIcon)
-				})
-			} else {
-				console.log("@expo/vector-icons not installed")
-			}
+				} else {
+					console.log("@expo/vector-icons not installed")
+				}
 			console.log('Please wait until processes has finished...');
 		});
 	}

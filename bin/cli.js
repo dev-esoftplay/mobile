@@ -132,6 +132,39 @@ switch (args[0]) {
 		break;
 }
 
+function switchStatusAssets(status) {
+
+	const iconpng = DIR + "assets/icon.png"
+	const icondebug = DIR + "assets/icon.debug.png"
+	const iconlive = DIR + "assets/icon.live.png"
+
+	const iconNotifpng = DIR + "assets/iconNotif.png"
+	const iconNotifdebug = DIR + "assets/iconNotif.debug.png"
+	const iconNotiflive = DIR + "assets/iconNotif.live.png"
+
+	const splashpng = DIR + "assets/splash.png"
+	const splashdebug = DIR + "assets/splash.debug.png"
+	const splashlive = DIR + "assets/splash.live.png"
+
+
+	function copyFileFromTo(from, to) {
+		if (fs.existsSync(from)) {
+			command('rm ' + to)
+			command('cp ' + from + ' ' + to)
+		}
+	}
+	if (status.includes('l')) {
+		copyFileFromTo(iconlive, iconpng)
+		copyFileFromTo(splashlive, splashpng)
+		copyFileFromTo(iconNotiflive, iconNotifpng)
+	}
+	if (status.includes('d')) {
+		copyFileFromTo(icondebug, iconpng)
+		copyFileFromTo(splashdebug, splashpng)
+		copyFileFromTo(iconNotifdebug, iconNotifpng)
+	}
+}
+
 function excludeModules() {
 	let cjson = readToJSON(confjson)
 	if (cjson.config.hasOwnProperty('excludeModules')) {
@@ -919,6 +952,7 @@ function switchStatus(status) {
 		valid = copyFromTo(status.includes("l") ? conflive : confdebug, confjson)
 	if (valid && fs.existsSync(gplist))
 		valid = copyFromTo(status.includes("l") ? gplistlive : gplistdebug, gplistlive)
+	switchStatusAssets(status)
 	if (!valid) {
 		consoleError('TERJADI KESALAHAN')
 		checkApp()
