@@ -186,7 +186,7 @@ const esp = {
       theme: ["light", "dark"],
       comment_login: 1,
       notification: 0,
-      ...conf.config
+      ...app.config
     }
     
     if (!config.hasOwnProperty('url') || config.url.length == 0) {
