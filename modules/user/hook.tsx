@@ -1,6 +1,5 @@
 // noPage
 
-import { LibAuto_update } from 'esoftplay/cache/lib/auto_update/import';
 import { LibComponent } from 'esoftplay/cache/lib/component/import';
 
 
@@ -19,7 +18,7 @@ export default class m extends LibComponent<UserMainProps, UserMainState> {
   render(): any {
     return (
       <>
-        <LibAuto_update />
+        {/* <LibAuto_update /> */}
       </>
     )
   }
