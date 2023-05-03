@@ -53,7 +53,7 @@ export default class m extends LibComponent<LibVersionProps, LibVersionState> {
       LibNavigation.backToRoot()
       LibNavigation.replace("lib/version", { res, msg: msg == 'success' ? 'Update to a new version now' : msg })
     }
-    if (isForceUpdate) {
+    if (isForceUpdate == 1) {
       LibUpdaterProperty.check((isNew) => { if (isNew) LibUpdaterProperty.install() })
     }
   }
