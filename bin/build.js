@@ -315,7 +315,6 @@ export default function App() {
 			'react-native-safe-area-context',
 			'react-native-screens',
 			'react-native-webview',
-			'sp-react-native-in-app-updates',
 			'shorthash',
 			'usestable'
 		]
