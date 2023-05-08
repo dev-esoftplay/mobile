@@ -51,7 +51,7 @@ function setFonts(): Promise<void> {
 }
 
 
-const route = useGlobalState<any>(undefined, { persistKey: 'user_index_routes_initial' })
+const route = useGlobalState<any>(undefined, { persistKey: 'user_index_routes_initial', inFile: true })
 export default function m(props: UserIndexProps): any {
   const [loading, setLoading] = useSafeState(true)
   const user = UserClass.state().useSelector(s => s)

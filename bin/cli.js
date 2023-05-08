@@ -149,7 +149,8 @@ function switchStatusAssets(status) {
 
 	function copyFileFromTo(from, to) {
 		if (fs.existsSync(from)) {
-			command('rm ' + to)
+			if (fs.existsSync(to))
+				command('rm ' + to)
 			command('cp ' + from + ' ' + to)
 		}
 	}
@@ -163,6 +164,21 @@ function switchStatusAssets(status) {
 		copyFileFromTo(splashdebug, splashpng)
 		copyFileFromTo(iconNotifdebug, iconNotifpng)
 	}
+
+	fs.readdirSync(DIR + '/modules/').forEach((mod) => {
+		const path = DIR + '/modules/' + mod
+		fs.readdirSync(path).forEach((file) => {
+			if (status.includes('d'))
+				if (file.match(/^.*.debug.*/g)) {
+					copyFileFromTo(path + '/' + file, path + '/' + file.replace('.debug.', '.'))
+				}
+			if (status.includes('l'))
+				if (file.match(/^.*.live.*/g)) {
+					copyFileFromTo(path + '/' + file, path + '/' + file.replace('.live.', '.'))
+				}
+		})
+	})
+
 }
 
 function excludeModules() {

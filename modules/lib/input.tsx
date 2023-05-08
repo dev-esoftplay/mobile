@@ -5,7 +5,7 @@ import { LibTheme } from 'esoftplay/cache/lib/theme/import';
 import { LibUtils } from 'esoftplay/cache/lib/utils/import';
 
 import React from 'react';
-import { TextInput, View } from 'react-native';
+import { Platform, TextInput, View } from 'react-native';
 
 export interface LibInputProps {
   icon?: (color: string) => any,
@@ -222,7 +222,7 @@ export default class m extends LibComponent<LibInputProps, LibInputState>{
             allowFontScaling={false}
             {...this.props}
             style={[{
-              outlineWidth: 0,
+              outlineWidth: Platform.OS == 'web' ? 0 : undefined,
               paddingVertical: 8,
               marginBottom: 2,
               paddingRight: suffix ? (suffix.length * 14) : 0,
