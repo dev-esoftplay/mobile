@@ -122,7 +122,7 @@ export default class m extends LibComponent<LibInputProps, LibInputState>{
       for (let i = 0; i < rMask.length; i++) {
         const iMask = rMask[i];
         if (iMask == '#') {
-          if (rText[i - _addRange] != undefined) {
+          if (rText?.[i - _addRange] != undefined) {
             maskedText += _addMaskChar + rText[i - _addRange]
           }
           else {

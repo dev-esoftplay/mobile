@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { InteractionManager } from 'react-native';
 
 type UseRefStateResult<T> = [T | undefined, (value: T | undefined) => void];
 
@@ -9,7 +8,8 @@ export default function useRefState<T = any>(defaultValue?: T): UseRefStateResul
 
   const updateState = useCallback((value: T | undefined) => {
     if (isMountedRef.current) {
-      InteractionManager.runAfterInteractions(() => setState(value))
+      setState(value)
+      // InteractionManager.runAfterInteractions(() => setState(value))
     }
   }, []);
 
