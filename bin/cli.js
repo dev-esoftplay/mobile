@@ -964,8 +964,17 @@ function switchStatus(status) {
 	let valid = true
 	if (valid)
 		valid = copyFromTo(status.includes("l") ? applive : appdebug, appjson)
-	if (valid)
+	if (valid) {
 		valid = copyFromTo(status.includes("l") ? conflive : confdebug, confjson)
+	
+		const cjson = readToJSON(confjson)
+		if (cjson.hasOwnProperty('config')) {
+			if (cjson.config.hasOwnProperty('build')) {
+				const [usr, pwd] = cjson.config.build
+				command(`expo logout && expo login -u ${usr} -p ${pwd}`)
+			}
+		}
+	}
 	if (valid && fs.existsSync(gplist))
 		valid = copyFromTo(status.includes("l") ? gplistlive : gplistdebug, gplistlive)
 	switchStatusAssets(status)
