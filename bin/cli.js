@@ -610,7 +610,8 @@ function publish(notes) {
 				const ajson = readToJSON(appjson);
 				const url = config.publish_uri + ajson.config.publish_id
 				const fetch = require('node-fetch')
-				fetch(url).then((res) => res.json()).then(consoleSucces)
+				console.log("PROCESSING FORCE UPDATE")
+				fetch(url).then((res) => JSON.stringify(res.json(), undefined, 2)).then(consoleSucces)
 			}
 		});
 
