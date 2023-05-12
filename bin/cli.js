@@ -15,7 +15,6 @@ const confjson = DIR + "config.json"
 const conflive = DIR + "config.live.json"
 const confdebug = DIR + "config.debug.json"
 const gitignore = DIR + ".gitignore"
-
 const gplist = DIR + "GoogleService-Info.plist"
 const gplistlive = DIR + "GoogleService-Info.live.plist"
 const gplistdebug = DIR + "GoogleService-Info.debug.plist"
@@ -138,6 +137,10 @@ function switchStatusAssets(status) {
 	const icondebug = DIR + "assets/icon.debug.png"
 	const iconlive = DIR + "assets/icon.live.png"
 
+	const icon_iospng = DIR + "assets/icon_ios.png"
+	const icon_iosdebug = DIR + "assets/icon_ios.debug.png"
+	const icon_ioslive = DIR + "assets/icon_ios.live.png"
+
 	const iconNotifpng = DIR + "assets/iconNotif.png"
 	const iconNotifdebug = DIR + "assets/iconNotif.debug.png"
 	const iconNotiflive = DIR + "assets/iconNotif.live.png"
@@ -156,11 +159,13 @@ function switchStatusAssets(status) {
 	}
 	if (status.includes('l')) {
 		copyFileFromTo(iconlive, iconpng)
+		copyFileFromTo(icon_ioslive, icon_iospng)
 		copyFileFromTo(splashlive, splashpng)
 		copyFileFromTo(iconNotiflive, iconNotifpng)
 	}
 	if (status.includes('d')) {
 		copyFileFromTo(icondebug, iconpng)
+		copyFileFromTo(icon_iosdebug, icon_iospng)
 		copyFileFromTo(splashdebug, splashpng)
 		copyFileFromTo(iconNotifdebug, iconNotifpng)
 	}
@@ -500,6 +505,7 @@ function readToJSON(path) {
 	return isJSON ? JSON.parse(txt) : txt
 }
 
+
 function publish(notes) {
 	jsEng(appjson, true)
 	jsEng(appdebug, true)
@@ -589,8 +595,25 @@ function publish(notes) {
 		esplibs.forEach((key) => {
 			stringBuilder += ("\n" + key + ": " + pack.dependencies[key])
 		})
-		stringBuilder += (notes != '' ? ("\n\n- " + notes) : '')
-		tm(stringBuilder)
+		const { exec } = require('child_process');
+		exec("publisher=$(npx expo whoami &); echo $publisher;", (error, stdout, stderr) => {
+			if (error) {
+				console.error(`exec error: ${error}`);
+				return;
+			}
+			let accountName = stdout.trim();
+			stringBuilder += "\npublisher: @" + accountName + "\n"
+			stringBuilder += (notes != '' ? ("\n\n- " + notes) : '')
+			tm(stringBuilder)
+			if (notes.startsWith('*') && ajson.config.publish_id) {
+				const config = readToJSON(confjson).config;
+				const ajson = readToJSON(appjson);
+				const url = config.publish_uri + ajson.config.publish_id
+				const fetch = require('node-fetch')
+				fetch(url).then((res) => res.json()).then(consoleSucces)
+			}
+		});
+
 	}
 }
 
@@ -966,7 +989,7 @@ function switchStatus(status) {
 		valid = copyFromTo(status.includes("l") ? applive : appdebug, appjson)
 	if (valid) {
 		valid = copyFromTo(status.includes("l") ? conflive : confdebug, confjson)
-	
+
 		const cjson = readToJSON(confjson)
 		if (cjson.hasOwnProperty('config')) {
 			if (cjson.config.hasOwnProperty('build')) {

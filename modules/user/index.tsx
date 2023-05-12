@@ -105,8 +105,6 @@ export default function m(props: UserIndexProps): any {
 
       }
     }
-
-
     LibUpdaterProperty.check()
   }, [])
 
