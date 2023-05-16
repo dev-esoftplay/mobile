@@ -35,8 +35,8 @@ export default class m {
         NativeModules.SettingsManager.settings.AppleLanguages[0]
         : NativeModules.I18nManager.localeIdentifier;
 
-    appLanguage.search(/-|_/g) !== -1 ? appLanguage.slice(0, 2) : appLanguage;
-    let def = appLanguage == 'in' ? 'id' : appLanguage
+    const fixAppLanguage = appLanguage.search(/-|_/g) !== -1 ? appLanguage.slice(0, 2) : appLanguage;
+    let def = fixAppLanguage == 'in' ? 'id' : fixAppLanguage
     return def
   }
 }
