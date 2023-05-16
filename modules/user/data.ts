@@ -1,6 +1,7 @@
 // noPage
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import _global from 'esoftplay/_global';
+import Storage from 'esoftplay/storage';
 
 export default class m {
   static register(name: string): void {
@@ -28,7 +29,11 @@ export default class m {
       if (_global?.useGlobalUserDelete) {
         Object.values?.(_global?.useGlobalUserDelete)?.map?.((func) => func?.())
       }
-      if (x) AsyncStorage.multiRemove(JSON.parse(x))
+      if (x) {
+        AsyncStorage.multiRemove(JSON.parse(x))
+        const arx = JSON.parse(x)
+        arx.forEach((ix) => { Storage.removeItem(ix) })
+      }
     })
   }
 }
