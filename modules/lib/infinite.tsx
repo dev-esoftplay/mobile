@@ -27,6 +27,7 @@ export interface LibInfiniteProps {
   mainIndex?: string,
   stickyHeaderIndices?: number[],
   bounces?: boolean,
+  customHeader?: any,
   staticHeight?: number,
   ItemSeparatorComponent?: any,
   ListEmptyComponent?: any,
@@ -105,7 +106,7 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
     }
     if (!this.pages.includes(page)) {
       this.pages.push(page)
-      new LibCurl(url, post,
+      new LibCurl().withHeader(this.props?.customHeader || {})(url, post,
         (res, msg) => {
           if (this.props.isDebug) {
             esp.log(res);
@@ -219,6 +220,8 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
                 }
               }}
               {...this.props}
+              contentContainerStyle={this.props?.style}
+              style={undefined}
               renderItem={this._renderItem}
             />
         }

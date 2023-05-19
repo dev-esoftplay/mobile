@@ -97,6 +97,8 @@ export default class m extends LibComponent<LibListProps, LibListState> {
           ListFooterComponent={this.props.renderFooter && this.props.renderFooter() || this.props.ListFooterComponent}
           {...isStatic()}
           renderItem={this.rowRenderer}
+          contentContainerStyle={this.props?.style}
+          style={undefined}
         />
       </View>
     )
