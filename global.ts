@@ -20,7 +20,8 @@ export interface useGlobalOption {
   inFile?: boolean,
   listener?: (data: any) => void,
   jsonBeautify?: boolean,
-  isUserData?: boolean
+  isUserData?: boolean,
+  onFinish?: () => void
 }
 
 export interface useGlobalConnect<T> {
@@ -37,8 +38,8 @@ const Context = {
     this.idx = 0
   }
 }
-
 export const globalIdx = Context
+let timeoutFinish: NodeJS.Timeout
 export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): useGlobalReturn<T> {
   const STORAGE = o?.inFile ? Storage : AsyncStorage
   const _idx = o?.persistKey || globalIdx.idx
@@ -50,20 +51,28 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
     let persistKey = o?.persistKey
     STORAGE.getItem(persistKey).then((p: any) => {
       if (p) {
-        if (p != undefined && typeof p == 'string' && (p.startsWith("{") || p.startsWith("[")))
-          try { set(JSON.parse(p)) } catch (error) { }
-        else {
-          if (p == "true" || p == "false") {
-            try { /* @ts-ignore */ set(eval(p)) } catch (error) { }
-          } else if (isNaN(p)) {
-            try { /* @ts-ignore */ set(p) } catch (error) { }
-          } else {
-            try { /* @ts-ignore */ set(eval(p)) } catch (error) { }
+        if (persistKey != '__globalReady')
+          if (p != undefined && typeof p == 'string' && (p.startsWith("{") || p.startsWith("[")))
+            try { set(JSON.parse(p)) } catch (error) { }
+          else {
+            if (p == "true" || p == "false") {
+              try { /* @ts-ignore */ set(eval(p)) } catch (error) { }
+            } else if (isNaN(p)) {
+              try { /* @ts-ignore */ set(p) } catch (error) { }
+            } else {
+              try { /* @ts-ignore */ set(eval(p)) } catch (error) { }
+            }
           }
-        }
+      }
+      if (o?.onFinish) {
+        clearTimeout(timeoutFinish)
+        timeoutFinish = setTimeout(() => {
+          o.onFinish?.()
+        }, 50);
       }
     })
   }
+
 
   /* register to userData to automatically reset state and persist */
   if (o?.isUserData) {
