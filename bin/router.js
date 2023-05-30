@@ -625,21 +625,28 @@ function createRouter() {
         Navigations.push(nav);
       }
       AllRoutes.push(nav)
+      let fileExt = 'js'
       Task += "\t\t" + 'case "' + nav + '":' + "\n\t\t\t" + 'Out = require("../../.' + Modules[module][task] + '")?.default' + "\n\t\t\t" + 'break;' + "\n";
       TaskProperty += "\t\t" + 'case "' + nav + '":' + "\n\t\t\t" + 'Out = require("../../.' + Modules[module][task] + '")' + "\n\t\t\t" + 'break;' + "\n";
       /* ADD ROUTER EACH FILE FOR STATIC IMPORT */
-      var item = "import { stable } from 'usestable';\nimport { default as _" + ucword(module) + ucword(task) + " } from '../../../../." + Modules[module][task] + "';\n"
+      var item = `import { stable } from 'usestable';\n`
       if (HookModules.includes(nav)) {
+        // fileExt = 'tsx'
         item += "" +
+          "import React from 'react'\n" +
+          "const _" + ucword(module) + ucword(task) + " = React.lazy(() => import('../../../../." + Modules[module][task] + "')); \n" +
           "import * as " + ucword(module) + ucword(task) + SuffixHooksProperty + " from '../../../../." + Modules[module][task] + "';\n" +
-          "var " + ucword(module) + ucword(task) + " = stable(_" + ucword(module) + ucword(task) + "); \n" +
+          "const UpdatedComponent = (OriginalComponent) => { function NewComponent(props) { return ( <React.Suspense><OriginalComponent {...props} /></React.Suspense> ) } return NewComponent; };\n" +
+          "const " + ucword(module) + ucword(task) + " = stable(UpdatedComponent(_" + ucword(module) + ucword(task) + ")); \n" +
           "export { " + ucword(module) + ucword(task) + SuffixHooksProperty + ", " + ucword(module) + ucword(task) + " };\n"
       } else if (UseLibs.includes(nav)) {
         item += "" +
+          "import { default as _" + ucword(module) + ucword(task) + " } from '../../../../." + Modules[module][task] + "';\n" +
           "import * as " + ucword(module) + ucword(task) + SuffixHooksProperty + " from '../../../../." + Modules[module][task] + "';\n" +
-          "var " + ucword(module) + ucword(task) + " = _" + ucword(module) + ucword(task) + "; \n" +
+          "const " + ucword(module) + ucword(task) + " = _" + ucword(module) + ucword(task) + "; \n" +
           "export { " + ucword(module) + ucword(task) + SuffixHooksProperty + ", " + ucword(module) + ucword(task) + " };\n"
       } else {
+        item += "import { default as _" + ucword(module) + ucword(task) + " } from '../../../../." + Modules[module][task] + "';\n"
         item += "export { _" + ucword(module) + ucword(task) + " as " + ucword(module) + ucword(task) + " };\n"
       }
 
@@ -649,8 +656,8 @@ function createRouter() {
       if (!fs.existsSync(tmpDir + nav))
         fs.mkdirSync(tmpDir + nav)
 
-      if (isChange(tmpDir + nav + "/import.js", item)) {
-        fs.writeFile(tmpDir + nav + '/import.js', item, { flag: 'w' }, function (err) {
+      if (isChange(tmpDir + nav + "/import." + fileExt, item)) {
+        fs.writeFile(tmpDir + nav + '/import.' + fileExt, item, { flag: 'w' }, function (err) {
           if (err) {
             return console.log(err);
           }
@@ -728,7 +735,8 @@ function createRouter() {
     const orientation = NavsOrientation[nav]
     const [module, task] = nav.split('/')
     const comp = ucword(module) + ucword(task)
-    importer.push(`import { ${comp} } from ${'"esoftplay/cache/' + module + '/' + task + '/import"'}`)
+    importer.push(`import { ${comp}
+      } from ${'"esoftplay/cache/' + module + '/' + task + '/import"'} `)
     if (orientation)
       screens.push("\t\t\t\t" + "<Stack.Screen name={\"" + nav + "\"} options={{ orientation: '" + orientation + "' }} component={" + comp + "} />")
     else
