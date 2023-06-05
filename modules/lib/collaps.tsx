@@ -14,6 +14,7 @@ export interface LibCollapsProps {
   show?: boolean,
   header: (isShow: boolean) => any,
   children: any,
+  onToggle?: (expanded: boolean) => void,
   style?: any
 }
 export default function m(props: LibCollapsProps): any {
@@ -40,7 +41,7 @@ export default function m(props: LibCollapsProps): any {
         runOnJS(setExpand)(false)
       }
     });
-    translateY.value = withTiming(opacity.value !== 0 ? -10 : 0, { duration: 300})
+    translateY.value = withTiming(opacity.value !== 0 ? -10 : 0, { duration: 300 })
   };
 
   function toggle() {
@@ -49,16 +50,19 @@ export default function m(props: LibCollapsProps): any {
     } else {
       toggleAnimation()
     }
+    if (props.onToggle) {
+      props.onToggle(!expand)
+    }
   }
 
   return (
     <Animated.View>
-       <Pressable onPress={toggle} style={{zIndex:11}} >
+      <Pressable onPress={toggle} style={{ zIndex: 11 }} >
         {props.header(expand)}
       </Pressable>
       {expand &&
         <Animated.View
-          style={[{ paddingBottom: expand ? 10 : 0, zIndex:10 }, animatedStyle]}>
+          style={[{ paddingBottom: expand ? 10 : 0, zIndex: 10 }, animatedStyle]}>
           {props.children}
         </Animated.View>
       }
