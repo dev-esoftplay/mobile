@@ -18,7 +18,7 @@ export interface LibFocusState {
 }
 
 export default function m(props: LibFocusProps): any {
-
+  console.warn("LibFocus now DEPRECATED, will be remove on next update")
   const isFocused = useIsFocused()
 
   useEffect(() => {
