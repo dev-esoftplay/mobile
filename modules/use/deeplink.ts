@@ -1,10 +1,10 @@
 // useLibs
 // noPage
 import { esp } from 'esoftplay';
+import _global from 'esoftplay/_global';
 import { LibCurl } from 'esoftplay/cache/lib/curl/import';
 import { LibNavigation } from 'esoftplay/cache/lib/navigation/import';
 import { LibUtils } from 'esoftplay/cache/lib/utils/import';
-import _global from 'esoftplay/_global';
 import { useCallback, useEffect } from 'react';
 import { Alert, Linking } from 'react-native';
 
@@ -39,7 +39,7 @@ export default function m(defaultUrl?: string): void {
                 nav(res.result.module, res.result.url)
             }
             else {
-              Alert.alert('Oops...!', res.message)
+              Alert.alert(esp.lang("use/deeplink", "msg_err"), res.message)
             }
           }
         )

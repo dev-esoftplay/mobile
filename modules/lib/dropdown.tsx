@@ -1,5 +1,6 @@
 // withHooks
 
+import { esp } from 'esoftplay';
 import { LibStyle } from 'esoftplay/cache/lib/style/import';
 import React, { useEffect, useRef, useState } from "react";
 import { FlatList, Modal, Platform, Pressable, TextInput, View, ViewProps } from "react-native";
@@ -59,7 +60,7 @@ export default function m(props: LibDropdownProps) {
           pointerEvents="none"
           editable={false}
           style={[{ height: 40, borderWidth: 1, borderRadius: 2, borderColor: '#ccc' }, Platform.OS == 'web' ? { outlineWidth: 0 } : {}, props?.style]}
-          placeholder={props?.label || 'Select'}
+          placeholder={props?.label || esp.lang("lib/dropdown", "select")}
           value={currentValue?.value}
         />
       </Pressable>

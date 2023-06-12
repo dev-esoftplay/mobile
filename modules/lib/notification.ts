@@ -65,7 +65,7 @@ function readAll(ids: (string | number)[]) {
 }
 
 function splitArray(array: any[], maxLength: number): any[] {
-  const parts = maxLength // items per chunk    
+  const parts = maxLength // items per chunk
   const splitedArray = array.reduce((resultArray: any, item, index) => {
     const chunkIndex = Math.floor(index / parts)
     if (!resultArray[chunkIndex]) {
@@ -227,7 +227,7 @@ export default class m {
           {
             sound: 'default',
             enableLights: true,
-            description: "Please enable notifications permissions",
+            description: esp.lang("lib/notification", "permission"),
             name: esp.appjson().expo.name,
             importance: Notifications.AndroidImportance.MAX,
             showBadge: true,

@@ -273,10 +273,10 @@ export default class eutils {
 
   static mapDirectionTo(latlongFrom: string, latlongTo: string, travelmode: LibUtilsTravelMode): void {
     if (!eutils.isValidLatLong(latlongFrom)) {
-      return LibToastProperty.show('LatLongFrom tidak valid')
+      return LibToastProperty.show(esp.lang("lib/utils", "toas_latlongfrom"))
     }
     if (!eutils.isValidLatLong(latlongTo)) {
-      return LibToastProperty.show('LatlongTo tidak valid')
+      return LibToastProperty.show(esp.lang("lib/utils", "toas_latlongto"))
     }
     Linking.openURL("https://www.google.com/maps/dir/?api=1&travelmode="
       + travelmode

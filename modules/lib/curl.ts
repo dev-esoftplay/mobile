@@ -31,10 +31,10 @@ export default class m {
   isSecure: boolean = false
   fetchConf: any = ''
   alertTimeout = {
-    title: "Oops..! Gagal menyambung ke server",
-    message: "Sepertinya perangkatmu ada masalah jaringan",
-    ok: "Coba Lagi",
-    cancel: "Tutup"
+    title: esp.lang("lib/curl", "alert_title"),
+    message: esp.lang("lib/curl", "alert_msg"),
+    ok: esp.lang("lib/curl", "alert_ok"),
+    cancel: esp.lang("lib/curl", "alert_cancel")
   }
 
   constructor(uri?: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (error: any, timeout: boolean) => void, debug?: number) {
@@ -163,7 +163,7 @@ export default class m {
           this.cancelTimeout()
           let resText = await res.text()
           if (res.status == 200 && resText == "") {
-            if (onFailed) onFailed({ message: "Koneksi internet kamu tidak stabil, silahkan coba lagi" }, false)
+            if (onFailed) onFailed({ message: esp.lang("lib/curl", "msg_failed") }, false)
             return
           }
           this.onFetched(resText,
@@ -176,7 +176,7 @@ export default class m {
         }).catch((r) => {
           this.cancelTimeout()
           LibProgress.hide()
-          LibToastProperty.show('Koneksi internet kamu tidak stabil, silahkan coba lagi')
+          LibToastProperty.show(esp.lang("lib/curl", "msg_failed"))
           this.onFetchFailed(r)
         })
       }
@@ -363,7 +363,7 @@ export default class m {
       this.resStatus = res.status
       let resText = await res.text()
       if (res.status == 200 && resText == "") {
-        if (onFailed) onFailed({ message: "Koneksi internet kamu tidak stabil, silahkan coba lagi" }, false)
+        if (onFailed) onFailed({ message: esp.lang("lib/curl", "msg_failed") }, false)
         return
       }
       //api_logger
@@ -379,7 +379,7 @@ export default class m {
       if (__DEV__) {
         console.warn(r)
       } else
-        LibToastProperty.show("Koneksi internet kamu tidak stabil, silahkan coba lagi")
+        LibToastProperty.show(esp.lang("lib/curl", "msg_failed"))
       this.onFetchFailed(r)
       LibProgress.hide()
     })
@@ -417,10 +417,10 @@ export default class m {
         ltext.includes('error')
       ) {
         // reportApiError(this.fetchConf.options, resText)
-        out = 'Terjadi kesalahan, biar ' + esp.appjson()?.expo?.name + ' bereskan, silahkan coba lagi atau kembali ke halaman utama'
+        out = esp.lang("lib/curl", "error_message", esp.appjson()?.expo?.name)
       }
       if (ltext.includes('timeout exceeded')) {
-        out = 'Koneksi internet kamu tidak stabil, silahkan coba lagi'
+        out = esp.lang("lib/curl", "msg_failed")
       }
     }
     return out

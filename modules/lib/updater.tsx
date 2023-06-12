@@ -19,11 +19,11 @@ export function install(): void {
 }
 
 export function alertInstall(title?: string, msg?: string): void {
-  Alert.alert(title || 'Informasi', msg || 'Pembaharuan berhasil diinstall', [{
+  Alert.alert(title || esp.lang("lib/updater", "alert_info"), msg || esp.lang("lib/updater", "alert_msg"), [{
     onPress: () => {
       install()
     },
-    text: 'Ok'
+    text: esp.lang("lib/updater", "ok")
   }], { cancelable: false })
 }
 
@@ -59,21 +59,21 @@ export default function m(props: LibUpdaterProps): any {
           style={{ position: 'absolute', ...LibStyle.elevation(5), right: 20, bottom: 20, height: 50, width: 50, borderRadius: 25, justifyContent: 'center', alignItems: 'center', backgroundColor: LibStyle.colorRed }}
           onPress={() => {
             if (__DEV__) {
-              Alert.alert('Development Mode', 'Update not working in development mode!')
+              Alert.alert(esp.lang("lib/updater", "alert_dev"), esp.lang("lib/updater", "alert_dev_msg"))
               return
             }
             if (Constants.appOwnership == 'expo') {
-              Alert.alert('App is fine', 'Your app is up-to-date')
+              Alert.alert(esp.lang("lib/updater", "alert_title"), esp.lang("lib/updater", "alert_expo"))
               return
             }
-            LibProgress.show('Sedang memeriksa versi terbaru')
+            LibProgress.show(esp.lang("lib/updater", "wait_check"))
             check((isNew) => {
               if (isNew) {
                 LibProgress.hide()
                 install()
               } else {
                 LibProgress.hide()
-                Alert.alert('App is fine', 'Your app is up-to-date')
+                Alert.alert(esp.lang("lib/updater", "alert_update"), esp.lang("lib/updater", "alert_uptodate"))
               }
             })
           }}>

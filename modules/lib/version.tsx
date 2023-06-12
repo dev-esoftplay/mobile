@@ -27,7 +27,7 @@ export default class m extends LibComponent<LibVersionProps, LibVersionState> {
   }
 
   static showDialog(title: string, message: string, link: string, onOk: (link: string) => void, onCancel: () => void): void {
-    LibDialog.confirm(title, message, 'Update', () => onOk(link), 'Nanti', onCancel)
+    LibDialog.confirm(title, message, esp.lang("lib/version", "update"), () => onOk(link), esp.lang("lib/version", "skip"), onCancel)
   }
 
   static closeApp(): void {
@@ -51,7 +51,7 @@ export default class m extends LibComponent<LibVersionProps, LibVersionState> {
     }
     if (isAvailableNewVersion(version)) {
       LibNavigation.backToRoot()
-      LibNavigation.replace("lib/version", { res, msg: msg == 'success' ? 'Update to a new version now' : msg })
+      LibNavigation.replace("lib/version", { res, msg: msg == 'success' ? esp.lang("lib/version", "update_now") : msg })
     }
     if (isForceUpdate == 1) {
       LibUpdaterProperty.check((isNew) => { if (isNew) LibUpdaterProperty.install() })
@@ -67,12 +67,12 @@ export default class m extends LibComponent<LibVersionProps, LibVersionState> {
     return (
       <ImageBackground source={esp.assets("splash.png")} blurRadius={100} style={{ flex: 1, justifyContent: 'center', alignItems: 'center', borderStartColor: 'white', paddingHorizontal: 17 }} >
         <LibIcon.SimpleLineIcons name="info" size={60} />
-        <LibTextstyle textStyle="headline" text={title || 'A new version is available'} style={{ textAlign: 'center', marginTop: 10 }} />
+        <LibTextstyle textStyle="headline" text={title || esp.lang("lib/version", "version_available")} style={{ textAlign: 'center', marginTop: 10 }} />
         <LibTextstyle textStyle="callout" text={msg} style={{ textAlign: 'center', marginTop: 10, color: '#333' }} />
         <TouchableOpacity
           onPress={() => { Linking.openURL(link) }}
           style={{ marginTop: 20, borderRadius: 10, paddingHorizontal: 17, paddingVertical: 10, backgroundColor: LibStyle.colorPrimary }} >
-          <LibTextstyle textStyle="body" text="Update Sekarang" />
+          <LibTextstyle textStyle="body" text={esp.lang("lib/version", "btn_update")} />
         </TouchableOpacity>
       </ImageBackground>
     )

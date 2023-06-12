@@ -1,7 +1,7 @@
 // withHooks
 
 //noPage
-import { useSafeState } from 'esoftplay';
+import { esp, useSafeState } from 'esoftplay';
 import { LibIcon } from 'esoftplay/cache/lib/icon/import';
 import { LibLoading } from 'esoftplay/cache/lib/loading/import';
 import { LibNavigation } from 'esoftplay/cache/lib/navigation/import';
@@ -88,7 +88,7 @@ export default function m(props: LibImage_multiProps): any {
           <LibIcon name="close" />
         </TouchableOpacity>
         <View style={{ flex: 1, height: 50, justifyContent: 'center', alignItems: 'center' }} >
-          <LibTextstyle textStyle={"headline"} text={photos.filter((x: any) => x.selected).length + (max > 0 ? "/" + max : "") + " Selected"} style={{ color: "#000" }} />
+          <LibTextstyle textStyle={"headline"} text={photos.filter((x: any) => x.selected).length + (max > 0 ? "/" + max : "") + esp.lang("lib/image_multi", "selected")} style={{ color: "#000" }} />
         </View>
         <TouchableOpacity
           onPress={() => LibNavigation.sendBackResult(photos.filter((x: any) => x.selected))}

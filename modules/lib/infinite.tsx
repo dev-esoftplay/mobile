@@ -121,7 +121,7 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
             this.isStop = true
             this.setState((state: LibInfiniteState, props: LibInfiniteProps) => {
               return {
-                error: this.props.error || 'Belum ada data',
+                error: this.props.error || esp.lang("lib/infinite", "empty_data"),
                 data: page == 0
                   ? []
                   : (typeof this.props?.filterData == 'function' ? state.data.filter(this.props.filterData) : state.data),

@@ -16,10 +16,10 @@ export interface LibImage_shadowProps {
 }
 export default function m(props: LibImage_shadowProps): any {
   let { height, width }: any = props.style
-  if (!height || !width) throw new Error("width and height is required")
+  if (!height || !width) throw new Error(esp.lang("lib/image_shadow", "error"))
 
   const extra_height = (props.shadowRadius || 0.15) * (Number(height) || 1)
-  
+
   return (
     <View style={{ ...props.style, height: Number(height) + extra_height, width, backgroundColor: 'orange' }} >
       <Image source={props.source} blurRadius={props.blurRadius || 8} style={{ height, width, ...props.style, marginTop: extra_height }} />

@@ -120,7 +120,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
           }
         }
         if (finalStatus != 'granted') {
-          Alert.alert(esp.appjson().expo.name + " tidak dapat mengakses kamera ", "Mohon Pastikan anda memberikan izin " + esp.appjson().expo.name + " untuk dapat mengambil foto")
+          Alert.alert(esp.lang("lib/image", "cam_title", esp.appjson().expo.name), esp.lang("lib/image", "cam_msg", esp.appjson().expo.name))
         }
         ImagePicker.launchCameraAsync({
           allowsEditing: Platform.OS != 'ios' && options && options.crop ? true : false,
@@ -158,7 +158,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
           finalStatus = status
         }
         if (finalStatus != 'granted') {
-          Alert.alert(esp.appjson().expo.name + " tidak dapat mengakses galeri ", "Mohon Pastikan anda memberikan izin " + esp.appjson().expo.name + " untuk dapat mengambil foto")
+          Alert.alert(esp.lang("lib/image", "gallery_title"), esp.lang("lib/image", "gallery_msg"))
           return
         }
         let max = 0
@@ -194,7 +194,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
           let a: string[] = []
           x.forEach(async (t: any, i) => {
             if (i == 0) {
-              LibProgress.show("Mohon tunggu, Sedang mengunggah foto")
+              LibProgress.show(esp.lang("lib/image", "wait"))
             }
             var wantedMaxSize = options?.maxDimension || 1280
             var rawheight = t.height
@@ -238,7 +238,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
   static processImage(result: any, maxDimension?: number): Promise<string> {
     return new Promise((r) => {
       if (!result.cancelled) {
-        LibProgress.show("Mohon Tunggu, Sedang mengunggah foto")
+        LibProgress.show(esp.lang("lib/image", "wait_upload"))
         var wantedMaxSize = maxDimension || 1280
         var rawheight = result.height
         var rawwidth = result.width

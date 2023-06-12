@@ -1,5 +1,5 @@
 // withHooks
-import { useSafeState } from 'esoftplay';
+import { esp, useSafeState } from 'esoftplay';
 import { LibIcon } from 'esoftplay/cache/lib/icon/import';
 import { LibNavigation } from 'esoftplay/cache/lib/navigation/import';
 import { LibProgress } from 'esoftplay/cache/lib/progress/import';
@@ -42,7 +42,7 @@ export default function m(props: LibImage_cropProps): any {
   }
 
   function resize(image: string) {
-    LibProgress.show("Sedang menyiapkan...")
+    LibProgress.show(esp.lang("lib/image_crop", "waiting"))
     Image.getSize(image, async (actualWidth, actualHeight) => {
       var wantedMaxSize = 900
       var rawheight = actualHeight
@@ -85,7 +85,7 @@ export default function m(props: LibImage_cropProps): any {
   }
 
   function capture() {
-    LibProgress.show("Sedang memotong gambar..")
+    LibProgress.show(esp.lang("lib/image_crop", "waiting_crop"))
     let crop = {
       x: 0,
       y: 0,
@@ -166,7 +166,7 @@ export default function m(props: LibImage_cropProps): any {
             LibProgress.hide()
           }).catch(() => {
             LibProgress.hide()
-            LibToastProperty.show("Garis putus-putus tidak boleh keluar dari gambar")
+            LibToastProperty.show(esp.lang("lib/image_crop", "alert_out"))
           })
         })
       })
@@ -231,7 +231,7 @@ export default function m(props: LibImage_cropProps): any {
         <Pressable
           onPress={() => setHint(!hint)}
           style={{ opacity: hint ? 1 : 0, position: 'absolute', left: 0, right: 0, bottom: 50, backgroundColor: 'rgba(0,0,0,0.5)', alignItems: 'center', justifyContent: 'center', padding: 30 }} >
-          <Text style={{ color: "white", textAlign: 'center' }} >{message || "Geser dan cubit layar untuk menyesuaikan bagian foto yang ingin dipakai (pastikan bagian foto berada di dalam garis putus-putus) lalu crop jika sudah sesuai"}</Text>
+          <Text style={{ color: "white", textAlign: 'center' }} >{message || esp.lang("lib/image_crop", "text_msg")}</Text>
         </Pressable>
       }
       {
@@ -244,7 +244,7 @@ export default function m(props: LibImage_cropProps): any {
               }, () => { })
             }}
             style={{ height: 50, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(255,255,255,0.3)' }} >
-            <LibTextstyle textStyle="body" text="SIMPAN" style={{ color: "white" }} />
+            <LibTextstyle textStyle="body" text={esp.lang("lib/image_crop", "btn_save")} style={{ color: "white" }} />
           </TouchableOpacity>
         </View>
       }

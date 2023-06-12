@@ -2,6 +2,7 @@
 import NetInfo from '@react-native-community/netinfo';
 import { useGlobalReturn } from 'esoftplay';
 import { LibComponent } from 'esoftplay/cache/lib/component/import';
+import esp from 'esoftplay/esp';
 import useGlobalState from 'esoftplay/global';
 import { Animated, Text } from "react-native";
 
@@ -47,7 +48,6 @@ class net_status extends LibComponent<LibNet_statusProps, LibNet_statusState> {
   onChangeConnectivityStatus(isConnected: boolean, isInternetReachable): void {
     let isOnline = (isConnected == true && isInternetReachable == true) ? true : false
     net_status.setOnline(isOnline)
-    console.log(isOnline, "isOnline")
     if (isOnline) {
       this.timeout = setTimeout(() => {
         this.setState({ zeroHeight: 1 })
@@ -64,7 +64,7 @@ class net_status extends LibComponent<LibNet_statusProps, LibNet_statusState> {
       <state.connect
         render={(props) => {
           const { isOnline } = props
-          const text = isOnline ? "Device is Online" : "Device is Offline"
+          const text = isOnline ? esp.lang("lib/net_status", "online") : esp.lang("lib/net_status", "offline")
           const color = isOnline ? "green" : "red"
           return (
             <Animated.View style={{ height: zeroHeight == 1 ? 0 : 'auto', backgroundColor: color, width: "100%" }} >

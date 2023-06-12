@@ -1,5 +1,6 @@
 
 // noPage
+import { esp } from 'esoftplay';
 import { LibComponent } from 'esoftplay/cache/lib/component/import';
 import { LibInput } from 'esoftplay/cache/lib/input/import';
 import { LibKeyboard_avoid } from 'esoftplay/cache/lib/keyboard_avoid/import';
@@ -93,7 +94,7 @@ class m extends LibComponent<ComponentEditboxProps, ComponentEditboxState>{
                         ref={this.input}
                         {...props}
                       />
-                      <Button title="Simpan" color={LibStyle.colorPrimary} onPress={() => { onSubmit(this.input?.current?.getText?.()); m.hide(); }} />
+                      <Button title={esp.lang("lib/editbox", "btn_save")} color={LibStyle.colorPrimary} onPress={() => { onSubmit(this.input?.current?.getText?.()); m.hide(); }} />
                     </View>
                   </TouchableOpacity>
                 </LibKeyboard_avoid>

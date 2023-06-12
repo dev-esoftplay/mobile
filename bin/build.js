@@ -363,6 +363,7 @@ export default function App() {
 				cmd += "&& expo install " + installExpoLibs.join(" ")
 			execSync(cmd)
 			execSync("cd ../../ && node ./node_modules/esoftplay/bin/router.js || true")
+			execSync("cd ../../ && node ./node_modules/esoftplay/bin/locale.js")
 			console.log('App.js has been replace to App.tsx');
 			// /* bugfix AsyncStorage @firebase, remove this section if firebase has update the AsyncStorage */
 			// if (fs.existsSync('../@firebase/app/dist/index.rn.cjs.js')) {
