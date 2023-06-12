@@ -22,11 +22,12 @@ export function setError(error?: any) {
   const config = esp?.config?.();
   const routes = UserRoutes?.state()?.get?.();
   const user = UserClass?.state()?.get?.();
-  const lastIndex = (routes?.routes?.length - 1) ?? 0;
+  const routesName = routes?.routes?.map((x) => x.name)
+
   const _e = {
     user,
     error: String(error),
-    routes: `${routes?.routes?.[lastIndex]?.name}`
+    routes: routesName
   };
   try {
     AsyncStorage.setItem(`${config?.domain}error`, JSON.stringify(_e));
