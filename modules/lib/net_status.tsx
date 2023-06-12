@@ -3,7 +3,6 @@ import NetInfo from '@react-native-community/netinfo';
 import { useGlobalReturn } from 'esoftplay';
 import { LibComponent } from 'esoftplay/cache/lib/component/import';
 import useGlobalState from 'esoftplay/global';
-import React from "react";
 import { Animated, Text } from "react-native";
 
 export interface LibNet_statusProps {
@@ -36,7 +35,7 @@ class net_status extends LibComponent<LibNet_statusProps, LibNet_statusState> {
   componentDidMount(): void {
     super.componentDidMount()
     this.unsubscribe = NetInfo.addEventListener(state => {
-      this.onChangeConnectivityStatus(state.isConnected)
+      this.onChangeConnectivityStatus(state.isConnected, state.isInternetReachable)
     });
   }
 
@@ -45,9 +44,11 @@ class net_status extends LibComponent<LibNet_statusProps, LibNet_statusState> {
     this.unsubscribe()
   }
 
-  onChangeConnectivityStatus(isConnected: boolean): void {
-    net_status.setOnline(isConnected)
-    if (isConnected) {
+  onChangeConnectivityStatus(isConnected: boolean, isInternetReachable): void {
+    let isOnline = (isConnected == true && isInternetReachable == true) ? true : false
+    net_status.setOnline(isOnline)
+    console.log(isOnline, "isOnline")
+    if (isOnline) {
       this.timeout = setTimeout(() => {
         this.setState({ zeroHeight: 1 })
       }, 1500)
