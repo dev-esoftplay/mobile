@@ -172,16 +172,17 @@ function switchStatusAssets(status) {
 
 	fs.readdirSync(DIR + '/modules/').forEach((mod) => {
 		const path = DIR + '/modules/' + mod
-		fs.readdirSync(path).forEach((file) => {
-			if (status.includes('d'))
-				if (file.match(/^.*.debug.*/g)) {
-					copyFileFromTo(path + '/' + file, path + '/' + file.replace('.debug.', '.'))
-				}
-			if (status.includes('l'))
-				if (file.match(/^.*.live.*/g)) {
-					copyFileFromTo(path + '/' + file, path + '/' + file.replace('.live.', '.'))
-				}
-		})
+		if (fs.statSync(path).isDirectory())
+			fs.readdirSync(path).forEach((file) => {
+				if (status.includes('d'))
+					if (file.match(/^.*.debug.*/g)) {
+						copyFileFromTo(path + '/' + file, path + '/' + file.replace('.debug.', '.'))
+					}
+				if (status.includes('l'))
+					if (file.match(/^.*.live.*/g)) {
+						copyFileFromTo(path + '/' + file, path + '/' + file.replace('.live.', '.'))
+					}
+			})
 	})
 
 }

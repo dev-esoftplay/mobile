@@ -62,9 +62,6 @@
   "lib/notification": {
     "permission": "Please enable notifications permissions"
   },
-  "lib/roll": {
-    "failed": "Failed to access"
-  },
   "lib/updater": {
     "alert_info": "Informasi",
     "alert_msg": "Pembaharuan berhasil diinstall",
@@ -96,9 +93,5 @@
   },
   "use/deeplink": {
     "msg_err": "Oops...!"
-  },
-  "user/login": {
-    "username": "username",
-    "pass": "password"
   }
 }
