@@ -535,19 +535,22 @@ declare module "esoftplay" {
     const [module, task] = clsName.split(/(?=[A-Z])/)
     const nav = module?.toLowerCase() + '/' + task?.toLowerCase()
 
-    if (module && !fs.existsSync(tmpDir + module?.toLowerCase()))
-      fs.mkdirSync(tmpDir + module.toLowerCase());
+    if (!nav.includes('.')) {
+      
+      if (module && !fs.existsSync(tmpDir + module?.toLowerCase()))
+        fs.mkdirSync(tmpDir + module.toLowerCase());
 
-    if (!fs.existsSync(tmpDir + nav))
-      fs.mkdirSync(tmpDir + nav)
+      if (!fs.existsSync(tmpDir + nav))
+        fs.mkdirSync(tmpDir + nav)
 
-    PreText += "import '" + tmpDir + nav + "/import.d';\n"
-    if (isChange(tmpDir + nav + '/import.d.ts', ItemText)) {
-      fs.writeFile(tmpDir + nav + '/import.d.ts', ItemText, { flag: 'w' }, function (err) {
-        if (err) {
-          return console.log(err);
-        }
-      });
+      PreText += "import '" + tmpDir + nav + "/import.d';\n"
+      if (isChange(tmpDir + nav + '/import.d.ts', ItemText)) {
+        fs.writeFile(tmpDir + nav + '/import.d.ts', ItemText, { flag: 'w' }, function (err) {
+          if (err) {
+            return console.log(err);
+          }
+        });
+      }
     }
   }
   Text += "\n\ttype LibNavigationRoutes = \"" + Navigations.join("\" |\n\t\t\t \"") + "\"\n"
@@ -638,7 +641,7 @@ function createRouter() {
           "import React from 'react'\n" +
           "const _" + ucword(module) + ucword(task) + " = React.lazy(() => import('../../../../." + Modules[module][task] + "')); \n" +
           "import * as " + ucword(module) + ucword(task) + SuffixHooksProperty + " from '../../../../." + Modules[module][task] + "';\n" +
-          "const UpdatedComponent = (OriginalComponent) => { function "+ucword(module) + ucword(task)+"Component(props) { return ( <React.Suspense><OriginalComponent {...props} /></React.Suspense> ) } return "+ucword(module) + ucword(task)+"Component; };\n" +
+          "const UpdatedComponent = (OriginalComponent) => { function " + ucword(module) + ucword(task) + "Component(props) { return ( <React.Suspense><OriginalComponent {...props} /></React.Suspense> ) } return " + ucword(module) + ucword(task) + "Component; };\n" +
           "const " + ucword(module) + ucword(task) + " = stable(UpdatedComponent(_" + ucword(module) + ucword(task) + ")); \n" +
           "export { " + ucword(module) + ucword(task) + SuffixHooksProperty + ", " + ucword(module) + ucword(task) + " };\n"
       } else if (UseLibs.includes(nav)) {
@@ -652,18 +655,20 @@ function createRouter() {
         item += "export { _" + ucword(module) + ucword(task) + " as " + ucword(module) + ucword(task) + " };\n"
       }
 
-      if (!fs.existsSync(tmpDir + module))
-        fs.mkdirSync(tmpDir + module);
+      if (!nav.includes('.')) {
+        if (!fs.existsSync(tmpDir + module))
+          fs.mkdirSync(tmpDir + module);
 
-      if (!fs.existsSync(tmpDir + nav))
-        fs.mkdirSync(tmpDir + nav)
+        if (!fs.existsSync(tmpDir + nav))
+          fs.mkdirSync(tmpDir + nav)
 
-      if (isChange(tmpDir + nav + "/import." + fileExt, item)) {
-        fs.writeFile(tmpDir + nav + '/import.' + fileExt, item, { flag: 'w' }, function (err) {
-          if (err) {
-            return console.log(err);
-          }
-        });
+        if (isChange(tmpDir + nav + "/import." + fileExt, item)) {
+          fs.writeFile(tmpDir + nav + '/import.' + fileExt, item, { flag: 'w' }, function (err) {
+            if (err) {
+              return console.log(err);
+            }
+          });
+        }
       }
 
       // if (module == 'lib' && task == 'component') {

@@ -4,7 +4,8 @@ import { LibComponent } from 'esoftplay/cache/lib/component/import';
 import isEqual from 'react-fast-compare';
 
 export interface LibEffectProps {
-  deps?: any[]
+  deps?: any[],
+  children: any
 }
 export interface LibEffectState {
 

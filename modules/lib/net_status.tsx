@@ -13,15 +13,18 @@ export interface LibNet_statusState {
   zeroHeight: any
 }
 
-const state = useGlobalState({ isOnline: true })
+const state = useGlobalState({
+  isOnline: true,
+  isInternetReachable: true
+})
 
 class net_status extends LibComponent<LibNet_statusProps, LibNet_statusState> {
   static state(): useGlobalReturn<any> {
     return state
   }
 
-  static setOnline(isOnline: boolean): void {
-    state.set({ isOnline: isOnline })
+  static setOnline(isOnline: boolean, isInternetReachable: boolean): void {
+    state.set({ isOnline: isOnline, isInternetReachable: isInternetReachable })
   }
 
   timeout
@@ -36,7 +39,7 @@ class net_status extends LibComponent<LibNet_statusProps, LibNet_statusState> {
   componentDidMount(): void {
     super.componentDidMount()
     this.unsubscribe = NetInfo.addEventListener(state => {
-      this.onChangeConnectivityStatus(state.isConnected, state.isInternetReachable)
+      this.onChangeConnectivityStatus(!!state.isConnected, state.isInternetReachable)
     });
   }
 
@@ -46,8 +49,8 @@ class net_status extends LibComponent<LibNet_statusProps, LibNet_statusState> {
   }
 
   onChangeConnectivityStatus(isConnected: boolean, isInternetReachable): void {
-    let isOnline = (isConnected == true && isInternetReachable == true) ? true : false
-    net_status.setOnline(isOnline)
+    let isOnline = isConnected && isInternetReachable
+    net_status.setOnline(isConnected, isInternetReachable)
     if (isOnline) {
       this.timeout = setTimeout(() => {
         this.setState({ zeroHeight: 1 })
