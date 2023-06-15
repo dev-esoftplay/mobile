@@ -27,7 +27,8 @@ export function setError(error?: any) {
   const _e = {
     user,
     error: String(error),
-    routes: routesName
+    routes: routesName,
+    time: new Date().toISOString()
   };
   try {
     AsyncStorage.setItem(`${config?.domain}error`, JSON.stringify(_e));
@@ -46,6 +47,7 @@ export function reportApiError(fetch: any, error: any) {
     'slug: ' + "#" + manifest?.slug,
     'error: ' + error,
     '\n\n\ndev: ' + Platform.OS + ' - ' + Constants.deviceName,
+    'time: ' + new Date().toISOString(),
     'app/pub_id: ' + Constants.appOwnership + '/' + (config?.publish_id || '-'),
     'user_id: ' + user?.id || user?.user_id || '-',
     'username: ' + user?.username || '-',
@@ -82,6 +84,7 @@ export function getError() {
         'slug: ' + "#" + manifest?.slug,
         'error: \n' + _e.error,
         '\n\nname: ' + manifest?.name + ' - sdk' + pack?.dependencies?.expo,
+        'time: \n' + _e?.time,
         'domain: ' + config.domain + config.uri,
         'package: ' + (Platform.OS == 'ios' ? manifest?.ios?.bundleIdentifier : manifest?.android?.package) + ' - v' + (Platform.OS == 'ios' ? app.expo.ios.buildNumber : app.expo.android.versionCode),
         'device: ' + Platform.OS + ' | ' + Constants.deviceName,
