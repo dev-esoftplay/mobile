@@ -759,11 +759,11 @@ function createRouter() {
     });
 
 
-  const localeIdjson = pathAsset + '/locale/id.json'
-  if (fs.existsSync(localeIdjson)) {
-    const sortedJson = fs.readFileSync(localeIdjson, { encoding: 'utf-8' })
-    fs.writeFileSync(localeIdjson, JSON.stringify(sortObject(JSON.parse(sortedJson)), undefined, 2), { encoding: 'utf8' })
-  }
+  // const localeIdjson = pathAsset + '/locale/id.json'
+  // if (fs.existsSync(localeIdjson)) {
+  //   const sortedJson = fs.readFileSync(localeIdjson, { encoding: 'utf-8' })
+  //   fs.writeFileSync(localeIdjson, JSON.stringify(sortObject(JSON.parse(sortedJson)), undefined, 2), { encoding: 'utf8' })
+  // }
 
 }
 
