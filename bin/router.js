@@ -536,7 +536,7 @@ declare module "esoftplay" {
     const nav = module?.toLowerCase() + '/' + task?.toLowerCase()
 
     if (!nav.includes('.')) {
-      
+
       if (module && !fs.existsSync(tmpDir + module?.toLowerCase()))
         fs.mkdirSync(tmpDir + module.toLowerCase());
 
@@ -757,4 +757,31 @@ function createRouter() {
         return console.log(err);
       }
     });
+
+
+  const localeIdjson = pathAsset + '/locale/id.json'
+  if (fs.existsSync(localeIdjson)) {
+    const sortedJson = fs.readFileSync(localeIdjson, { encoding: 'utf-8' })
+    fs.writeFileSync(localeIdjson, JSON.stringify(sortObject(JSON.parse(sortedJson)), undefined, 2), { encoding: 'utf8' })
+  }
+
+}
+
+function sortObject(obj) {
+  if (typeof obj !== "object" || obj === null) {
+    return obj;
+  }
+
+  if (Array.isArray(obj)) {
+    return obj.map(sortObject);
+  }
+
+  let sortedKeys = Object.keys(obj).sort();
+  let sortedObj = {};
+
+  for (let key of sortedKeys) {
+    sortedObj[key] = sortObject(obj[key]);
+  }
+
+  return sortedObj;
 }
