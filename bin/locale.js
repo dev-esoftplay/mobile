@@ -6,6 +6,9 @@ function readAsJson(path) {
   try { out = JSON.parse(fs.readFileSync(path, { encoding: 'utf8' })) } catch (e) { }
   return out;
 }
+if (!fs.existsSync("./assets/locale")) {
+  fs.mkdirSync("./assets/locale")
+}
 if (!fs.existsSync("./assets/locale/id.json")) {
   fs.writeFileSync("./assets/locale/id.json", JSON.stringify({}, undefined, 2))
 }
