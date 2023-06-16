@@ -147,6 +147,7 @@ export default class eutils {
   }
 
   static number(toNumber: string | number): string {
+    if (!toNumber) toNumber = '0'
     var toNumb = typeof toNumber === "number" ? toNumber.toFixed(0).replace(/(\d)(?=(\d{3})+$)/g, "$1,") : parseInt(toNumber).toFixed(0).replace(/(\d)(?=(\d{3})+$)/g, "$1,")
     return String(toNumb).replace(/,/g, ".");
   }
