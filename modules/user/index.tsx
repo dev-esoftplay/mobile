@@ -4,6 +4,7 @@ import { esp, useSafeState } from 'esoftplay';
 import { LibDialog } from 'esoftplay/cache/lib/dialog/import';
 import { LibIcon } from 'esoftplay/cache/lib/icon/import';
 import { LibImage } from 'esoftplay/cache/lib/image/import';
+import { LibLocale } from 'esoftplay/cache/lib/locale/import';
 import { LibNavigation } from 'esoftplay/cache/lib/navigation/import';
 import { LibNet_status } from 'esoftplay/cache/lib/net_status/import';
 import { LibProgress } from 'esoftplay/cache/lib/progress/import';
@@ -19,6 +20,7 @@ import { UserHook } from 'esoftplay/cache/user/hook/import';
 import { UserLoading } from 'esoftplay/cache/user/loading/import';
 import { UserRoutes } from 'esoftplay/cache/user/routes/import';
 import useGlobalState from 'esoftplay/global';
+import moment from 'esoftplay/moment';
 import * as Font from "expo-font";
 import React, { useEffect, useLayoutEffect } from 'react';
 import { Platform, Pressable, View } from 'react-native';
@@ -53,6 +55,8 @@ function setFonts(): Promise<void> {
 
 const route = useGlobalState<any>(undefined, { persistKey: 'user_index_routes_initial', inFile: true })
 export default function m(props: UserIndexProps): any {
+  const [langId] = LibLocale.state().useState()
+  moment().locale(langId)
   const [loading, setLoading] = useSafeState(true)
   const user = UserClass.state().useSelector(s => s)
   const ready = React.useRef(0)
