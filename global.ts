@@ -7,7 +7,7 @@ const isEqual = require('react-fast-compare');
 
 
 export interface useGlobalReturn<T> {
-  useState: () => [T, (newState: T) => void, () => void],
+  useState: () => [T, (newState: T) => void, () => void, () => T],
   get: (param?: string, ...params: string[]) => T,
   set: (x: T) => void,
   reset: () => void,
@@ -154,14 +154,15 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
   }
 
 
-  function useState(): [T, (newState: T) => void, () => void] {
+  function useState(): [T, (newState: T) => void, () => T] {
     let [l, s] = R.useState<T>(value);
 
     let sl = R.useCallback((ns: T) => { s(ns) }, []);
 
+
     subscribe(sl)
 
-    return [l, set, del];
+    return [l, set, () => value];
   };
 
   function _connect(props: useGlobalConnect<T>): any {

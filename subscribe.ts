@@ -2,14 +2,14 @@
 
 import React from 'react';
 
-export interface UseSubscribeReturn {
+export interface useGlobalSubscriberReturn {
   getValue: (value?: any) => void,
   reset: () => void,
   useSubscribe: Function,
   trigger: (newValue?: any) => void
 }
 
-export default function useGlobalSubscriber(defaultValue?: any): UseSubscribeReturn {
+export default function useGlobalSubscriber(defaultValue?: any): useGlobalSubscriberReturn {
   const subscribers = new Set<Function>();
   let value = defaultValue;
 

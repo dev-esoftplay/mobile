@@ -1,10 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 
-export default function useLazyState<T>(initialState: T): [T, (newValue: T) => () => void] {
+export default function useLazyState<T>(initialState?: T): [T, (newValue: T) => () => void, () => T] {
   const [, rerender] = useState({})
   const dispatch = () => { rerender({}) }
   const value = useRef(initialState)
   const isMounted = useRef(true)
+
+  const getter = () => {
+    return value.current
+  }
 
   const setter = (newValue: T) => {
     if (isMounted.current) {
@@ -22,5 +26,5 @@ export default function useLazyState<T>(initialState: T): [T, (newValue: T) => (
     return () => { isMounted.current = false }
   }, [])
 
-  return [value.current, setter]
+  return [value.current, setter, getter]
 }

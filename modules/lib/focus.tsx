@@ -3,7 +3,7 @@
 
 import { useIsFocused } from '@react-navigation/native';
 import React, { useEffect } from 'react';
-import { View } from 'react-native';
+import { InteractionManager, View } from 'react-native';
 
 export interface LibFocusProps {
   isFocused?: boolean
@@ -18,14 +18,13 @@ export interface LibFocusState {
 }
 
 export default function m(props: LibFocusProps): any {
-  console.warn("LibFocus now DEPRECATED, will be remove on next update")
   const isFocused = useIsFocused()
 
   useEffect(() => {
     if (isFocused) {
-      props?.onFocus?.()
+      InteractionManager.runAfterInteractions(props?.onFocus)
     } else {
-      props?.onBlur?.()
+      InteractionManager.runAfterInteractions(props?.onBlur)
     }
   }, [isFocused]);
 

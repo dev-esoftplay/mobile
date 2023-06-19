@@ -389,9 +389,11 @@ import { AntDesignTypes, EntypoTypes, EvilIconsTypes, FeatherTypes, FontAwesomeT
 
 declare module "esoftplay" {
   var _global: any;
+  function useGlobalSubscriber<S>(initialState?: S): useGlobalSubscribeReturn<S>;
+  function useLazyState<S>(initialState?: S): [S, (newValue: S) => () => void, () => S];
   function useGlobalState<S>(initialState?: S, option?: useGlobalOption): useGlobalReturn<S>;
   function usePersistState<S>(key: string, initialState?: S | (() => S)): [S, (a: S | ((b: S )=> S)) => S | undefined, (a?: (x: S) => void) => void, () => void];
-  function useSafeState<S>(initialState?: S | (() => S)): [S, (a: S | ((b: S )=> S)) => S | undefined];
+  function useSafeState<S>(initialState?: S | (() => S)): [S, (a: S | ((b: S )=> S)) => S | undefined, ()=>S];
   function applyStyle<T>(style: T): T;
   function usePersistState<S>(key: string, initialState?: S | (() => S)): [S, (a: S) => void, (a?: (x: S)=> void) => void, () => void];
   namespace esp {
@@ -433,7 +435,7 @@ declare module "esoftplay" {
   }
   
   interface useGlobalReturn<T> {
-    useState: () => [T, (newState: T) => void, () => void],
+    useState: () => [T, (newState: T) => void, () => void, () => T],
     get: (param?: string, ...params: string[]) => T,
     set: (x: T) => void,
     reset: () => void,
@@ -447,11 +449,19 @@ declare module "esoftplay" {
     listener?: (data: any) => void,
     isUserData?: boolean
   }
+  
+  interface useGlobalSubscribeReturn {
+    getValue: (value?: any) => void,
+    reset: () => void,
+    useSubscribe: Function,
+    trigger: (newValue?: any) => void
+  }
+  
   interface useGlobalConnect<T> {
     render: (props: T) => any,
   }`;
   for (clsName in tmpTask) {
-    let ItemText = ""
+    let ItemText = "\nimport { useGlobalSubscribeReturn } from 'esoftplay';\n"
     if (clsName == "LibIcon") {
       ItemText += "import { EvilIconsTypes, AntDesignTypes, EvilIconsTypes, FeatherTypes, FontAwesomeTypes, FontistoTypes, FoundationTypes, MaterialIconsTypes, EntypoTypes, OcticonsTypes, ZocialTypes, SimpleLineIconsTypes, IoniconsTypes, MaterialCommunityIconsTypes } from '@expo/vector-icons/build/esoftplay_icons';\n"
     }
@@ -757,31 +767,4 @@ function createRouter() {
         return console.log(err);
       }
     });
-
-
-  // const localeIdjson = pathAsset + '/locale/id.json'
-  // if (fs.existsSync(localeIdjson)) {
-  //   const sortedJson = fs.readFileSync(localeIdjson, { encoding: 'utf-8' })
-  //   fs.writeFileSync(localeIdjson, JSON.stringify(sortObject(JSON.parse(sortedJson)), undefined, 2), { encoding: 'utf8' })
-  // }
-
-}
-
-function sortObject(obj) {
-  if (typeof obj !== "object" || obj === null) {
-    return obj;
-  }
-
-  if (Array.isArray(obj)) {
-    return obj.map(sortObject);
-  }
-
-  let sortedKeys = Object.keys(obj).sort();
-  let sortedObj = {};
-
-  for (let key of sortedKeys) {
-    sortedObj[key] = sortObject(obj[key]);
-  }
-
-  return sortedObj;
 }

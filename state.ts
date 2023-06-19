@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-type UseRefStateResult<T> = [T | undefined, (value: T | undefined) => void];
+type useSafeStateReturn<T> = [T | undefined, (value: T | undefined) => void, () => T];
 
-export default function useRefState<T = any>(defaultValue?: T): UseRefStateResult<T> {
+export default function useSafeState<T = any>(defaultValue?: T): useSafeStateReturn<T> {
   const isMountedRef = useRef<boolean>(true);
   const [state, setState] = useState<T | undefined>(defaultValue);
 
@@ -13,6 +13,10 @@ export default function useRefState<T = any>(defaultValue?: T): UseRefStateResul
     }
   }, []);
 
+  const getter = () => {
+    return state
+  }
+
   useEffect(() => {
     isMountedRef.current = true;
     return () => {
@@ -20,5 +24,5 @@ export default function useRefState<T = any>(defaultValue?: T): UseRefStateResul
     };
   }, []);
 
-  return [state, updateState];
+  return [state, updateState, getter];
 }
