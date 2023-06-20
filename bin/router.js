@@ -461,7 +461,7 @@ declare module "esoftplay" {
     render: (props: T) => any,
   }`;
   for (clsName in tmpTask) {
-    let ItemText = "\nimport { useGlobalSubscribeReturn } from 'esoftplay';\n"
+    let ItemText = "\nimport { useGlobalSubscribeReturn } from 'esoftplay';\nimport { useGlobalReturn } from 'esoftplay';\n"
     if (clsName == "LibIcon") {
       ItemText += "import { EvilIconsTypes, AntDesignTypes, EvilIconsTypes, FeatherTypes, FontAwesomeTypes, FontistoTypes, FoundationTypes, MaterialIconsTypes, EntypoTypes, OcticonsTypes, ZocialTypes, SimpleLineIconsTypes, IoniconsTypes, MaterialCommunityIconsTypes } from '@expo/vector-icons/build/esoftplay_icons';\n"
     }
