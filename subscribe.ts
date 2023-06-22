@@ -3,7 +3,7 @@
 import React from 'react';
 
 export interface useGlobalSubscriberReturn {
-  getValue: (value?: any) => void,
+  getValue: () => any,
   reset: () => void,
   useSubscribe: Function,
   trigger: (newValue?: any) => void
