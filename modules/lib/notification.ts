@@ -190,7 +190,7 @@ export default class m {
       unread: nUnread
     })
     Notifications.setBadgeCountAsync(nUnread)
-    const idsToPush = splitArray(ids, 200)
+    const idsToPush = splitArray(ids, 20)
     idsToPush.forEach((ids) => {
       readAll(ids)
     })
