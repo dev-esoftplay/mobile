@@ -447,6 +447,7 @@ declare module "esoftplay" {
     persistKey?: string,
     inFile?: boolean,
     listener?: (data: any) => void,
+    loadOnInit?: boolean,
     isUserData?: boolean
   }
   

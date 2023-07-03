@@ -21,6 +21,7 @@ export interface useGlobalOption {
   listener?: (data: any) => void,
   jsonBeautify?: boolean,
   isUserData?: boolean,
+  loadOnInit?: boolean,
   onFinish?: () => void
 }
 
@@ -46,8 +47,17 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
   if (!_global.useGlobalSubscriber[_idx])
     _global.useGlobalSubscriber[_idx] = [];
   let value: T = initValue;
+  let loaded = -1
 
   if (o?.persistKey) {
+    loaded = 0
+    if (o?.loadOnInit)
+      loadFromDisk()
+  }
+
+
+  function loadFromDisk() {
+    loaded = 1
     let persistKey = o?.persistKey
     STORAGE.getItem(persistKey).then((p: any) => {
       if (p) {
@@ -116,6 +126,9 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
   }
 
   function useSelector(se: (state: T) => any): void {
+    if (loaded == 0) {
+      loadFromDisk()
+    }
     let [l, s] = R.useState<any>(se(value));
 
     let sl = R.useCallback(
@@ -141,6 +154,9 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
   }
 
   function get(param?: string, ...params: string[]): any {
+    if (loaded == 0) {
+      loadFromDisk()
+    }
     let out: any = value;
     if (param) {
       const _params = [param, ...params]
@@ -155,6 +171,9 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
 
 
   function useState(): [T, (newState: T) => void, () => T] {
+    if (loaded == 0) {
+      loadFromDisk()
+    }
     let [l, s] = R.useState<T>(value);
 
     let sl = R.useCallback((ns: T) => { s(ns) }, []);
