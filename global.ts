@@ -57,30 +57,32 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
 
 
   function loadFromDisk() {
-    loaded = 1
-    let persistKey = o?.persistKey
-    STORAGE.getItem(persistKey).then((p: any) => {
-      if (p) {
-        if (persistKey != '__globalReady')
-          if (p != undefined && typeof p == 'string' && (p.startsWith("{") || p.startsWith("[")))
-            try { set(JSON.parse(p)) } catch (error) { }
-          else {
-            if (p == "true" || p == "false") {
-              try { /* @ts-ignore */ set(eval(p)) } catch (error) { }
-            } else if (isNaN(p)) {
-              try { /* @ts-ignore */ set(p) } catch (error) { }
-            } else {
-              try { /* @ts-ignore */ set(eval(p)) } catch (error) { }
+    if (loaded == 0) {
+      loaded = 1
+      let persistKey = o?.persistKey
+      STORAGE.getItem(persistKey).then((p: any) => {
+        if (p) {
+          if (persistKey != '__globalReady')
+            if (p != undefined && typeof p == 'string' && (p.startsWith("{") || p.startsWith("[")))
+              try { set(JSON.parse(p)) } catch (error) { }
+            else {
+              if (p == "true" || p == "false") {
+                try { /* @ts-ignore */ set(eval(p)) } catch (error) { }
+              } else if (isNaN(p)) {
+                try { /* @ts-ignore */ set(p) } catch (error) { }
+              } else {
+                try { /* @ts-ignore */ set(eval(p)) } catch (error) { }
+              }
             }
-          }
-      }
-      if (o?.onFinish) {
-        clearTimeout(timeoutFinish)
-        timeoutFinish = setTimeout(() => {
-          o.onFinish?.()
-        }, 50);
-      }
-    })
+        }
+        if (o?.onFinish) {
+          clearTimeout(timeoutFinish)
+          timeoutFinish = setTimeout(() => {
+            o.onFinish?.()
+          }, 50);
+        }
+      })
+    }
   }
 
 
@@ -126,9 +128,8 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
   }
 
   function useSelector(se: (state: T) => any): void {
-    if (loaded == 0) {
-      loadFromDisk()
-    }
+    loadFromDisk()
+
     let [l, s] = R.useState<any>(se(value));
 
     let sl = R.useCallback(
@@ -154,9 +155,7 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
   }
 
   function get(param?: string, ...params: string[]): any {
-    if (loaded == 0) {
-      loadFromDisk()
-    }
+    loadFromDisk()
     let out: any = value;
     if (param) {
       const _params = [param, ...params]
@@ -171,9 +170,8 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
 
 
   function useState(): [T, (newState: T) => void, () => T] {
-    if (loaded == 0) {
-      loadFromDisk()
-    }
+    loadFromDisk()
+    
     let [l, s] = R.useState<T>(value);
 
     let sl = R.useCallback((ns: T) => { s(ns) }, []);
