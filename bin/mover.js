@@ -74,6 +74,8 @@ if (fs.existsSync("../" + mainModule + "/id.json")) {
     moduleLang = { ..._lg }
   }
   fs.writeFileSync("../../assets/locale/id.json", JSON.stringify(moduleLang, undefined, 2))
+  /* sort id.JSON */
+  shell("cd ../../ && node ./node_modules/esoftplay/bin/locale.js")
 }
 
 /* inject libs */
