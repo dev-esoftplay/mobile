@@ -53,7 +53,7 @@ function setFonts(): Promise<void> {
 }
 
 
-const route = useGlobalState<any>(undefined, { persistKey: 'user_index_routes_initial', inFile: true })
+const route = useGlobalState<any>(undefined, { persistKey: 'user_index_routes_initial', inFile: true, loadOnInit: true })
 export default function m(props: UserIndexProps): any {
   const [langId] = LibLocale.state().useState()
   moment().locale(langId)

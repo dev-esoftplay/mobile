@@ -19,7 +19,7 @@ export interface LibUtilsDate {
 
 export type LibUtilsTravelMode = 'driving' | 'walking'
 let installationIdDefault
-const installationId = useGlobalState(installationIdDefault, { persistKey: 'deviceId' })
+const installationId = useGlobalState(installationIdDefault, { persistKey: 'deviceId', loadOnInit: true })
 const cache = useGlobalState<any>({ inDebounce: undefined })
 export default class eutils {
 

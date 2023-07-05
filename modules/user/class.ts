@@ -12,7 +12,7 @@ import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 
-const state = useGlobalState(null, { persistKey: "user" })
+const state = useGlobalState(null, { persistKey: "user", loadOnInit: true })
 
 export default class m {
   static state(): useGlobalReturn<any> {

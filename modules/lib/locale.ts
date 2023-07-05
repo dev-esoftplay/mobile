@@ -6,8 +6,8 @@ import useGlobalState from 'esoftplay/global';
 import { NativeModules, Platform } from 'react-native';
 
 
-const state = useGlobalState("id", { persistKey: 'lib_locale_lang' })
-const lang = useGlobalState({}, { persistKey: 'lib_locale_lang_data', inFile: true })
+const state = useGlobalState("id", { persistKey: 'lib_locale_lang', loadOnInit: true })
+const lang = useGlobalState({}, { persistKey: 'lib_locale_lang_data', inFile: true, loadOnInit: true })
 
 export default class m {
 

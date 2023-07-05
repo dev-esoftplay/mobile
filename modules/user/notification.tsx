@@ -28,7 +28,7 @@ const initState = {
   unread: 0
 };
 
-const state = useGlobalState<any>(initState, { persistKey: "user_notification_data", isUserData: true })
+const state = useGlobalState<any>(initState, { persistKey: "user_notification_data", isUserData: true, loadOnInit: true })
 class m extends LibComponent<UserNotificationProps, UserNotificationState> {
 
   static state(): useGlobalReturn<any> {
