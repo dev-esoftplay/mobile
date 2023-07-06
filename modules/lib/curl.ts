@@ -124,22 +124,6 @@ export default class m {
     return true
   }
 
-  private objectToURLParams(obj: any, parentKey = ''): string[] {
-    let urlParams: string[] = [];
-
-    for (const key in obj) {
-      if (typeof obj[key] === 'object') {
-        const newKey = parentKey ? `${parentKey}[${key}]` : key;
-        urlParams.push(...this.objectToURLParams(obj[key], newKey));
-      } else {
-        const paramKey = parentKey ? `${parentKey}[${key}]` : key;
-        const paramValue = encodeURIComponent(obj[key]);
-        urlParams.push(`${paramKey}=${paramValue}`);
-      }
-    }
-    return urlParams;
-  }
-
   public secure(token_uri?: string): (apiKey?: string) => (uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (error: any, timeout: boolean) => void, debug?: number) => void {
     return (apiKey?: string): (uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (error: any, timeout: boolean) => void, debug?: number) => void => {
       return async (uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (error: any, timeout: boolean) => void, debug?: number) => {
@@ -159,7 +143,7 @@ export default class m {
           _post.api_key = _apiKey
           post.api_key = _apiKey
         }
-        let ps = this.objectToURLParams(_post).join('&')
+        let ps = Object.keys(_post).map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(_post[key])).join('&');
         var options: any = {
           method: "POST",
           signal: this.signal,
@@ -271,7 +255,9 @@ export default class m {
     const str: any = LibNet_status.state().get()
     if (str.isOnline) {
       if (post) {
-        let ps = this.objectToURLParams(post).join('&')
+        let ps = Object.keys(post).map((key) => {
+          return encodeURIComponent(key) + '=' + encodeURIComponent(post[key]);
+        }).join('&');
         this.post = ps
       }
       this.setUri(uri)
@@ -333,7 +319,9 @@ export default class m {
         });
         this.post = fd
       } else {
-        let ps = this.objectToURLParams(post).join('&')
+        let ps = Object.keys(post).map((key) => {
+          return encodeURIComponent(key) + '=' + encodeURIComponent(post[key]);
+        }).join('&');
         this.post = ps
       }
     }
