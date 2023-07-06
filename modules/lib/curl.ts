@@ -57,11 +57,8 @@ export default class m {
     this.withHeader = this.withHeader.bind(this);
     this.initTimeout = this.initTimeout.bind(this);
     this.cancelTimeout = this.cancelTimeout.bind(this);
-    const str: any = LibNet_status.state().get();
-    if (uri && str.isOnline) {
+    if (uri) {
       this.init(uri, post, onDone, onFailed, debug);
-    } else if (!str.isOnline && onFailed) {
-      onFailed({ message: this.refineErrorMessage("Failed to access") }, false);
     }
   }
 
@@ -127,6 +124,22 @@ export default class m {
     return true
   }
 
+  private objectToURLParams(obj: any, parentKey = ''): string[] {
+    let urlParams: string[] = [];
+
+    for (const key in obj) {
+      if (typeof obj[key] === 'object') {
+        const newKey = parentKey ? `${parentKey}[${key}]` : key;
+        urlParams.push(...this.objectToURLParams(obj[key], newKey));
+      } else {
+        const paramKey = parentKey ? `${parentKey}[${key}]` : key;
+        const paramValue = encodeURIComponent(obj[key]);
+        urlParams.push(`${paramKey}=${paramValue}`);
+      }
+    }
+    return urlParams;
+  }
+
   public secure(token_uri?: string): (apiKey?: string) => (uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (error: any, timeout: boolean) => void, debug?: number) => void {
     return (apiKey?: string): (uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (error: any, timeout: boolean) => void, debug?: number) => void => {
       return async (uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (error: any, timeout: boolean) => void, debug?: number) => {
@@ -146,7 +159,7 @@ export default class m {
           _post.api_key = _apiKey
           post.api_key = _apiKey
         }
-        let ps = Object.keys(_post).map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(_post[key])).join('&');
+        let ps = this.objectToURLParams(_post).join('&')
         var options: any = {
           method: "POST",
           signal: this.signal,
@@ -258,9 +271,7 @@ export default class m {
     const str: any = LibNet_status.state().get()
     if (str.isOnline) {
       if (post) {
-        let ps = Object.keys(post).map((key) => {
-          return encodeURIComponent(key) + '=' + encodeURIComponent(post[key]);
-        }).join('&');
+        let ps = this.objectToURLParams(post).join('&')
         this.post = ps
       }
       this.setUri(uri)
@@ -322,9 +333,7 @@ export default class m {
         });
         this.post = fd
       } else {
-        let ps = Object.keys(post).map((key) => {
-          return encodeURIComponent(key) + '=' + encodeURIComponent(post[key]);
-        }).join('&');
+        let ps = this.objectToURLParams(post).join('&')
         this.post = ps
       }
     }
