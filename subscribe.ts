@@ -1,6 +1,7 @@
 // useLibs
 
 import React from 'react';
+import { InteractionManager } from 'react-native';
 
 export interface useGlobalSubscriberReturn {
   getValue: () => any,
@@ -24,7 +25,7 @@ export default function useGlobalSubscriber(defaultValue?: any): useGlobalSubscr
   const trigger = (newValue?: any) => {
     notify(newValue);
   }
-  
+
   function useSubscribe(func: Function) {
     React.useLayoutEffect(() => {
       subscribers.add(func)
@@ -33,13 +34,17 @@ export default function useGlobalSubscriber(defaultValue?: any): useGlobalSubscr
         if (subscribers.size == 0) reset()
       }
     }, [])
-    
+
     return trigger;
   }
-  
+
   function notify(newValue?: any) {
     value = newValue;
-    subscribers.forEach((fun: Function) => fun?.(newValue));
+    subscribers.forEach((fun: Function) => {
+      InteractionManager.runAfterInteractions(() => {
+        fun?.(newValue)
+      })
+    });
   }
 
   return {
