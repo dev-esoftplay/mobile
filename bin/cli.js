@@ -265,6 +265,7 @@ function update() {
 			}
 		})
 	}
+	command("node ./node_modules/esoftplay/bin/locale.js")
 	consoleSucces("esoftplay framework sudah diupdate!")
 }
 
