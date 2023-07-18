@@ -39,7 +39,7 @@ class net_status extends LibComponent<LibNet_statusProps, LibNet_statusState> {
   componentDidMount(): void {
     super.componentDidMount()
     this.unsubscribe = NetInfo.addEventListener(state => {
-      this.onChangeConnectivityStatus(!!state.isConnected, state.isInternetReachable)
+      this.onChangeConnectivityStatus(!!state.isConnected, !!state.isInternetReachable)
     });
   }
 
@@ -52,12 +52,15 @@ class net_status extends LibComponent<LibNet_statusProps, LibNet_statusState> {
     let isOnline = isConnected && isInternetReachable
     net_status.setOnline(isConnected, isInternetReachable)
     if (isOnline) {
+      clearTimeout(this.timeout)
       this.timeout = setTimeout(() => {
         this.setState({ zeroHeight: 1 })
       }, 1500)
     } else {
-      this.setState({ zeroHeight: 2 })
       clearTimeout(this.timeout)
+      this.timeout = setTimeout(() => {
+        this.setState({ zeroHeight: 2 })
+      }, 600)
     }
   }
 
