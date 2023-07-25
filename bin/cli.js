@@ -700,6 +700,7 @@ function configAvailable(enabled) {
 }
 
 function build() {
+	const local = args[1] == 'local' ? ' --local' : ''
 	const types = isWeb
 		?
 		[
@@ -715,7 +716,7 @@ function build() {
 		[
 			{
 				name: "1. IOS (Development) - Simulator",
-				cmd: "eas build --platform ios --profile development",
+				cmd: "eas build --platform ios --profile development" + local,
 				pre: () => {
 					configAvailable(true)
 					devClientPre(appjson)
@@ -727,7 +728,7 @@ function build() {
 			},
 			{
 				name: "2. IOS (Preview) - Simulator",
-				cmd: "eas build --platform ios --profile preview",
+				cmd: "eas build --platform ios --profile preview" + local,
 				pre: () => {
 					configAvailable(true)
 					devClientPos(appjson)
@@ -739,7 +740,7 @@ function build() {
 			},
 			{
 				name: "3. IOS (Preview) - Non Simulator",
-				cmd: "eas build --platform ios --profile preview_build",
+				cmd: "eas build --platform ios --profile preview_build" + local,
 				pre: () => {
 					configAvailable(true)
 					devClientPos(appjson)
@@ -751,7 +752,7 @@ function build() {
 			},
 			{
 				name: "4. IOS (Production) - ipa",
-				cmd: "eas build --platform ios --profile production",
+				cmd: "eas build --platform ios --profile production" + local,
 				pre: () => {
 					configAvailable(true)
 					devClientPos(appjson)
@@ -763,7 +764,7 @@ function build() {
 			},
 			{
 				name: "5. Android (Development) - apk",
-				cmd: "eas build --platform android --profile development",
+				cmd: "eas build --platform android --profile development" + local,
 				pre: () => {
 					configAvailable(true)
 					devClientPre(appjson)
@@ -775,7 +776,7 @@ function build() {
 			},
 			{
 				name: "6. Android (Preview) - apk",
-				cmd: "eas build --platform android --profile preview",
+				cmd: "eas build --platform android --profile preview" + local,
 				pre: () => {
 					configAvailable(true)
 					devClientPos(appjson)
@@ -787,7 +788,7 @@ function build() {
 			},
 			{
 				name: "7. Android (Production) - aab",
-				cmd: "eas build --platform android --profile production",
+				cmd: "eas build --platform android --profile production" + local,
 				pre: () => {
 					configAvailable(true)
 					devClientPos(appjson)
