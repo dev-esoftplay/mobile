@@ -242,20 +242,24 @@ class m extends LibComponent<LibImageProps, LibImageState> {
         var wantedMaxSize = maxDimension || 1280
         var rawheight = result.height
         var rawwidth = result.width
-        var ratio = rawwidth / rawheight
-        if (rawheight > rawwidth) {
-          var wantedwidth = wantedMaxSize * ratio;
-          var wantedheight = wantedMaxSize;
-        } else {
-          var wantedwidth = wantedMaxSize;
-          var wantedheight = wantedMaxSize / ratio;
+        let doResize = false
+        if (wantedMaxSize < Math.max(rawheight, rawwidth)) {
+          doResize = true
+          var ratio = rawwidth / rawheight
+          if (rawheight > rawwidth) {
+            var wantedwidth = wantedMaxSize * ratio;
+            var wantedheight = wantedMaxSize;
+          } else {
+            var wantedwidth = wantedMaxSize;
+            var wantedheight = wantedMaxSize / ratio;
+          }
         }
 
         setTimeout(async () => {
           const manipImage = await ImageManipulator.manipulateAsync(
             result.uri,
-            [{ resize: { width: wantedwidth, height: wantedheight } }],
-            { format: SaveFormat.JPEG }
+            doResize ? [{ resize: { width: wantedwidth, height: wantedheight } }] : [],
+            { format: SaveFormat.JPEG, compress: 1.0 }
           );
           new LibCurl().upload('image_upload', "image", String(manipImage.uri), 'image/jpeg',
             (res: any, msg: string) => {
