@@ -329,7 +329,6 @@ export default function App() {
 			"babel-plugin-transform-react-native-style-optimizer",
 			"babel-plugin-transform-remove-console",
 			"@types/react",
-			"@types/react-native",
 			"typescript",
 		]
 
