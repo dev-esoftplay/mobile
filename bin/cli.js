@@ -32,6 +32,14 @@ if (args.length == 0) {
 	return
 }
 switch (args[0]) {
+	case "a":
+	case "analyze":
+		command('node ./node_modules/esoftplay/bin/analyze.js')
+		break
+	case "ac":
+	case "analyze clear":
+		command('node ./node_modules/esoftplay/bin/analyze.js clear')
+		break;
 	case "help":
 		help()
 		break;
