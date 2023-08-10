@@ -19,8 +19,9 @@ export default function m<T>(task: (item: T) => Promise<void>, onDone?: () => vo
           for (let i = 0; i < data.length; i++) {
             const item = data[i];
             await task(item);
-            if (onDone && i == (data.length - 1)) {
-              onDone()
+            if (i == (data.length - 1)) {
+              if (onDone)
+                onDone()
               onProcess.current = false;
             }
             setCounter(getCounter() + 1)()
@@ -29,6 +30,6 @@ export default function m<T>(task: (item: T) => Promise<void>, onDone?: () => vo
       } catch (err) { }
     }
   };
-  
+
   return [run, counter]
 }
