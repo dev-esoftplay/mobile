@@ -12,7 +12,11 @@ export default function useLazyState<T>(initialState?: T): [T, (newValue: T) => 
 
   const setter = (newValue: T) => {
     if (isMounted.current) {
-      value.current = newValue;
+      if (typeof newValue == 'function') {
+        value.current = newValue(value.current)
+      } else {
+        value.current = newValue;
+      }
     }
     return () => {
       if (isMounted.current) {

@@ -9,7 +9,11 @@ export default function useSafeState<T = any>(defaultValue?: T): useSafeStateRet
 
   const updateState = useCallback((value: T | undefined) => {
     if (isMountedRef.current) {
-      valueRef.current = value;
+      if (typeof value == 'function') {
+        valueRef.current = value(valueRef.current)
+      } else {
+        valueRef.current = value;
+      }
       rerender({})
     }
   }, []);
