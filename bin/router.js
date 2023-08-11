@@ -435,7 +435,7 @@ declare module "esoftplay" {
   }
   
   interface useGlobalReturn<T> {
-    useState: () => [T, (newState: T) => void, () => T],
+    useState: () => [T, (newState: T | ((newState: T) => T)) => void, () => T],
     get: (param?: string, ...params: string[]) => T,
     set: (x: T | ((old: T) => T)) => void,
     reset: () => void,
@@ -622,7 +622,6 @@ function createRouter() {
   var nav = "";
   var staticImport = []
 
-  // staticImport.push("var isEqual = require('react-fast-compare');\n")
   staticImport.push("export function applyStyle(style){ return style };\n")
   staticImport.push("export { default as useGlobalState } from '../../../node_modules/esoftplay/global';\n")
   staticImport.push("export { default as usePersistState } from '../../../node_modules/esoftplay/persist';\n")
@@ -630,7 +629,6 @@ function createRouter() {
   staticImport.push("export { default as useSafeState } from '../../../node_modules/esoftplay/state';\n")
   staticImport.push("export { default as useLazyState } from '../../../node_modules/esoftplay/lazy';\n")
   staticImport.push("export { default as esp } from '../../../node_modules/esoftplay/esp';\n")
-  // staticImport.push("export { default as createCache } from '../../../node_modules/esoftplay/_cache';\n")
   staticImport.push("export { default as _global } from '../../../node_modules/esoftplay/_global';\n")
   staticImport.push("import { stable } from 'usestable';\n")
 
@@ -681,22 +679,6 @@ function createRouter() {
           });
         }
       }
-
-      // if (module == 'lib' && task == 'component') {
-      //   staticImport.splice(2, 0, item)
-      // } else if (module == 'lib' && task == 'style') {
-      //   staticImport.splice(4, 0, item)
-      // } else if (module == 'lib' && task == 'worker') {
-      //   staticImport.splice(4, 0, item)
-      // } else if (module == 'lib' && task == 'navigation') {
-      //   staticImport.splice(4, 0, item)
-      // } else if (task == 'style') {
-      //   staticImport.splice(9, 0, item)
-      // } else if (task == 'scrollpicker') {
-      //   staticImport.splice(10, 0, item)
-      // } else {
-      //   staticImport.push(item);
-      // }
     }
   }
 

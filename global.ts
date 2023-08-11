@@ -7,7 +7,7 @@ const isEqual = require('react-fast-compare');
 
 
 export interface useGlobalReturn<T> {
-  useState: () => [T, (newState: T) => void, () => T],
+  useState: () => [T, (newState: T | ((newState: T) => T)) => void, () => T],
   get: (param?: string, ...params: string[]) => T,
   set: (x: T | ((old: T) => T)) => void,
   reset: () => void,
@@ -175,7 +175,7 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
   }
 
 
-  function useState(): [T, (newState: T) => void, () => T] {
+  function useState(): [T, (newState: T | ((newState: T) => T)) => void, () => T] {
     loadFromDisk()
 
     let [l, s] = R.useState<T>(value);
