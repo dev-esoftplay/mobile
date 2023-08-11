@@ -814,8 +814,8 @@ function build() {
 			input: process.stdin,
 			output: process.stdout
 		});
-
-		rl.question("Pilih build type :\n\n" + types.map((x) => x.name).join("\n") + '\n\nMasukkan nomor build type: ', function (idx) {
+		const local = args[1] == 'local' ? ' --local' : ''
+		rl.question((local ? "Pilih build type dengan mode LOCAL :\n\n" : "Pilih build type :\n\n") + types.map((x) => x.name).join("\n") + '\n\nMasukkan nomor build type: ', function (idx) {
 			d = types[idx - 1]
 			rl.close();
 		});
