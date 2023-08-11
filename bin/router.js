@@ -435,9 +435,9 @@ declare module "esoftplay" {
   }
   
   interface useGlobalReturn<T> {
-    useState: () => [T, (newState: T) => void, () => void, () => T],
+    useState: () => [T, (newState: T) => void, () => T],
     get: (param?: string, ...params: string[]) => T,
-    set: (x: T) => void,
+    set: (x: T | ((old: T) => T)) => void,
     reset: () => void,
     connect: (props: useGlobalConnect<T>) => any,
     useSelector: (selector: (state: T) => any) => any;

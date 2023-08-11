@@ -7,9 +7,9 @@ const isEqual = require('react-fast-compare');
 
 
 export interface useGlobalReturn<T> {
-  useState: () => [T, (newState: T) => void, () => void, () => T],
+  useState: () => [T, (newState: T) => void, () => T],
   get: (param?: string, ...params: string[]) => T,
-  set: (x: T) => void,
+  set: (x: T | ((old: T) => T)) => void,
   reset: () => void,
   connect: (props: useGlobalConnect<T>) => any,
   useSelector: (selector: (state: T) => any) => any;
@@ -98,25 +98,31 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
     _global.useGlobalUserDelete[_idx] = resetFunction
   }
 
-  function set(ns: T) {
-    const isChange = !isEqual(value, ns)
+  function set(ns: T | ((old: T) => T)) {
+    let newValue
+    if (typeof ns == 'function') {
+      newValue = ns(value)
+    } else {
+      newValue = ns
+    }
+    const isChange = !isEqual(value, newValue)
     if (isChange) {
-      value = ns
-      _global.useGlobalSubscriber?.[_idx].forEach((c) => { c?.(ns) })
-      if (o?.persistKey && ns != undefined) {
+      value = newValue
+      _global.useGlobalSubscriber?.[_idx].forEach((c) => { c?.(newValue) })
+      if (o?.persistKey && newValue != undefined) {
         let data: any
-        switch (typeof ns) {
+        switch (typeof newValue) {
           case 'object':
-            if (ns != null || ns != undefined)
-              data = o.jsonBeautify ? JSON.stringify(ns, undefined, 2) : JSON.stringify(ns)
+            if (newValue != null || newValue != undefined)
+              data = o.jsonBeautify ? JSON.stringify(newValue, undefined, 2) : JSON.stringify(newValue)
             break;
           default:
-            data = String(ns)
+            data = String(newValue)
         }
         STORAGE.setItem(o.persistKey, data)
       }
       if (o?.listener)
-        o.listener(ns)
+        o.listener(newValue)
     }
   };
 
@@ -171,7 +177,7 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
 
   function useState(): [T, (newState: T) => void, () => T] {
     loadFromDisk()
-    
+
     let [l, s] = R.useState<T>(value);
 
     let sl = R.useCallback((ns: T) => { s(ns) }, []);
