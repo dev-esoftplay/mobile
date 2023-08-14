@@ -944,6 +944,8 @@ function help() {
 		"\n esp [options]",
 		"\n\n OPTIONS :",
 		"\n - help                        : panduan penggunaan",
+		"\n - a|analyze                   : untuk menambahkan view render counter di semua component",
+		"\n - ac|analyze clear            : untuk menghapus view render counter di semua component",
 		"\n - u|update                    : untuk update esp module ke versi terakhir",
 		"\n - u|update all                : untuk update semua esp module ke versi terakhir",
 		"\n - start                       : start esoftplay framework",
