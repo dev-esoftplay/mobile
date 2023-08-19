@@ -8,7 +8,7 @@ export default function m<T>(task: (item: T) => Promise<void>, onDone?: () => vo
   const onProcess = useRef(false)
 
   function run(data: any[], cb?: (isSuccess: boolean) => void) {
-    if (onProcess.current == true) {
+    if (onProcess.current == true || data.length == 0) {
       if (cb) cb?.(false);
     } else {
       onProcess.current = true;
