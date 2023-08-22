@@ -16,11 +16,11 @@ export default function m(defaultUrl?: string): void {
         url = url.replace((domain + uri), (domain + uri + 'deeplink/'))
         url = url.replace(/^[a-z]+\:\/\//g, protocol + "://")
         function removeLastDot(url: string) {
-          if (url.substr(url.length - 1, 1) == '.') {
-            url = url.substring(0, url.length - 1)
-            return removeLastDot(url)
+          if (url.endsWith('.')) {
+            url = url.slice(0, -1);
+            return removeLastDot(url);
           }
-          return url
+          return url;
         }
         new LibCurl().custom(removeLastDot(url), null,
           (res) => {
