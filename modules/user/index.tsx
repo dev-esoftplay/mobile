@@ -97,20 +97,9 @@ export default function m(props: UserIndexProps): any {
       }
     })
 
-    if (esp.config('firebase').hasOwnProperty('apiKey')) {
-      try {
-        const Firestore = esp.mod('chatting/firestore')
-        Firestore()?.init?.()
-        if (user) {
-          const ChattingLib = esp.mod('chatting/lib')
-          ChattingLib().setUser()
-        }
-      } catch (error) {
-
-      }
-    }
     LibUpdaterProperty.check()
   }, [])
+    //esoftplay-chatting
 
   useEffect(() => {
     if (!loading) {
