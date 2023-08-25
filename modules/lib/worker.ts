@@ -21,19 +21,18 @@ run([99999999], res => {
 
 */
 
-export default function m(func: any): (args: any[], cb: (res: any) => void) => void {
-
+export default function m(func: (args: any[], cb: (res: any) => void) => void): (args: any[], cb: (res: any) => void) => void {
   return (args: any[], cb: (res: any) => void) => {
     function callback(out: any) {
       "worklet"
       runOnJS(cb)(out)
     }
-  
+
     function run() {
       "worklet"
       func(args, callback)
     }
-  
+
     runOnUI(run)()
   }
 }
