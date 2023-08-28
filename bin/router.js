@@ -79,7 +79,7 @@ import { UserRoutes } from 'esoftplay/cache/user/routes/import';
 import { stable } from 'usestable';
 
 function m(props): any {
-  const userEmail = UserClass.state().useSelector((s) => s.email)
+  const userEmail = UserClass.state().useSelector((s) => s?.email)
   const econf = config.config
   const appOrientation = econf?.orientation ? String(econf.orientation) : 'portrait'
 
