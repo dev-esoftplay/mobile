@@ -16,12 +16,12 @@ import { UseDeeplink } from 'esoftplay/cache/use/deeplink/import';
 import { UserClass } from 'esoftplay/cache/user/class/import';
 import { UserHook } from 'esoftplay/cache/user/hook/import';
 import { UserLoading } from 'esoftplay/cache/user/loading/import';
+import * as ErrorReport from 'esoftplay/error';
 import moment from 'esoftplay/moment';
 import * as Font from "expo-font";
 import React, { useLayoutEffect } from 'react';
 import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-
 
 export interface UserIndexProps {
 
@@ -58,7 +58,7 @@ export default function m(props: UserIndexProps): any {
         setLoading(false)
       })
     })()
-
+    ErrorReport.getError()
     LibUpdaterProperty.check()
     LibVersion.check()
   }, [])

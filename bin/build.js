@@ -251,14 +251,10 @@ yarn-error.log\n\
 			console.log('.gitignore has been created');
 		});
 
-		const AppJS = `
-
-import { LibNotification } from 'esoftplay/cache/lib/notification/import';
+		const AppJS = `import { LibNotification } from 'esoftplay/cache/lib/notification/import';
 import { UserIndex } from 'esoftplay/cache/user/index/import';
-import * as ErrorReport from 'esoftplay/error';
 import * as Notifications from 'expo-notifications';
-import React, { useEffect } from 'react';
-import { /* enableFreeze, */  enableScreens } from 'react-native-screens';
+import { /* enableFreeze, */ enableScreens } from 'react-native-screens';
 
 /* enableFreeze() */
 enableScreens()
@@ -266,15 +262,7 @@ enableScreens()
 Notifications.addNotificationResponseReceivedListener(x => LibNotification.onAction(x));
 Notifications.addNotificationReceivedListener(x => LibNotification.onAction(x));
 
-export default function App() {
-	useEffect(() => {
-		ErrorReport.getError()
-	}, [])
-
-	return (
-		<UserIndex />
-	)
-}`;
+export default UserIndex`;
 		let expoLib = [
 			'@expo/vector-icons',
 			'@react-native-async-storage/async-storage',
