@@ -117,7 +117,7 @@ const esp = {
   lang(moduleTask: string, langName: string, ...stringToBe: string[]): string {
     let string = LibLocale.stateLang().get()?.[esp.langId()]?.[moduleTask]?.[langName]
     if (!string) {
-      string = esp.assets("locale/id.json")[moduleTask][langName]
+      string = esp.assets("locale/id.json")?.[moduleTask]?.[langName]
     }
     function sprintf(string: string, index: number): string {
       if (stringToBe[index] != undefined) {
