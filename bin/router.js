@@ -74,27 +74,30 @@ import { Platform } from 'react-native';
 const Stack = createNativeStackNavigator();
 const config = require('../../../config.json')
 import { LibNavigation } from 'esoftplay/cache/lib/navigation/import';
+import { UserClass } from 'esoftplay/cache/user/class/import';
+import { UserRoutes } from 'esoftplay/cache/user/routes/import';
+import { stable } from 'usestable';
 
-export default function m(props): any {
-	const { user, initialState, handler } = props
-	const econf = config.config
-	const appOrientation = econf?.orientation ? String(econf.orientation) : 'portrait'
-	return (
-		<NavigationContainer
-			ref={(r) => LibNavigation.setRef(r)}
-      initialState={initialState}
+function m(props): any {
+  const userEmail = UserClass.state().useSelector((s) => s.email)
+  const econf = config.config
+  const appOrientation = econf?.orientation ? String(econf.orientation) : 'portrait'
+
+  return (
+    <NavigationContainer
+      ref={(r) => LibNavigation.setRef(r)}
       onReady={() => { _global.NavsIsReady = true }}
-      onStateChange={handler} >
+      onStateChange={UserRoutes.state().set} >
       <Stack.Navigator
         headerMode="none"
-        
-        initialRouteName={(user?.id || user?.user_id) ? econf.home.member : econf.home.public}
+        initialRouteName={userEmail ? econf.home.member : econf.home.public}
         screenOptions={{ orientation: appOrientation, headerShown: false, contentStyle: { backgroundColor: 'white' }, animation: Platform.OS == 'ios' ? 'default' : 'none', stackPresentation: 'push' }}>
 `+ navs + `
       </Stack.Navigator>
     </NavigationContainer>
   )
 }
+export default stable(m)
 `)
 }
 

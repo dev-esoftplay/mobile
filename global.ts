@@ -1,9 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import _global from 'esoftplay/_global';
-import { UserData } from 'esoftplay/cache/user/data/import';
 import Storage from 'esoftplay/storage';
 import * as R from 'react';
-const isEqual = require('react-fast-compare');
+
 
 
 export interface useGlobalReturn<T> {
@@ -30,22 +29,11 @@ export interface useGlobalConnect<T> {
 }
 
 _global.useGlobalUserDelete = {}
-_global.useGlobalSubscriber = {}
 
-const Context = {
-  idx: 0,
-  increment: function () { this.idx++ },
-  reset: function () {
-    this.idx = 0
-  }
-}
-export const globalIdx = Context
 let timeoutFinish: NodeJS.Timeout
 export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): useGlobalReturn<T> {
   const STORAGE = o?.inFile ? Storage : AsyncStorage
-  const _idx = o?.persistKey || globalIdx.idx
-  if (!_global.useGlobalSubscriber[_idx])
-    _global.useGlobalSubscriber[_idx] = [];
+  const subsSetter = new Set<Function>()
   let value: T = initValue;
   let loaded = -1
 
@@ -60,7 +48,7 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
     if (loaded == 0) {
       loaded = 1
       let persistKey = o?.persistKey
-      STORAGE.getItem(persistKey).then((p: any) => {
+      STORAGE.getItem(String(persistKey)).then((p: any) => {
         if (p) {
           if (persistKey != '__globalReady')
             if (p != undefined && typeof p == 'string' && (p.startsWith("{") || p.startsWith("[")))
@@ -88,27 +76,26 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
 
   /* register to userData to automatically reset state and persist */
   if (o?.isUserData) {
-    function resetFunction() {
-      del()
-    }
     if (o?.persistKey) {
+      const UserData = require('./modules/user/data').default
       if (UserData)
         UserData?.register?.(o?.persistKey)
+      _global.useGlobalUserDelete[String(o.persistKey)] = del
     }
-    _global.useGlobalUserDelete[_idx] = resetFunction
   }
 
   function set(ns: T | ((old: T) => T)) {
-    let newValue
-    if (typeof ns == 'function') {
+    let newValue: any
+    if (ns instanceof Function) {
       newValue = ns(value)
     } else {
       newValue = ns
     }
+    const isEqual = require('react-fast-compare');
     const isChange = !isEqual(value, newValue)
     if (isChange) {
       value = newValue
-      _global.useGlobalSubscriber?.[_idx].forEach((c) => { c?.(newValue) })
+      subsSetter.forEach((c) => c?.(newValue))
       if (o?.persistKey && newValue != undefined) {
         let data: any
         switch (typeof newValue) {
@@ -135,29 +122,24 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
 
   function useSelector(se: (state: T) => any): void {
     loadFromDisk()
+    const isEqual = require('react-fast-compare');
 
     let [l, s] = R.useState<any>(se(value));
 
-    let sl = R.useCallback(
-      (ns: T) => {
-        let n = se(ns);
-        !isEqual(l, n) && s(n);
-      },
-      [l]
-    );
+    let sl = (ns: T) => {
+      let n = se(ns);
+      if (!isEqual(l, n))
+        s(n);
+    }
 
-    subscribe(sl)
+    R.useLayoutEffect(() => {
+      subsSetter.add(sl)
+      return () => {
+        subsSetter.delete(sl)
+      };
+    }, [sl]);
 
     return l;
-  }
-
-  function subscribe(func: any) {
-    R.useLayoutEffect(() => {
-      _global.useGlobalSubscriber?.[_idx]?.push?.(func);
-      return () => {
-        _global.useGlobalSubscriber[_idx] = _global.useGlobalSubscriber?.[_idx].filter((f) => f !== func)
-      };
-    }, [func]);
   }
 
   function get(param?: string, ...params: string[]): any {
@@ -177,13 +159,14 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
 
   function useState(): [T, (newState: T | ((newState: T) => T)) => void, () => T] {
     loadFromDisk()
-
     let [l, s] = R.useState<T>(value);
 
-    let sl = R.useCallback((ns: T) => { s(ns) }, []);
-
-
-    subscribe(sl)
+    R.useLayoutEffect(() => {
+      subsSetter.add(s)
+      return () => {
+        subsSetter.delete(s)
+      };
+    }, [s]);
 
     return [l, set, () => value];
   };
@@ -194,6 +177,5 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
     return children ? R.cloneElement(children) : null
   }
 
-  globalIdx.increment()
   return { useState, get, set, useSelector, reset: del, connect: _connect };
 }

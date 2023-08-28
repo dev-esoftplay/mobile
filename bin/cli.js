@@ -923,7 +923,7 @@ function switchStatus(status) {
 		}
 	}
 	if (valid && fs.existsSync(gplist))
-		valid = copyFromTo(status.includes("l") ? gplistlive : gplistdebug, gplistlive)
+		valid = copyFromTo(status.includes("l") ? gplistlive : gplistdebug, gplist)
 	switchStatusAssets(status)
 	if (!valid) {
 		consoleError('TERJADI KESALAHAN')
