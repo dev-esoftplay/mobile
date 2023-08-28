@@ -392,7 +392,7 @@ import { AntDesignTypes, EntypoTypes, EvilIconsTypes, FeatherTypes, FontAwesomeT
 
 declare module "esoftplay" {
   var _global: any;
-  function useGlobalSubscriber<S>(initialState?: S): useGlobalSubscribeReturn<S>;
+  function useGlobalSubscriber<S>(initialState?: S): useGlobalSubscriberReturn<S>;
   function useLazyState<S>(initialState?: S): [S, (newValue: S) => () => void, () => S];
   function useGlobalState<S>(initialState?: S, option?: useGlobalOption): useGlobalReturn<S>;
   function usePersistState<S>(key: string, initialState?: S | (() => S)): [S, (a: S | ((b: S )=> S)) => S | undefined, (a?: (x: S) => void) => void, () => void];
@@ -454,7 +454,7 @@ declare module "esoftplay" {
     isUserData?: boolean
   }
   
-  interface useGlobalSubscribeReturn {
+  interface useGlobalSubscriberReturn {
     getValue: () => any,
     reset: () => void,
     useSubscribe: Function,
@@ -465,7 +465,7 @@ declare module "esoftplay" {
     render: (props: T) => any,
   }`;
   for (clsName in tmpTask) {
-    let ItemText = "\nimport { useGlobalSubscribeReturn } from 'esoftplay';\nimport { useGlobalReturn } from 'esoftplay';\n"
+    let ItemText = "\nimport { useGlobalSubscriberReturn } from 'esoftplay';\nimport { useGlobalReturn } from 'esoftplay';\n"
     if (clsName == "LibIcon") {
       ItemText += "import { EvilIconsTypes, AntDesignTypes, EvilIconsTypes, FeatherTypes, FontAwesomeTypes, FontistoTypes, FoundationTypes, MaterialIconsTypes, EntypoTypes, OcticonsTypes, ZocialTypes, SimpleLineIconsTypes, IoniconsTypes, MaterialCommunityIconsTypes } from '@expo/vector-icons/build/esoftplay_icons';\n"
     }
