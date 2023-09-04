@@ -1,59 +1,43 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 
-export default (() => {
-  let obj: any = {}
-  let setter = {}
-  return (key: string, def?: any): any[] => {
-    const r = useRef(true)
-    const [state, setState] = useState(def)
 
-    useMemo(() => { if (!setter[key]) setter[key] = [] }, [])
+let setter = new Set<Function>()
+export default function usePersistState(key: string, def?: any): any[] {
+  const [state, setState] = useState(def || undefined)
 
-    function set(value: any) {
-      if (r.current) {
-        if (value != undefined)
-          AsyncStorage.setItem(key, JSON.stringify(value));
-        else
-          del()
-        setter[key].forEach((cc) => cc(value))
-      }
-    }
-
-    function updater(callback?: (a?: typeof def) => void) {
-      if (obj[key]) {
-        clearTimeout(obj[key])
-        delete obj[key]
-      }
-      obj[key] = setTimeout(() => {
-        if (r.current)
-          AsyncStorage.getItem(key).then((x) => {
-            delete obj[key]
-            if (x) {
-              const xx = JSON.parse(x)
-              if (callback) callback(xx)
-              set(xx)
-            } else {
-              if (callback) callback(def)
-              set(def)
-            }
-          })
-      }, 100);
-    }
-
-    function del() {
+  function set(value: any) {
+    if (value == undefined)
       AsyncStorage.removeItem(key)
-    }
-
-    useLayoutEffect(() => {
-      setter[key].push(setState)
-      updater()
-      return () => {
-        r.current = false
-        setter[key] = setter[key].filter((x) => x !== setState);
-      }
-    }, [])
-
-    return [state, set, updater, del]
+    else
+      AsyncStorage.setItem(key, JSON.stringify(value));
+    setter.forEach((c) => c?.(value))
   }
-})()
+
+  function updater(callback?: (a?: typeof def) => void) {
+    AsyncStorage.getItem(key).then((v: string | undefined) => {
+      if (v) {
+        const json = JSON.parse(v)
+        if (callback) callback(json)
+        set(json)
+      } else {
+        if (callback) callback(def)
+        set(def)
+      }
+    })
+  }
+
+  function del() {
+    AsyncStorage.removeItem(key)
+  }
+
+  useLayoutEffect(() => {
+    setter.add(setState)
+    updater()
+    return () => {
+      setter.delete(setState)
+    }
+  }, [])
+
+  return [state, set, updater, del]
+}

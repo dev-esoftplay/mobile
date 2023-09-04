@@ -65,7 +65,6 @@ var tmpExp = ["LibCrypt"]; // nama2 class yang tidak perlu dibuat
 var Nav5 = (importer, navs) => {
   return (`
 // @ts-nocheck
-import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 \nimport { _global } from "esoftplay";\n
@@ -76,7 +75,7 @@ const config = require('../../../config.json')
 import { LibNavigation } from 'esoftplay/cache/lib/navigation/import';
 import { UserClass } from 'esoftplay/cache/user/class/import';
 import { UserRoutes } from 'esoftplay/cache/user/routes/import';
-import { stable } from 'usestable';
+import { memo } from 'react';
 
 function m(props): any {
   const userEmail = UserClass.state().useSelector((s) => s?.email)
@@ -97,7 +96,7 @@ function m(props): any {
     </NavigationContainer>
   )
 }
-export default stable(m)
+export default memo(m)
 `)
 }
 
@@ -738,8 +737,7 @@ function createRouter() {
     const orientation = NavsOrientation[nav]
     const [module, task] = nav.split('/')
     const comp = ucword(module) + ucword(task)
-    importer.push(`import { ${comp}
-      } from ${'"esoftplay/cache/' + module + '/' + task + '/import"'} `)
+    importer.push(`import { ${comp} } from ${'"esoftplay/cache/' + module + '/' + task + '/import"'} `)
     if (orientation)
       screens.push("\t\t\t\t" + "<Stack.Screen name={\"" + nav + "\"} options={{ orientation: '" + orientation + "' }} component={" + comp + "} />")
     else
