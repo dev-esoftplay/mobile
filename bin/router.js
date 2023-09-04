@@ -143,6 +143,27 @@ checks.forEach(modules => {
                 if (m = (/\n?(?:(?:\/\/\s{0,})|(?:\/\*\s{0,}))orientation:([a-zAZ_]+)/).exec(data)) {
                   NavsOrientation[module + '/' + file.slice(0, file.lastIndexOf('.'))] = m?.[1]
                 }
+
+                if (isIndexed) {
+                  if (n = (/\n?(?:(?:\/\/\s{0,})|(?:\/\*\s{0,}))withObject/).exec(data)) {
+                    isUseLibs = true
+                    tmpTask[clsName]['class'] = ""
+                    tmpTask[clsName]['function'] = {}
+                    UseLibs.push(module + "/" + name) /* get export default */
+                    if (m = (/\n?export\sdefault(( )){/).exec(data)) {
+                      tmpTask[clsName]['uselibs'] = 'function _' + m[1].replace(m[2], clsName).trim() + "(): void;"
+                      tmpTask[clsName]['namespaces'] = "namespace " + clsName.trim()
+                    }
+                    /* get exported funtion */
+                    if (f = data.match(/\n\s{2}(([A-Za-z0-9]+).*){/g)) {
+                      for (let i = 0; i < f.length; i++) {
+                        const _f = (/\n\s{2}(([A-Za-z0-9]+).*){/g).exec(f[i]);
+                        tmpTask[clsName]['function'][_f[2]] = 'function ' + _f[1] + ';'
+                      }
+                    }
+                  }
+                }
+
                 if (isIndexed) {
                   if (n = (/\n?(?:(?:\/\/\s{0,})|(?:\/\*\s{0,}))useLibs/).exec(data)) {
                     isUseLibs = true
@@ -464,7 +485,7 @@ declare module "esoftplay" {
     render: (props: T) => any,
   }`;
   for (clsName in tmpTask) {
-    let ItemText = "\nimport { useGlobalSubscriberReturn } from 'esoftplay';\nimport { useGlobalReturn } from 'esoftplay';\n"
+    let ItemText = "\nimport { useGlobalSubscriberReturn } from 'esoftplay';\nimport { useGlobalReturn } from 'esoftplay';\nimport { LibNavigationRoutes } from 'esoftplay';\n"
     if (clsName == "LibIcon") {
       ItemText += "import { EvilIconsTypes, AntDesignTypes, EvilIconsTypes, FeatherTypes, FontAwesomeTypes, FontistoTypes, FoundationTypes, MaterialIconsTypes, EntypoTypes, OcticonsTypes, ZocialTypes, SimpleLineIconsTypes, IoniconsTypes, MaterialCommunityIconsTypes } from '@expo/vector-icons/build/esoftplay_icons';\n"
     }
