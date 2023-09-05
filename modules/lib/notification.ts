@@ -1,5 +1,6 @@
 
 // noPage
+// withObject
 import { useGlobalReturn } from 'esoftplay';
 import _global from 'esoftplay/_global';
 import { LibCrypt } from 'esoftplay/cache/lib/crypt/import';
@@ -77,13 +78,11 @@ function splitArray(array: any[], maxLength: number): any[] {
   return splitedArray
 }
 
-export default class m {
-
-  static state(): useGlobalReturn<any> {
+export default {
+  state(): useGlobalReturn<any> {
     return lastUrlState
-  }
-
-  static loadData(isFirst?: boolean): void {
+  },
+  loadData(isFirst?: boolean): void {
     // console.log('LOADDATA', isFirst)
     let _uri = mainUrl() + "user/push-notif/desc"
     let lastUrl = lastUrlState.get()
@@ -154,9 +153,8 @@ export default class m {
 
       }
     )
-  }
-
-  static add(id: number, user_id: number, group_id: number, title: string, message: string, params: string, status: 0 | 1 | 2, created?: string, updated?: string): void {
+  },
+  add(id: number, user_id: number, group_id: number, title: string, message: string, params: string, status: 0 | 1 | 2, created?: string, updated?: string): void {
     const item = { id, user_id, group_id, title, message, params, status, created, updated }
     let data = UserNotification.state().get().data
     data.unshift(item)
@@ -164,13 +162,11 @@ export default class m {
       ...UserNotification.state().get(),
       data: data
     })
-  }
-
-  static drop(): void {
+  },
+  drop(): void {
     UserNotification.state().reset()
-  }
-
-  static markRead(id?: string | number, ..._ids: (string | number)[]): void {
+  },
+  markRead(id?: string | number, ..._ids: (string | number)[]): void {
     // console.log("markRead")
     let { data, unread, urls } = UserNotification.state().get()
     let nUnread = unread > 0 ? unread - 1 : 0
@@ -194,12 +190,10 @@ export default class m {
     idsToPush.forEach((ids) => {
       readAll(ids)
     })
-  }
-
-
-  static onAction(notification: any): void {
-    m.loadData(true)
-    const data = m.getData(notification)
+  },
+  onAction(notification: any): void {
+    this.loadData(true)
+    const data = this.getData(notification)
     function doOpen(data: any) {
       if (!_global.NavsIsReady) {
         setTimeout(() => {
@@ -208,18 +202,16 @@ export default class m {
         return
       } else {
         setTimeout(() => {
-          m.openPushNotif(data)
+          this.openPushNotif(data)
         }, 0)
       }
     }
     doOpen(data)
-  }
-
-  static getData(x: any): any {
+  },
+  getData(x: any): any {
     return x?.notification?.request?.content?.data
-  }
-
-  static listen(dataRef: any): void {
+  },
+  listen(dataRef: any): void {
     if (esp.config('notification') == 1) {
       if (Platform.OS == 'android')
         Notifications.setNotificationChannelAsync(
@@ -238,9 +230,8 @@ export default class m {
       UserClass.pushToken();
       dataRef.receive = Notifications.addNotificationReceivedListener(() => { })
     }
-  }
-
-  static requestPermission(callback?: (token: any) => void): Promise<any> {
+  },
+  requestPermission(callback?: (token: any) => void): Promise<any> {
     return new Promise(async (r) => {
       let settings = await Notifications.getPermissionsAsync();
       if (!settings.granted) {
@@ -277,14 +268,12 @@ export default class m {
         }
       }
     })
-  }
-
-
-  static openPushNotif(data: any): void {
+  },
+  openPushNotif(data: any): void {
     if (!data) return
     if (typeof data == 'string')
       data = JSON.parse(data)
-    m.markRead(data.id)
+    this.markRead(data.id)
     let param = data;
     if (param.action)
       switch (param.action) {
@@ -315,10 +304,9 @@ export default class m {
         default:
           break;
       }
-  }
-
-  static openNotif(data: any): void {
-    m.markRead(data.id)
+  },
+  openNotif(data: any): void {
+    this.markRead(data.id)
     let param = JSON.parse(data.params)
     switch (param.action) {
       case "alert":

@@ -1,10 +1,11 @@
 // noPage
+// withObject
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import _global from 'esoftplay/_global';
 import Storage from 'esoftplay/storage';
 
-export default class m {
-  static register(name: string): void {
+export default {
+  register(name: string): void {
     AsyncStorage.getItem("user_data_dependent").then((x) => {
       let all: string[] = []
       if (x) {
@@ -13,8 +14,8 @@ export default class m {
       all.push(name)
       AsyncStorage.setItem("user_data_dependent", JSON.stringify(all))
     })
-  }
-  static unregister(name: string): void {
+  },
+  unregister(name: string): void {
     AsyncStorage.getItem("user_data_dependent").then((x) => {
       let all = []
       if (x) {
@@ -22,8 +23,7 @@ export default class m {
       }
       AsyncStorage.setItem("user_data_dependent", JSON.stringify(all))
     })
-  }
-
+  },
   deleteAll(): void {
     AsyncStorage.getItem("user_data_dependent").then((x) => {
       if (_global?.useGlobalUserDelete) {

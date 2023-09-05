@@ -1,4 +1,5 @@
 // noPage
+// withObject
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { esp, useGlobalReturn } from 'esoftplay';
 import { LibCrypt } from 'esoftplay/cache/lib/crypt/import';
@@ -14,11 +15,11 @@ import { Platform } from 'react-native';
 
 const state = useGlobalState(null, { persistKey: "user", loadOnInit: true })
 
-export default class m {
-  static state(): useGlobalReturn<any> {
+export default {
+  state(): useGlobalReturn<any> {
     return state
-  }
-  static create(user: any): Promise<void> {
+  },
+  create(user: any): Promise<void> {
     return new Promise((r, j) => {
       state?.set?.(user)
       if (esp.config('notification') == 1) {
@@ -26,9 +27,8 @@ export default class m {
       }
       r(user)
     })
-  }
-
-  static load(callback?: (user?: any | null) => void): Promise<any> {
+  },
+  load(callback?: (user?: any | null) => void): Promise<any> {
     return new Promise(async (r, j) => {
       AsyncStorage.getItem('user').then((user) => {
         if (user) {
@@ -42,11 +42,10 @@ export default class m {
       })
 
     })
-  }
-
-  static isLogin(callback: (user?: any | null) => void): Promise<any> {
+  },
+  isLogin(callback: (user?: any | null) => void): Promise<any> {
     return new Promise((r, j) => {
-      m.load().then((user) => {
+      this.load().then((user) => {
         r(user);
         if (callback) callback(user);
       }).catch((nouser) => {
@@ -54,9 +53,8 @@ export default class m {
         if (callback) callback(null);
       })
     })
-  }
-
-  static delete(): Promise<void> {
+  },
+  delete(): Promise<void> {
     return new Promise(async (r) => {
       Notifications.setBadgeCountAsync(0)
       state.reset()
@@ -67,9 +65,8 @@ export default class m {
       }
       r()
     })
-  }
-
-  static pushToken(): Promise<any> {
+  },
+  pushToken(): Promise<any> {
     return new Promise((resolve, reject) => {
       if (Constants.appOwnership == 'expo' && !esp.isDebug('')) {
         resolve(undefined)
@@ -115,5 +112,4 @@ export default class m {
       })
     })
   }
-
 }

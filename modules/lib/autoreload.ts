@@ -1,10 +1,10 @@
 // noPage
-
+// withObject
 import { InteractionManager } from 'react-native'
 
 let updater: any
-export default class m {
-  static set(callback: () => void, duration?: number): void {
+export default {
+  set(callback: () => void, duration?: number): void {
     if (updater != undefined) {
       clearInterval(updater)
       updater = undefined
@@ -14,9 +14,8 @@ export default class m {
         callback()
       });
     }, duration || 6000)
-  }
-
-  static clear(): void {
+  },
+  clear(): void {
     if (updater != undefined) {
       clearInterval(updater)
       updater = undefined

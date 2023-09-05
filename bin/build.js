@@ -57,6 +57,7 @@ if (fs.existsSync(packjson)) {
 				},
 				"isDebug": 0,
 				"group_id": 4,
+				"experienceId": "@username/slug",
 				"salt": "CHANGE_INTO_YOUR_OWN_SALT",
 				"home": {
 					"public": "main/index",
@@ -81,7 +82,7 @@ if (fs.existsSync(packjson)) {
 				$appjson = JSON.parse(fs.readFileSync(appjson, 'utf8')) || {};
 			} catch (error) { }
 		if (!$appjson.expo.hasOwnProperty('runtimeVersion')) {
-			$appjson.expo.runtimeVersion = 1
+			$appjson.expo.runtimeVersion = "1"
 			$appjson.expo.android = {
 				"package": "com.domain",
 				"versionCode": 1,
@@ -346,9 +347,9 @@ export default UserIndex`;
 				cmd += "&& yarn add " + installDevLibs.join(" ") + " --dev "
 			if (installExpoLibs.length > 0)
 				cmd += "&& expo install " + installExpoLibs.join(" ")
-			execSync(cmd)
+			execSync(cmd + "|| true")
 			execSync("cd ../../ && node ./node_modules/esoftplay/bin/router.js || true")
-			execSync("cd ../../ && node ./node_modules/esoftplay/bin/locale.js")
+			execSync("cd ../../ && node ./node_modules/esoftplay/bin/locale.js || true")
 			console.log('App.js has been replace to App.tsx');
 			// /* bugfix AsyncStorage @firebase, remove this section if firebase has update the AsyncStorage */
 			// if (fs.existsSync('../@firebase/app/dist/index.rn.cjs.js')) {
