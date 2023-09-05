@@ -59,7 +59,7 @@ export default {
       Notifications.setBadgeCountAsync(0)
       state.reset()
       await AsyncStorage.removeItem("user_notification");
-      new UserData().deleteAll()
+      UserData.deleteAll()
       if (esp.config('notification') == 1) {
         UserClass.pushToken()
       }
