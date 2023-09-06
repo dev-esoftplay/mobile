@@ -532,7 +532,7 @@ function publish(notes) {
 				const ajson = readToJSON(appjson);
 				const url = config.publish_uri + ajson.config.publish_id
 				const fetch = require('node-fetch')
-				console.log("PROCESSING FORCE UPDATE")
+				console.log("\n\nPROCESSING FORCE UPDATE")
 				fetch(url).then((res) => JSON.stringify(res.json(), undefined, 2)).then(consoleSucces)
 			}
 		});
@@ -827,6 +827,46 @@ function build() {
 				if (pre) pre()
 				consoleSucces("⚙⚙⚙ ... \n" + cmd)
 				command(cmd)
+				const cjson = readToJSON(confjson)
+				const ajson = readToJSON(appjson)
+				if (local) {
+					const fs = require('fs');
+					const path = require('path');
+					const directoryPath = './'; // Replace with the path to your directory
+
+					fs.readdir(directoryPath, (err, files) => {
+						if (err) {
+							console.error('Error reading directory:', err);
+							return;
+						}
+						// Define a regular expression pattern to match file names starting with "build-"
+						const regexPattern = /^build-(.+)$/;
+						// Filter the file names using the pattern
+						const matchingFiles = files.filter((fileName) => regexPattern.test(fileName));
+
+						if (matchingFiles.length === 0) {
+							console.log('No files matching the pattern found.');
+							return;
+						}
+						// Extract and display the old file names
+						matchingFiles.forEach((fileName) => {
+							// const oldFileName = fileName.replace(regexPattern, '$1');
+							let ext = fileName.split(".")
+							ext.shift()
+							fs.renameSync('./' + fileName, './' + ajson.expo.name + "-" + new Date().toISOString() + "." + ext.join("."))
+						});
+					});
+					let tmId = "-1001429450501"
+					if (cjson.hasOwnProperty('config')) {
+						if (cjson.config.hasOwnProperty('build')) {
+							let tmid = cjson.config.build[2]
+							if (tmid) tmId = tmid;
+						}
+					}
+					const os = require('os')
+					const message = " ✅ Build Success by " + os.userInfo().username + '@' + os.hostname()
+					// command("curl -d \"text=" + message + "&disable_web_page_preview=true&chat_id=" + tmId + "\" 'https://api.telegram.org/bot112133589:AAFFyztZh79OsHRCxJ9rGCGpnxkcjWBP8kU/sendMessage'")
+				}
 				if (fs.existsSync('./build/post.js'))
 					command('node ./build/post.js')
 				configAvailable(false)
