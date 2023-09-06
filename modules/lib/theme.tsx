@@ -1,4 +1,5 @@
 // noPage
+// withObject
 import { esp } from 'esoftplay';
 import { LibNavigation } from 'esoftplay/cache/lib/navigation/import';
 import { LibStyle } from 'esoftplay/cache/lib/style/import';
@@ -7,81 +8,75 @@ import useGlobalState from 'esoftplay/global';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const { colorPrimary, colorAccent } = LibStyle
 
-const state = useGlobalState({
-  theme: 'light'
-}, { persistKey: 'lib_theme' })
+const state = useGlobalState({ theme: 'light' }, { persistKey: 'lib_theme' })
 
-export default class m {
-
-  static setTheme(themeName: string): void {
+export default {
+  setTheme(themeName: string): void {
     state.set({ theme: themeName })
     LibNavigation.reset()
     AsyncStorage.setItem('theme', themeName)
-  }
-
-  static _barStyle(): string {
-    return m.colors(['dark', 'light'])
-  }
-
-  static _colorPrimary(): string {
-    return m.colors([colorPrimary, colorPrimary])
-  }
-  static _colorAccent(): string {
-    return m.colors([colorAccent, colorAccent])
-  }
-  static _colorHeader(): string {
-    return m.colors(['#3E50B4', '#292B37'])
-  }
-  static _colorHeaderText(): string {
-    return m.colors(['white', 'white'])
-  }
-  static _colorButtonPrimary(): string {
-    return m.colors(['#3E50B4', '#3E50B4'])
-  }
-  static _colorButtonTextPrimary(): string {
-    return m.colors(['white', 'white'])
-  }
-  static _colorButtonSecondary(): string {
-    return m.colors(['#3E50B4', '#3E50B4'])
-  }
-  static _colorButtonTextSecondary(): string {
-    return m.colors(['white', 'white'])
-  }
-  static _colorButtonTertiary(): string {
-    return m.colors(['#3E50B4', '#3E50B4'])
-  }
-  static _colorButtonTextTertiary(): string {
-    return m.colors(['white', 'white'])
-  }
-  static _colorBackgroundPrimary(): string {
-    return m.colors(['white', '#202529'])
-  }
-  static _colorBackgroundSecondary(): string {
-    return m.colors(['white', '#202529'])
-  }
-  static _colorBackgroundTertiary(): string {
-    return m.colors(['white', '#202529'])
-  }
-  static _colorBackgroundCardPrimary(): string {
-    return m.colors(['white', '#2B2F38'])
-  }
-  static _colorBackgroundCardSecondary(): string {
-    return m.colors(['white', '#2B2F38'])
-  }
-  static _colorBackgroundCardTertiary(): string {
-    return m.colors(['white', '#2B2F38'])
-  }
-  static _colorTextPrimary(): string {
-    return m.colors(['#353535', 'white'])
-  }
-  static _colorTextSecondary(): string {
-    return m.colors(['#666666', 'white'])
-  }
-  static _colorTextTertiary(): string {
-    return m.colors(['#999999', 'white'])
-  }
-
-  static colors(colors: string[]): string {
+  },
+  _barStyle(): string {
+    return this.colors(['dark', 'light'])
+  },
+  _colorPrimary(): string {
+    return this.colors([colorPrimary, colorPrimary])
+  },
+  _colorAccent(): string {
+    return this.colors([colorAccent, colorAccent])
+  },
+  _colorHeader(): string {
+    return this.colors(['#3E50B4', '#292B37'])
+  },
+  _colorHeaderText(): string {
+    return this.colors(['white', 'white'])
+  },
+  _colorButtonPrimary(): string {
+    return this.colors(['#3E50B4', '#3E50B4'])
+  },
+  _colorButtonTextPrimary(): string {
+    return this.colors(['white', 'white'])
+  },
+  _colorButtonSecondary(): string {
+    return this.colors(['#3E50B4', '#3E50B4'])
+  },
+  _colorButtonTextSecondary(): string {
+    return this.colors(['white', 'white'])
+  },
+  _colorButtonTertiary(): string {
+    return this.colors(['#3E50B4', '#3E50B4'])
+  },
+  _colorButtonTextTertiary(): string {
+    return this.colors(['white', 'white'])
+  },
+  _colorBackgroundPrimary(): string {
+    return this.colors(['white', '#202529'])
+  },
+  _colorBackgroundSecondary(): string {
+    return this.colors(['white', '#202529'])
+  },
+  _colorBackgroundTertiary(): string {
+    return this.colors(['white', '#202529'])
+  },
+  _colorBackgroundCardPrimary(): string {
+    return this.colors(['white', '#2B2F38'])
+  },
+  _colorBackgroundCardSecondary(): string {
+    return this.colors(['white', '#2B2F38'])
+  },
+  _colorBackgroundCardTertiary(): string {
+    return this.colors(['white', '#2B2F38'])
+  },
+  _colorTextPrimary(): string {
+    return this.colors(['#353535', 'white'])
+  },
+  _colorTextSecondary(): string {
+    return this.colors(['#666666', 'white'])
+  },
+  _colorTextTertiary(): string {
+    return this.colors(['#999999', 'white'])
+  },
+  colors(colors: string[]): string {
     const _themeName = state.get().theme
     const _themes: string[] = esp.config('theme');
     const _themeIndex = _themes.indexOf(_themeName);
