@@ -833,7 +833,11 @@ function build() {
 					const fs = require('fs');
 					const path = require('path');
 					const directoryPath = './'; // Replace with the path to your directory
-
+					function getTime() {
+						const adjustedDate = new Date().getTime() + 7 * 60 * 60000; // Add offset in milliseconds
+						const isoStringWithGMTPlus7 = new Date(adjustedDate).toISOString();
+						return isoStringWithGMTPlus7.replace('T', ' ').replace(/\.[0-9]+Z/g, "")
+					}
 					fs.readdir(directoryPath, (err, files) => {
 						if (err) {
 							console.error('Error reading directory:', err);
@@ -853,7 +857,7 @@ function build() {
 							// const oldFileName = fileName.replace(regexPattern, '$1');
 							let ext = fileName.split(".")
 							ext.shift()
-							fs.renameSync('./' + fileName, './' + ajson.expo.name + "-" + new Date().toISOString() + "." + ext.join("."))
+							fs.renameSync('./' + fileName, './' + ajson.expo.name + "-" + getTime() + "." + ext.join("."))
 						});
 					});
 					let tmId = "-1001429450501"

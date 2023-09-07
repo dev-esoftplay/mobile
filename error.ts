@@ -9,7 +9,11 @@ let pack = require('../../package.json');
 let app = require('../../app.json');
 const { manifest } = Constants;
 
-
+function getTime() {
+  const adjustedDate = new Date().getTime() + 7 * 60 * 60000; // Add offset in milliseconds
+  const isoStringWithGMTPlus7 = new Date(adjustedDate).toISOString();
+  return isoStringWithGMTPlus7.replace('T', ' ').replace(/\.[0-9]+Z/g, "")
+}
 // const defaultErrorHandler = ErrorUtils?.getGlobalHandler?.()
 
 const myErrorHandler = (e: any, isFatal: any) => {
@@ -28,7 +32,7 @@ export function setError(error?: any) {
     user,
     error: String(error),
     routes: routesName,
-    time: new Date().toISOString()
+    time: getTime()
   };
   try {
     AsyncStorage.setItem(`${config?.domain}error`, JSON.stringify(_e));
@@ -47,7 +51,7 @@ export function reportApiError(fetch: any, error: any) {
     'slug: ' + "#" + manifest?.slug,
     'error: ' + error,
     '\n\n\ndev: ' + Platform.OS + ' - ' + Constants.deviceName,
-    'time: ' + new Date().toISOString(),
+    'time: ' + getTime(),
     'app/pub_id: ' + Constants.appOwnership + '/' + (config?.publish_id || '-'),
     'user_id: ' + user?.id || user?.user_id || '-',
     'username: ' + user?.username || '-',
