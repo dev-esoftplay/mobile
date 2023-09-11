@@ -151,14 +151,14 @@ checks.forEach(modules => {
                     tmpTask[clsName]['function'] = {}
                     UseLibs.push(module + "/" + name) /* get export default */
                     if (m = (/\n?export\sdefault(( )){/).exec(data)) {
-                      tmpTask[clsName]['uselibs'] = 'function _' + m[1].replace(m[2], clsName).trim() + "(): void;"
-                      tmpTask[clsName]['namespaces'] = "namespace " + clsName.trim()
+                      tmpTask[clsName]['object'] = 'function _' + m[1].replace(m[2], clsName).trim() + "(): void;"
+                      tmpTask[clsName]['namespaces'] = clsName.trim() + ":"
                     }
                     /* get exported funtion */
                     if (f = data.match(/\n\s{2}(([A-Za-z0-9]+).*){/g)) {
                       for (let i = 0; i < f.length; i++) {
                         const _f = (/\n\s{2}(([A-Za-z0-9]+).*){/g).exec(f[i]);
-                        tmpTask[clsName]['function'][_f[2]] = 'function ' + _f[1] + ';'
+                        tmpTask[clsName]['function'][_f[2]] = _f[1] + ';'
                       }
                     }
                   }
@@ -559,6 +559,27 @@ declare module "esoftplay" {
       }
       for (fun in tmpTask[clsName]["function"]) {
         ItemText += "\n    export " + tmpTask[clsName]["function"][fun];
+        isFilled = true;
+      }
+      if (isFilled) {
+        ItemText += "\n  ";
+      }
+      ItemText += "}";
+    } else if (tmpTask[clsName]["object"]) {
+      for (var i = 0; i < tmpTask[clsName]["interface"].length; i++) {
+        ItemText += "\n  export " + tmpTask[clsName]["interface"][i].replace(/\n/g, "\n  ");
+      }
+      ItemText += "\n export " + tmpTask[clsName]["object"];
+      for (var i = 0; i < tmpTask[clsName]["type"].length; i++) {
+        ItemText += "\n  export " + tmpTask[clsName]["type"][i].replace(/\n/g, "\n  ");
+      }
+      var isFilled = false;
+      ItemText += "\n declare const " + tmpTask[clsName]["namespaces"] + " {";
+      for (fun in tmpTask[clsName]["var"]) {
+        ItemText += "\n    export " + tmpTask[clsName]["var"][fun];
+      }
+      for (fun in tmpTask[clsName]["function"]) {
+        ItemText += "\n   " + tmpTask[clsName]["function"][fun];
         isFilled = true;
       }
       if (isFilled) {
