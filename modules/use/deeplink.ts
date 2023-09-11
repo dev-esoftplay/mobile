@@ -1,7 +1,6 @@
 // useLibs
 // noPage
 import { esp } from 'esoftplay';
-import _global from 'esoftplay/_global';
 import { LibCurl } from 'esoftplay/cache/lib/curl/import';
 import { LibNavigation } from 'esoftplay/cache/lib/navigation/import';
 import { LibUtils } from 'esoftplay/cache/lib/utils/import';
@@ -26,7 +25,7 @@ export default function m(defaultUrl?: string): void {
           (res) => {
             if (res.ok == 1) {
               function nav(module: string, url: string) {
-                if (!_global.NavsIsReady) {
+                if (!LibNavigation.getIsReady()) {
                   setTimeout(() => {
                     nav(module, url)
                   }, 500);

@@ -2,7 +2,6 @@
 // withObject
 import { CommonActions, StackActions } from '@react-navigation/native';
 import { LibNavigationRoutes } from 'esoftplay';
-import _global from 'esoftplay/_global';
 import { UserClass } from 'esoftplay/cache/user/class/import';
 import { UserRoutes } from 'esoftplay/cache/user/routes/import';
 import esp from 'esoftplay/esp';
@@ -13,14 +12,23 @@ export interface LibNavigationInjector {
   children?: any
 }
 
-let libNavigationData: any = {}
-let libNavigationRedirect: any = {}
 export default {
+  _redirect: {},
+  _data: {},
+  _ref: {},
+  _isReady: false,
   setRef(ref: any): void {
-    _global.libNavigationRef = ref
+    this._ref = ref
+  },
+  setIsReady(isReady: boolean): void {
+    this._isReady = isReady;
+  },
+  getIsReady(): boolean {
+    console.log("getIsReady()", this._isReady)
+    return this._isReady;
   },
   setNavigation(nav: any): void {
-    libNavigationData._navigation = nav
+    this._data._navigation = nav
   },
   getArgs(props: any, key: string, defOutput?: any): any {
     if (defOutput == undefined) {
@@ -35,30 +43,27 @@ export default {
     return props?.route?.params || defOutput;
   },
   navigation(): any {
-    return libNavigationData?._navigation
+    return this._data?._navigation
   },
   setRedirect(func: Function, key?: number) {
     if (!key) key = 1
-    libNavigationRedirect = {
-      ...libNavigationRedirect,
-      [key]: { func }
-    }
+    this._redirect[key] = { func }
   },
   delRedirect(key?: number) {
     if (!key) key = 1
-    delete libNavigationRedirect[key]
+    delete this._redirect[key]
   },
   redirect(key?: number) {
     if (!key) key = 1
-    if (libNavigationRedirect?.[key]) {
-      const { func } = libNavigationRedirect?.[key]
+    if (this._redirect?.[key]) {
+      const { func } = this._redirect?.[key]
       if (typeof func == 'function')
         func()
-      delete libNavigationRedirect[key]
+      delete this._redirect[key]
     }
   },
   navigate<S>(route: LibNavigationRoutes, params?: S): void {
-    _global.libNavigationRef?.navigate?.(route, params)
+    this._ref?.navigate?.(route, params)
   },
   getResultKey(props: any): number {
     return this.getArgs(props, "_senderKey", 0)
@@ -68,16 +73,16 @@ export default {
       key = 1
     }
     try {
-      delete libNavigationData[key]
+      delete this._data[key]
     } catch (error) { }
   },
   sendBackResult(result: any, key?: number): void {
     if (!key) {
       key = 1
     }
-    if (libNavigationData[key] != undefined) {
-      libNavigationData[key](result)
-      delete libNavigationData[key]
+    if (this._data[key] != undefined) {
+      this._data[key](result)
+      delete this._data[key]
     }
     this.back()
   },
@@ -90,21 +95,21 @@ export default {
         params = {}
       }
       params['_senderKey'] = key
-      if (!libNavigationData.hasOwnProperty(key) && key != undefined) {
-        libNavigationData[key] = (value: any) => {
+      if (!this._data.hasOwnProperty(key) && key != undefined) {
+        this._data[key] = (value: any) => {
           r(value)
         };
       }
       this.push(route, params)
     })
   },
-  replace<S>(route: LibNavigationRoutes, params?: S): void {
-    _global.libNavigationRef.dispatch(
+  replace<S>(route: LibNavigationRoutes, params?: any): void {
+    this._ref.dispatch(
       StackActions.replace(route, params)
     )
   },
-  push<S>(route: LibNavigationRoutes, params?: S): void {
-    _global.libNavigationRef?.dispatch?.(
+  push<S>(route: LibNavigationRoutes, params?: any): void {
+    this._ref?.dispatch?.(
       StackActions.push(
         route,
         params
@@ -121,12 +126,12 @@ export default {
       index: _route.length - 1,
       routes: _route.map((rn) => ({ name: rn }))
     });
-    _global.libNavigationRef?.dispatch?.(resetAction);
+    this._ref?.dispatch?.(resetAction);
   },
   back(deep?: number): void {
     let _deep = deep || 1
     const popAction = StackActions.pop(_deep);
-    _global.libNavigationRef?.dispatch?.(popAction)
+    this._ref?.dispatch?.(popAction)
   },
 
   /* return `root` on initialRoute otherwise return the route was active  */
@@ -137,7 +142,7 @@ export default {
     return this.getCurrentRouteName() == 'root'
   },
   backToRoot(): void {
-    _global.libNavigationRef?.dispatch?.(StackActions.popToTop());
+    this._ref?.dispatch?.(StackActions.popToTop());
   },
   Injector(props: LibNavigationInjector): any {
     if (!props.children) return null

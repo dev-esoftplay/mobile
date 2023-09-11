@@ -85,7 +85,7 @@ function m(props): any {
   return (
     <NavigationContainer
       ref={(r) => LibNavigation.setRef(r)}
-      onReady={() => { _global.NavsIsReady = true }}
+      onReady={() => { LibNavigation.setIsReady(true) }}
       onStateChange={UserRoutes.state().set} >
       <Stack.Navigator
         headerMode="none"

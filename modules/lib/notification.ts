@@ -2,7 +2,6 @@
 // noPage
 // withObject
 import { useGlobalReturn } from 'esoftplay';
-import _global from 'esoftplay/_global';
 import { LibCrypt } from 'esoftplay/cache/lib/crypt/import';
 import { LibCurl } from 'esoftplay/cache/lib/curl/import';
 import { LibNavigation } from 'esoftplay/cache/lib/navigation/import';
@@ -195,7 +194,7 @@ export default {
     this.loadData(true)
     const data = this.getData(notification)
     function doOpen(data: any) {
-      if (!_global.NavsIsReady) {
+      if (!LibNavigation.getIsReady()) {
         setTimeout(() => {
           doOpen(data)
         }, 300);

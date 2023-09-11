@@ -1,5 +1,4 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import _global from 'esoftplay/_global';
 import Storage from 'esoftplay/storage';
 import * as R from 'react';
 
@@ -27,8 +26,6 @@ export interface useGlobalOption {
 export interface useGlobalConnect<T> {
   render: (props: T) => any,
 }
-
-_global.useGlobalUserDelete = {}
 
 let timeoutFinish: NodeJS.Timeout
 export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): useGlobalReturn<T> {
@@ -80,7 +77,6 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
       const UserData = require('./modules/user/data').default
       if (UserData)
         UserData?.register?.(o?.persistKey)
-      _global.useGlobalUserDelete[String(o.persistKey)] = del
     }
   }
 
