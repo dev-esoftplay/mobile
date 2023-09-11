@@ -1,4 +1,5 @@
 import { LibLocale } from 'esoftplay/cache/lib/locale/import';
+import Constants from 'expo-constants';
 import { LogBox, Platform } from 'react-native';
 import 'react-native-reanimated';
 import './oneplusfixfont';
@@ -72,9 +73,7 @@ const esp = {
     return _assets(path)
   },
   versionName(): string {
-    const Platform = require('react-native').Platform
-    const Constants = require('expo-constants').default
-    return (Platform.OS == 'android' ? Constants?.manifest?.android?.versionCode : Constants?.manifest?.ios?.buildNumber) + '-' + esp.config('publish_id')
+    return (Platform.OS == 'android' ? Constants?.expoConfig?.android?.versionCode : Constants?.expoConfig?.ios?.buildNumber) + '-' + esp.config('publish_id')
   },
   config(param?: string, ...params: string[]): any {
     let out: any = esp._config();

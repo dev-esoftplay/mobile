@@ -154,13 +154,15 @@ checks.forEach(modules => {
                       tmpTask[clsName]['object'] = 'function _' + m[1].replace(m[2], clsName).trim() + "(): void;"
                       tmpTask[clsName]['namespaces'] = clsName.trim() + ":"
                     }
+                    let parsed = (/(export default {.*\n})/gs).exec(data)
                     /* get exported funtion */
-                    if (f = data.match(/\n\s{2}(([A-Za-z0-9]+).*){/g)) {
-                      for (let i = 0; i < f.length; i++) {
-                        const _f = (/\n\s{2}(([A-Za-z0-9]+).*){/g).exec(f[i]);
-                        tmpTask[clsName]['function'][_f[2]] = _f[1] + ';'
+                    if (parsed && parsed.length > 0)
+                      if (f = parsed[0].match(/\n\s{2}(([A-Za-z0-9]+).*){/g)) {
+                        for (let i = 0; i < f.length; i++) {
+                          const _f = (/\n\s{2}(([A-Za-z0-9]+).*){/g).exec(f[i]);
+                          tmpTask[clsName]['function'][_f[2]] = _f[1] + ';'
+                        }
                       }
-                    }
                   }
                 }
 

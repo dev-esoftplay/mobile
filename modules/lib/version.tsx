@@ -22,7 +22,7 @@ export interface LibVersionState {
 export default class m extends LibComponent<LibVersionProps, LibVersionState> {
 
   static appVersion(): string {
-    let version: any = (Platform.OS == 'android' ? Constants?.manifest?.android?.versionCode : Constants?.manifest?.ios?.buildNumber)
+    let version: any = (Platform.OS == 'android' ? Constants?.expoConfig?.android?.versionCode : Constants?.expoConfig?.ios?.buildNumber)
     return version
   }
 
