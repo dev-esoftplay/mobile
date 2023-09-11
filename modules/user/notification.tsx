@@ -1,5 +1,3 @@
-// withObject
-
 import { useGlobalReturn } from 'esoftplay';
 import { LibComponent } from 'esoftplay/cache/lib/component/import';
 import { LibIcon } from 'esoftplay/cache/lib/icon/import';
@@ -30,7 +28,7 @@ const initState = {
 };
 
 const state = useGlobalState<any>(initState, { persistKey: "user_notification_data", isUserData: true, loadOnInit: true })
-class m extends LibComponent<UserNotificationProps, UserNotificationState> {
+export default class m extends LibComponent<UserNotificationProps, UserNotificationState> {
 
   static state(): useGlobalReturn<any> {
     return state
@@ -74,5 +72,3 @@ class m extends LibComponent<UserNotificationProps, UserNotificationState> {
     );
   }
 }
-
-export default m
