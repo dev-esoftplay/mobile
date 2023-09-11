@@ -24,7 +24,6 @@ export default {
     this._isReady = isReady;
   },
   getIsReady(): boolean {
-    console.log("getIsReady()", this._isReady)
     return this._isReady;
   },
   setNavigation(nav: any): void {
