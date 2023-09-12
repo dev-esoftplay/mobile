@@ -161,7 +161,7 @@ const esp = {
       msg = "config tidak ada domain"
     } else if (!app.config.hasOwnProperty('salt') || app.config.salt.length == 0) {
       msg = "config tidak ada salt"
-    } else if (!app.config.hasOwnProperty("experienceId") || app.config.experienceId.length == 0){
+    } else if (!app.config.hasOwnProperty("experienceId") || app.config.experienceId.length == 0) {
       msg = "config experienceId harus diisi dengan @esoftplay/[slug]"
     }
     if (msg != '') {
@@ -187,7 +187,7 @@ const esp = {
       notification: 0,
       ...app.config
     }
-    
+
     if (!config.hasOwnProperty('url') || config.url.length == 0) {
       config.url = config.protocol + "://" + config.api + "." + config.domain + config.uri;
     }
@@ -221,6 +221,33 @@ const esp = {
           console.log(x, "\x1b[0m")
       })
     }
+  },
+  condition() {
+    let result: any = undefined;
+    function ifFunc(condition: boolean, value: any) {
+      if (result === undefined && condition)
+        result = value;
+      return api;
+    }
+
+    function elseFunc(value: any) {
+      if (result === undefined)
+        result = value;
+      return api;
+    }
+
+    function valueFunc() {
+      return result;
+    }
+
+    const api = {
+      if: ifFunc,
+      elseif: ifFunc,
+      else: elseFunc,
+      getValue: valueFunc,
+    };
+
+    return api;
   },
   logColor: {
     reset: "\x1b[0m",

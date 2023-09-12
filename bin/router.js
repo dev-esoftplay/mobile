@@ -67,7 +67,6 @@ var Nav5 = (importer, navs) => {
 // @ts-nocheck
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-\nimport { _global } from "esoftplay";\n
 ${importer}
 import { Platform } from 'react-native';
 const Stack = createNativeStackNavigator();
@@ -421,6 +420,12 @@ declare module "esoftplay" {
   function useSafeState<S>(initialState?: S | (() => S)): [S, (a: S | ((b: S )=> S)) => S | undefined, ()=>S];
   function applyStyle<T>(style: T): T;
   function usePersistState<S>(key: string, initialState?: S | (() => S)): [S, (a: S) => void, (a?: (x: S)=> void) => void, () => void];
+  type ConditionApi = {
+    if: (condition: boolean, value: any) => ConditionApi;
+    elseif: (condition: boolean, value: any) => ConditionApi;
+    else: (value: any) => ConditionApi;
+    getValue: () => any;
+  };
   namespace esp {
     function appjson(): any;
     function assets(path: string): any;
@@ -432,6 +437,7 @@ declare module "esoftplay" {
     function reducer(): any;
     function versionName(): string;
     function navigations(): any;
+    function condition(): ConditionApi;
     function isDebug(message: string): boolean;
     function lang(moduleTask: string, langName: string, ...string: string[]): string;
     function langId(): string;
