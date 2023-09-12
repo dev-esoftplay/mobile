@@ -1,5 +1,5 @@
 // withHooks
-
+// noPage
 import { LibStyle } from 'esoftplay/cache/lib/style/import';
 import React from 'react';
 import { ActivityIndicator, View } from 'react-native';
