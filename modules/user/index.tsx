@@ -18,7 +18,7 @@ import { UserHook } from 'esoftplay/cache/user/hook/import';
 import { UserLoading } from 'esoftplay/cache/user/loading/import';
 import * as ErrorReport from 'esoftplay/error';
 import moment from 'esoftplay/moment';
-import * as Font from "expo-font";
+import { useFonts } from 'expo-font';
 import React, { useLayoutEffect } from 'react';
 import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -30,8 +30,7 @@ export interface UserIndexProps {
 export interface UserIndexState {
   loading: boolean
 }
-
-function setFonts(): Promise<void> {
+function getFontConfig() {
   let fonts: any = {}
   let fontsConfig = esp.config("fonts")
   if (fontsConfig) {
@@ -39,29 +38,31 @@ function setFonts(): Promise<void> {
       fonts[key] = esp.assets('fonts/' + fontsConfig[key])
     })
   }
-  return new Promise((r, j) => {
-    Font.loadAsync(fonts).then(() => r())
-  })
+  return fonts
 }
 
 
 export default function m(props: UserIndexProps): any {
   moment().locale(LibLocale.state().get())
   const [loading, setLoading] = useSafeState(true)
+  const [fontLoaded] = useFonts(getFontConfig())
   //esoftplay-user-class-hook
   UseDeeplink()
 
   useLayoutEffect(() => {
-    (async () => {
-      await setFonts()
-      UserClass.isLogin(() => {
-        setLoading(false)
-      })
-    })()
     ErrorReport.getError()
     LibUpdaterProperty.check()
     LibVersion.check()
   }, [])
+
+  useLayoutEffect(() => {
+    if (fontLoaded) {
+      UserClass.isLogin(() => {
+        setLoading(false)
+      })
+    }
+  }, [fontLoaded])
+
   
   //esoftplay-chatting
 
