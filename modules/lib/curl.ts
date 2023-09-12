@@ -8,12 +8,10 @@ import { LibToastProperty } from 'esoftplay/cache/lib/toast/import';
 import { LibUtils } from 'esoftplay/cache/lib/utils/import';
 import { reportApiError } from "esoftplay/error";
 import esp from 'esoftplay/esp';
-import Constants from 'expo-constants';
 
 //api_logger_import
 
 
-const { manifest } = Constants;
 
 export default class m {
   controller = new AbortController()
