@@ -1,6 +1,6 @@
 // withHooks
 // noPage
-
+// withHooks
 import { LibLoading } from 'esoftplay/cache/lib/loading/import';
 import useGlobalState from 'esoftplay/global';
 import React from 'react';
