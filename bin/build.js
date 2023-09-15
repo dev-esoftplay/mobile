@@ -244,6 +244,7 @@ node_modules/\n\
 web-build/\n\
 npm-debug.*\n\
 package-lock.json\n\
+bun.lockb\n\
 yarn.lock\n\
 yarn-error.log\n\
 			`
@@ -345,12 +346,13 @@ export default UserIndex`;
 				fs.mkdirSync(DIR + 'modules')
 			let cmd = "cd ../../ "
 			if (installDevLibs.length > 0)
-				cmd += "&& yarn add " + installDevLibs.join(" ") + " --dev "
+				cmd += "&& bun add " + installDevLibs.join(" ") + " --dev "
 			if (installExpoLibs.length > 0)
 				cmd += "&& expo install " + installExpoLibs.join(" ")
 			execSync(cmd + "|| true")
-			execSync("cd ../../ && node ./node_modules/esoftplay/bin/router.js || true")
-			execSync("cd ../../ && node ./node_modules/esoftplay/bin/locale.js || true")
+			execSync("cd ../../ && bun ./node_modules/esoftplay/bin/router.js || true")
+			execSync("cd ../../ && bun ./node_modules/esoftplay/bin/locale.js || true")
+			execSync("cd ../../ && bun ./node_modules/esoftplay/bin/run.js || true")
 			console.log('App.js has been replace to App.tsx');
 			// /* bugfix AsyncStorage @firebase, remove this section if firebase has update the AsyncStorage */
 			// if (fs.existsSync('../@firebase/app/dist/index.rn.cjs.js')) {
@@ -384,5 +386,5 @@ export default UserIndex`;
 	console.log(packjson + " not found!!")
 }
 // packjson scripts
-// "preuninstall": "cd ../../ && node ./node_modules/.bin/esoftplay stop",
-// "postuninstall": "node ./bin/build.js uninstall",
+// "preuninstall": "cd ../../ && bun ./node_modules/.bin/esoftplay stop",
+// "postuninstall": "bun ./bin/build.js uninstall",

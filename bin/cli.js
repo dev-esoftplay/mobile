@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const fs = require('fs');
 const exec = require('child_process').execSync;
-const execAsync = require('child_process').exec;
+
 const path = require('path');
 const os = require('os')
 const readline = require('readline');
@@ -23,7 +23,7 @@ var args = process.argv.slice(2);
 
 // console.log(modpath, "sdofsjdofjsd")
 function execution() {
-	const cmd = `watchman watch-del ./ && watchman watch ./ && watchman -j <<< '["trigger","./",{"name":"esp","expression":["allof",["not",["dirname","node_modules"]],["not",["name","index.d.ts"]]],"command":["node","./node_modules/esoftplay/bin/router.js"],"append_files":true}]' && node ./node_modules/esoftplay/bin/router.js`
+	const cmd = `watchman watch-del ./ && watchman watch ./ && watchman -j <<< '["trigger","./",{"name":"esp","expression":["allof",["not",["dirname","node_modules"]],["not",["name","index.d.ts"]]],"command":["node","./node_modules/esoftplay/bin/router.js"],"append_files":true}]' && bun ./node_modules/esoftplay/bin/run.js && bun ./node_modules/esoftplay/bin/router.js`
 	command(cmd)
 }
 
@@ -34,11 +34,11 @@ if (args.length == 0) {
 switch (args[0]) {
 	case "a":
 	case "analyze":
-		command('node ./node_modules/esoftplay/bin/analyze.js')
+		command('bun ./node_modules/esoftplay/bin/analyze.js')
 		break
 	case "ac":
 	case "analyze clear":
-		command('node ./node_modules/esoftplay/bin/analyze.js clear')
+		command('bun ./node_modules/esoftplay/bin/analyze.js clear')
 		break;
 	case "help":
 		help()
@@ -259,7 +259,7 @@ function configUpdate(state) {
 }
 
 function update() {
-	command("yarn upgrade esoftplay --latest")
+	command("bun add esoftplay")
 	if (fs.existsSync(packjson)) {
 		let pack = readToJSON(packjson)
 		let esplibs = Object.keys(pack.dependencies).filter((key) => key.includes("esoftplay"))
@@ -267,13 +267,13 @@ function update() {
 		esplibs.forEach((key) => {
 			if (key != 'esoftplay') {
 				if (args[1] == 'all')
-					command('yarn upgrade ' + key + ' --latest')
-				command("cd node_modules/" + key + " && node mover.js")
+					command('bun add ' + key)
+				command("cd node_modules/" + key + " && bun mover.js")
 				consoleSucces(key + " succesfully implemented!")
 			}
 		})
 	}
-	command("node ./node_modules/esoftplay/bin/locale.js")
+	command("bun ./node_modules/esoftplay/bin/locale.js")
 	consoleSucces("esoftplay framework sudah diupdate!")
 }
 
@@ -289,9 +289,9 @@ function createMaster(module_name) {
 			"version": "0.0.1",
 			"description": "`+ module_name + ` module on esoftplay framework",
 			"main": "index.js",
-			"scripts": {
+			"bun-create": {
 				"test": "echo \\"Error: no test specified\\" && exit 1",
-				"postinstall": "node ../esoftplay/bin/mover.js esoftplay-`+ module_name + `"
+				"postinstall": "bun ../esoftplay/bin/mover.js esoftplay-`+ module_name + `"
 			},
 			"keywords": [
 				"espftplay-`+ module_name + `",
@@ -463,6 +463,19 @@ function publish(notes) {
 				status = "debug"
 			}
 		}
+
+		let brokenConfig = undefined
+		if (status != 'debug' || status != 'live') {
+			brokenConfig = "Gagal publish : CONFIG tidak valid"
+		}
+		if (!cjson.config.salt){
+			brokenConfig = "Gagal publish : CONFIG tidak valid"
+		}
+		if (brokenConfig){
+			consoleError(brokenConfig)
+			return
+		}
+
 		let last_id = 0
 		if (status == "live") {
 			let migratedPublishId = 1
@@ -708,6 +721,18 @@ function configAvailable(enabled) {
 }
 
 function build() {
+	let cjson = readToJSON(confjson)
+	let brokenConfig = undefined
+	if (!cjson.config.domain) {
+		brokenConfig = "Gagal build : CONFIG tidak valid"
+	}
+	if (!cjson.config.salt){
+		brokenConfig = "Gagal build : CONFIG tidak valid"
+	}
+	if (brokenConfig){
+		consoleError(brokenConfig)
+		return
+	}
 	const local = args[1] == 'local' ? ' --local' : ''
 	const types = isWeb
 		?
@@ -872,7 +897,7 @@ function build() {
 					// command("curl -d \"text=" + message + "&disable_web_page_preview=true&chat_id=" + tmId + "\" 'https://api.telegram.org/bot112133589:AAFFyztZh79OsHRCxJ9rGCGpnxkcjWBP8kU/sendMessage'")
 				}
 				if (fs.existsSync('./build/post.js'))
-					command('node ./build/post.js')
+					command('bun ./build/post.js')
 				configAvailable(false)
 				devClientPos(appjson)
 				buildPrepare(false)

@@ -24,4 +24,4 @@ if (!letter) {
 const newPackJson = { ...packJson, version: nextVersion }
 fs.writeFileSync("./package.json", JSON.stringify(newPackJson, undefined, 2))
 shell("npm publish", { stdio: ['inherit', 'inherit', 'inherit'] })
-console.log("\nnpm install --save esoftplay@" + nextVersion + "\n")
+console.log("\nbun add esoftplay@" + nextVersion + "\n")
