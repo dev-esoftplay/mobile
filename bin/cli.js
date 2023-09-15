@@ -465,7 +465,7 @@ function publish(notes) {
 		}
 
 		let brokenConfig = undefined
-		if (status != 'debug' || status != 'live') {
+		if (status != 'debug' && status != 'live') {
 			brokenConfig = "Gagal publish : CONFIG tidak valid"
 		}
 		if (!cjson.config.salt){
