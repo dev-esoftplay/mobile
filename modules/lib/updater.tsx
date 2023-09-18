@@ -41,11 +41,13 @@ export function check(callback?: (isNew: boolean) => void): void {
       callback?.(false)
       LibProgress.hide()
     } else {
-      Updates.fetchUpdateAsync().then(({ isNew }) => {
-        callback?.(isNew)
-      }).catch((e) => {
-        LibProgress.hide()
-      })
+      Updates.fetchUpdateAsync()
+        .then(({ isNew }) => {
+          callback?.(isNew)
+        }).catch((e) => {
+          Alert.alert("Update Gagal", e)
+          LibProgress.hide()
+        })
     }
   })
 }
