@@ -1,9 +1,4 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import Storage from 'esoftplay/storage';
 import * as R from 'react';
-
-
-
 export interface useGlobalReturn<T> {
   useState: () => [T, (newState: T | ((newState: T) => T)) => void, () => T],
   get: (param?: string, ...params: string[]) => T,
@@ -29,17 +24,18 @@ export interface useGlobalConnect<T> {
 
 let timeoutFinish: NodeJS.Timeout
 export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): useGlobalReturn<T> {
-  const STORAGE = o?.inFile ? Storage : AsyncStorage
+  let STORAGE: any = undefined
+  const isEqual = require('react-fast-compare');
   const subsSetter = new Set<Function>()
   let value: T = initValue;
   let loaded = -1
 
   if (o?.persistKey) {
+    STORAGE = o?.inFile ? (require('esoftplay/storage').default) : (require('@react-native-async-storage/async-storage').default)
     loaded = 0
     if (o?.loadOnInit)
       loadFromDisk()
   }
-
 
   function loadFromDisk() {
     if (loaded == 0) {
@@ -87,7 +83,6 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
     } else {
       newValue = ns
     }
-    const isEqual = require('react-fast-compare');
     const isChange = !isEqual(value, newValue)
     if (isChange) {
       value = newValue
@@ -118,7 +113,6 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
 
   function useSelector(se: (state: T) => any): void {
     loadFromDisk()
-    const isEqual = require('react-fast-compare');
 
     let [l, s] = R.useState<any>(se(value));
 
