@@ -398,7 +398,7 @@ Text = 'function assets(File) {' + "\n\t" +
   '}' + "\n" +
   'module.exports = assets;';
 if (isChange(tmpDir + "assets.js", Text))
-  Bun.write(tmpDir + "assets.js", Text, { flag: 'w' }, function (err) {
+  fs.writeFileSync(tmpDir + "assets.js", Text, { flag: 'w' }, function (err) {
     if (err) {
       return console.log(err);
     }
@@ -608,7 +608,7 @@ declare module "esoftplay" {
 
       PreText += "import '" + tmpDir + nav + "/import.d';\n"
       if (isChange(tmpDir + nav + '/import.d.ts', ItemText)) {
-        Bun.write(tmpDir + nav + '/import.d.ts', ItemText, { flag: 'w' }, function (err) {
+        fs.writeFileSync(tmpDir + nav + '/import.d.ts', ItemText, { flag: 'w' }, function (err) {
           if (err) {
             return console.log(err);
           }
@@ -629,7 +629,7 @@ declare module "esoftplay" {
   Text += "}\n"
   Text = PreText + Text
   if (isChange(typesDir + "index.d.ts", Text)) {
-    Bun.write(typesDir + "index.d.ts", Text, { flag: 'w' }, function (err) {
+    fs.writeFileSync(typesDir + "index.d.ts", Text, { flag: 'w' }, function (err) {
       if (err) {
         return console.log(err);
       }
@@ -639,7 +639,7 @@ declare module "esoftplay" {
 
 function isChange(path, compare) {
   let hasChanged = true
-  let old = fs.existsSync(path) ? Bun.file(path, { encoding: 'utf8' }) : ""
+  let old = fs.existsSync(path) ? fs.readFileSync(path, { encoding: 'utf8' }) : ""
   hasChanged = old.length != compare.length
   if (hasChanged) {
     console.log(path, 'CHANGED', old.length, compare.length)
@@ -724,7 +724,7 @@ function createRouter() {
           fs.mkdirSync(tmpDir + nav)
 
         if (isChange(tmpDir + nav + "/import." + fileExt, item)) {
-          Bun.write(tmpDir + nav + '/import.' + fileExt, item, { flag: 'w' }, function (err) {
+          fs.writeFileSync(tmpDir + nav + '/import.' + fileExt, item, { flag: 'w' }, function (err) {
             if (err) {
               return console.log(err);
             }
@@ -736,7 +736,7 @@ function createRouter() {
 
   const x = staticImport.join('')
   if (isChange(tmpDir + 'index.js', x))
-    Bun.write(tmpDir + 'index.js', x, { flag: 'w' }, function (err) {
+    fs.writeFileSync(tmpDir + 'index.js', x, { flag: 'w' }, function (err) {
       if (err) {
         return console.log(err);
       }
@@ -751,7 +751,7 @@ function createRouter() {
     '}' + "\n" +
     'module.exports = properties;';
   if (isChange(tmpDir + "properties.js", Props)) {
-    Bun.write(tmpDir + "properties.js", Props, { flag: 'w' }, function (err) {
+    fs.writeFileSync(tmpDir + "properties.js", Props, { flag: 'w' }, function (err) {
       if (err) {
         return console.log(err);
       }
@@ -767,7 +767,7 @@ function createRouter() {
     '}' + "\n" +
     'module.exports = routers;';
   if (isChange(tmpDir + "routers.js", Text)) {
-    Bun.write(tmpDir + "routers.js", Text, { flag: 'w' }, function (err) {
+    fs.writeFileSync(tmpDir + "routers.js", Text, { flag: 'w' }, function (err) {
       if (err) {
         return console.log(err);
       }
@@ -775,7 +775,7 @@ function createRouter() {
   }
   /* CREATE NAVIGATION LIST */
   Text = "export default [\"" + Navigations.join('", "') + "\"]";
-  Bun.write(tmpDir + "navigations.js", Text, { flag: 'w' }, function (err) {
+  fs.writeFileSync(tmpDir + "navigations.js", Text, { flag: 'w' }, function (err) {
     if (err) {
       return console.log(err);
     }
@@ -796,7 +796,7 @@ function createRouter() {
 
   let N = Nav5(importer.join("\n"), screens.join("\n"))
   if (isChange(tmpDir + 'navs.tsx', N))
-    Bun.write(tmpDir + "navs.tsx", N, { flag: 'w' }, function (err) {
+    fs.writeFileSync(tmpDir + "navs.tsx", N, { flag: 'w' }, function (err) {
       if (err) {
         return console.log(err);
       }

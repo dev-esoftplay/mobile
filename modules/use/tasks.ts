@@ -18,9 +18,9 @@ export default function m<T>(): (task: (item: T) => Promise<void>, onDone?: () =
               const item = data[i];
               await task(item);
               if (i == (data.length - 1)) {
+                onProcess = false;
                 if (onDone)
                   onDone()
-                onProcess = false;
               }
 
             }

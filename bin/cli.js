@@ -23,7 +23,7 @@ var args = process.argv.slice(2);
 
 // console.log(modpath, "sdofsjdofjsd")
 function execution() {
-	const cmd = `watchman watch-del ./ && watchman watch ./ && watchman -j <<< '["trigger","./",{"name":"esp","expression":["allof",["not",["dirname","node_modules"]],["not",["name","index.d.ts"]]],"command":["node","./node_modules/esoftplay/bin/router.js"],"append_files":true}]' && bun ./node_modules/esoftplay/bin/run.js && bun ./node_modules/esoftplay/bin/router.js`
+	const cmd = `watchman watch-del ./ && watchman watch ./ && watchman -j <<< '["trigger","./",{"name":"esp","expression":["allof",["not",["dirname","node_modules"]],["not",["name","index.d.ts"]]],"command":["node","./node_modules/esoftplay/bin/router.js"],"append_files":true}]' && node ./node_modules/esoftplay/bin/run.js && node ./node_modules/esoftplay/bin/router.js`
 	command(cmd)
 }
 
