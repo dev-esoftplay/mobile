@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-type useSafeStateReturn<T> = [T | undefined, (value: T | undefined) => void, () => T | undefined];
+type useSafeStateReturn<T> = [T, (value: T) => void, () => T];
 
 export default function useSafeState<T = any>(defaultValue?: T): useSafeStateReturn<T> {
   const isMountedRef = useRef<boolean>(true);

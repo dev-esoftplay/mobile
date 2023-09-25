@@ -34,11 +34,11 @@ if (args.length == 0) {
 switch (args[0]) {
 	case "a":
 	case "analyze":
-		command('bun ./node_modules/esoftplay/bin/analyze.js')
+		command('node ./node_modules/esoftplay/bin/analyze.js')
 		break
 	case "ac":
 	case "analyze clear":
-		command('bun ./node_modules/esoftplay/bin/analyze.js clear')
+		command('node ./node_modules/esoftplay/bin/analyze.js clear')
 		break;
 	case "help":
 		help()
@@ -259,7 +259,7 @@ function configUpdate(state) {
 }
 
 function update() {
-	command("bun add esoftplay")
+	command("yarn add esoftplay")
 	if (fs.existsSync(packjson)) {
 		let pack = readToJSON(packjson)
 		let esplibs = Object.keys(pack.dependencies).filter((key) => key.includes("esoftplay"))
@@ -267,13 +267,13 @@ function update() {
 		esplibs.forEach((key) => {
 			if (key != 'esoftplay') {
 				if (args[1] == 'all')
-					command('bun add ' + key)
-				command("cd node_modules/" + key + " && bun mover.js")
+					command('yarn add ' + key)
+				command("cd node_modules/" + key + " && node mover.js")
 				consoleSucces(key + " succesfully implemented!")
 			}
 		})
 	}
-	command("bun ./node_modules/esoftplay/bin/locale.js")
+	command("node ./node_modules/esoftplay/bin/locale.js")
 	consoleSucces("esoftplay framework sudah diupdate!")
 }
 
@@ -289,9 +289,9 @@ function createMaster(module_name) {
 			"version": "0.0.1",
 			"description": "`+ module_name + ` module on esoftplay framework",
 			"main": "index.js",
-			"bun-create": {
+			"scripts": {
 				"test": "echo \\"Error: no test specified\\" && exit 1",
-				"postinstall": "bun ../esoftplay/bin/mover.js esoftplay-`+ module_name + `"
+				"postinstall": "node ../esoftplay/bin/mover.js esoftplay-`+ module_name + `"
 			},
 			"keywords": [
 				"espftplay-`+ module_name + `",
@@ -897,7 +897,7 @@ function build() {
 					// command("curl -d \"text=" + message + "&disable_web_page_preview=true&chat_id=" + tmId + "\" 'https://api.telegram.org/bot112133589:AAFFyztZh79OsHRCxJ9rGCGpnxkcjWBP8kU/sendMessage'")
 				}
 				if (fs.existsSync('./build/post.js'))
-					command('bun ./build/post.js')
+					command('node ./build/post.js')
 				configAvailable(false)
 				devClientPos(appjson)
 				buildPrepare(false)
@@ -1032,12 +1032,6 @@ function help() {
 		"\n - vn|version-new [visible]    : untuk increment version dengan tampilan custom. misal 2.0beta",
 		"\n - p|publish [notes]           : untuk mempublish dan menambahkan id",
 		"\n - bcl|backup-config-live      : untuk backup config live",
-		"\n - bcd|backup-config-debug     : untuk backup config debug",
-		// "\n - build debug                 : untuk build app .ipa .apk .aab status DEBUG",
-		// "\n - build debug offline         : untuk build app .ipa .apk .aab status DEBUG mode OFFLINE",
-		// "\n - build debug online          : untuk build app .ipa .apk .aab status DEBUG mode ONLINE",
-		// "\n - build live                  : untuk build app .ipa .apk .aab status LIVE",
-		// "\n - build live offline          : untuk build app .ipa .apk .aab status LIVE mode OFFLINE",
-		// "\n - build live online           : untuk build app .ipa .apk .aab status LIVE mode ONLINE",
+		"\n - bcd|backup-config-debug     : untuk backup config debug"
 	)
 }

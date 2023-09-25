@@ -16,11 +16,6 @@ const appts = DIR + "App.tsx"
 const pathJSTimer = DIR + "node_modules/react-native/Libraries/Core/Timers/JSTimers.js"
 const lowercasePrompt = 'if (/^[a-z]/.test(component.name)) {'
 const pathLowercasePrompt = DIR + 'node_modules/@react-navigation/core/src/useNavigationBuilder.tsx'
-/**
- * function ini untuk mengambil name autocomplete dari @expo/vector-icons untuk library LibIcon
- * function akan di injectkan di folder @expo/vector-icons/build dengan nama file esoftplay_icons.ts
- * function ini hanya akan dieksekusi sekali saat install esoftplay framework
-*/
 
 if (fs.existsSync(packjson)) {
 	let txt = fs.readFileSync(packjson, 'utf8');
@@ -346,21 +341,13 @@ export default UserIndex`;
 				fs.mkdirSync(DIR + 'modules')
 			let cmd = "cd ../../ "
 			if (installDevLibs.length > 0)
-				cmd += "&& bun add " + installDevLibs.join(" ") + " --dev "
+				cmd += "&& yarn add " + installDevLibs.join(" ") + " --dev "
 			if (installExpoLibs.length > 0)
 				cmd += "&& expo install " + installExpoLibs.join(" ")
 			execSync(cmd + "|| true")
-			execSync("cd ../../ && bun ./node_modules/esoftplay/bin/router.js || true")
-			execSync("cd ../../ && bun ./node_modules/esoftplay/bin/locale.js || true")
-			execSync("cd ../../ && bun ./node_modules/esoftplay/bin/run.js || true")
+			execSync("cd ../../ && node ./node_modules/esoftplay/bin/router.js || true")
+			execSync("cd ../../ && node ./node_modules/esoftplay/bin/locale.js || true")
 			console.log('App.js has been replace to App.tsx');
-			// /* bugfix AsyncStorage @firebase, remove this section if firebase has update the AsyncStorage */
-			// if (fs.existsSync('../@firebase/app/dist/index.rn.cjs.js')) {
-			// 	let firebaseText = fs.readFileSync('../@firebase/app/dist/index.rn.cjs.js', 'utf8')
-			// 	firebaseText = firebaseText.replace("var AsyncStorage = require('react-native').AsyncStorage;", "var AsyncStorage = require('@react-native-async-storage/async-storage').default;")
-			// 	fs.writeFileSync('../@firebase/app/dist/index.rn.cjs.js', firebaseText)
-			// }
-			// /* end AsyncStorage @firebase section */
 			if (appjson)
 
 				if (fs.existsSync('../@expo/vector-icons')) {

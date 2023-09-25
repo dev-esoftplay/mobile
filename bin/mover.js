@@ -5,7 +5,7 @@ const assetsFonts = "assets/fonts"
 let args = process.argv.slice(2);
 
 if (args.length == 0) {
-  console.log("Argumen tidak boleh kosong");
+  console.log("Argument tidak boleh kosong");
   return
 }
 
@@ -75,7 +75,7 @@ if (fs.existsSync("../" + mainModule + "/id.json")) {
   }
   fs.writeFileSync("../../assets/locale/id.json", JSON.stringify(moduleLang, undefined, 2))
   /* sort id.JSON */
-  shell("cd ../../ && bun ./node_modules/esoftplay/bin/locale.js")
+  shell("cd ../../ && node ./node_modules/esoftplay/bin/locale.js")
 }
 
 /* inject libs */
@@ -104,5 +104,5 @@ if (fs.existsSync("../" + mainModule + "/libs.json")) {
 
 /* execute mover on master */
 if (fs.existsSync("../" + mainModule + "/mover.js")) {
-  shell("bun ../" + mainModule + "/mover.js", { stdio: 'inherit' })
+  shell("node ../" + mainModule + "/mover.js", { stdio: 'inherit' })
 }

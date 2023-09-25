@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// @ts-nocheck
+//@ts-check
 /* EXECUTED ON `ESP START` TO BUILD FILE CACHES */
 const fs = require('fs');
 var checks = ['./node_modules/esoftplay/modules/', './modules/', './templates/'];
@@ -8,35 +8,7 @@ var tmpDir = "./node_modules/esoftplay/cache/";
 var typesDir = "./"
 var replacer = new RegExp(/(?:\-|\.(?:ios|android))?\.(?:jsx|js|ts|tsx)$/);
 var Text = "";
-const rngh = "./node_modules/react-native-gesture-handler/react-native-gesture-handler.d.ts"
 
-// const curPackjson = require('../package.json')
-// const mainPackjson = require('../../../package.json')
-
-// function getNestedObjectValue(obj, keys) {
-//   if (keys.length > 0) {
-//     var key = keys.shift();
-//     if (key in obj) {
-//       return getNestedObjectValue(obj[key], keys);
-//     } else {
-//       return null;
-//     }
-//   } else {
-//     return obj;
-//   }
-// }
-
-
-// const prjVersion = getNestedObjectValue(mainPackjson, ['dependencies', 'esoftplay'])
-// if (prjVersion && prjVersion.includes(curPackjson.version)) {
-//   try {
-//     console.log("\x1b[31m", "VERSI esoftplay tidak SESUAI " + mainPackjson.dependencies.esoftplay + " != " + curPackjson.version + " ✘", "\x1b[0m")
-//   } catch (error) { }
-// }
-
-if (fs.existsSync(rngh)) {
-  fs.unlink(rngh, (err) => { })
-}
 /* CREATE DIRECTORY CACHE && types IF NOT EXISTS */
 if (!fs.existsSync(tmpDir)) {
   fs.mkdirSync(tmpDir);
@@ -48,20 +20,13 @@ if (!fs.existsSync(typesDir)) {
 /* FETCH ALL SCRIPTS */
 var Modules = {}; // Object semua module/task yang bisa dipanggil
 var HookModules = []
-var Reducers = {}; // Object semua reducer yang akan dikumpulkan
-var HookReducers = []
 var UseLibs = []
 var SuffixHooksProperty = ('Property').trim()
-var Persistor = {};
-var Extender = {};
 var NavsExclude = {};
 var NavsOrientation = {};
-var grabClass = null;
-var delReducer = true;
 var countLoop = 0; // jumlah file yang telah dihitung
 var countRead = 0; // jumlah file yang telah di baca
-var tmpTask = {}; // template ModuleTaks yang akan dimasukkan ke index.d.ts
-var tmpExp = ["LibCrypt"]; // nama2 class yang tidak perlu dibuat
+
 var Nav5 = (importer, navs) => {
   return (`
 // @ts-nocheck
@@ -114,249 +79,39 @@ checks.forEach(modules => {
             clsName = clsName.toLowerCase().replace(/\b[a-z]/g, function (a) { return a.toUpperCase(); });
             clsName = clsName.replace(/\s/g, "");
             Modules[module][name] = path;
-            if (typeof tmpTask[clsName] == "undefined") {
-              tmpTask[clsName] = {
-                "interface": [],
-                "type": [],
-                "var": {},
-                "class": "",
-                "function": {},
-                "hooks": "",
-                "namespaces": ""
-              };
-            }
-            countLoop++;
+            countLoop++
             fs.readFile(modules + module + "/" + file, "utf8", function (err, data) {
               if (err) {
                 return console.log(err)
               } else {
-                var isIndexed = (tmpExp.indexOf(clsName) > -1) ? false : true;
-                var isHooks = false
-                var isUseLibs = false
-                /* REGEX HOOKS */
                 if ((/\n?(?:(?:\/\/\s{0,})|(?:\/\*\s{0,}))noPage/).exec(data)) {
                   NavsExclude[module + '/' + file.slice(0, file.lastIndexOf('.'))] = true
                 } else {
                   NavsExclude[module + '/' + file.slice(0, file.lastIndexOf('.'))] = false
                 }
-                if (m = (/\n?(?:(?:\/\/\s{0,})|(?:\/\*\s{0,}))orientation:([a-zAZ_]+)/).exec(data)) {
+                const m = (/\n?(?:(?:\/\/\s{0,})|(?:\/\*\s{0,}))orientation:([a-zAZ_]+)/).exec(data)
+                if (m) {
                   NavsOrientation[module + '/' + file.slice(0, file.lastIndexOf('.'))] = m?.[1]
                 }
-
-                if (isIndexed) {
-                  if (n = (/\n?(?:(?:\/\/\s{0,})|(?:\/\*\s{0,}))withObject/).exec(data)) {
-                    isUseLibs = true
-                    tmpTask[clsName]['class'] = ""
-                    tmpTask[clsName]['function'] = {}
-                    UseLibs.push(module + "/" + name) /* get export default */
-                    if (m = (/\n?export\sdefault(( )){/).exec(data)) {
-                      tmpTask[clsName]['object'] = 'function _' + m[1].replace(m[2], clsName).trim() + "(): void;"
-                      tmpTask[clsName]['namespaces'] = clsName.trim() + ":"
-                    }
-                    let parsed = (/(export default {.*\n})/gs).exec(data)
-                    /* get exported funtion */
-                    if (parsed && parsed.length > 0)
-                      if (f = parsed[0].match(/\n\s{2}(([A-Za-z0-9]+).*){/g)) {
-                        for (let i = 0; i < f.length; i++) {
-                          const _f = (/\n\s{2}(([A-Za-z0-9]+).*){/g).exec(f[i]);
-                          tmpTask[clsName]['function'][_f[2]] = _f[1] + ';'
-                        }
-                      }
-                  }
+                if ((/\n?(?:(?:\/\/\s{0,})|(?:\/\*\s{0,}))withObject/).exec(data)) {
+                  UseLibs.push(module + "/" + name)
                 }
-
-                if (isIndexed) {
-                  if (n = (/\n?(?:(?:\/\/\s{0,})|(?:\/\*\s{0,}))useLibs/).exec(data)) {
-                    isUseLibs = true
-                    tmpTask[clsName]['class'] = ""
-                    tmpTask[clsName]['function'] = {}
-                    UseLibs.push(module + "/" + name) /* get export default */
-                    if (m = (/\n(?:export\sdefault|\s{2}return)\sfunction\s(([a-zA-Z0-9]+).*)\{\n/).exec(data)) {
-                      tmpTask[clsName]['uselibs'] = ' function ' + m[1].replace(m[2], clsName).trim() + ";"
-                      tmpTask[clsName]['namespaces'] = " namespace " + clsName.trim() + SuffixHooksProperty
-                    }
-                    /* get exported funtion */
-                    if (f = data.match(/\nexport\s(?!default)(function\s([a-zA-Z0-9]+).*)\s\{\n/g)) {
-                      for (let i = 0; i < f.length; i++) {
-                        const _f = (/\nexport\s(?!default)(function\s([a-zA-Z0-9]+).*)\s\{\n/g).exec(f[i]);
-                        tmpTask[clsName]['function'][_f[2]] = _f[1] + ';'
-                      }
-                    }
-                    if (m = data.match(/\n{0,}\s{0,}export\s+(type\s+[a-zA-Z0-9_]+\s\=.*\n)/g)) {
-                      for (let i = 0; i < m.length; i++) {
-                        tmpTask[clsName]["type"].push(m[i].replace('export ', '').trim());
-                      }
-                    }
-                    /* get exported const / var / let */
-                    if (f = data.match(/\nexport\s(?!default)(?:((const|let|var)\s([a-zA-Z0-9]+):\s{0,}[a-zA-Z]+))/g)) {
-                      for (let i = 0; i < f.length; i++) {
-                        const _f = (/\nexport\s(?!default)(?:((const|let|var)\s([a-zA-Z0-9]+):\s{0,}[a-zA-Z]+))/g).exec(f[i]);
-                        tmpTask[clsName]['var'][_f[3]] = _f[1] + ';'
-                      }
-                    }
-
-                  }
+                if ((/\n?(?:(?:\/\/\s{0,})|(?:\/\*\s{0,}))useLibs/).exec(data)) {
+                  UseLibs.push(module + "/" + name)
                 }
-
-                if (isIndexed) {
-                  if (n = (/\n?(?:(?:\/\/\s{0,})|(?:\/\*\s{0,}))withHooks/).exec(data)) {
-                    // console.log('masmun');
-                    isHooks = true
-                    tmpTask[clsName]['class'] = ""
-                    tmpTask[clsName]['function'] = {}
-                    HookModules.push(module + "/" + name) /* get export default */
-                    if (m = (/\n(?:export\sdefault|\s{2}return)\sfunction\s(([a-zA-Z0-9]+).*)\{\n/).exec(data)) {
-                      tmpTask[clsName]['hooks'] = ' function ' + m[1].replace(m[2], clsName).trim() + ";"
-                      tmpTask[clsName]['namespaces'] = " namespace " + clsName.trim() + SuffixHooksProperty
-                    }
-                    /* get exported funtion */
-                    if (f = data.match(/\nexport\s(?!default)(function\s([a-zA-Z0-9]+).*)\s\{\n/g)) {
-                      for (let i = 0; i < f.length; i++) {
-                        const _f = (/\nexport\s(?!default)(function\s([a-zA-Z0-9]+).*)\s\{\n/g).exec(f[i]);
-                        tmpTask[clsName]['function'][_f[2]] = _f[1] + ';'
-                      }
-                    }
-                    if (m = data.match(/\n{0,}\s{0,}export\s+(type\s+[a-zA-Z0-9_]+\s\=.*\n)/g)) {
-                      for (let i = 0; i < m.length; i++) {
-                        tmpTask[clsName]["type"].push(m[i].replace('export ', '').trim());
-                      }
-                    }
-                    /* get exported const / var / let */
-                    if (f = data.match(/\nexport\s(?!default)(?:((const|let|var)\s([a-zA-Z0-9]+):\s{0,}[a-zA-Z]+))/g)) {
-                      for (let i = 0; i < f.length; i++) {
-                        const _f = (/\nexport\s(?!default)(?:((const|let|var)\s([a-zA-Z0-9]+):\s{0,}[a-zA-Z]+))/g).exec(f[i]);
-                        tmpTask[clsName]['var'][_f[3]] = _f[1] + ';'
-                      }
-                    }
-
-                  }
-                }
-                /* REGEX INTERFACE */
-                if (isIndexed) {
-                  /* check jika class tersebut nge replace bukan nge extends maka hapus semua interface bawaan dari supernya */
-                  if (tmpTask[clsName].interface.length > 0) {
-                    if (!data.includes('esoftplay/modules/')) {
-                      tmpTask[clsName]["interface"] = [];
-                    }
-                  }
-                  if (m = data.match(/\n\s{0,}export\s+(interface\s+[a-zA-Z0-9_]+.*\{[^\}]+\})/g)) {
-                    for (var i = 0; i < m.length; i++) {
-                      tmpTask[clsName]["interface"].push(m[i].replace('export ', '').trim());
-                    }
-                  }
-                }
-
-                /* REGEX TYPE */
-                if (isIndexed) {
-                  if (tmpTask[clsName].interface.length > 0) {
-                    if (!data.includes('esoftplay/modules/')) {
-                      tmpTask[clsName]["type"] = [];
-                    }
-                  }
-                  if (m = data.match(/\n{0,}\s{0,}export\s+(type\s+[a-zA-Z0-9_]+\s\=.*\n)/g)) {
-                    for (let i = 0; i < m.length; i++) {
-                      tmpTask[clsName]["type"].push(m[i].replace('export ', '').trim());
-                    }
-                  }
-                }
-
-                /* REGEX CLASS NAME */
-                if (!isHooks && !isUseLibs)
-                  if (m = /\n\s{0,}(?:export\s+default\s+|return\s+)?(class\s+([^\s]+)[^\{]+)/.exec(data)) {
-                    if (tmpTask[clsName]["class"] == "") {
-                      tmpTask[clsName]["class"] = m[1].replace(m[2], clsName).trim();
-
-                      /* tambahkan fungsi Crypt */
-                      if (clsName === 'LibCrypt') {
-                        tmpTask[clsName]["function"]['encode'] = 'encode(text: string): string;';
-                        tmpTask[clsName]["function"]['decode'] = 'decode(text: string): string;';
-                      }
-                    }
-                  }
-
-                if (isIndexed) {
-                  var r = /\n{0,}(\s+)(static\s[a-zA-Z0-9_]+:\s{0,}.*)=.*;{0,}\n/g
-                  if (s = r.exec(data)) {
-                    if (m = data.match(r)) {
-                      /* check jika class tersebut nge replace bukan nge extends maka hapus semua static var bawaan dari supernya */
-                      if (Object.keys(tmpTask[clsName].var).length > 0) {
-                        if (!data.includes('esoftplay/modules/') && clsName != 'LibStyle') {
-                          tmpTask[clsName]["var"] = {};
-                        }
-                      }
-                      for (var i = 0; i < m.length; i++) {
-                        if (S = m[i].match(/\n{0,}(\s+)(static\s[a-zA-Z0-9_]+:\s{0,}.*)=.*;{0,}\n/)) {
-                          if (S[1] === s[1].replace(new RegExp('\n', 'g'), '')) {
-                            var a = S[2].trim() + ";"
-                            tmpTask[clsName]["var"][S[2]] = a;
-                          }
-                        }
-                      }
-                    }
-                  }
-                  /* REGEX All Functions */
-                  if (!isHooks && !isUseLibs) {
-                    var r = /\n(\s+)((?:(?:static|public|private|protected|public async|private async|protected async|async)\s+)?[a-zA-Z0-9_]{3,}\s{0,}(?:<S>|)(?:=\s{0,})?\([^{\n]+)/g; // 1=spaces 2=FunctionObject
-                    if (s = r.exec(data)) {
-                      if (m = data.match(r)) {
-                        /* check jika class tersebut nge replace bukan nge extends maka hapus semua fungsi bawaan dari supernya */
-                        if (Object.keys(tmpTask[clsName].function).length > 0) {
-                          if (!data.includes('esoftplay/modules/') && clsName != 'LibStyle') {
-                            tmpTask[clsName]["function"] = {};
-                          }
-                        }
-                        for (var i = 0; i < m.length; i++) {
-                          if (S = m[i].match(/\n([^\na-zA-Z0-9_]+)((?:(?:static|public|private|protected|public async|private async|protected async|async)\s+)?[a-zA-Z0-9_]{3,})/)) {
-                            if (S[1] === s[1].replace(new RegExp('\n', 'g'), '')) {
-                              var a = m[i].trim().replace('async ', '') + ";"
-                              tmpTask[clsName]["function"][S[2]] = a;
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-
-                var key = module + "_" + name;
-                if ((new RegExp(/\n\s+static\s+reducer\s{0,}[\=\(]/g)).test(data)) { // is contains 'reducer'
-                  Reducers[key] = path;
-                  if ((new RegExp(/\n\s+static\s+persist\s{0,}=\s{0,}true/g)).test(data)) {
-                    Persistor[key] = path
-                  }
-                } else if ((new RegExp(/\nexport\sfunction\s+reducer\s{0,}[\=\(]/g)).test(data)) {
-                  Reducers[key] = path;
-                  HookReducers.push(key)
-                  if ((new RegExp(/\nconst\s+persist\s{0,}=\s{0,}true/g)).test(data)) {
-                    Persistor[key] = path
-                  }
-                } else if (!isHooks && !isUseLibs) { // not contained 'reducer'
-                  grabClass = data.match(new RegExp(/\n\s{0,}export\s+default\s+connect\\([^\\)]+\\)\\(\s{0,}(.*?)\s{0,}\\)/g));
-                  delReducer = true;
-                  if (grabClass) { // find MainClass
-                    Extender = data.match(new RegExp(/\n\s{0,}class\s+" + grabClass[1] + "\s+extends\s+([^\s]+)/g));
-                    if (Extender) { // find ParentClass
-                      if (Extender[1] != "Component") { // ParentClass is not Component
-                        if (typeof Reducers[key] != "undefined") { // Change Value only if already exists
-                          Reducers[key] = path
-                          delReducer = false;
-                        }
-                      }
-                    }
-                  }
-                  if (delReducer && typeof Reducers[key] != "undefined") {
-                    delete Reducers[key];
-                  }
+                if ((/\n?(?:(?:\/\/\s{0,})|(?:\/\*\s{0,}))withHooks/).exec(data)) {
+                  HookModules.push(module + "/" + name)
                 }
               }
               countRead++;
+              createReducer()
             })
           }
-        })
+        });
       }
-    });
+    })
   }
-});
+})
 
 /* CREATE ASSETS LIST */
 var assets = [];
@@ -398,7 +153,7 @@ Text = 'function assets(File) {' + "\n\t" +
   '}' + "\n" +
   'module.exports = assets;';
 if (isChange(tmpDir + "assets.js", Text))
-  fs.writeFileSync(tmpDir + "assets.js", Text, { flag: 'w' }, function (err) {
+  fs.writeFile(tmpDir + "assets.js", Text, { flag: 'w' }, function (err) {
     if (err) {
       return console.log(err);
     }
@@ -412,14 +167,7 @@ import { Component } from 'react';
 import { AntDesignTypes, EntypoTypes, EvilIconsTypes, FeatherTypes, FontAwesomeTypes, FontistoTypes, FoundationTypes, IoniconsTypes, MaterialCommunityIconsTypes, MaterialIconsTypes, OcticonsTypes, SimpleLineIconsTypes, ZocialTypes, } from '@expo/vector-icons/build/esoftplay_icons'
 
 declare module "esoftplay" {
-  var _global: any;
-  function useGlobalSubscriber<S>(initialState?: S): useGlobalSubscriberReturn<S>;
-  function useLazyState<S>(initialState?: S): [S, (newValue: S) => () => void, () => S];
-  function useGlobalState<S>(initialState?: S, option?: useGlobalOption): useGlobalReturn<S>;
-  function usePersistState<S>(key: string, initialState?: S | (() => S)): [S, (a: S | ((b: S )=> S)) => S | undefined, (a?: (x: S) => void) => void, () => void];
-  function useSafeState<S>(initialState?: S | (() => S)): [S, (a: S | ((b: S )=> S)) => S | undefined, ()=>S];
   function applyStyle<T>(style: T): T;
-  function usePersistState<S>(key: string, initialState?: S | (() => S)): [S, (a: S) => void, (a?: (x: S)=> void) => void, () => void];
   type ConditionApi = {
     if: (condition: boolean, value: any) => ConditionApi;
     elseif: (condition: boolean, value: any) => ConditionApi;
@@ -463,173 +211,12 @@ declare module "esoftplay" {
       backgroundCyan: string,
       backgroundWhite: string,
     }
-  }
-  
-  interface useGlobalReturn<T> {
-    useState: () => [T, (newState: T | ((newState: T) => T)) => void, () => T],
-    get: (param?: string, ...params: string[]) => T,
-    set: (x: T | ((old: T) => T)) => void,
-    reset: () => void,
-    connect: (props: useGlobalConnect<T>) => any,
-    useSelector: (selector: (state: T) => any) => any;
-  }
-  
-  interface useGlobalOption {
-    persistKey?: string,
-    inFile?: boolean,
-    listener?: (data: any) => void,
-    loadOnInit?: boolean,
-    isUserData?: boolean
-  }
-  
-  interface useGlobalSubscriberReturn {
-    getValue: () => any,
-    reset: () => void,
-    useSubscribe: Function,
-    trigger: (newValue?: any) => void
-  }
-  
-  interface useGlobalConnect<T> {
-    render: (props: T) => any,
   }`;
-  for (clsName in tmpTask) {
-    let ItemText = "\nimport { useGlobalSubscriberReturn } from 'esoftplay';\nimport { useGlobalReturn } from 'esoftplay';\nimport { LibNavigationRoutes } from 'esoftplay';\n"
-    if (clsName == "LibIcon") {
-      ItemText += "import { EvilIconsTypes, AntDesignTypes, EvilIconsTypes, FeatherTypes, FontAwesomeTypes, FontistoTypes, FoundationTypes, MaterialIconsTypes, EntypoTypes, OcticonsTypes, ZocialTypes, SimpleLineIconsTypes, IoniconsTypes, MaterialCommunityIconsTypes } from '@expo/vector-icons/build/esoftplay_icons';\n"
-    }
-    if (clsName === 'LibCrypt') {
-      tmpTask[clsName]["class"] = "class LibCrypt"
-      tmpTask[clsName]["function"]['encode'] = 'encode(text: string): string;';
-      tmpTask[clsName]["function"]['decode'] = 'decode(text: string): string;';
-    }
-    if (tmpTask[clsName]["class"]) {
-
-      if (clsName !== "LibComponent")
-        ItemText += "import { LibComponent } from 'esoftplay/cache/lib/component/import';\nimport { LibNavigationRoutes, useGlobalReturn } from 'esoftplay';\n"
-      else if (clsName === "LibComponent") {
-        ItemText += "import { Component } from 'react';\n"
-      }
-
-      // ItemText += "\n";
-      for (var i = 0; i < tmpTask[clsName]["type"].length; i++) {
-        ItemText += "\n  " + tmpTask[clsName]["type"][i].replace(/\n/g, "\n  ");
-      }
-      for (var i = 0; i < tmpTask[clsName]["interface"].length; i++) {
-        ItemText += "\n  " + tmpTask[clsName]["interface"][i].replace(/\n/g, "\n  ");
-      }
-      ItemText += "\n  export " + tmpTask[clsName]["class"] + " {";
-      var isFilled = false;
-      for (fun in tmpTask[clsName]["var"]) {
-        ItemText += "\n     " + tmpTask[clsName]["var"][fun];
-      }
-      for (fun in tmpTask[clsName]["function"]) {
-        ItemText += "\n     " + tmpTask[clsName]["function"][fun];
-        isFilled = true;
-      }
-      if (isFilled) {
-        ItemText += "\n  ";
-      }
-      // ItemText += "}\n";
-      ItemText += "}";
-    } else if (tmpTask[clsName]["hooks"]) {
-      for (var i = 0; i < tmpTask[clsName]["interface"].length; i++) {
-        ItemText += "\n  export " + tmpTask[clsName]["interface"][i].replace(/\n/g, "\n  ");
-      }
-      ItemText += "\n export " + tmpTask[clsName]["hooks"];
-      for (var i = 0; i < tmpTask[clsName]["type"].length; i++) {
-        ItemText += "\n    export " + tmpTask[clsName]["type"][i].replace(/\n/g, "\n  ");
-      }
-      var isFilled = false;
-      ItemText += "\n export " + tmpTask[clsName]["namespaces"] + " {";
-      for (fun in tmpTask[clsName]["var"]) {
-        ItemText += "\n    export " + tmpTask[clsName]["var"][fun];
-      }
-      for (fun in tmpTask[clsName]["function"]) {
-        ItemText += "\n    export " + tmpTask[clsName]["function"][fun];
-        isFilled = true;
-      }
-      if (isFilled) {
-        ItemText += "\n  ";
-      }
-      ItemText += "}";
-    } else if (tmpTask[clsName]["uselibs"]) {
-      for (var i = 0; i < tmpTask[clsName]["interface"].length; i++) {
-        ItemText += "\n  export " + tmpTask[clsName]["interface"][i].replace(/\n/g, "\n  ");
-      }
-      ItemText += "\n export " + tmpTask[clsName]["uselibs"];
-      for (var i = 0; i < tmpTask[clsName]["type"].length; i++) {
-        ItemText += "\n  export " + tmpTask[clsName]["type"][i].replace(/\n/g, "\n  ");
-      }
-      var isFilled = false;
-      ItemText += "\n export " + tmpTask[clsName]["namespaces"] + " {";
-      for (fun in tmpTask[clsName]["var"]) {
-        ItemText += "\n    export " + tmpTask[clsName]["var"][fun];
-      }
-      for (fun in tmpTask[clsName]["function"]) {
-        ItemText += "\n    export " + tmpTask[clsName]["function"][fun];
-        isFilled = true;
-      }
-      if (isFilled) {
-        ItemText += "\n  ";
-      }
-      ItemText += "}";
-    } else if (tmpTask[clsName]["object"]) {
-      for (var i = 0; i < tmpTask[clsName]["interface"].length; i++) {
-        ItemText += "\n  export " + tmpTask[clsName]["interface"][i].replace(/\n/g, "\n  ");
-      }
-      ItemText += "\n export " + tmpTask[clsName]["object"];
-      for (var i = 0; i < tmpTask[clsName]["type"].length; i++) {
-        ItemText += "\n  export " + tmpTask[clsName]["type"][i].replace(/\n/g, "\n  ");
-      }
-      var isFilled = false;
-      ItemText += "\n declare const " + tmpTask[clsName]["namespaces"] + " {";
-      for (fun in tmpTask[clsName]["var"]) {
-        ItemText += "\n    export " + tmpTask[clsName]["var"][fun];
-      }
-      for (fun in tmpTask[clsName]["function"]) {
-        ItemText += "\n   " + tmpTask[clsName]["function"][fun];
-        isFilled = true;
-      }
-      if (isFilled) {
-        ItemText += "\n  ";
-      }
-      ItemText += "}";
-    }
-    const [module, task] = clsName.split(/(?=[A-Z])/)
-    const nav = module?.toLowerCase() + '/' + task?.toLowerCase()
-
-    if (!nav.includes('.')) {
-
-      if (module && !fs.existsSync(tmpDir + module?.toLowerCase()))
-        fs.mkdirSync(tmpDir + module.toLowerCase());
-
-      if (!fs.existsSync(tmpDir + nav))
-        fs.mkdirSync(tmpDir + nav)
-
-      PreText += "import '" + tmpDir + nav + "/import.d';\n"
-      if (isChange(tmpDir + nav + '/import.d.ts', ItemText)) {
-        fs.writeFileSync(tmpDir + nav + '/import.d.ts', ItemText, { flag: 'w' }, function (err) {
-          if (err) {
-            return console.log(err);
-          }
-        });
-      }
-    }
-  }
   Text += "\n\ttype LibNavigationRoutes = \"" + Navigations.join("\" |\n\t\t\t \"") + "\"\n"
-  Text += "\n\ttype AllRoutes = \"" + AllRoutes.join("\" |\n\t\t\t \"") + "\"\n"
-  Text += "\n\ttype ModType<T> =" + AllRoutes.map(v => {
-    const Words = v.split("/")
-    return `\t\tT extends "${v}" ? typeof ${ucword(Words[0]) + ucword(Words[1])} :`
-  }).join("\n") + "\nnever;\n"
-  Text += "\n\ttype ModPropType<T> =" + AllRoutes.map(v => {
-    const Words = v.split("/")
-    return `\t\tT extends "${v}" ? typeof ${ucword(Words[0]) + ucword(Words[1]) + "Property"} :`
-  }).join("\n") + "\nnever;\n"
   Text += "}\n"
   Text = PreText + Text
   if (isChange(typesDir + "index.d.ts", Text)) {
-    fs.writeFileSync(typesDir + "index.d.ts", Text, { flag: 'w' }, function (err) {
+    fs.writeFile(typesDir + "index.d.ts", Text, { flag: 'w' }, function (err) {
       if (err) {
         return console.log(err);
       }
@@ -652,14 +239,8 @@ function createReducer() {
   if (countRead >= countLoop) {
     createRouter()
     createIndex();
-  } else {
-    setTimeout(() => {
-      createReducer();
-    }, 100);
   }
 }
-createReducer()
-
 /* === */
 function ucword(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -682,7 +263,6 @@ function createRouter() {
   staticImport.push("export { default as useLazyState } from '../../../node_modules/esoftplay/lazy';\n")
   staticImport.push("export { default as esp } from '../../../node_modules/esoftplay/esp';\n")
   staticImport.push("export { default as _global } from '../../../node_modules/esoftplay/_global';\n")
-  staticImport.push("import { stable } from 'usestable';\n")
 
   for (const module in Modules) {
     for (const task in Modules[module]) {
@@ -691,13 +271,24 @@ function createRouter() {
         Navigations.push(nav);
       }
       AllRoutes.push(nav)
-      let fileExt = 'js'
       Task += "\t\t" + 'case "' + nav + '":' + "\n\t\t\t" + 'Out = require("../../.' + Modules[module][task] + '")?.default' + "\n\t\t\t" + 'break;' + "\n";
       TaskProperty += "\t\t" + 'case "' + nav + '":' + "\n\t\t\t" + 'Out = require("../../.' + Modules[module][task] + '")' + "\n\t\t\t" + 'break;' + "\n";
       /* ADD ROUTER EACH FILE FOR STATIC IMPORT */
       var item = `import { stable } from 'usestable';\n`
+      var deItem = ``
+      if (nav == 'lib/crypt') {
+        deItem = `
+export class LibCrypt {
+  encode(text: string): string;
+  decode(text: string): string;
+}
+        `
+      } else {
+        deItem = `
+export { default as ${ucword(module) + ucword(task)} } from '../../../../.${Modules[module][task]}';
+export * as ${ucword(module) + ucword(task) + SuffixHooksProperty} from '../../../../.${Modules[module][task]}';`
+      }
       if (HookModules.includes(nav)) {
-        // fileExt = 'tsx'
         item += "" +
           "import React from 'react'\n" +
           "const _" + ucword(module) + ucword(task) + " = React.lazy(() => import('../../../../." + Modules[module][task] + "')); \n" +
@@ -723,8 +314,16 @@ function createRouter() {
         if (!fs.existsSync(tmpDir + nav))
           fs.mkdirSync(tmpDir + nav)
 
-        if (isChange(tmpDir + nav + "/import." + fileExt, item)) {
-          fs.writeFileSync(tmpDir + nav + '/import.' + fileExt, item, { flag: 'w' }, function (err) {
+        if (isChange(tmpDir + nav + '/import.d.ts', deItem)) {
+          fs.writeFile(tmpDir + nav + '/import.d.ts', deItem, { flag: 'w' }, function (err) {
+            if (err) {
+              return console.log(err);
+            }
+          });
+        }
+
+        if (isChange(tmpDir + nav + "/import.js", item)) {
+          fs.writeFile(tmpDir + nav + '/import.js', item, { flag: 'w' }, function (err) {
             if (err) {
               return console.log(err);
             }
@@ -736,7 +335,7 @@ function createRouter() {
 
   const x = staticImport.join('')
   if (isChange(tmpDir + 'index.js', x))
-    fs.writeFileSync(tmpDir + 'index.js', x, { flag: 'w' }, function (err) {
+    fs.writeFile(tmpDir + 'index.js', x, { flag: 'w' }, function (err) {
       if (err) {
         return console.log(err);
       }
@@ -751,7 +350,7 @@ function createRouter() {
     '}' + "\n" +
     'module.exports = properties;';
   if (isChange(tmpDir + "properties.js", Props)) {
-    fs.writeFileSync(tmpDir + "properties.js", Props, { flag: 'w' }, function (err) {
+    fs.writeFile(tmpDir + "properties.js", Props, { flag: 'w' }, function (err) {
       if (err) {
         return console.log(err);
       }
@@ -767,7 +366,7 @@ function createRouter() {
     '}' + "\n" +
     'module.exports = routers;';
   if (isChange(tmpDir + "routers.js", Text)) {
-    fs.writeFileSync(tmpDir + "routers.js", Text, { flag: 'w' }, function (err) {
+    fs.writeFile(tmpDir + "routers.js", Text, { flag: 'w' }, function (err) {
       if (err) {
         return console.log(err);
       }
@@ -775,7 +374,7 @@ function createRouter() {
   }
   /* CREATE NAVIGATION LIST */
   Text = "export default [\"" + Navigations.join('", "') + "\"]";
-  fs.writeFileSync(tmpDir + "navigations.js", Text, { flag: 'w' }, function (err) {
+  fs.writeFile(tmpDir + "navigations.js", Text, { flag: 'w' }, function (err) {
     if (err) {
       return console.log(err);
     }
@@ -796,7 +395,7 @@ function createRouter() {
 
   let N = Nav5(importer.join("\n"), screens.join("\n"))
   if (isChange(tmpDir + 'navs.tsx', N))
-    fs.writeFileSync(tmpDir + "navs.tsx", N, { flag: 'w' }, function (err) {
+    fs.writeFile(tmpDir + "navs.tsx", N, { flag: 'w' }, function (err) {
       if (err) {
         return console.log(err);
       }
