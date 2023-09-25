@@ -168,50 +168,7 @@ import { AntDesignTypes, EntypoTypes, EvilIconsTypes, FeatherTypes, FontAwesomeT
 
 declare module "esoftplay" {
   function applyStyle<T>(style: T): T;
-  type ConditionApi = {
-    if: (condition: boolean, value: any) => ConditionApi;
-    elseif: (condition: boolean, value: any) => ConditionApi;
-    else: (value: any) => ConditionApi;
-    getValue: () => any;
-  };
-  namespace esp {
-    function appjson(): any;
-    function assets(path: string): any;
-    function dispatch(action: any): any;
-    function config(param?: string, ...params: string[]): any;
-    function _config(): string | number | boolean;
-    function mod<T extends AllRoutes>(module: T): ModType<T>;
-    function modProp<T extends AllRoutes>(module: T): ModPropType<T>;
-    function reducer(): any;
-    function versionName(): string;
-    function navigations(): any;
-    function condition(): ConditionApi;
-    function isDebug(message: string): boolean;
-    function lang(moduleTask: string, langName: string, ...string: string[]): string;
-    function langId(): string;
-    function home(): any;
-    function log(message?: any, ...optionalParams: any[]): void;
-    function routes(): any;
-    const logColor : {
-      reset: string,
-      black: string,
-      red: string,
-      green: string,
-      yellow: string,
-      blue: string,
-      magenta: string,
-      cyan: string,
-      white: string,
-      backgroundBlack: string,
-      backgroundRed: string,
-      backgroundGreen: string,
-      backgroundYellow: string,
-      backgroundBlue: string,
-      backgroundMagenta: string,
-      backgroundCyan: string,
-      backgroundWhite: string,
-    }
-  }`;
+  `;
   Text += "\n\ttype LibNavigationRoutes = \"" + Navigations.join("\" |\n\t\t\t \"") + "\"\n"
   Text += "}\n"
   Text = PreText + Text
