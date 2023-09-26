@@ -19,7 +19,7 @@ export default class m<K, S> extends Component<K, S> {
 
   setState(obj: S, callback?: () => void): void {
     if (this._isMounted) {
-      this.setState(obj, callback);
+      super.setState(obj, callback);
     }
   }
 

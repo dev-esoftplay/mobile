@@ -9,5 +9,5 @@ export interface UseConditionProps {
   fallback?: any
 }
 export default function m(props: UseConditionProps): any {
-  return props.if ? props.children : (props.fallback || null)
+  return (Boolean(props.if) ? (props.children) : (props.fallback || null))
 }

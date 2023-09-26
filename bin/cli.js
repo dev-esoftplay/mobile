@@ -40,6 +40,14 @@ switch (args[0]) {
 	case "analyze clear":
 		command('node ./node_modules/esoftplay/bin/analyze.js clear')
 		break;
+	case "fr":
+	case "fastrefresh":
+		command('node ./node_modules/esoftplay/bin/perf.js')
+		break
+	case "frc":
+	case "fastrefresh clear":
+		command('node ./node_modules/esoftplay/bin/perf.js clear')
+		break;
 	case "help":
 		help()
 		break;
@@ -468,10 +476,10 @@ function publish(notes) {
 		if (status != 'debug' && status != 'live') {
 			brokenConfig = "Gagal publish : CONFIG tidak valid"
 		}
-		if (!cjson.config.salt){
+		if (!cjson.config.salt) {
 			brokenConfig = "Gagal publish : CONFIG tidak valid"
 		}
-		if (brokenConfig){
+		if (brokenConfig) {
 			consoleError(brokenConfig)
 			return
 		}
@@ -726,10 +734,10 @@ function build() {
 	if (!cjson.config.domain) {
 		brokenConfig = "Gagal build : CONFIG tidak valid"
 	}
-	if (!cjson.config.salt){
+	if (!cjson.config.salt) {
 		brokenConfig = "Gagal build : CONFIG tidak valid"
 	}
-	if (brokenConfig){
+	if (brokenConfig) {
 		consoleError(brokenConfig)
 		return
 	}
@@ -1015,6 +1023,8 @@ function help() {
 		"\n - help                        : panduan penggunaan",
 		"\n - a|analyze                   : untuk menambahkan view render counter di semua component",
 		"\n - ac|analyze clear            : untuk menghapus view render counter di semua component",
+		"\n - fr|fastrefresh              : untuk mengaktfikan fast refresh di semua component",
+		"\n - frc|fastrefresh clear       : untuk menonaktifkan fast refresh di semua component",
 		"\n - u|update                    : untuk update esp module ke versi terakhir",
 		"\n - u|update all                : untuk update semua esp module ke versi terakhir",
 		"\n - start                       : start esoftplay framework",
