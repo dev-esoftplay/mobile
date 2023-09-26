@@ -4,6 +4,7 @@ const fs = require('fs');
 const param = process.argv[2]
 
 if (param == 'clear') {
+  console.log("DEACTIVATING FAST REFRESH...")
   fs.readdirSync('./modules/').forEach((module) => {
     if (fs.statSync('./modules/' + module).isDirectory()) {
       fs.readdirSync('./modules/' + module).forEach((task) => {
@@ -21,6 +22,7 @@ if (param == 'clear') {
     }
   })
 } else {
+  console.log("ACTIVATING FAST REFRESH...")
   fs.readdirSync('./modules/').forEach((module) => {
     if (fs.statSync('./modules/' + module).isDirectory()) {
       fs.readdirSync('./modules/' + module).forEach((task) => {
@@ -35,8 +37,6 @@ if (param == 'clear') {
             text = text + '\nexport default memo(' + currentNameFunction + ');'
             fs.writeFileSync('./modules/' + module + '/' + task, text, { encoding: 'utf8' })
           }
-        } else {
-          console.log('SKIP => ' + module + '/' + task)
         }
       })
     }
