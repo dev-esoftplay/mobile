@@ -1,37 +1,34 @@
 // noPage
-
 import { Component } from "react";
-const isEqual = require("react-fast-compare");
+import isEqual from "react-fast-compare";
 
-export default class m <K, S, U = any> extends Component<K, S, U>{
-  _isMounted: boolean = false
-  state: any
-  props: any
-  constructor(props: any) {
-    super(props)
-    this._isMounted = false
-    this.setState = this.setState.bind(this)
+export default class m<K, S> extends Component<K, S> {
+  private _isMounted: boolean = false;
+
+  constructor(props: K) {
+    super(props);
   }
 
-  setState(obj: any, callback?: () => void): void {
-    if (this._isMounted)
-      super.setState(obj, callback)
+  componentDidMount(): void {
+    this._isMounted = true;
   }
 
-  shouldComponentUpdate(nextProps: any, nextState: any): boolean {
+  componentWillUnmount(): void {
+    this._isMounted = false;
+  }
+
+  setState(obj: S, callback?: () => void): void {
+    if (this._isMounted) {
+      this.setState(obj, callback);
+    }
+  }
+
+  shouldComponentUpdate(nextProps: K, nextState: S): boolean {
     return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState);
   }
 
   onBackPress(): boolean {
-    return true
+    return true;
   }
-
-  componentDidMount(): void {
-    this._isMounted = true
-  }
-
-  componentWillUnmount(): void {
-    this._isMounted = false
-  }
-
 }
+
