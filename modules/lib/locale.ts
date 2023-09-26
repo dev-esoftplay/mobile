@@ -1,9 +1,9 @@
 // noPage
 // withObject
-import { useGlobalReturn } from 'esoftplay';
+
 import { LibNavigation } from 'esoftplay/cache/lib/navigation/import';
 import { LibObject } from 'esoftplay/cache/lib/object/import';
-import useGlobalState from 'esoftplay/global';
+import useGlobalState, { useGlobalReturn } from 'esoftplay/global';
 import { NativeModules, Platform } from 'react-native';
 
 

@@ -1,11 +1,11 @@
 // noPage
-import { esp } from 'esoftplay';
 import { LibComponent } from 'esoftplay/cache/lib/component/import';
 import { LibCurl } from 'esoftplay/cache/lib/curl/import';
 import { LibIcon } from 'esoftplay/cache/lib/icon/import';
 import { LibNavigation } from 'esoftplay/cache/lib/navigation/import';
 import { LibProgress } from 'esoftplay/cache/lib/progress/import';
 import { LibStyle } from 'esoftplay/cache/lib/style/import';
+import esp from 'esoftplay/esp';
 import useGlobalState from 'esoftplay/global';
 import { Camera } from 'expo-camera';
 import * as ImageManipulator from 'expo-image-manipulator';

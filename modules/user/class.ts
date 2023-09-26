@@ -1,13 +1,13 @@
 // noPage
 // withObject
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { esp, useGlobalReturn } from 'esoftplay';
 import { LibCrypt } from 'esoftplay/cache/lib/crypt/import';
 import { LibCurl } from 'esoftplay/cache/lib/curl/import';
 import { LibNotification } from 'esoftplay/cache/lib/notification/import';
 import { UserClass } from 'esoftplay/cache/user/class/import';
 import { UserData } from 'esoftplay/cache/user/data/import';
-import useGlobalState from 'esoftplay/global';
+import esp from 'esoftplay/esp';
+import useGlobalState, { useGlobalReturn } from 'esoftplay/global';
 import moment from "esoftplay/moment";
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';

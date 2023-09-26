@@ -1,7 +1,6 @@
 
 // noPage
 // withObject
-import { useGlobalReturn } from 'esoftplay';
 import { LibCrypt } from 'esoftplay/cache/lib/crypt/import';
 import { LibCurl } from 'esoftplay/cache/lib/curl/import';
 import { LibNavigation } from 'esoftplay/cache/lib/navigation/import';
@@ -9,7 +8,7 @@ import { LibObject } from 'esoftplay/cache/lib/object/import';
 import { UserClass } from 'esoftplay/cache/user/class/import';
 import { UserNotification } from 'esoftplay/cache/user/notification/import';
 import esp from 'esoftplay/esp';
-import useGlobalState from 'esoftplay/global';
+import useGlobalState, { useGlobalReturn } from 'esoftplay/global';
 import moment from 'esoftplay/moment';
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';

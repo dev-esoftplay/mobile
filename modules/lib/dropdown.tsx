@@ -1,7 +1,7 @@
 // withHooks
 // noPage
-import { esp } from 'esoftplay';
 import { LibStyle } from 'esoftplay/cache/lib/style/import';
+import esp from 'esoftplay/esp';
 import React, { useEffect, useRef, useState } from "react";
 import { FlatList, Modal, Platform, Pressable, TextInput, View, ViewProps } from "react-native";
 

@@ -1,9 +1,9 @@
 // noPage
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { esp } from 'esoftplay';
 import { LibComponent } from 'esoftplay/cache/lib/component/import';
 import { LibNavigation } from 'esoftplay/cache/lib/navigation/import';
 import { LibStyle } from 'esoftplay/cache/lib/style/import';
+import esp from 'esoftplay/esp';
 import React from "react";
 import { ActivityIndicator, View } from "react-native";
 import { WebView } from 'react-native-webview';

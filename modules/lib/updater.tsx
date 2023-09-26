@@ -1,9 +1,9 @@
 // withHooks
 // noPage
-import { esp } from 'esoftplay';
 import { LibIcon } from 'esoftplay/cache/lib/icon/import';
 import { LibProgress } from 'esoftplay/cache/lib/progress/import';
 import { LibStyle } from 'esoftplay/cache/lib/style/import';
+import esp from 'esoftplay/esp';
 
 import Constants from 'expo-constants';
 import * as Updates from 'expo-updates';

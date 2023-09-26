@@ -1,4 +1,4 @@
-import { useGlobalReturn } from 'esoftplay';
+
 import { LibComponent } from 'esoftplay/cache/lib/component/import';
 import { LibIcon } from 'esoftplay/cache/lib/icon/import';
 import { LibList } from 'esoftplay/cache/lib/list/import';
@@ -6,7 +6,7 @@ import { LibNotification } from 'esoftplay/cache/lib/notification/import';
 import { LibStatusbar } from 'esoftplay/cache/lib/statusbar/import';
 import { LibStyle } from 'esoftplay/cache/lib/style/import';
 import { UserNotification_item } from 'esoftplay/cache/user/notification_item/import';
-import useGlobalState from 'esoftplay/global';
+import useGlobalState, { useGlobalReturn } from 'esoftplay/global';
 import React from 'react';
 
 

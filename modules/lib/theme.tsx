@@ -1,8 +1,8 @@
 // noPage
 // withObject
-import { esp } from 'esoftplay';
 import { LibNavigation } from 'esoftplay/cache/lib/navigation/import';
 import { LibStyle } from 'esoftplay/cache/lib/style/import';
+import esp from 'esoftplay/esp';
 import useGlobalState from 'esoftplay/global';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';

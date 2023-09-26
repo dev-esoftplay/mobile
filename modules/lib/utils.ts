@@ -1,7 +1,7 @@
 // noPage
 // withObject
-import { esp } from 'esoftplay';
 import { LibToastProperty } from 'esoftplay/cache/lib/toast/import';
+import esp from 'esoftplay/esp';
 import useGlobalState from 'esoftplay/global';
 import moment from "esoftplay/moment";
 import * as Application from 'expo-application';

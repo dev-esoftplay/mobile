@@ -1,6 +1,6 @@
 // withHooks
 // noPage
-import { esp } from 'esoftplay';
+import esp from 'esoftplay/esp';
 
 import React from 'react';
 import { ImageBackground } from "react-native";

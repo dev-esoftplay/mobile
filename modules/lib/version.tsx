@@ -1,5 +1,4 @@
 
-import { esp } from 'esoftplay';
 import { LibComponent } from 'esoftplay/cache/lib/component/import';
 import { LibCurl } from 'esoftplay/cache/lib/curl/import';
 import { LibDialog } from 'esoftplay/cache/lib/dialog/import';
@@ -8,6 +7,7 @@ import { LibNavigation } from 'esoftplay/cache/lib/navigation/import';
 import { LibStyle } from 'esoftplay/cache/lib/style/import';
 import { LibTextstyle } from 'esoftplay/cache/lib/textstyle/import';
 import { LibUpdaterProperty } from 'esoftplay/cache/lib/updater/import';
+import esp from 'esoftplay/esp';
 
 import Constants from 'expo-constants';
 import React from 'react';
