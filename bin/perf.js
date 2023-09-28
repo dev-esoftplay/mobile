@@ -12,7 +12,7 @@ if (param == 'clear') {
         const isHooks = (/\/\/\s{0,}withHooks/g).exec(text)
         const memoiz = (/\nexport default memo\(([a-zA-Z0-9]+)\)\;/g).exec(text)
         text = text.replace("\nimport { memo } from 'react';", "")
-        text = text.replace(" memo, ", "")
+        text = text.replace(" memo,", "")
         text = text.replace(", { memo }", "")
         if (isHooks && memoiz && memoiz.length > 1) {
           const [exdefCurrent, currentNameFunction] = memoiz
