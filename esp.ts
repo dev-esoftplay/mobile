@@ -1,4 +1,6 @@
 import { LibLocale } from 'esoftplay/cache/lib/locale/import';
+import { EspRouterPropertyInterface } from 'esoftplay/cache/properties';
+import { EspRouterInterface } from 'esoftplay/cache/routers';
 import Constants from 'expo-constants';
 import { LogBox, Platform } from 'react-native';
 import 'react-native-reanimated';
@@ -14,6 +16,7 @@ const ignoreWarns = [
   "Did not receive response to shouldStartLoad in time",
   "startLoadWithResult invoked with invalid lockldentifier",
 ];
+
 
 const err = console.error;
 console.error = (...arg) => {
@@ -136,7 +139,7 @@ const esp = {
     const LibLocale = esp.mod('lib/locale');
     return LibLocale.state().get()
   },
-  mod(path: string): any {
+  mod<T extends keyof EspRouterInterface>(path: T): EspRouterInterface[T] {
     var modtast = path.split("/");
     if (modtast[1] == "") {
       modtast[1] = "index";
@@ -144,7 +147,7 @@ const esp = {
     const routers = require('./cache/routers')
     return routers(modtast.join("/"));
   },
-  modProp(path: string): any {
+  modProp<T extends keyof EspRouterPropertyInterface>(path: T): EspRouterPropertyInterface[T] {
     var modtast = path.split("/");
     if (modtast[1] == "") {
       modtast[1] = "index";
