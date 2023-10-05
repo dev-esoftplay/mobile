@@ -48,6 +48,9 @@ switch (args[0]) {
 	case "fastrefresh clear":
 		command('node ./node_modules/esoftplay/bin/perf.js clear')
 		break;
+	case "font":
+		createFontConfig()
+		break;
 	case "help":
 		help()
 		break;
@@ -145,6 +148,40 @@ switch (args[0]) {
 	default:
 		help()
 		break;
+}
+
+function createFontConfig() {
+	function removeFileExtension(filename) {
+		return filename.replace(/\.[^/.]+$/, "");
+	}
+
+	if (fs.existsSync(DIR + '/assets/fonts')) {
+		let fonts = {}
+		let fontNames = []
+		fs.readdirSync(DIR + '/assets/fonts').forEach((file) => {
+			fonts[removeFileExtension(file)] = file
+			fontNames.push(removeFileExtension(file))
+		})
+		let clive, cjson, cdebug
+		if (fs.existsSync(conflive)) {
+			clive = readToJSON(conflive)
+			clive["config"]["fonts"] = fonts
+			fs.writeFileSync(conflive, JSON.stringify(clive, undefined, 2))
+		}
+		if (fs.existsSync(confjson)) {
+			cjson = readToJSON(confjson)
+			cjson["config"]["fonts"] = fonts
+			fs.writeFileSync(confjson, JSON.stringify(cjson, undefined, 2))
+		}
+		if (fs.existsSync(confdebug)) {
+			cdebug = readToJSON(confdebug)
+			cdebug["config"]["fonts"] = fonts
+			fs.writeFileSync(confdebug, JSON.stringify(cdebug, undefined, 2))
+		}
+		fs.writeFileSync(DIR + './assets/fonts.d.ts', "export type FontName = '" + fontNames.join("'|'") + "'")
+	} else {
+		consoleError("./assets/fonts directory not found")
+	}
 }
 
 function switchStatusAssets(status) {
@@ -1023,6 +1060,7 @@ function help() {
 		"\n - help                        : panduan penggunaan",
 		"\n - a|analyze                   : untuk menambahkan view render counter di semua component",
 		"\n - ac|analyze clear            : untuk menghapus view render counter di semua component",
+		"\n - font                        : untuk mengaktifkan font dari ./assets/fonts",
 		"\n - fr|fastrefresh              : untuk mengaktfikan fast refresh di semua component",
 		"\n - frc|fastrefresh clear       : untuk menonaktifkan fast refresh di semua component",
 		"\n - u|update                    : untuk update esp module ke versi terakhir",
