@@ -1,17 +1,25 @@
+import esp from 'esoftplay/esp';
 import * as R from 'react';
 export interface useGlobalReturn<T> {
   useState: () => [T, (newState: T | ((newState: T) => T)) => void, () => T],
   get: (param?: string, ...params: string[]) => T,
   set: (x: T | ((old: T) => T)) => void,
   reset: () => void,
+  sync: () => void,
   connect: (props: useGlobalConnect<T>) => any,
   useSelector: (selector: (state: T) => any) => any;
+}
+
+export interface useGlobalAutoSync {
+  url: string,
+  post: (item: any) => Object
 }
 
 export interface useGlobalOption {
   persistKey?: string,
   inFile?: boolean,
   listener?: (data: any) => void,
+  useAutoSync?: useGlobalAutoSync,
   jsonBeautify?: boolean,
   isUserData?: boolean,
   loadOnInit?: boolean,
@@ -29,12 +37,42 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
   const subsSetter = new Set<Function>()
   let value: T = initValue;
   let loaded = -1
+  let sync: any = undefined
 
   if (o?.persistKey) {
     STORAGE = o?.inFile ? (require('esoftplay/storage').default) : (require('@react-native-async-storage/async-storage').default)
     loaded = 0
     if (o?.loadOnInit)
       loadFromDisk()
+  }
+
+  function _sync() {
+    if (o?.useAutoSync && sync && Array.isArray(value))
+      sync?.(value.filter((item: any) => item.synced != 1))
+  }
+
+  if (o?.useAutoSync) {
+    const LibCurl = esp.mod("lib/curl")
+    const UseTasks = esp.mod("use/tasks")
+    sync = UseTasks()((item) => new Promise((next) => {
+      if (o?.useAutoSync) {
+        new LibCurl(o.useAutoSync.url, o.useAutoSync?.post?.(item),
+          (res, msg) => {
+            set((old: T) => {
+              if (Array.isArray(old)) {
+                const index = old?.indexOf(item)
+                return esp.mod("lib/object").set(old, 1)(index, 'synced')
+              } else {
+                return old
+              }
+            })
+            next()
+          }, () => {
+            next()
+          }
+        )
+      }
+    }))[0]
   }
 
   function loadFromDisk() {
@@ -70,7 +108,7 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
   /* register to userData to automatically reset state and persist */
   if (o?.isUserData) {
     if (o?.persistKey) {
-      const UserData = require('./modules/user/data').default
+      const UserData = esp.mod("user/data")
       if (UserData)
         UserData?.register?.(o?.persistKey)
     }
@@ -101,6 +139,8 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
       }
       if (o?.listener)
         o.listener(newValue)
+      if (o?.useAutoSync && sync)
+        sync?.(newValue.filter((item: any) => item.synced != 1))
     }
   };
 
@@ -167,5 +207,5 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
     return children ? R.cloneElement(children) : null
   }
 
-  return { useState, get, set, useSelector, reset: del, connect: _connect };
+  return { useState, get, set, useSelector, reset: del, connect: _connect, sync: _sync };
 }
