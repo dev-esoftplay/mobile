@@ -62,6 +62,7 @@ switch (args[0]) {
 		}
 		let notes = ''
 		if (args[1]) {
+			command('esp frc')
 			notes = args.slice(1, args.length).join(' ')
 			publish(notes)
 		} else {
@@ -779,6 +780,7 @@ function build() {
 		return
 	}
 	const local = args[1] == 'local' ? ' --local' : ''
+	const Named = args[2] || ""
 	const types = isWeb
 		?
 		[
@@ -927,7 +929,7 @@ function build() {
 							// const oldFileName = fileName.replace(regexPattern, '$1');
 							let ext = fileName.split(".")
 							ext.shift()
-							fs.renameSync('./' + fileName, './' + ajson.expo.name + "-" + getTime() + "." + ext.join("."))
+							fs.renameSync('./' + fileName, './' + ajson.expo.name + "-" + Named + "-" + getTime() + "." + ext.join("."))
 						});
 					});
 					let tmId = "-1001429450501"
