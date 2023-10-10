@@ -1,5 +1,8 @@
 import esp from 'esoftplay/esp';
 import * as R from 'react';
+
+
+
 export interface useGlobalReturn<T> {
   useState: () => [T, (newState: T | ((newState: T) => T)) => void, () => T],
   get: (param?: string, ...params: string[]) => T,
@@ -12,7 +15,8 @@ export interface useGlobalReturn<T> {
 
 export interface useGlobalAutoSync {
   url: string,
-  post: (item: any) => Object
+  post: (item: any) => Object,
+  isSyncing?: (isSync: boolean) => void
 }
 
 export interface useGlobalOption {
@@ -56,6 +60,7 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
     const UseTasks = esp.mod("use/tasks")
     sync = UseTasks()((item) => new Promise((next) => {
       if (o?.useAutoSync) {
+        o?.useAutoSync?.isSyncing?.(true)
         new LibCurl(o.useAutoSync.url, o.useAutoSync?.post?.(item),
           (res, msg) => {
             set((old: T) => {
@@ -72,7 +77,9 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
           }
         )
       }
-    }))[0]
+    }), () => {
+      o?.useAutoSync?.isSyncing?.(false)
+    })[0]
   }
 
   function loadFromDisk() {
