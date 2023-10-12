@@ -29,6 +29,17 @@ if (fs.existsSync(packjson)) {
 
 	if (args[0] == "install") {
 		$package.scripts.start = "esp start && expo start --dev-client"
+		$package.trustedDependencies = [
+			"esoftplay",
+			"esoftplay-android-print",
+			"esoftplay-chatting",
+			"esoftplay-firestore",
+			"esoftplay-content",
+			"esoftplay-lib-print",
+			"esoftplay-log",
+			"esoftplay-market",
+			"esoftplay-ppob",
+		]
 		fs.writeFile(packjson, JSON.stringify($package, null, 2), (err) => {
 			if (err) throw err;
 			console.log('package.json has been updated');
@@ -342,12 +353,12 @@ export default UserIndex`;
 				fs.mkdirSync(DIR + 'modules')
 			let cmd = "cd ../../ "
 			if (installDevLibs.length > 0)
-				cmd += "&& yarn add " + installDevLibs.join(" ") + " --dev "
+				cmd += "&& bun add " + installDevLibs.join(" ") + " --dev "
 			if (installExpoLibs.length > 0)
 				cmd += "&& expo install " + installExpoLibs.join(" ")
 			execSync(cmd + "|| true")
-			execSync("cd ../../ && node ./node_modules/esoftplay/bin/router.js || true")
-			execSync("cd ../../ && node ./node_modules/esoftplay/bin/locale.js || true")
+			execSync("cd ../../ && bun ./node_modules/esoftplay/bin/router.js || true")
+			execSync("cd ../../ && bun ./node_modules/esoftplay/bin/locale.js || true")
 			console.log('App.js has been replace to App.tsx');
 			if (appjson)
 

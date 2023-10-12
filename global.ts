@@ -115,7 +115,7 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
   /* register to userData to automatically reset state and persist */
   if (o?.isUserData) {
     if (o?.persistKey) {
-      const UserData = esp.mod("user/data")
+      const UserData = esp?.mod?.("user/data")
       if (UserData)
         UserData?.register?.(o?.persistKey)
     }
