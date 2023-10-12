@@ -357,6 +357,7 @@ export default UserIndex`;
 			if (installExpoLibs.length > 0)
 				cmd += "&& expo install " + installExpoLibs.join(" ")
 			execSync(cmd + "|| true")
+			execSync("cd ../../ && bun install || true")
 			execSync("cd ../../ && bun ./node_modules/esoftplay/bin/router.js || true")
 			execSync("cd ../../ && bun ./node_modules/esoftplay/bin/locale.js || true")
 			console.log('App.js has been replace to App.tsx');
