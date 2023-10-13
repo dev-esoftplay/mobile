@@ -1,13 +1,12 @@
 import esp from 'esoftplay/esp';
 import * as R from 'react';
 
-
-
 export interface useGlobalReturn<T> {
   useState: () => [T, (newState: T | ((newState: T) => T)) => void, () => T],
   get: (param?: string, ...params: string[]) => T,
   set: (x: T | ((old: T) => T)) => void,
   reset: () => void,
+  listen: (cb: (value: T) => void) => () => void
   sync: () => void,
   connect: (props: useGlobalConnect<T>) => any,
   useSelector: (selector: (state: T) => any) => any;
@@ -40,6 +39,7 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
   const isEqual = require('react-fast-compare');
   const subsSetter = new Set<Function>()
   let value: T = initValue;
+  let listener = new Set<Function>()
   let loaded = -1
   let sync: any = undefined
 
@@ -111,6 +111,10 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
     }
   }
 
+  function listen(cb: (value: T) => void): () => void {
+    listener.add(cb)
+    return () => listener.delete(cb)
+  }
 
   /* register to userData to automatically reset state and persist */
   if (o?.isUserData) {
@@ -148,6 +152,9 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
         o.listener(newValue)
       if (o?.useAutoSync && sync)
         sync?.(newValue.filter((item: any) => item.synced != 1))
+      if (listener.size > 0) {
+        listener.forEach((fun) => fun?.(newValue))
+      }
     }
   };
 
@@ -214,5 +221,5 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
     return children ? R.cloneElement(children) : null
   }
 
-  return { useState, get, set, useSelector, reset: del, connect: _connect, sync: _sync };
+  return { useState, get, set, useSelector, reset: del, connect: _connect, sync: _sync, listen: listen };
 }
