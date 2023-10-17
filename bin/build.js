@@ -296,7 +296,6 @@ export default UserIndex`;
 			'expo-notifications',
 			'expo-status-bar',
 			'expo-splash-screen',
-			'expo-sqlite',
 			'expo-secure-store',
 			'expo-updates',
 			'immhelper',
