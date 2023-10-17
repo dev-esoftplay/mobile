@@ -1,11 +1,6 @@
 
 
 //noPage
-import { LibCrypt } from 'esoftplay/cache/lib/crypt/import';
-import { LibNet_status } from 'esoftplay/cache/lib/net_status/import';
-import { LibProgress } from 'esoftplay/cache/lib/progress/import';
-import { LibToastProperty } from 'esoftplay/cache/lib/toast/import';
-import { LibUtils } from 'esoftplay/cache/lib/utils/import';
 import { reportApiError } from "esoftplay/error";
 import esp from 'esoftplay/esp';
 
@@ -65,8 +60,8 @@ export default class m {
     this.timeoutContext = setTimeout(() => {
       if (typeof this?.controller?.abort == 'function') {
         this.closeConnection()
-        LibProgress.hide()
-        LibToastProperty.show(this.refineErrorMessage('timeout exceeded'))
+        esp.mod("lib/progress").hide()
+        esp.modProp("lib/toast").show(this.refineErrorMessage('timeout exceeded'))
       }
     }, customTimeout ?? this.timeout);
   }
@@ -100,6 +95,7 @@ export default class m {
   protected async setHeader(): Promise<void> {
     return new Promise((r) => {
       if ((/:\/\/data.*?\/(.*)/g).test(this.url)) {
+        const LibCrypt = esp.mod("lib/crypt")
         this.header["masterkey"] = new LibCrypt().encode(this.url)
       }
       r()
@@ -170,8 +166,8 @@ export default class m {
             }, debug)
         }).catch((r) => {
           this.cancelTimeout()
-          LibProgress.hide()
-          LibToastProperty.show(esp.lang("lib/curl", "msg_failed"))
+          esp.mod("lib/progress").hide()
+          esp.modProp("lib/toast").show(esp.lang("lib/curl", "msg_failed"))
           this.onFetchFailed(r)
         })
       }
@@ -244,13 +240,13 @@ export default class m {
         payload = this.encodeGetValue(_uri.includes('?') ? _uri.substring(_uri.indexOf('?') + 1, _uri.length) : '');
         _uri = _uri.includes('?') ? _uri.substring(0, _uri.indexOf('?')) : _uri;
       }
-      signature = method + ':' + _uri + ':' + LibUtils.shorten(typeof payload == 'string' ? this.urlEncode(payload) : payload);
+      signature = method + ':' + _uri + ':' + esp.mod("lib/utils").shorten(typeof payload == 'string' ? this.urlEncode(payload) : payload);
     }
     return signature
   }
 
   async custom(uri: string, post?: any, onDone?: (res: any, timeout: boolean) => void, debug?: number): Promise<void> {
-    const str: any = LibNet_status.state().get()
+    const str: any = esp.mod("lib/net_status").state().get()
     if (str.isOnline) {
       if (post) {
         let ps = Object.keys(post).map((key) => {
@@ -294,13 +290,13 @@ export default class m {
           this.onDone(resJson)
         } else {
           this.onFetchFailed(resText)
-          LibProgress.hide()
+          esp.mod("lib/progress").hide()
           this.onError(resText)
         }
         //api_logger
       }).catch((e) => {
         this.cancelTimeout()
-        LibProgress.hide()
+        esp.mod("lib/progress").hide()
         this.onFetchFailed(e)
       })
     }
@@ -374,9 +370,9 @@ export default class m {
       if (__DEV__) {
         console.warn(r)
       } else
-        LibToastProperty.show(esp.lang("lib/curl", "msg_failed"))
+        esp.modProp("lib/toast").show(esp.lang("lib/curl", "msg_failed"))
       this.onFetchFailed(r)
-      LibProgress.hide()
+      esp.mod("lib/progress").hide()
     })
   }
 
@@ -435,7 +431,7 @@ export default class m {
     delete this.fetchConf.options["Content-Type"]
     delete this.fetchConf.options.token
     reportApiError(this.fetchConf, msg)
-    LibProgress.hide()
+    esp.mod("lib/progress").hide()
   }
 
   protected getTimeByTimeZone(GMT: number): number {

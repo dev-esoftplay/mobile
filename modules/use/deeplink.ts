@@ -1,8 +1,5 @@
 // useLibs
 // noPage
-import { LibCurl } from 'esoftplay/cache/lib/curl/import';
-import { LibNavigation } from 'esoftplay/cache/lib/navigation/import';
-import { LibUtils } from 'esoftplay/cache/lib/utils/import';
 import esp from 'esoftplay/esp';
 import { useCallback, useEffect } from 'react';
 import { Alert, Linking } from 'react-native';
@@ -11,7 +8,7 @@ export default function m(defaultUrl?: string): void {
   const doLink = useCallback(({ url }: { url: string }) => {
     const { domain, uri, protocol } = esp.config()
     if (url?.includes(defaultUrl || domain))
-      LibUtils.debounce(() => {
+      esp.mod("lib/utils").debounce(() => {
         url = url.replace((domain + uri), (domain + uri + 'deeplink/'))
         url = url.replace(/^[a-z]+\:\/\//g, protocol + "://")
         function removeLastDot(url: string) {
@@ -21,10 +18,12 @@ export default function m(defaultUrl?: string): void {
           }
           return url;
         }
+        const LibCurl = esp.mod("lib/curl")
         new LibCurl().custom(removeLastDot(url), null,
           (res) => {
             if (res.ok == 1) {
               function nav(module: string, url: string) {
+                const LibNavigation = esp.mod("lib/navigation")
                 if (!LibNavigation.getIsReady()) {
                   setTimeout(() => {
                     nav(module, url)

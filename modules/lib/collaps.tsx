@@ -1,8 +1,6 @@
 // withHooks
 // noPage
-import { useSafeState } from 'esoftplay';
-
-
+import useSafeState from 'esoftplay/state';
 import React, { useEffect } from 'react';
 import { Pressable } from 'react-native';
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';

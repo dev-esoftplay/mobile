@@ -1,7 +1,7 @@
 // withHooks
 // noPage
 // withHooks
-import { LibLoading } from 'esoftplay/cache/lib/loading/import';
+import esp from 'esoftplay/esp';
 import useGlobalState from 'esoftplay/global';
 import React from 'react';
 
@@ -22,9 +22,12 @@ const globalReady = useGlobalState(false, {
 })
 
 export default function m(props: LibGlobalProps): any {
+
   const [ready] = globalReady.useState();
-  if (props.waitForFinish)
+  if (props.waitForFinish) {
+    const LibLoading = esp.mod("lib/loading")
     return ready ? props.children : props.waitingView || <LibLoading />
+  }
   else
     return props.children
 }

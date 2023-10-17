@@ -1,8 +1,9 @@
 // withHooks 
 // noPage
-import { useSafeState } from 'esoftplay';
+
 import { LibScrollpicker } from 'esoftplay/cache/lib/scrollpicker/import';
 import { LibStyle } from 'esoftplay/cache/lib/style/import';
+import useSafeState from 'esoftplay/state';
 
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useRef } from 'react';

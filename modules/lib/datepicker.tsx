@@ -1,12 +1,8 @@
 // withHooks
 // noPage
-import { esp, useSafeState } from 'esoftplay';
 
-import { LibLoading } from 'esoftplay/cache/lib/loading/import';
-import { LibScrollpicker } from 'esoftplay/cache/lib/scrollpicker/import';
-import { LibStyle } from 'esoftplay/cache/lib/style/import';
-import { LibToastProperty } from 'esoftplay/cache/lib/toast/import';
-
+import esp from 'esoftplay/esp';
+import useSafeState from 'esoftplay/state';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useRef } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
@@ -20,6 +16,9 @@ export interface LibDatepickerProps {
 }
 
 export default function m(props: LibDatepickerProps): any {
+  const LibScrollpicker = useRef(esp.mod("lib/scrollpicker")).current
+  const LibStyle = useRef(esp.mod("lib/style")).current
+  const LibToastProperty = useRef(esp.modProp("lib/toast")).current
 
   const refYear = useRef<any>(null)
   const refMonth = useRef<any>(null)
@@ -164,6 +163,7 @@ export default function m(props: LibDatepickerProps): any {
   }
 
   if (dates.length == 0) {
+    const LibLoading = esp.mod("lib/loading")
     return <LibLoading />
   }
 

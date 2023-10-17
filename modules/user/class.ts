@@ -1,11 +1,6 @@
 // noPage
 // withObject
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { LibCrypt } from 'esoftplay/cache/lib/crypt/import';
-import { LibCurl } from 'esoftplay/cache/lib/curl/import';
-import { LibNotification } from 'esoftplay/cache/lib/notification/import';
-import { UserClass } from 'esoftplay/cache/user/class/import';
-import { UserData } from 'esoftplay/cache/user/data/import';
 import esp from 'esoftplay/esp';
 import useGlobalState, { useGlobalReturn } from 'esoftplay/global';
 import moment from "esoftplay/moment";
@@ -23,7 +18,7 @@ export default {
     return new Promise((r, j) => {
       state?.set?.(user)
       if (esp.config('notification') == 1) {
-        UserClass.pushToken()
+        esp.mod("user/class").pushToken()
       }
       r(user)
     })
@@ -59,9 +54,9 @@ export default {
       Notifications.setBadgeCountAsync(0)
       state.reset()
       await AsyncStorage.removeItem("user_notification");
-      UserData.deleteAll()
+      esp.mod("user/data").deleteAll()
       if (esp.config('notification') == 1) {
-        UserClass.pushToken()
+        esp.mod("user/class").pushToken()
       }
       r()
     })
@@ -72,9 +67,10 @@ export default {
         resolve(undefined)
         return
       }
-      LibNotification.requestPermission(async (token) => {
+      esp.mod("lib/notification").requestPermission(async (token) => {
         if (token && token.includes("ExponentPushToken")) {
           const config = esp.config();
+          const LibCrypt = esp.mod("lib/crypt")
           var post: any = {
             user_id: 0,
             group_id: esp.config('group_id'),
@@ -86,7 +82,7 @@ export default {
             device: Constants.deviceName,
             secretkey: new LibCrypt().encode(config.salt + "|" + moment().format("YYYY-MM-DD hh:mm:ss"))
           }
-          UserClass.load(async (user) => {
+          esp.mod("user/class").load(async (user) => {
             if (user) {
               user["user_id"] = user.id
               Object.keys(user).forEach((userfield) => {
@@ -99,6 +95,7 @@ export default {
             }
             var push_id = await AsyncStorage.getItem("push_id");
             if (push_id) post["push_id"] = push_id
+            const LibCurl = esp.mod("lib/curl")
             new LibCurl(config.protocol + "://" + config.domain + config.uri + "user/push-token", post,
               (res, msg) => {
                 AsyncStorage.setItem("push_id", String(Number.isInteger(parseInt(res)) ? res : push_id));

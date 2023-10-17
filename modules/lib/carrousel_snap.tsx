@@ -1,6 +1,6 @@
 // withHooks
 // noPage
-import { LibFocus } from 'esoftplay/cache/lib/focus/import';
+import esp from 'esoftplay/esp';
 import React, { useEffect, useMemo, useRef } from 'react';
 import { ScrollView, View } from 'react-native';
 
@@ -19,7 +19,7 @@ export interface LibCarrousel_snapProps {
   renderItem: (item: any, key: number | string, itemWidth: number) => any
 }
 export default function m(props: LibCarrousel_snapProps): any {
-
+  const LibFocus = useRef(esp.mod("lib/focus")).current
   const autoCycle = props.autoCycle || false
   const autoCycleDelay = props.autoCycleDelay || 4000
   const align = props.align || 'center'

@@ -1,16 +1,13 @@
 // withHooks
-
 //noPage
-import { esp, useSafeState } from 'esoftplay';
+
 import { LibIcon } from 'esoftplay/cache/lib/icon/import';
-import { LibLoading } from 'esoftplay/cache/lib/loading/import';
-import { LibNavigation } from 'esoftplay/cache/lib/navigation/import';
-import { LibObject } from 'esoftplay/cache/lib/object/import';
 import { LibStyle } from 'esoftplay/cache/lib/style/import';
-import { LibTextstyle } from 'esoftplay/cache/lib/textstyle/import';
+import esp from 'esoftplay/esp';
+import useSafeState from 'esoftplay/state';
 
 import * as MediaLibrary from 'expo-media-library';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { FlatList, Image, TouchableOpacity, View } from 'react-native';
 
 export interface LibImage_multiProps {
@@ -35,6 +32,13 @@ function Imageitem(props: any): any {
 }
 
 export default function m(props: LibImage_multiProps): any {
+	const LibIcon = useRef(esp.mod("lib/icon")).current
+	const LibLoading = useRef(esp.mod("lib/loading")).current
+	const LibNavigation = useRef(esp.mod("lib/navigation")).current
+	const LibObject = useRef(esp.mod("lib/object")).current
+	const LibStyle = useRef(esp.mod("lib/style")).current
+	const LibTextstyle = useRef(esp.mod("lib/textstyle")).current
+
   const [photos, setPhotos] = useSafeState([])
   const [after, setAfter] = useSafeState(null)
   const [hasNextPage, setHasNextPage] = useSafeState(true)

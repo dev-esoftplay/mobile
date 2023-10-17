@@ -1,8 +1,8 @@
 // useLibs
 // noPage
-import { useSafeState } from 'esoftplay';
 import { LibCurl } from 'esoftplay/cache/lib/curl/import';
 import { LibProgress } from 'esoftplay/cache/lib/progress/import';
+import useSafeState from 'esoftplay/state';
 
 
 export default function m(initialWithLoading?: boolean, withProgressText?: string): [(uri: string, post: any, onDone: (res: any, msg: string) => void, debug?: 0 | 1) => void, boolean, string] {

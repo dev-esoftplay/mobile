@@ -1,8 +1,6 @@
 // withHooks
-import { LibIcon } from 'esoftplay/cache/lib/icon/import';
-import { LibNavigation } from 'esoftplay/cache/lib/navigation/import';
-import { LibStyle } from 'esoftplay/cache/lib/style/import';
 
+import esp from 'esoftplay/esp';
 import React, { useRef } from 'react';
 import { Pressable, View } from 'react-native';
 import Gallery from 'react-native-awesome-gallery';
@@ -14,6 +12,10 @@ export interface LibGalleryProps {
 
 }
 export default function m(props: LibGalleryProps): any {
+	const LibIcon = useRef(esp.mod("lib/icon")).current
+	const LibNavigation = useRef(esp.mod("lib/navigation")).current
+	const LibStyle = useRef(esp.mod("lib/style")).current
+
   let images = LibNavigation.getArgs(props, "images", [])
   const image = LibNavigation.getArgs(props, "image", "")
   const index = LibNavigation.getArgs(props, "index", 0)

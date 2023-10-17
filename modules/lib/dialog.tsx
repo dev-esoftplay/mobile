@@ -1,6 +1,6 @@
 // noPage
 import { LibComponent } from 'esoftplay/cache/lib/component/import';
-import { LibIcon, LibIconStyle } from 'esoftplay/cache/lib/icon/import';
+import { LibIcon } from 'esoftplay/cache/lib/icon/import';
 import { LibStyle } from 'esoftplay/cache/lib/style/import';
 import { LibTextstyle } from 'esoftplay/cache/lib/textstyle/import';
 import { LibTheme } from 'esoftplay/cache/lib/theme/import';
@@ -8,6 +8,7 @@ import useGlobalState from 'esoftplay/global';
 
 import React from 'react';
 import { BackHandler, Keyboard, TouchableOpacity, View } from 'react-native';
+import { LibIconStyle } from './icon';
 
 export interface LibDialogProps {
   visible?: boolean,

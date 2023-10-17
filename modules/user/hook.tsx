@@ -1,25 +1,12 @@
-// noPage
-
-import { LibComponent } from 'esoftplay/cache/lib/component/import';
+// withHooks
 
 
-export interface UserMainProps {
-
+export interface UserHookArgs {
+  
 }
-export interface UserMainState {
-
+export interface UserHookProps {
+  
 }
-
-export default class m extends LibComponent<UserMainProps, UserMainState> {
-  constructor(props: UserMainProps) {
-    super(props);
-  }
-
-  render(): any {
-    return (
-      <>
-        {/* <LibAuto_update /> */}
-      </>
-    )
-  }
+export default function m(props: UserHookProps): any {
+  return null
 }

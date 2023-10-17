@@ -1,12 +1,6 @@
 // withHooks
-import { esp, useSafeState } from 'esoftplay';
-import { LibIcon } from 'esoftplay/cache/lib/icon/import';
-import { LibNavigation } from 'esoftplay/cache/lib/navigation/import';
-import { LibProgress } from 'esoftplay/cache/lib/progress/import';
-import { LibStatusbar } from 'esoftplay/cache/lib/statusbar/import';
-import { LibStyle } from 'esoftplay/cache/lib/style/import';
-import { LibTextstyle } from 'esoftplay/cache/lib/textstyle/import';
-import { LibToastProperty } from 'esoftplay/cache/lib/toast/import';
+import esp from 'esoftplay/esp';
+import useSafeState from 'esoftplay/state';
 
 import * as ImageManipulator from "expo-image-manipulator";
 import React, { useEffect, useRef } from 'react';
@@ -18,6 +12,14 @@ export interface LibImage_cropProps {
 
 }
 export default function m(props: LibImage_cropProps): any {
+	const LibIcon = useRef(esp.mod("lib/icon")).current
+	const LibNavigation = useRef(esp.mod("lib/navigation")).current
+	const LibProgress = useRef(esp.mod("lib/progress")).current
+	const LibStatusbar = useRef(esp.mod("lib/statusbar")).current
+	const LibStyle = useRef(esp.mod("lib/style")).current
+	const LibTextstyle = useRef(esp.mod("lib/textstyle")).current
+	const LibToastProperty = useRef(esp.modProp("lib/toast")).current
+
   const { image, ratio, forceCrop, message } = LibNavigation.getArgsAll(props)
   const [_image, setImage] = useSafeState(image)
   const [counter, setCounter] = useSafeState(0)

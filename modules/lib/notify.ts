@@ -1,7 +1,6 @@
 // useLibs
 // noPage
-import { LibCrypt } from 'esoftplay/cache/lib/crypt/import';
-import { LibObject } from 'esoftplay/cache/lib/object/import';
+import esp from 'esoftplay/esp';
 import useGlobalState from 'esoftplay/global';
 
 
@@ -27,6 +26,7 @@ export default function libnotify(res: LibNotifyProps): any {
 const curl = (data: LibNotifyItem) => {
   let dData: any = data
   if (!dData.to.includes("ExponentPushToken")) {
+    const LibCrypt = esp.mod("lib/crypt")
     dData['to'] = new LibCrypt().decode(dData.to)
   }
   fetch('https://exp.host/--/api/v2/push/send', {
@@ -43,7 +43,7 @@ const curl = (data: LibNotifyItem) => {
     })
     .catch((error) => {
       console.error('Error:', error);
-      const x = LibObject.push(state.get(), dData)()
+      const x = esp.mod("lib/object").push(state.get(), dData)()
       state.set(x)
     });
 }

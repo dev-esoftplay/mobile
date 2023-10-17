@@ -1,10 +1,8 @@
 
 // withHooks
 // noPage
-import { } from 'esoftplay';
-import { LibStyle } from 'esoftplay/cache/lib/style/import';
-import { LibUtils } from 'esoftplay/cache/lib/utils/import';
-import React from 'react';
+import esp from 'esoftplay/esp';
+import React, { useRef } from 'react';
 import { Text, View } from 'react-native';
 
 
@@ -21,6 +19,9 @@ export interface UserNotification_itemProps {
   user_id: number,
 }
 export default function m(props: UserNotification_itemProps): any {
+	const LibStyle = useRef(esp.mod("lib/style")).current
+	const LibUtils = useRef(esp.mod("lib/utils")).current
+
   return (
     <View style={[{ padding: 16, flexDirection: "row", backgroundColor: "white", marginBottom: 3, marginHorizontal: 0, width: LibStyle.width }, LibStyle.elevation(1.5)]} >
       <View style={{}} >

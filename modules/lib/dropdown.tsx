@@ -1,6 +1,5 @@
 // withHooks
 // noPage
-import { LibStyle } from 'esoftplay/cache/lib/style/import';
 import esp from 'esoftplay/esp';
 import React, { useEffect, useRef, useState } from "react";
 import { FlatList, Modal, Platform, Pressable, TextInput, View, ViewProps } from "react-native";
@@ -26,6 +25,8 @@ export interface LibDropdownProps {
 }
 
 export default function m(props: LibDropdownProps) {
+  const LibStyle = useRef(esp.mod("lib/style")).current
+
   const MAX_HEIGHT = props?.maxPopupHeight || 140;
   const [currentValue, setCurrentValue] = useState<LibDropdownOption>();
   const DropdownRef = useRef<View>(null);
@@ -59,6 +60,7 @@ export default function m(props: LibDropdownProps) {
         <TextInput
           pointerEvents="none"
           editable={false}
+          //@ts-ignore
           style={[{ height: 40, borderWidth: 1, borderRadius: 2, borderColor: '#ccc' }, Platform.OS == 'web' ? { outlineWidth: 0 } : {}, props?.style]}
           placeholder={props?.label || esp.lang("lib/dropdown", "select")}
           value={currentValue?.value}
