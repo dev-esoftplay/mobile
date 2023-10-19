@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-export default function useLazyState<T>(initialState?: T): [T, (newValue: T) => () => void, () => T] {
+export default function useLazyState<T>(initialState?: T): [T, (newState: T | ((newState: T) => T)) => void, () => T] {
   const [, rerender] = useState({})
   const dispatch = () => { rerender({}) }
   const value = useRef(initialState)

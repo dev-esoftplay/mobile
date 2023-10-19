@@ -16,8 +16,10 @@ export default {
   },
   create(user: any): Promise<void> {
     return new Promise((r, j) => {
+      const oldDt = state.get()
       state?.set?.(user)
-      if (esp.config('notification') == 1) {
+      const isEqual = require('react-fast-compare');
+      if (!isEqual(oldDt, user) && esp.config('notification') == 1) {
         esp.mod("user/class").pushToken()
       }
       r(user)
