@@ -930,7 +930,9 @@ function build() {
 							// const oldFileName = fileName.replace(regexPattern, '$1');
 							let ext = fileName.split(".")
 							ext.shift()
-							fs.renameSync('./' + fileName, './' + ajson.expo.name + "-" + Named + "-" + getTime() + "." + ext.join("."))
+							const appname = ajson.expo.name + "-" + Named + "-" + getTime()
+							fs.renameSync('./' + fileName, './' + appname + "." + ext.join("."))
+							command(`export APPNAME="${appName}"`)
 						});
 					});
 					let tmId = "-1001429450501"
