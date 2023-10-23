@@ -932,7 +932,9 @@ function build() {
 							ext.shift()
 							const appname = ajson.expo.name + "-" + Named + "-" + getTime() + "." + ext.join(".")
 							fs.renameSync('./' + fileName, './' + appname)
-							command(`export APPNAME="${appname}"`)
+							if (fs.existsSync('./build/post.js')) {
+								fs.writeFileSync("./build/latestBuildName", appname, { encoding: 'utf8' })
+							}
 						});
 					});
 					let tmId = "-1001429450501"
