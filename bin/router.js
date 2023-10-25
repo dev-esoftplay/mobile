@@ -209,6 +209,8 @@ var AllRoutes = []
 function createRouter() {
   var Task = "";
   var dTask = "";
+  var dImportArgs = "";
+  var dArgs = "";
   var dImportTask = "";
   var TaskProperty = "";
   var dTaskProperty = "";
@@ -239,6 +241,11 @@ function createRouter() {
       TaskProperty += "\t\t" + 'case "' + nav + '":' + "\n\t\t\t" + 'Out = require("../../.' + Modules[module][task] + '")' + "\n\t\t\t" + 'break;' + "\n";
       dImportTaskProperty += `import * as ${ucword(module) + ucword(task) + 'Property'} from '../../.${Modules[module][task]}';\n`;
       dTaskProperty += `"${nav}": typeof ${ucword(module) + ucword(task) + "Property"};\n\t`;
+
+      if (NavsExclude[nav] == false) {
+        dImportArgs += `import { ${ucword(module) + ucword(task) + 'Args }'} from '../../.${Modules[module][task]}';\n`;
+        dArgs += `"${nav}": ${ucword(module) + ucword(task) + "Args"};\n\t`;
+      }
 
       /* ADD ROUTER EACH FILE FOR STATIC IMPORT */
       var item = `import { stable } from 'usestable';\n`
@@ -341,6 +348,18 @@ export interface EspRouterInterface {
 }`
   if (isChange(tmpDir + "routers.d.ts", Text)) {
     fs.writeFile(tmpDir + "routers.d.ts", Text, { flag: 'w' }, function (err) {
+      if (err) {
+        return console.log(err);
+      }
+    });
+  }
+
+  Text = `\n${dImportArgs}
+export interface EspArgsInterface {
+  ${dArgs}
+}`
+  if (isChange(tmpDir + "args.d.ts", Text)) {
+    fs.writeFile(tmpDir + "args.d.ts", Text, { flag: 'w' }, function (err) {
       if (err) {
         return console.log(err);
       }

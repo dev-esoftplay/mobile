@@ -2,8 +2,10 @@
 // withObject
 import { CommonActions, StackActions } from '@react-navigation/native';
 import { LibNavigationRoutes } from 'esoftplay';
+import { EspArgsInterface } from 'esoftplay/cache/args';
 import { UserClass } from 'esoftplay/cache/user/class/import';
 import { UserRoutes } from 'esoftplay/cache/user/routes/import';
+
 import esp from 'esoftplay/esp';
 import React from "react";
 
@@ -35,7 +37,7 @@ export default {
     }
     return props?.route?.params?.[key] || defOutput;
   },
-  getArgsAll<S>(props: any, defOutput?: any): S {
+  getArgsAll<S extends keyof EspArgsInterface>(props: any, defOutput?: any): EspArgsInterface[S] {
     if (defOutput == undefined) {
       defOutput = "";
     }
@@ -61,7 +63,8 @@ export default {
       delete this._redirect[key]
     }
   },
-  navigate<S>(route: LibNavigationRoutes, params?: S): void {
+  /* <T  EspRouterInterface>(path: T): EspRouterInterface[T] { */
+  navigate<S extends keyof EspArgsInterface>(route: S, params?: EspArgsInterface[S]): void {
     this._ref?.navigate?.(route, params)
   },
   getResultKey(props: any): number {
@@ -85,7 +88,7 @@ export default {
     }
     this.back()
   },
-  navigateForResult<S>(route: LibNavigationRoutes, params?: S | any, key?: number): Promise<any> {
+  navigateForResult<S extends keyof EspArgsInterface>(route: S, params?: EspArgsInterface[S], key?: number): Promise<any> {
     if (!key) {
       key = 1
     }
@@ -102,12 +105,12 @@ export default {
       this.push(route, params)
     })
   },
-  replace<S>(route: LibNavigationRoutes, params?: any): void {
+  replace<S extends keyof EspArgsInterface>(route: S, params?: EspArgsInterface[S]): void {
     this._ref.dispatch(
       StackActions.replace(route, params)
     )
   },
-  push<S>(route: LibNavigationRoutes, params?: any): void {
+  push<S extends keyof EspArgsInterface>(route: S, params?: EspArgsInterface[S]): void {
     this._ref?.dispatch?.(
       StackActions.push(
         route,
