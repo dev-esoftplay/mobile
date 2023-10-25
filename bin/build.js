@@ -39,6 +39,8 @@ if (fs.existsSync(packjson)) {
 			"esoftplay-log",
 			"esoftplay-market",
 			"esoftplay-ppob",
+			"esoftplay-web",
+			"esoftplay-web-pwa"
 		]
 		fs.writeFile(packjson, JSON.stringify($package, null, 2), (err) => {
 			if (err) throw err;
