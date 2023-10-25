@@ -1,34 +1,32 @@
 import { useEffect, useRef, useState } from 'react';
 
-export default function useLazyState<T>(initialState?: T): [T, (newState: T | ((newState: T) => T)) => void, () => T] {
-  const [, rerender] = useState({})
-  const dispatch = () => { rerender({}) }
-  const value = useRef(initialState)
-  const isMounted = useRef(true)
+export default function useLazyState<T>(initialState?: T): [T, (newValue: T | ((prev: T) => T)) => () => void, () => T] {
+  const [, rerender] = useState({});
+  const dispatch = () => rerender({});
+  const value = useRef<T>(initialState as T);
+  const isMounted = useRef(true);
 
-  const getter = () => {
-    return value.current
-  }
-
-  const setter = (newValue: T) => {
+  const setter = (newValue: T | ((prev: T) => T)) => {
     if (isMounted.current) {
-      if (typeof newValue == 'function') {
-        value.current = newValue(value.current)
+      if (typeof newValue === 'function') {
+        value.current = (newValue as (prev: T) => T)(value.current);
       } else {
         value.current = newValue;
       }
     }
     return () => {
       if (isMounted.current) {
-        dispatch()
+        dispatch();
       }
-    }
-  }
+    };
+  };
 
   useEffect(() => {
-    isMounted.current = true
-    return () => { isMounted.current = false }
-  }, [])
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
-  return [value.current, setter, getter]
+  return [value.current, setter, () => value.current];
 }

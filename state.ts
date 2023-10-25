@@ -4,23 +4,23 @@ type useSafeStateReturn<T> = [T, (newState: T | ((newState: T) => T)) => void, (
 
 export default function useSafeState<T = any>(defaultValue?: T): useSafeStateReturn<T> {
   const isMountedRef = useRef<boolean>(true);
-  const valueRef = useRef(defaultValue)
-  const [, rerender] = useState({})
+  const valueRef = useRef<T>(defaultValue as T);
+  const [, rerender] = useState({});
 
-  const updateState = useCallback((value: T | undefined) => {
+  const updateState = useCallback((value: T | ((prevState: T) => T)) => {
     if (isMountedRef.current) {
-      if (typeof value == 'function') {
-        valueRef.current = value(valueRef.current)
+      if (typeof value === 'function') {
+        valueRef.current = (value as (prevState: T) => T)(valueRef.current);
       } else {
         valueRef.current = value;
       }
-      rerender({})
+      rerender({});
     }
   }, []);
 
   const getter = () => {
-    return valueRef.current
-  }
+    return valueRef.current;
+  };
 
   useEffect(() => {
     isMountedRef.current = true;
