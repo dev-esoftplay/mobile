@@ -480,6 +480,7 @@ function publish(notes) {
 	jsEng(appdebug, true)
 	jsEng(applive, true)
 	let status = "-"
+	let isCustomServer = false
 	let ajson = readToJSON(appjson)
 	let pack = readToJSON(packjson)
 	if (fs.existsSync(confjson)) {
@@ -499,6 +500,9 @@ function publish(notes) {
 		}
 		if (fs.existsSync(appdebug)) {
 			adebug = readToJSON(appdebug)
+		}
+		if (ajson.expo.updates.url) {
+			isCustomServer = true
 		}
 		if (clive) {
 			if (clive.config.domain == cjson.config.domain) {
@@ -565,38 +569,102 @@ function publish(notes) {
 		ajson.config.publish_id = last_id + 1
 		fs.writeFileSync(appjson, JSON.stringify(ajson, undefined, 2))
 		consoleSucces("start publishing " + status.toUpperCase() + " - PUBLISH_ID : " + (last_id + 1))
-		command("expo p")
-		consoleSucces("Berhasil")
-		const os = require('os')
-		var d = new Date();
-		d = new Date(d.getTime() - 3000000);
-		var date_format_str = d.getFullYear().toString() + "-" + ((d.getMonth() + 1).toString().length == 2 ? (d.getMonth() + 1).toString() : "0" + (d.getMonth() + 1).toString()) + "-" + (d.getDate().toString().length == 2 ? d.getDate().toString() : "0" + d.getDate().toString());
-		let stringBuilder = "#" + ajson.expo.slug + "\n" + cjson.config.domain + "\n" + os.userInfo().username + '@' + os.hostname() + "\n" + date_format_str + "\nsdk: " + pack.dependencies.expo + "\nruntimeVersion: " + ajson.expo.runtimeVersion
-		stringBuilder += "\nid: " + (last_id + 1)
-		let esplibs = Object.keys(pack.dependencies).filter((key) => key.includes("esoftplay"))
-		esplibs.forEach((key) => {
-			stringBuilder += ("\n" + key + ": " + pack.dependencies[key])
-		})
-		const { exec } = require('child_process');
-		exec("publisher=$(npx expo whoami &); echo $publisher;", (error, stdout, stderr) => {
-			if (error) {
-				console.error(`exec error: ${error}`);
-				return;
+		if (isCustomServer) {
+			if (!process.env.OTA_DIR) {
+				consoleError("Environtment variable OTA_DIR is not exist, please add OTA_DIR at .bashrc or profiles file!")
+				return
 			}
-			let accountName = stdout.trim();
-			stringBuilder += "\npublisher: @" + accountName + "\n"
-			stringBuilder += (notes != '' ? ("\n\n- " + notes) : '')
-			tm(stringBuilder)
-			if (notes.startsWith('*') && ajson.config.publish_id) {
-				const config = readToJSON(confjson).config;
-				const ajson = readToJSON(appjson);
-				const url = config.publish_uri + ajson.config.publish_id
-				const fetch = require('node-fetch')
-				console.log("\n\nPROCESSING FORCE UPDATE")
-				fetch(url).then((res) => JSON.stringify(res.json(), undefined, 2)).then(consoleSucces)
-			}
-		});
+			var out = false
+			const rl = readline.createInterface({
+				input: process.stdin,
+				output: process.stdout
+			});
 
+			rl.question(`
+  --- Detail Publish ---
+
+  Nama Aplikasi  : ${ajson.expo.name}
+  isDebug        : ${cjson.config.isDebug}
+  runtimeVersion : ${ajson.expo.runtimeVersion}
+  
+  Pastikan data sudah benar sebelum anda melanjutkan?(y/n)
+
+`, function (input) {
+				out = input
+				rl.close();
+			});
+
+			rl.on("close", function () {
+				if (out && out.toLowerCase() == 'y') {
+					command("rm -rf ./dist && esp start && currentPath=$(pwd) && cd $OTA_DIR && npm run publish $currentPath && cd $currentPath && rm -rf ./dist")
+					consoleSucces("Berhasil")
+					const os = require('os')
+					var d = new Date();
+					d = new Date(d.getTime() - 3000000);
+					var date_format_str = d.getFullYear().toString() + "-" + ((d.getMonth() + 1).toString().length == 2 ? (d.getMonth() + 1).toString() : "0" + (d.getMonth() + 1).toString()) + "-" + (d.getDate().toString().length == 2 ? d.getDate().toString() : "0" + d.getDate().toString());
+					let stringBuilder = "#" + ajson.expo.slug + "\n" + cjson.config.domain + "\n" + os.userInfo().username + '@' + os.hostname() + "\n" + date_format_str + "\nsdk: " + pack.dependencies.expo + "\nruntimeVersion: " + ajson.expo.runtimeVersion
+					stringBuilder += "\nid: " + (last_id + 1)
+					let esplibs = Object.keys(pack.dependencies).filter((key) => key.includes("esoftplay"))
+					esplibs.forEach((key) => {
+						stringBuilder += ("\n" + key + ": " + pack.dependencies[key])
+					})
+					const { exec } = require('child_process');
+					exec("publisher=$(npx expo whoami &); echo $publisher;", (error, stdout, stderr) => {
+						if (error) {
+							console.error(`exec error: ${error}`);
+							return;
+						}
+						let accountName = stdout.trim();
+						stringBuilder += "\npublisher: @" + accountName + "\n"
+						stringBuilder += (notes != '' ? ("\n\n- " + notes) : '')
+						tm(stringBuilder)
+						if (notes.startsWith('*') && ajson.config.publish_id) {
+							const config = readToJSON(confjson).config;
+							const ajson = readToJSON(appjson);
+							const url = config.publish_uri + ajson.config.publish_id
+							const fetch = require('node-fetch')
+							console.log("\n\nPROCESSING FORCE UPDATE")
+							fetch(url).then((res) => JSON.stringify(res.json(), undefined, 2)).then(consoleSucces)
+						}
+					});
+				} else {
+					consoleError("Build Canceled")
+				}
+			});
+			return
+		} else {
+			command("expo p")
+			consoleSucces("Berhasil")
+			const os = require('os')
+			var d = new Date();
+			d = new Date(d.getTime() - 3000000);
+			var date_format_str = d.getFullYear().toString() + "-" + ((d.getMonth() + 1).toString().length == 2 ? (d.getMonth() + 1).toString() : "0" + (d.getMonth() + 1).toString()) + "-" + (d.getDate().toString().length == 2 ? d.getDate().toString() : "0" + d.getDate().toString());
+			let stringBuilder = "#" + ajson.expo.slug + "\n" + cjson.config.domain + "\n" + os.userInfo().username + '@' + os.hostname() + "\n" + date_format_str + "\nsdk: " + pack.dependencies.expo + "\nruntimeVersion: " + ajson.expo.runtimeVersion
+			stringBuilder += "\nid: " + (last_id + 1)
+			let esplibs = Object.keys(pack.dependencies).filter((key) => key.includes("esoftplay"))
+			esplibs.forEach((key) => {
+				stringBuilder += ("\n" + key + ": " + pack.dependencies[key])
+			})
+			const { exec } = require('child_process');
+			exec("publisher=$(npx expo whoami &); echo $publisher;", (error, stdout, stderr) => {
+				if (error) {
+					console.error(`exec error: ${error}`);
+					return;
+				}
+				let accountName = stdout.trim();
+				stringBuilder += "\npublisher: @" + accountName + "\n"
+				stringBuilder += (notes != '' ? ("\n\n- " + notes) : '')
+				tm(stringBuilder)
+				if (notes.startsWith('*') && ajson.config.publish_id) {
+					const config = readToJSON(confjson).config;
+					const ajson = readToJSON(appjson);
+					const url = config.publish_uri + ajson.config.publish_id
+					const fetch = require('node-fetch')
+					console.log("\n\nPROCESSING FORCE UPDATE")
+					fetch(url).then((res) => JSON.stringify(res.json(), undefined, 2)).then(consoleSucces)
+				}
+			});
+		}
 	}
 }
 
