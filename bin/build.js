@@ -28,7 +28,7 @@ if (fs.existsSync(packjson)) {
 	/* ADD SCRIPTS.PRESTART AND SCRIPTS.POSTSTOP */
 
 	if (args[0] == "install") {
-		$package.scripts.start = "esp start && expo start --dev-client"
+		$package.scripts.start = "esp start && npx expo start --dev-client"
 		$package.trustedDependencies = [
 			"esoftplay",
 			"esoftplay-android-print",
