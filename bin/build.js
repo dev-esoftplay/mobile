@@ -89,7 +89,7 @@ if (fs.existsSync(packjson)) {
 			try {
 				$appjson = JSON.parse(fs.readFileSync(appjson, 'utf8')) || {};
 			} catch (error) { }
-		if (!$appjson.expo.hasOwnProperty('runtimeVersion')) {
+		if (!$appjson?.expo?.hasOwnProperty?.('runtimeVersion')) {
 			$appjson.expo.runtimeVersion = "1"
 			$appjson.expo.android = {
 				"package": "com.domain",
