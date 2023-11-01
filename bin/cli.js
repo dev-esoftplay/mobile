@@ -829,6 +829,13 @@ function configAvailable(enabled) {
 		} else {
 			_git = _git.replace(notignore, ignore)
 		}
+		var ignore = "code-signing/"
+		var notignore = "#code-signing/"
+		if (enabled) {
+			_git = _git.replace(ignore, notignore)
+		} else {
+			_git = _git.replace(notignore, ignore)
+		}
 		fs.writeFileSync(gitignore, _git, { encoding: 'utf8' })
 	} else {
 		consoleError(gitignore)
