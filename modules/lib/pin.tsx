@@ -2,15 +2,15 @@
 // noPage
 
 import React, { useEffect, useRef, useState } from 'react';
-import { TextInput, View } from 'react-native';
+import { TextInput, View, ViewStyle } from 'react-native';
 
 export interface LibPinProps {
   length: number,
   onChangePin: (pin: string) => void
-  boxStyle?: any,
+  boxStyle?: ViewStyle,
   overrideKeyboard?: boolean,
   pinValue?: string,
-  pinStyle?: any
+  pinStyle?: ViewStyle
 }
 export default function m(props: LibPinProps): any {
   const [pin, setPin] = useState<string[]>([])

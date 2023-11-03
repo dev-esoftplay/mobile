@@ -2,7 +2,7 @@
 
 
 // 
-import { FlashList } from "@shopify/flash-list";
+import { ContentStyle, FlashList } from "@shopify/flash-list";
 import { LibComponent } from 'esoftplay/cache/lib/component/import';
 import React from "react";
 import { View } from 'react-native';
@@ -41,7 +41,7 @@ export interface LibListProps {
   renderFooter?: () => any,
   renderItem: (item: any, index: number) => any,
   viewabilityConfig?: any,
-  style?: any,
+  style?: ContentStyle,
   removeClippedSubviews?: boolean,
 }
 

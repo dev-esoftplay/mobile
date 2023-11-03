@@ -3,14 +3,14 @@
 
 import { useIsFocused } from '@react-navigation/native';
 import React, { useEffect } from 'react';
-import { InteractionManager, View } from 'react-native';
+import { InteractionManager, View, ViewStyle } from 'react-native';
 
 export interface LibFocusProps {
   isFocused?: boolean
   blurView?: any,
   onFocus?: () => void,
   onBlur?: () => void,
-  style?: any
+  style?: ViewStyle,
   children?: any
 }
 export interface LibFocusState {

@@ -1,6 +1,7 @@
 // withHooks
 // noPage
 import React from 'react';
+import { ImageStyle } from 'react-native';
 import FastImage from 'react-native-fast-image';
 
 export interface LibPictureSource {
@@ -8,7 +9,7 @@ export interface LibPictureSource {
 }
 export interface LibPictureProps {
   source: LibPictureSource | any,
-  style: any,
+  style: ImageStyle,
   resizeMode?: "contain" | "cover",
   noCache?: boolean,
   onError?: () => void,

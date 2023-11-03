@@ -1,11 +1,11 @@
 // noPage
 import { LibComponent } from 'esoftplay/cache/lib/component/import';
 import React from "react";
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet, Text, TextStyle } from "react-native";
 
 export interface LibTextstyleProps {
   textStyle: "largeTitle" | "title1" | "title2" | "title3" | "headline" | "body" | "callout" | "subhead" | "footnote" | "caption1" | "caption2" | "m_h1" | "m_h2" | "m_h3" | "m_h4" | "m_h5" | "m_h6" | "m_subtitle1" | "m_subtitle2" | "m_body1" | "m_body2" | "m_button" | "m_caption" | "m_overline",
-  style?: any,
+  style?: TextStyle,
   children?: string | "",
   numberOfLines?: number,
   ellipsizeMode?: string,

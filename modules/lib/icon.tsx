@@ -26,85 +26,86 @@ import {
 } from '@expo/vector-icons/build/esoftplay_icons';
 import { LibComponent } from 'esoftplay/cache/lib/component/import';
 import React from 'react';
+import { TextStyle } from 'react-native';
 
 export interface LibAntDesignIconProps {
   name: AntDesignTypes,
   size?: number,
   color?: string,
-  style?: any
+  style?: TextStyle
 }
 export interface LibEvilIconsIconProps {
   name: EvilIconsTypes,
   size?: number,
   color?: string,
-  style?: any
+  style?: TextStyle
 }
 export interface LibFeatherIconProps {
   name: FeatherTypes,
   size?: number,
   color?: string,
-  style?: any
+  style?: TextStyle
 }
 export interface LibFontAwesomeIconProps {
   name: FontAwesomeTypes,
   size?: number,
   color?: string,
-  style?: any
+  style?: TextStyle
 }
 export interface LibFontistoIconProps {
   name: FontistoTypes,
   size?: number,
   color?: string,
-  style?: any
+  style?: TextStyle
 }
 export interface LibFoundationIconProps {
   name: FoundationTypes,
   size?: number,
   color?: string,
-  style?: any
+  style?: TextStyle
 }
 export interface LibMaterialIconsIconProps {
   name: MaterialIconsTypes,
   size?: number,
   color?: string,
-  style?: any
+  style?: TextStyle
 }
 export interface LibEntypoIconProps {
   name: EntypoTypes,
   size?: number,
   color?: string,
-  style?: any
+  style?: TextStyle
 }
 export interface LibOcticonsIconProps {
   name: OcticonsTypes,
   size?: number,
   color?: string,
-  style?: any
+  style?: TextStyle
 }
 export interface LibZocialIconProps {
   name: ZocialTypes,
   size?: number,
   color?: string,
-  style?: any
+  style?: TextStyle
 }
 export interface LibSimpleLineIconProps {
   name: SimpleLineIconsTypes,
   size?: number,
   color?: string,
-  style?: any
+  style?: TextStyle
 }
 export interface LibIoniconsProps {
   name: IoniconsTypes,
   size?: number,
   color?: string,
-  style?: any
+  style?: TextStyle
 }
 
 export interface LibIconProps {
   name: MaterialCommunityIconsTypes,
   size?: number,
   color?: string,
-  style?: any
+  style?: TextStyle
 }
 
 export type LibIconStyle = MaterialCommunityIconsTypes

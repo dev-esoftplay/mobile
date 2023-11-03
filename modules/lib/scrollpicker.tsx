@@ -6,14 +6,15 @@ import {
   Dimensions,
   Platform, ScrollView, StyleSheet,
   Text,
-  View
+  View,
+  ViewStyle
 } from 'react-native';
 
 export interface LibScrollpickerProps {
   itemHeight: number;
   wrapperHeight: number;
   selectedIndex: number;
-  style?: any;
+  style?: ViewStyle;
   highlightColor: string;
   wrapperColor: string;
   renderItem: (item: any, index: number, isSelected: boolean) => any;

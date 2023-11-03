@@ -1,8 +1,7 @@
 // noPage
-import { FlashList } from "@shopify/flash-list";
+import { ContentStyle, FlashList } from "@shopify/flash-list";
 import { LibComponent } from 'esoftplay/cache/lib/component/import';
 import { LibCurl } from 'esoftplay/cache/lib/curl/import';
-import { LibListItemLayout } from 'esoftplay/cache/lib/list/import';
 import { LibLoading } from 'esoftplay/cache/lib/loading/import';
 import { LibStyle } from 'esoftplay/cache/lib/style/import';
 import { LibTextstyle } from 'esoftplay/cache/lib/textstyle/import';
@@ -54,7 +53,7 @@ export interface LibInfiniteProps {
   renderItem: (item: any, index: number) => any,
   viewabilityConfig?: any,
   removeClippedSubviews?: boolean,
-  style?: any
+  style?: ContentStyle
 }
 
 export interface LibInfiniteState {
