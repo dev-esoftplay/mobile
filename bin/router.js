@@ -162,6 +162,12 @@ if (isChange(tmpDir + "assets.js", Text))
 /* CREATE INDEX.D.TS */
 function createIndex() {
   let importer = []
+  importer.push(`import useGlobalState from 'esoftplay/global'`)
+  importer.push(`import usePersistState from 'esoftplay/persist'`)
+  importer.push(`import useGlobalSubscriber from 'esoftplay/subscribe'`)
+  importer.push(`import useSafeState from 'esoftplay/state'`)
+  importer.push(`import useLazyState from 'esoftplay/lazy'`)
+  importer.push(`import Storage from 'esoftplay/storage'`)
   AllRoutes.forEach((nav) => {
     const [module, task] = nav.split('/')
     const comp = ucword(module) + ucword(task)
