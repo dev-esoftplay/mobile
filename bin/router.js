@@ -391,11 +391,15 @@ export interface EspArgsInterface {
   let importer = []
   let screens = []
 
+  AllRoutes.forEach((nav) => {
+    const [module, task] = nav.split('/')
+    const comp = ucword(module) + ucword(task)
+    importer.push(`import { ${comp} } from ${'"esoftplay/cache/' + module + '/' + task + '/import"'} `)
+  })
   Navigations.forEach((nav) => {
     const orientation = NavsOrientation[nav]
     const [module, task] = nav.split('/')
     const comp = ucword(module) + ucword(task)
-    importer.push(`import { ${comp} } from ${'"esoftplay/cache/' + module + '/' + task + '/import"'} `)
     if (orientation)
       screens.push("\t\t\t\t" + "<Stack.Screen name={\"" + nav + "\"} options={{ orientation: '" + orientation + "' }} component={" + comp + "} />")
     else
