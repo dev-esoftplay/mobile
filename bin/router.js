@@ -161,11 +161,17 @@ if (isChange(tmpDir + "assets.js", Text))
 
 /* CREATE INDEX.D.TS */
 function createIndex() {
+  let importer = []
+  AllRoutes.forEach((nav) => {
+    const [module, task] = nav.split('/')
+    const comp = ucword(module) + ucword(task)
+    importer.push(`import { ${comp} } from ${'"esoftplay/cache/' + module + '/' + task + '/import"'} `)
+  })
   var PreText = ''
   var Text = `
 import { Component } from 'react';
 import { AntDesignTypes, EntypoTypes, EvilIconsTypes, FeatherTypes, FontAwesomeTypes, FontistoTypes, FoundationTypes, IoniconsTypes, MaterialCommunityIconsTypes, MaterialIconsTypes, OcticonsTypes, SimpleLineIconsTypes, ZocialTypes, } from '@expo/vector-icons/build/esoftplay_icons'
-
+${importer.join('\n')}
 declare module "esoftplay" {
   function applyStyle<T>(style: T): T;
   `;
@@ -391,15 +397,12 @@ export interface EspArgsInterface {
   let importer = []
   let screens = []
 
-  AllRoutes.forEach((nav) => {
-    const [module, task] = nav.split('/')
-    const comp = ucword(module) + ucword(task)
-    importer.push(`import { ${comp} } from ${'"esoftplay/cache/' + module + '/' + task + '/import"'} `)
-  })
+
   Navigations.forEach((nav) => {
     const orientation = NavsOrientation[nav]
     const [module, task] = nav.split('/')
     const comp = ucword(module) + ucword(task)
+    importer.push(`import { ${comp} } from ${'"esoftplay/cache/' + module + '/' + task + '/import"'} `)
     if (orientation)
       screens.push("\t\t\t\t" + "<Stack.Screen name={\"" + nav + "\"} options={{ orientation: '" + orientation + "' }} component={" + comp + "} />")
     else
