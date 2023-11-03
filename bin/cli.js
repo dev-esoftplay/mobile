@@ -570,9 +570,17 @@ function publish(notes) {
 		fs.writeFileSync(appjson, JSON.stringify(ajson, undefined, 2))
 		consoleSucces("start publishing " + status.toUpperCase() + " - PUBLISH_ID : " + (last_id + 1))
 		if (isCustomServer) {
-			if (!process.env.OTA_DIR) {
-				consoleError("Environtment variable OTA_DIR is not exist, please add OTA_DIR at .bashrc or profiles file!")
+			if (!fs.existsSync('/var/www/html/ota/')) {
+				consoleError("ota not found at /var/www/html/ota, please clone it first!")
 				return
+			}
+			const isUpdateExist = fs.existsSync('/var/www/html/ota/updates/' + ajson.expo.runtimeVersion)
+			let currentUpdate;
+			let date_format_str;
+			if (isUpdateExist) {
+				currentUpdate = fs.readdirSync('/var/www/html/ota/updates/' + ajson.expo.runtimeVersion)[0]
+				var d = new Date(currentUpdate * 1000).toISOString();
+				date_format_str = d
 			}
 			var out = false
 			const rl = readline.createInterface({
@@ -581,22 +589,21 @@ function publish(notes) {
 			});
 
 			rl.question(`
-  --- Detail Publish ---
+--- Detail Publish ---
+Nama Aplikasi  : ${ajson.expo.name}
+isDebug        : ${cjson.config.isDebug}
+runtimeVersion : ${ajson.expo.runtimeVersion}
+Update terakhir: ${currentUpdate ? date_format_str : '- not found'}
 
-  Nama Aplikasi  : ${ajson.expo.name}
-  isDebug        : ${cjson.config.isDebug}
-  runtimeVersion : ${ajson.expo.runtimeVersion}
-  
-  Pastikan data sudah benar sebelum anda melanjutkan?(y/n)
-
-`, function (input) {
-				out = input
-				rl.close();
-			});
+Pastikan data sudah benar sebelum anda melanjutkan, lanjut publish(y/n)?`,
+				function (input) {
+					out = input
+					rl.close();
+				});
 
 			rl.on("close", function () {
 				if (out && out.toLowerCase() == 'y') {
-					command("rm -rf ./dist && esp start && currentPath=$(pwd) && cd $OTA_DIR && npm run publish $currentPath && cd $currentPath && rm -rf ./dist")
+					command("rm -rf ./dist && esp start && currentPath=$(pwd) && cd /var/www/html/ota/ && npm run publish $currentPath \"" + notes + "\" && cd $currentPath && rm -rf ./dist")
 					consoleSucces("Berhasil")
 					const os = require('os')
 					var d = new Date();
