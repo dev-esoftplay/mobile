@@ -73,6 +73,16 @@ export default function moment(date?: string | Date | any) {
       const out = dayjs(_d).format(custom)
       return out
     },
+    serverFormat: (custom: string) => {
+      const _d = resetTimeOffset(_date)
+      const out = dayjs(_d).format(custom)
+      return out
+    },
+    localeFormat: (custom: string, ignoreTimezone?: boolean) => {
+      const _d = _date
+      const out = dayjs(_d).format(custom)
+      return out
+    },
     toDate: () => {
       const out = dayjs(_date).toDate()
       return out
