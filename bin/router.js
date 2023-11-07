@@ -173,6 +173,7 @@ function createIndex() {
     const [module, task] = nav.split('/')
     const comp = ucword(module) + ucword(task)
     importer.push(`import { ${comp} } from ${'"esoftplay/cache/' + module + '/' + task + '/import"'} `)
+    importer.push(`import { * as ${comp}Property } from ${'"esoftplay/cache/' + module + '/' + task + '/import"'} `)
   })
   var PreText = ''
   var Text = `
