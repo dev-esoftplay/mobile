@@ -168,6 +168,7 @@ function createIndex() {
   importer.push(`import useSafeState from 'esoftplay/state'`)
   importer.push(`import useLazyState from 'esoftplay/lazy'`)
   importer.push(`import Storage from 'esoftplay/storage'`)
+  importer.push(`import { createDebounce, createInterval, createTimeout, useDebounce, useInterval, useTimeout } from 'esoftplay/timeout'`)
   AllRoutes.forEach((nav) => {
     const [module, task] = nav.split('/')
     const comp = ucword(module) + ucword(task)
