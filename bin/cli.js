@@ -811,33 +811,32 @@ function buildPrepare(include = true) {
 	}
 }
 
-
 function configAvailable(enabled) {
 	if (fs.existsSync(gitignore)) {
 		let _git = fs.readFileSync(gitignore, 'utf8')
 		var ignore = "config.json"
-		var notignore = "#config.json"
+		var notignore = /\#{1,}config\.json/g
 		if (enabled) {
 			_git = _git.replace(ignore, notignore)
 		} else {
 			_git = _git.replace(notignore, ignore)
 		}
 		var ignore = "config.live.json"
-		var notignore = "#config.live.json"
+		var notignore = /\#{1,}config\.live\.json/g
 		if (enabled) {
 			_git = _git.replace(ignore, notignore)
 		} else {
 			_git = _git.replace(notignore, ignore)
 		}
 		var ignore = "config.debug.json"
-		var notignore = "#config.debug.json"
+		var notignore = /\#{1,}config\.debug\.json/g
 		if (enabled) {
 			_git = _git.replace(ignore, notignore)
 		} else {
 			_git = _git.replace(notignore, ignore)
 		}
 		var ignore = "code-signing/"
-		var notignore = "#code-signing/"
+		var notignore = /\#{1,}code-signing\//g
 		if (enabled) {
 			_git = _git.replace(ignore, notignore)
 		} else {
