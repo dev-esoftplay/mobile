@@ -320,8 +320,6 @@ export default UserIndex`;
 		}
 		let devLibs = [
 			"@babel/core",
-			"babel-plugin-transform-react-native-style-optimizer",
-			"babel-plugin-transform-remove-console",
 			"@types/react",
 			"typescript",
 		]
