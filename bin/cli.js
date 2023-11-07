@@ -812,36 +812,26 @@ function buildPrepare(include = true) {
 }
 
 function configAvailable(enabled) {
+	function replace(_git, ignore, enabled) {
+		if (enabled) {
+			_git = _git.replace('\n' + ignore, '\n#' + ignore)
+		} else {
+			_git = _git.replace('\n#' + ignore, '\n' + ignore)
+		}
+		return _git
+	}
 	if (fs.existsSync(gitignore)) {
 		let _git = fs.readFileSync(gitignore, 'utf8')
-		var ignore = "config.json"
-		var notignore = /\#{1,}config\.json/g
-		if (enabled) {
-			_git = _git.replace(ignore, notignore)
-		} else {
-			_git = _git.replace(notignore, ignore)
-		}
-		var ignore = "config.live.json"
-		var notignore = /\#{1,}config\.live\.json/g
-		if (enabled) {
-			_git = _git.replace(ignore, notignore)
-		} else {
-			_git = _git.replace(notignore, ignore)
-		}
-		var ignore = "config.debug.json"
-		var notignore = /\#{1,}config\.debug\.json/g
-		if (enabled) {
-			_git = _git.replace(ignore, notignore)
-		} else {
-			_git = _git.replace(notignore, ignore)
-		}
-		var ignore = "code-signing/"
-		var notignore = /\#{1,}code-signing\//g
-		if (enabled) {
-			_git = _git.replace(ignore, notignore)
-		} else {
-			_git = _git.replace(notignore, ignore)
-		}
+		const ignores = [
+			"config.json",
+			"config.live.json",
+			"config.debug.json",
+			"code-signing/",
+			"certificate.pem"
+		]
+		ignores.forEach((key) => {
+			_git = replace(_git, key, enabled)
+		})
 		fs.writeFileSync(gitignore, _git, { encoding: 'utf8' })
 	} else {
 		consoleError(gitignore)
