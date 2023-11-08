@@ -332,6 +332,9 @@ export default UserIndex`;
 			expoLib.forEach((exlib) => {
 				if (fs.existsSync("../../node_modules/" + exlib)) {
 					console.log(exlib + " is Exist, Skipped")
+					if (exlib == '@expo/vector-icons') {
+						installExpoLibs.push(exlib)
+					}
 				} else {
 					console.log("⚙⚙⚙ INSTALLING ... " + exlib)
 					installExpoLibs.push(exlib)
