@@ -501,7 +501,7 @@ function publish(notes) {
 		if (fs.existsSync(appdebug)) {
 			adebug = readToJSON(appdebug)
 		}
-		if (ajson.expo.updates.url) {
+		if (ajson.expo.updates.hasOwnProperty('url')) {
 			isCustomServer = true
 		}
 		if (clive) {
