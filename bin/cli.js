@@ -604,7 +604,7 @@ isDebug        : ${cjson.config.isDebug}
 runtimeVersion : ${ajson.expo.runtimeVersion}
 Update terakhir: ${currentUpdate ? date_format_str : '- not found'}
 
-Pastikan data sudah benar sebelum anda melanjutkan, lanjut publish ketikkan ${ajson.expo.runtimeVersion}:`,
+Pastikan data sudah benar sebelum anda melanjutkan, lanjut publish ketikkan runtimeVersion: `,
 				function (input) {
 					out = input
 					rl.close();
