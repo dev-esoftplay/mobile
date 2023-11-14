@@ -579,8 +579,17 @@ function publish(notes) {
 			let date_format_str;
 			if (isUpdateExist) {
 				currentUpdate = fs.readdirSync('/var/www/html/ota/updates/' + ajson.expo.runtimeVersion)[0]
-				var d = new Date(currentUpdate * 1000).toISOString();
-				date_format_str = d
+				let formattedDate = new Date(currentUpdate * 1000).toLocaleString('id', {
+					day: '2-digit',
+					month: 'long',
+					year: 'numeric',
+					hour: '2-digit',
+					minute: '2-digit',
+					second: '2-digit',
+					hour12: false, // Use 24-hour format
+					timeZone: 'Asia/Jakarta'
+				});
+				date_format_str = formattedDate
 			}
 			var out = false
 			const rl = readline.createInterface({
@@ -595,14 +604,14 @@ isDebug        : ${cjson.config.isDebug}
 runtimeVersion : ${ajson.expo.runtimeVersion}
 Update terakhir: ${currentUpdate ? date_format_str : '- not found'}
 
-Pastikan data sudah benar sebelum anda melanjutkan, lanjut publish(y/n)?`,
+Pastikan data sudah benar sebelum anda melanjutkan, lanjut publish ketikkan ${ajson.expo.runtimeVersion}:`,
 				function (input) {
 					out = input
 					rl.close();
 				});
 
 			rl.on("close", function () {
-				if (out && out.toLowerCase() == 'y') {
+				if (out && out == ajson.expo.runtimeVersion) {
 					command("rm -rf ./dist && esp start && currentPath=$(pwd) && cd /var/www/html/ota/ && npm run publish $currentPath \"" + notes + "\" && cd $currentPath && rm -rf ./dist")
 					consoleSucces("Berhasil")
 					const os = require('os')
