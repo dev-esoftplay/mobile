@@ -567,8 +567,6 @@ function publish(notes) {
 			ajson.config = {}
 		}
 		ajson.config.publish_id = last_id + 1
-		fs.writeFileSync(appjson, JSON.stringify(ajson, undefined, 2))
-		consoleSucces("start publishing " + status.toUpperCase() + " - PUBLISH_ID : " + (last_id + 1))
 		if (isCustomServer) {
 			if (!fs.existsSync('/var/www/html/ota/')) {
 				consoleError("ota not found at /var/www/html/ota, please clone it first!")
@@ -604,8 +602,7 @@ isDebug        : ${cjson.config.isDebug}
 runtimeVersion : ${ajson.expo.runtimeVersion}
 Update terakhir: ${currentUpdate ? date_format_str : '- not found'}
 
-Pastikan data sudah benar sebelum anda melanjutkan, 
-lanjut publish ketikkan runtimeVersion: `,
+Pastikan data sudah benar sebelum anda melanjutkan, lanjut publish ketikkan runtimeVersion: `,
 				function (input) {
 					out = input
 					rl.close();
@@ -613,6 +610,8 @@ lanjut publish ketikkan runtimeVersion: `,
 
 			rl.on("close", function () {
 				if (out && out == ajson.expo.runtimeVersion) {
+					fs.writeFileSync(appjson, JSON.stringify(ajson, undefined, 2))
+					consoleSucces("start publishing " + status.toUpperCase() + " - PUBLISH_ID : " + (last_id + 1))
 					command("rm -rf ./dist && esp start && currentPath=$(pwd) && cd /var/www/html/ota/ && npm run publish $currentPath \"" + notes + "\" && cd $currentPath && rm -rf ./dist")
 					consoleSucces("Berhasil")
 					const os = require('os')
@@ -650,6 +649,8 @@ lanjut publish ketikkan runtimeVersion: `,
 			});
 			return
 		} else {
+			fs.writeFileSync(appjson, JSON.stringify(ajson, undefined, 2))
+			consoleSucces("start publishing " + status.toUpperCase() + " - PUBLISH_ID : " + (last_id + 1))
 			command("expo p")
 			consoleSucces("Berhasil")
 			const os = require('os')
