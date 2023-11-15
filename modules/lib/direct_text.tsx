@@ -1,10 +1,10 @@
 // noPage
 import { LibComponent } from 'esoftplay/cache/lib/component/import';
 import React from 'react';
-import { TextInput } from 'react-native';
+import { StyleProp, TextInput, TextStyle } from 'react-native';
 
 export interface LibDirect_textProps {
-  style?: any,
+  style?: StyleProp<TextStyle>,
   initialText?: string
 }
 export interface LibDirect_textState {

@@ -3,7 +3,7 @@
 import { LibComponent } from 'esoftplay/cache/lib/component/import';
 import esp from 'esoftplay/esp';
 import React from "react";
-import { Animated, Dimensions, Linking, Platform } from "react-native";
+import { Animated, Dimensions, Linking, Platform, ViewStyle } from "react-native";
 import { WebView } from 'react-native-webview';
 let { width } = Dimensions.get("window");
 
@@ -24,7 +24,7 @@ export interface LibWebviewProps {
   onMessage?: any,
   bounces?: any,
   onLoadEnd?: any,
-  style?: any,
+  style?: ViewStyle,
   scrollEnabled?: any,
   automaticallyAdjustContentInsets?: any,
   scalesPageToFit?: any,
@@ -43,14 +43,14 @@ class ewebview extends LibComponent<LibWebviewProps, LibWebviewState> {
   _animatedValue: any;
   webview: any;
   heightMessage: any;
-  
+
   static defaultProps = {
     needAnimate: true,
     AnimationDuration: 500,
     defaultHeight: 100,
     needAutoResetHeight: true
   };
-  
+
   constructor(props: LibWebviewProps) {
     super(props);
     this.props = props
@@ -67,7 +67,7 @@ class ewebview extends LibComponent<LibWebviewProps, LibWebviewState> {
     this.resetHeight = this.resetHeight.bind(this)
     this.resetSmallHeight = this.resetSmallHeight.bind(this)
   }
-  
+
   static getDerivedStateFromProps(nextProps, prevState) {
     const config = esp.config();
     return { source: nextProps.source && nextProps.source.hasOwnProperty("html") ? { html: config.webviewOpen + nextProps.source.html + config.webviewClose } : nextProps.source }
@@ -128,7 +128,7 @@ class ewebview extends LibComponent<LibWebviewProps, LibWebviewState> {
       <Animated.View style={{ height: this.state.height, overflow: "hidden" }}>
         <WebView
           {...otherprops}
-          cacheEnabled={false} 
+          cacheEnabled={false}
           ref={(e: any) => this.webview = e}
           source={this.state.source}
           bounces={bounces !== undefined ? bounces : true}

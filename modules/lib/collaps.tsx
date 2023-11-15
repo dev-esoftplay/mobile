@@ -2,7 +2,7 @@
 // noPage
 import useSafeState from 'esoftplay/state';
 import React, { useEffect } from 'react';
-import { Pressable } from 'react-native';
+import { Pressable, ViewStyle } from 'react-native';
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 
@@ -13,7 +13,7 @@ export interface LibCollapsProps {
   header: (isShow: boolean) => any,
   children: any,
   onToggle?: (expanded: boolean) => void,
-  style?: any
+  style?: ViewStyle
 }
 export default function m(props: LibCollapsProps): any {
   const [expand, setExpand] = useSafeState(props.show)
@@ -55,7 +55,7 @@ export default function m(props: LibCollapsProps): any {
 
   return (
     <Animated.View>
-      <Pressable onPress={toggle} style={{ zIndex: 11 }} >
+      <Pressable onPress={toggle} style={{ ...props.style, zIndex: 11 }} >
         {props.header(expand)}
       </Pressable>
       {expand &&

@@ -2,12 +2,12 @@
 // noPage
 import esp from 'esoftplay/esp';
 import React, { useEffect, useMemo, useRef } from 'react';
-import { ScrollView, View } from 'react-native';
+import { ScrollView, StyleProp, View, ViewStyle } from 'react-native';
 
 export interface LibCarrousel_snapProps {
   data: any[]
   align?: 'center' | 'left'
-  style?: any,
+  style?: StyleProp<ViewStyle>,
   maxWidth: number,
   autoCycle?: boolean,
   loop?: boolean,

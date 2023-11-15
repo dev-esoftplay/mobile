@@ -1,7 +1,7 @@
 // noPage
 import { LibComponent } from 'esoftplay/cache/lib/component/import';
 import React from "react";
-import { RefreshControl, ScrollView, View } from "react-native";
+import { RefreshControl, ScrollView, View, ViewStyle } from "react-native";
 
 /*
 Using ScrollView
@@ -29,7 +29,7 @@ var Escroll = esp.mod("lib/scroll")
 
 export interface LibScrollProps {
   bounces?: boolean,
-  style?: any,
+  style?: ViewStyle,
   ItemSeparatorComponent?: any,
   onScroll?: (e: any) => void,
   scrollEventThrottle?: number,

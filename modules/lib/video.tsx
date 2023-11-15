@@ -4,7 +4,7 @@ import { LibStyle } from 'esoftplay/cache/lib/style/import';
 import { LibToastProperty } from 'esoftplay/cache/lib/toast/import';
 import esp from 'esoftplay/esp';
 import React from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View, ViewStyle } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 export interface LibVideoArgs {
@@ -12,7 +12,7 @@ export interface LibVideoArgs {
 }
 export interface LibVideoProps {
   code: string,
-  style?: any
+  style?: ViewStyle
 }
 export default function m(props: LibVideoProps): any {
   const code = props.code

@@ -5,7 +5,7 @@ import { LibTheme } from 'esoftplay/cache/lib/theme/import';
 import { LibUtils } from 'esoftplay/cache/lib/utils/import';
 
 import React from 'react';
-import { Platform, TextInput, View } from 'react-native';
+import { Platform, TextInput, TextStyle, View } from 'react-native';
 
 export interface LibInputProps {
   icon?: (color: string) => any,
@@ -38,7 +38,7 @@ export interface LibInputProps {
   secureTextEntry?: boolean,
   selectTextOnFocus?: boolean,
   selectionColor?: string,
-  style?: any,
+  style?: TextStyle,
   value?: string,
 }
 

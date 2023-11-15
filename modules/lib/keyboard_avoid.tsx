@@ -5,12 +5,12 @@ import NavigationContainerRefContext from '@react-navigation/core/src/Navigation
 import NavigationContext from '@react-navigation/core/src/NavigationContext';
 import type { NavigationProp } from '@react-navigation/core/src/types';
 import React, { useRef, useState } from 'react';
-import { KeyboardAvoidingView, Platform } from 'react-native';
+import { KeyboardAvoidingView, Platform, ViewStyle } from 'react-native';
 
 
 export interface LibKeyboard_avoidProps {
   children?: any,
-  style?: any
+  style?: ViewStyle
 }
 export default function m(props: LibKeyboard_avoidProps): any {
 

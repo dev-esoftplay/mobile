@@ -2,12 +2,13 @@
 // noPage
 import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
+import { StyleProp, ViewStyle } from 'react-native';
 
 export interface LibGradientArgs {
 
 }
 export interface LibGradientProps {
-  style?: any,
+  style?: StyleProp<ViewStyle>,
   children: any,
   direction: "top-to-bottom" | "bottom-to-top" | "left-to-right" | "right-to-left" | "top-left-to-bottom-right" | "bottom-right-to-top-left" | "top-right-to-bottom-left" | "bottom-left-to-top-right",
   colors: string[]

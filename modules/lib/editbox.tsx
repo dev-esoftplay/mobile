@@ -8,7 +8,7 @@ import { LibTheme } from 'esoftplay/cache/lib/theme/import';
 import esp from 'esoftplay/esp';
 import useGlobalState from 'esoftplay/global';
 import React from 'react';
-import { Button, TouchableOpacity, View } from 'react-native';
+import { Button, StyleProp, TextStyle, TouchableOpacity, View } from 'react-native';
 
 export interface ComponentEditboxProps {
   defaultValue?: string,
@@ -36,7 +36,7 @@ export interface ComponentEditboxProps {
   secureTextEntry?: boolean,
   selectTextOnFocus?: boolean,
   selectionColor?: string,
-  style?: any,
+  style?: StyleProp<TextStyle>,
   value?: string,
 }
 
