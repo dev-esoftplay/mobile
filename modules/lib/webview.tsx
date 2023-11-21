@@ -142,11 +142,13 @@ class ewebview extends LibComponent<LibWebviewProps, LibWebviewState> {
           }}
           injectedJavaScript={'window.ReactNativeWebView.postMessage(document.body.scrollWidth+"-"+document.body.scrollHeight)'}
           onLoadEnd={() => {
-            if (this.props.onFinishLoad !== undefined)
-              setTimeout(() => {
+            if (this.props.onFinishLoad !== undefined){
+             const timer = setTimeout(() => {
                 this.setState({ isFinish: true })
                 this.props.onFinishLoad()
+                clearTimeout(timer)
               }, 1000)
+            }
           }}
           style={[{ width: width, height: this.state.height }, style !== undefined ? style : {}]}
           scrollEnabled={scrollEnabled !== undefined ? scrollEnabled : false}

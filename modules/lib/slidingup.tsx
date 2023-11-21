@@ -46,8 +46,9 @@ export default class m extends LibComponent<LibSlidingupProps, LibSlidingupState
     Keyboard.dismiss()
     if (this.props.children) {
       this.setState({ show: true }, () => {
-        setTimeout(() => {
+       const timer = setTimeout(() => {
           this._toggleSubview(true)
+          clearTimeout(timer)
         }, 1);
       })
     }

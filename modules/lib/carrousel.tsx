@@ -205,7 +205,11 @@ export default class m extends LibComponent<LibCarrouselProps, LibCarrouselState
   _onLayout(event: any): void {
     const { height, width } = event.nativeEvent.layout;
     this.setState({ size: { width, height } });
-    setTimeout(() => this._placeCritical(this.state.currentPage), 0);
+    
+    const timer = setTimeout(() => {
+      this._placeCritical(this.state.currentPage)
+      clearTimeout(timer)
+    }, 0);
   }
 
   _clearTimer(): void {

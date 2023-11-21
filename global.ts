@@ -105,6 +105,7 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
           clearTimeout(timeoutFinish)
           timeoutFinish = setTimeout(() => {
             o.onFinish?.()
+            clearTimeout(timeoutFinish)
           }, 50);
         }
       })

@@ -179,10 +179,11 @@ export default class m extends LibComponent<LibInputProps, LibInputState>{
 
   componentDidMount(): void {
     super.componentDidMount()
-    setTimeout(() => {
+   const timer = setTimeout(() => {
       if (this.props.defaultValue) {
         this.setText(this.props.defaultValue)
       }
+      clearTimeout(timer)
     });
   }
 

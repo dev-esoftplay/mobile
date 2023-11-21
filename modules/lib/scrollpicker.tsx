@@ -50,8 +50,9 @@ export default class m extends LibComponent<LibScrollpickerProps, LibScrollpicke
   componentDidMount() {
     super.componentDidMount()
     if (this.props.selectedIndex) {
-      setTimeout(() => {
+     const timer = setTimeout(() => {
         this.scrollToIndex(this.props.selectedIndex);
+        clearTimeout(timer)
       }, 0);
     }
   }

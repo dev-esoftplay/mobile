@@ -37,6 +37,7 @@ export function show(message: string, timeout?: number): void {
   }
   _timeout = setTimeout(() => {
     hide()
+    clearTimeout(_timeout)
   }, timeout || initState.timeout);
 }
 

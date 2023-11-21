@@ -4,6 +4,7 @@ import { LibIcon } from 'esoftplay/cache/lib/icon/import';
 import { LibProgress } from 'esoftplay/cache/lib/progress/import';
 import { LibStyle } from 'esoftplay/cache/lib/style/import';
 import esp from 'esoftplay/esp';
+import { createTimeout } from 'esoftplay/timeout';
 
 import Constants from 'expo-constants';
 import * as Updates from 'expo-updates';
@@ -15,7 +16,12 @@ export interface LibUpdaterProps {
 }
 
 export function install(): void {
-  setTimeout(Updates.reloadAsync)
+  const timeout = createTimeout()
+  timeout.set(() => {
+    Updates?.reloadAsync?.()
+    timeout.clear()
+  }, 100)
+
 }
 
 export function alertInstall(title?: string, msg?: string): void {
@@ -39,14 +45,15 @@ export function check(callback?: (isNew: boolean) => void): void {
   Updates.checkForUpdateAsync().then(({ isAvailable }) => {
     if (!isAvailable) {
       callback?.(false)
-      LibProgress.hide()
+      LibProgress?.hide?.()
     } else {
       Updates.fetchUpdateAsync()
         .then(({ isNew }) => {
-          callback?.(isNew)
+          if (isNew && callback)
+            callback?.(isNew)
         }).catch((e) => {
           Alert.alert("Update Gagal", e)
-          LibProgress.hide()
+          LibProgress?.hide?.()
         })
     }
   })

@@ -104,7 +104,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
 
   static fromCamera(options?: LibImageCameraOptions): Promise<string> {
     return new Promise((_r) => {
-      setTimeout(async () => {
+     const timer = setTimeout(async () => {
         const cameraPermission = await ImagePicker.getCameraPermissionsAsync();
         var finalStatus = cameraPermission.status
         if (finalStatus !== 'granted') {
@@ -144,13 +144,14 @@ class m extends LibComponent<LibImageProps, LibImageState> {
             }
           }
         })
+        clearTimeout(timer)
       }, 1);
     })
   }
 
   static fromGallery(options?: LibImageGalleryOptions): Promise<string | string[]> {
     return new Promise((_r) => {
-      setTimeout(async () => {
+    const timer=  setTimeout(async () => {
         const { status } = await ImagePicker.getMediaLibraryPermissionsAsync();
         var finalStatus = status
         if (finalStatus !== 'granted') {
@@ -231,6 +232,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
               }, 1)
           });
         })
+        clearTimeout(timer)
       }, 1)
     })
   }
@@ -255,7 +257,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
           }
         }
 
-        setTimeout(async () => {
+     const timer=   setTimeout(async () => {
           const manipImage = await ImageManipulator.manipulateAsync(
             result.uri,
             doResize ? [{ resize: { width: wantedwidth, height: wantedheight } }] : [],
@@ -270,6 +272,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
               LibProgress.hide()
               r(msg.message);
             }, 1)
+            clearTimeout(timer)
         }, 1);
       }
     })
@@ -333,22 +336,24 @@ class m extends LibComponent<LibImageProps, LibImageState> {
                       {
                         image ?
                           <TouchableOpacity onPress={() => {
-                            setTimeout(
+                            const timer = setTimeout(
                               async () => {
                                 let imageUri = await m.processImage(image, maxDimension)
                                 m.setResult(imageUri)
                                 this.setState({ image: null })
+                                clearTimeout(timer)
                               });
                           }} >
                             <LibIcon.Ionicons name='ios-checkmark-circle' style={{ fontSize: 40, color: 'white' }} />
                           </TouchableOpacity>
                           :
                           <TouchableOpacity onPress={() => {
-                            setTimeout(
+                          const timer =  setTimeout(
                               async () => {
                                 m.hide()
                                 this.setState({ image: null })
                               });
+                              clearTimeout(timer)
                           }} >
                             <LibIcon.Ionicons name='ios-close-circle' style={{ fontSize: 40, color: 'white' }} />
                           </TouchableOpacity>

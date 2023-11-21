@@ -35,8 +35,9 @@ export default function m(props: LibLazyProps): any {
     InteractionManager.runAfterInteractions(() => {
       startTransition(() => {
         item(true)
-        setTimeout(() => {
+       const timer = setTimeout(() => {
           next()
+          clearTimeout(timer)
         }, 50);
       })
     })

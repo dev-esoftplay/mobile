@@ -194,13 +194,15 @@ export default {
     const data = this.getData(notification)
     function doOpen(data: any) {
       if (!LibNavigation.getIsReady()) {
-        setTimeout(() => {
+       const timer = setTimeout(() => {
           doOpen(data)
+          clearTimeout(timer)
         }, 300);
         return
       } else {
-        setTimeout(() => {
+       const timer = setTimeout(() => {
           this.openPushNotif(data)
+          clearTimeout(timer)
         }, 0)
       }
     }
@@ -283,19 +285,21 @@ export default {
           } else {
             btns.push({ text: "OK", onPress: () => { }, style: "cancel" })
           }
-          setTimeout(() => {
+         const timer = setTimeout(() => {
             Alert.alert(
               param.title,
               param.message,
               btns, { cancelable: false }
             )
+            clearTimeout(timer)
           }, 10)
           break;
         case "default":
           if (param.module && param.module != "") {
             if (!String(param.module).includes("/")) param.module = param.module + "/index"
-            setTimeout(() => {
+           const timer = setTimeout(() => {
               LibNavigation.navigate(param.module, param.params)
+              clearTimeout(timer)
             }, 10)
           }
           break;
@@ -315,20 +319,22 @@ export default {
         } else {
           btns.push({ text: "OK", onPress: () => { }, style: "cancel" })
         }
-        setTimeout(() => {
+      const timer =  setTimeout(() => {
           Alert.alert(
             data.title,
             data.message,
             btns,
             { cancelable: false }
           )
+          clearTimeout(timer)
         }, 10)
         break;
       case "default":
         if (param.module != "") {
           if (!String(param.module).includes("/")) param.module = param.module + "/index"
-          setTimeout(() => {
+        const timer =  setTimeout(() => {
             LibNavigation.navigate(param.module, param.arguments)
+            clearTimeout(timer)
           }, 10)
         }
         break;

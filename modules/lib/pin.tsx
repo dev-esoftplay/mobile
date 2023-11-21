@@ -17,7 +17,7 @@ export default function m(props: LibPinProps): any {
   const input = useRef<TextInput>(null)
 
   useEffect(() => {
-    setTimeout(() => { input?.current?.focus() }, 100);
+   const timer = setTimeout(() => { input?.current?.focus() ; clearTimeout(timer)}, 100);
     setPin(props?.pinValue?.split?.(''))
     props.onChangePin(props?.pinValue || '')
   }, [props.pinValue])
