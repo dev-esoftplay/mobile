@@ -477,7 +477,7 @@ function readToJSON(path) {
 
 function publish(notes) {
 	consoleSucces("START PULL OTA..")
-	command('cd /var/www/html/ota && git pull')
+	command('cd /var/www/html/ota && git fetch origin master && git reset --hard FETCH_HEAD && git clean -df')
 	consoleSucces("END PULL OTA..")
 	jsEng(appjson, true)
 	jsEng(appdebug, true)

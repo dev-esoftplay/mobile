@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export function createTimeout() {
   let timeoutId: any = undefined;
@@ -21,13 +21,13 @@ export function createTimeout() {
 }
 
 export function useTimeout() {
-  const smartTimeout = createTimeout();
+  const smartTimeout = useRef(createTimeout());
 
   useEffect(() => {
-    return () => smartTimeout.clear();
+    return () => smartTimeout.current?.clear();
   }, [smartTimeout]);
 
-  return smartTimeout.set;
+  return smartTimeout.current?.set;
 }
 
 
@@ -51,13 +51,13 @@ export function createInterval() {
 }
 
 export function useInterval() {
-  const smartInterval = createInterval();
+  const smartInterval = useRef(createInterval());
 
   useEffect(() => {
-    return () => smartInterval.clear();
+    return () => smartInterval.current?.clear();
   }, [smartInterval]);
 
-  return smartInterval.set;
+  return smartInterval.current?.set;
 }
 
 export function createDebounce() {
@@ -81,11 +81,11 @@ export function createDebounce() {
 }
 
 export function useDebounce() {
-  const smartDebounce = createDebounce();
+  const smartDebounce = useRef(createDebounce());
 
   useEffect(() => {
-    return () => smartDebounce.clear();
+    return () => smartDebounce.current?.clear();
   }, [smartDebounce]);
 
-  return smartDebounce.set;
+  return smartDebounce.current?.set;
 }
