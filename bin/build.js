@@ -168,6 +168,10 @@ if (fs.existsSync(packjson)) {
 				"simulator": true			
 			}
 		},
+		"development_build": {
+			"developmentClient": true,
+			"distribution": "internal"
+		},
 		"preview": {
 			"distribution": "internal",
 			"ios": {

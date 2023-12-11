@@ -270,23 +270,6 @@ function consoleFunc(msg, success) {
 	}
 }
 
-
-function jsEng(file, isHermes) {
-	if (fs.existsSync(file)) {
-		var txt = fs.readFileSync(file, 'utf8');
-		let isJSON = txt.startsWith('{') || txt.startsWith('[')
-		if (!isJSON) {
-			consoleError('app.json tidak valid')
-			return
-		}
-		let app = JSON.parse(txt)
-		app.expo.jsEngine = isHermes ? "hermes" : "hermes"
-		fs.writeFileSync(file, JSON.stringify(app, undefined, 2))
-	} else {
-		consoleError(file)
-	}
-}
-
 function configUpdate(state) {
 	let _path;
 	let _slug
@@ -886,82 +869,62 @@ function build() {
 				pre: () => {
 					configAvailable(true)
 					devClientPre(appjson)
-					jsEng(appjson, false)
-					jsEng(appdebug, false)
-					jsEng(applive, false)
-					consoleSucces("Hermes dinonaktifkan")
 				}
 			},
 			{
-				name: "2. IOS (Preview) - Simulator",
+				name: "2. IOS (Development) - Non Simulator",
+				cmd: "eas build --platform ios --profile development_build" + local,
+				pre: () => {
+					configAvailable(true)
+					devClientPre(appjson)
+				}
+			},
+			{
+				name: "3. IOS (Preview) - Simulator",
 				cmd: "eas build --platform ios --profile preview" + local,
 				pre: () => {
 					configAvailable(true)
 					devClientPos(appjson)
-					jsEng(appjson, true)
-					jsEng(appdebug, true)
-					jsEng(applive, true)
-					consoleSucces("Hermes diaktifkan")
 				}
 			},
 			{
-				name: "3. IOS (Preview) - Non Simulator",
+				name: "4. IOS (Preview) - Non Simulator",
 				cmd: "eas build --platform ios --profile preview_build" + local,
 				pre: () => {
 					configAvailable(true)
 					devClientPos(appjson)
-					jsEng(appjson, true)
-					jsEng(appdebug, true)
-					jsEng(applive, true)
-					consoleSucces("Hermes diaktifkan")
 				}
 			},
 			{
-				name: "4. IOS (Production) - ipa",
+				name: "5. IOS (Production) - ipa",
 				cmd: "eas build --platform ios --profile production" + local,
 				pre: () => {
 					configAvailable(true)
 					devClientPos(appjson)
-					jsEng(appjson, true)
-					jsEng(appdebug, true)
-					jsEng(applive, true)
-					consoleSucces("Hermes diaktifkan")
 				}
 			},
 			{
-				name: "5. Android (Development) - apk",
+				name: "6. Android (Development) - apk",
 				cmd: "eas build --platform android --profile development" + local,
 				pre: () => {
 					configAvailable(true)
 					devClientPre(appjson)
-					jsEng(appjson, false)
-					jsEng(appdebug, false)
-					jsEng(applive, false)
-					consoleSucces("Hermes dinonaktifkan")
 				}
 			},
 			{
-				name: "6. Android (Preview) - apk",
+				name: "7. Android (Preview) - apk",
 				cmd: "eas build --platform android --profile preview" + local,
 				pre: () => {
 					configAvailable(true)
 					devClientPos(appjson)
-					jsEng(appjson, true)
-					jsEng(appdebug, true)
-					jsEng(applive, true)
-					consoleSucces("Hermes diaktifkan")
 				}
 			},
 			{
-				name: "7. Android (Production) - aab",
+				name: "8. Android (Production) - aab",
 				cmd: "eas build --platform android --profile production" + local,
 				pre: () => {
 					configAvailable(true)
 					devClientPos(appjson)
-					jsEng(appjson, true)
-					jsEng(appdebug, true)
-					jsEng(applive, true)
-					consoleSucces("Hermes diaktifkan")
 				}
 			}
 		]
