@@ -132,9 +132,6 @@ switch (args[0]) {
 		createMaster(args[1])
 		break;
 	case "start":
-		jsEng(appjson, false)
-		jsEng(appdebug, false)
-		jsEng(applive, false)
 		excludeModules()
 		execution();
 		break;
@@ -462,9 +459,6 @@ function publish(notes) {
 	consoleSucces("START PULL OTA..")
 	command('cd /var/www/html/ota && git fetch origin master && git reset --hard FETCH_HEAD && git clean -df')
 	consoleSucces("END PULL OTA..")
-	jsEng(appjson, true)
-	jsEng(appdebug, true)
-	jsEng(applive, true)
 	let status = "-"
 	let isCustomServer = false
 	let ajson = readToJSON(appjson)
