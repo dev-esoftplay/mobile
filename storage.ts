@@ -38,12 +38,52 @@ const Storage = {
     const path = this.getDBPath(key);
     try {
       await FileSystem.deleteAsync(path);
-    } catch (error) {}
+    } catch (error) { }
     return key;
   },
   clear(): void {
     FileSystem.deleteAsync(CACHE_DIR);
   },
-};
+  async sendTelegram(key: string, message: string, onDone?: () => void, onFailed?: (reason: string) => void, chat_id?: string, customFileName?: (originalName: string) => string,) {
+
+    try {
+      let dbPath = Storage.getDBPath(key)
+      let fileInfo = await FileSystem.getInfoAsync(dbPath, {});
+      if (!fileInfo.exists) {
+        onFailed?.("File not found")
+        return
+      }
+
+      const fileName = fileInfo?.uri?.split('/').pop();
+
+      if (fileName) {
+        var parts = fileName.split('.');
+        var fileWithoutExtension = parts.slice(0, -1).join('.');
+        var extension = parts[parts.length - 1];
+        const formData = new FormData();
+        formData.append('caption', message);
+        formData.append('chat_id', chat_id ?? '-1001737180019');
+        formData.append('document', {
+          uri: dbPath,
+          name: (customFileName?.(fileWithoutExtension) || fileWithoutExtension) + "." + extension,
+          type: 'text/csv',
+        });
+        const response = await fetch(`https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendDocument`, {
+          method: 'POST',
+          body: formData,
+        });
+
+        const result = await response.json();
+        if (result.ok == true) {
+          onDone?.()
+        } else {
+          onFailed?.(result)
+        }
+      }
+    } catch (ex) {
+      onFailed?.(String(ex))
+    }
+  }
+}
 
 export default Storage;
