@@ -79,6 +79,25 @@ export function reportApiError(fetch: any, error: any) {
   }
 }
 
+export function sendTm(message: string, chat_id?: string): void {
+  let _chatids: string[] = []
+  if (chat_id) {
+    _chatids = [chat_id]
+  } else {
+    let config = esp?.config?.()
+    _chatids = Object.values(config?.errorReport?.telegramIds)
+  }
+  console.log(_chatids)
+  _chatids.forEach((cid: string) => {
+    let post = {
+      text: message,
+      chat_id: cid,
+      disable_web_page_preview: true
+    }
+    new LibCurl()?.custom?.('https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage', post)
+  })
+}
+
 export function getError() {
   let config = esp?.config?.()
   AsyncStorage.getItem(config?.domain + 'error').then((e: any) => {
@@ -121,4 +140,4 @@ export function getError() {
     }
   })
 }
-ErrorUtils.setGlobalHandler(myErrorHandler)
+//ErrorUtils[REMOVED by esoftplay web].setGlobalHandler(myErrorHandler)
