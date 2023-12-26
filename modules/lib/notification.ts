@@ -192,15 +192,15 @@ export default {
   onAction(notification: any): void {
     this.loadData(true)
     const data = this.getData(notification)
-    function doOpen(data: any) {
+    const doOpen = (data: any) => {
       if (!LibNavigation.getIsReady()) {
-       const timer = setTimeout(() => {
+        const timer = setTimeout(() => {
           doOpen(data)
           clearTimeout(timer)
         }, 300);
         return
       } else {
-       const timer = setTimeout(() => {
+        const timer = setTimeout(() => {
           this.openPushNotif(data)
           clearTimeout(timer)
         }, 0)
@@ -285,7 +285,7 @@ export default {
           } else {
             btns.push({ text: "OK", onPress: () => { }, style: "cancel" })
           }
-         const timer = setTimeout(() => {
+          const timer = setTimeout(() => {
             Alert.alert(
               param.title,
               param.message,
@@ -297,7 +297,7 @@ export default {
         case "default":
           if (param.module && param.module != "") {
             if (!String(param.module).includes("/")) param.module = param.module + "/index"
-           const timer = setTimeout(() => {
+            const timer = setTimeout(() => {
               LibNavigation.navigate(param.module, param.params)
               clearTimeout(timer)
             }, 10)
@@ -319,7 +319,7 @@ export default {
         } else {
           btns.push({ text: "OK", onPress: () => { }, style: "cancel" })
         }
-      const timer =  setTimeout(() => {
+        const timer = setTimeout(() => {
           Alert.alert(
             data.title,
             data.message,
@@ -332,7 +332,7 @@ export default {
       case "default":
         if (param.module != "") {
           if (!String(param.module).includes("/")) param.module = param.module + "/index"
-        const timer =  setTimeout(() => {
+          const timer = setTimeout(() => {
             LibNavigation.navigate(param.module, param.arguments)
             clearTimeout(timer)
           }, 10)
