@@ -8,15 +8,15 @@ import useSafeState from 'esoftplay/state';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useRef } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
-
+type TimeFormat= `${number}:${number}:${number}`
 export interface LibTimepickerProps {
   /* hh:mm:ss */
-  selectedTime: string,
-  onTimeChange: (second: string) => void,
+  selectedTime: TimeFormat,
+  onTimeChange: (second: TimeFormat) => void,
   /* hh:mm:ss */
-  minTime?: string,
+  minTime?: TimeFormat,
   /* hh:mm:ss */
-  maxTime?: string,
+  maxTime?: TimeFormat,
   mode?: 24 | 12,
   /* hh:mm:ss */
   type?: "hour" | "hourMinute" | "hourMinuteSecond"

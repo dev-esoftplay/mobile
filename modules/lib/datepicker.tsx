@@ -6,12 +6,13 @@ import useSafeState from 'esoftplay/state';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useRef } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
+type DateFormat = `${number}-${number}-${number}`
 export interface LibDatepickerProps {
-  minDate: string,
-  maxDate: string,
+  minDate: DateFormat,
+  maxDate: DateFormat,
   monthsDisplay?: string[],
-  selectedDate: string,
-  onDateChange: (date: string) => void,
+  selectedDate: DateFormat,
+  onDateChange: (date: DateFormat) => void,
   type?: "date" | "month" | "year"
 }
 
