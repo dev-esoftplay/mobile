@@ -17,18 +17,31 @@ export interface useGlobalAutoSync {
   post: (item: any) => Object,
   isSyncing?: (isSync: boolean) => void
 }
-
-export interface useGlobalOption {
-  persistKey?: string,
-  inFile?: boolean,
-  listener?: (data: any) => void,
-  useAutoSync?: useGlobalAutoSync,
-  jsonBeautify?: boolean,
-  isUserData?: boolean,
-  loadOnInit?: boolean,
-  onFinish?: () => void
+interface useGlobalOptionA {
+  persistKey?: string;
+  inFastStorage?: boolean;
+  inFile?: never; // Ensures inFile is not present in useGlobalOptionA
+  listener?: (data: any) => void;
+  useAutoSync?: useGlobalAutoSync;
+  jsonBeautify?: boolean;
+  isUserData?: boolean;
+  loadOnInit?: boolean;
+  onFinish?: () => void;
 }
 
+interface useGlobalOptionB {
+  persistKey?: string;
+  inFile?: boolean;
+  inFastStorage?: never; // Ensures inFastStorage is not present in useGlobalOptionB
+  listener?: (data: any) => void;
+  useAutoSync?: useGlobalAutoSync;
+  jsonBeautify?: boolean;
+  isUserData?: boolean;
+  loadOnInit?: boolean;
+  onFinish?: () => void;
+}
+
+export type useGlobalOption = useGlobalOptionA | useGlobalOptionB;
 export interface useGlobalConnect<T> {
   render: (props: T) => any,
 }
@@ -44,7 +57,10 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
   let sync: any = undefined
 
   if (o?.persistKey) {
-    STORAGE = o?.inFile ? (require('esoftplay/storage').default) : (require('@react-native-async-storage/async-storage').default)
+    if (o?.inFastStorage == true) {
+      STORAGE = require('esoftplay/mmkv').default
+    } else
+      STORAGE = o?.inFile ? (require('esoftplay/storage').default) : (require('@react-native-async-storage/async-storage').default)
     loaded = 0
     if (o?.loadOnInit)
       loadFromDisk()
@@ -82,33 +98,32 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
     })[0]
   }
 
-  function loadFromDisk() {
+  async function loadFromDisk() {
     if (loaded == 0) {
       loaded = 1
       let persistKey = o?.persistKey
-      STORAGE.getItem(String(persistKey)).then((p: any) => {
-        if (p) {
-          if (persistKey != '__globalReady')
-            if (p != undefined && typeof p == 'string' && (p.startsWith("{") || p.startsWith("[")))
-              try { set(JSON.parse(p)) } catch (error) { }
-            else {
-              if (p == "true" || p == "false") {
-                try { /* @ts-ignore */ set(eval(p)) } catch (error) { }
-              } else if (isNaN(p)) {
-                try { /* @ts-ignore */ set(p) } catch (error) { }
-              } else {
-                try { /* @ts-ignore */ set(eval(p)) } catch (error) { }
-              }
+      const p = await STORAGE.getItem(String(persistKey))
+      if (p) {
+        if (persistKey != '__globalReady')
+          if (p != undefined && typeof p == 'string' && (p.startsWith("{") || p.startsWith("[")))
+            try { set(JSON.parse(p)) } catch (error) { }
+          else {
+            if (p == "true" || p == "false") {
+              try { /* @ts-ignore */ set(eval(p)) } catch (error) { }
+            } else if (isNaN(p)) {
+              try { /* @ts-ignore */ set(p) } catch (error) { }
+            } else {
+              try { /* @ts-ignore */ set(eval(p)) } catch (error) { }
             }
-        }
-        if (o?.onFinish) {
+          }
+      }
+      if (o?.onFinish) {
+        clearTimeout(timeoutFinish)
+        timeoutFinish = setTimeout(() => {
+          o.onFinish?.()
           clearTimeout(timeoutFinish)
-          timeoutFinish = setTimeout(() => {
-            o.onFinish?.()
-            clearTimeout(timeoutFinish)
-          }, 50);
-        }
-      })
+        }, 50);
+      }
     }
   }
 
@@ -166,7 +181,7 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
     set(initValue)
   }
 
-  function useSelector(se: (state: T) => any): void {
+  async function useSelector(se: (state: T) => any): void {
     loadFromDisk()
 
     let [l, s] = R.useState<any>(se(value));
