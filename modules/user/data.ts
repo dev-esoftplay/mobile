@@ -1,6 +1,7 @@
 // noPage
 // withObject
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import FastStorage from 'esoftplay/mmkv';
 import Storage from 'esoftplay/storage';
 
 export default {
@@ -28,6 +29,7 @@ export default {
       if (x) {
         const arx = JSON.parse(x)
         AsyncStorage.multiRemove(arx)
+        arx.forEach((ix) => { FastStorage.removeItem(ix) })
         arx.forEach((ix) => { Storage.removeItem(ix) })
       }
     })
