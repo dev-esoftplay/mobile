@@ -43,6 +43,7 @@ import { memo } from 'react';
 
 function m(props): any {
   const userEmail = UserClass.state().useSelector((s) => s?.email)
+  const userApikey = UserClass.state().useSelector((s) => s?.apikey)
   const econf = config.config
   const appOrientation = econf?.orientation ? String(econf.orientation) : 'portrait'
 
@@ -53,7 +54,7 @@ function m(props): any {
       onStateChange={UserRoutes.state().set} >
       <Stack.Navigator
         headerMode="none"
-        initialRouteName={userEmail ? econf.home.member : econf.home.public}
+        initialRouteName={(userEmail || userApikey) ? econf.home.member : econf.home.public}
         screenOptions={{ orientation: appOrientation, headerShown: false, contentStyle: { backgroundColor: 'white' }, animation: Platform.OS == 'ios' ? 'default' : 'none', stackPresentation: 'push' }}>
 `+ navs + `
       </Stack.Navigator>
