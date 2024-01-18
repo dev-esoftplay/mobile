@@ -120,7 +120,7 @@ export default {
   },
   reset(route?: LibNavigationRoutes, ...routes: LibNavigationRoutes[]): void {
     const user = UserClass.state().get()
-    let _route = [route || esp.config('home', (user && (user.id || user.user_id)) ? 'member' : 'public')]
+    let _route = [route || esp.config('home', (user && (user.id || user.user_id || user.apikey)) ? 'member' : 'public')]
     if (routes && routes.length > 0) {
       _route = [..._route, ...routes]
     }
