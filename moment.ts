@@ -59,7 +59,6 @@ export default function moment(date?: string | Date | any) {
     locale: (locale_id: string) => {
       require('dayjs/locale/en')
       require('dayjs/locale/id')
-      require('dayjs/locale/id')
       const out = dayjs.locale(locale_id)
       return moment(out)
     },

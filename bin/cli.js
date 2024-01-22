@@ -793,6 +793,7 @@ function buildPrepare(include = true) {
 			consoleSucces("BUILD PREPARE SUCCESS..!")
 		}
 	} else {
+		excludeOnBuild('ios', false)
 		if (fs.existsSync('./assets/esoftplaymodules')) {
 			command('rm -rf ./modules && mv ./assets/esoftplaymodules modules')
 			consoleSucces("BUILD PREPARE SUCCESS CANCELED..!")
@@ -826,6 +827,37 @@ function configAvailable(enabled) {
 		fs.writeFileSync(gitignore, _git, { encoding: 'utf8' })
 	} else {
 		consoleError(gitignore)
+	}
+}
+
+function excludeOnBuild(platform, isBackup) {
+	const backupPath = './assets/p.json'
+	if (!isBackup) {
+		if (fs.existsSync(backupPath)) {
+			fs.writeFileSync(packjson, fs.readFileSync(backupPath))
+			fs.unlinkSync(backupPath)
+		}
+	}
+	if (fs.existsSync(confjson)) {
+		let cjson = readToJSON(confjson).config
+		if (cjson.exclude) {
+			if (cjson.exclude[platform]) {
+				let excluded = cjson.exclude[platform]
+				let pjson = readToJSON(packjson)
+				/* backup */
+				fs.writeFileSync(backupPath, JSON.stringify(pjson, undefined, 2))
+				/* cleanup */
+				let cleanDeps = {}
+				Object.keys(pjson.dependencies).forEach((key) => {
+					const value = pjson.dependencies[key]
+					if (!excluded.includes(key))
+						cleanDeps[key] = value
+				})
+				pjson.dependencies = cleanDeps
+				/* override */
+				fs.writeFileSync(packjson, JSON.stringify(pjson, undefined, 2))
+			}
+		}
 	}
 }
 
@@ -863,6 +895,7 @@ function build() {
 				pre: () => {
 					configAvailable(true)
 					devClientPre(appjson)
+					excludeOnBuild('ios', true)
 				}
 			},
 			{
@@ -871,6 +904,7 @@ function build() {
 				pre: () => {
 					configAvailable(true)
 					devClientPre(appjson)
+					excludeOnBuild('ios', true)
 				}
 			},
 			{
@@ -879,6 +913,7 @@ function build() {
 				pre: () => {
 					configAvailable(true)
 					devClientPos(appjson)
+					excludeOnBuild('ios', true)
 				}
 			},
 			{
@@ -887,6 +922,7 @@ function build() {
 				pre: () => {
 					configAvailable(true)
 					devClientPos(appjson)
+					excludeOnBuild('ios', true)
 				}
 			},
 			{
@@ -895,6 +931,7 @@ function build() {
 				pre: () => {
 					configAvailable(true)
 					devClientPos(appjson)
+					excludeOnBuild('ios', true)
 				}
 			},
 			{
@@ -903,6 +940,7 @@ function build() {
 				pre: () => {
 					configAvailable(true)
 					devClientPre(appjson)
+					excludeOnBuild('android', true)
 				}
 			},
 			{
@@ -911,6 +949,7 @@ function build() {
 				pre: () => {
 					configAvailable(true)
 					devClientPos(appjson)
+					excludeOnBuild('android', true)
 				}
 			},
 			{
@@ -919,6 +958,7 @@ function build() {
 				pre: () => {
 					configAvailable(true)
 					devClientPos(appjson)
+					excludeOnBuild('android', true)
 				}
 			}
 		]
@@ -942,8 +982,11 @@ function build() {
 				if (pre) pre()
 				consoleSucces("⚙⚙⚙ ... \n" + cmd)
 				command(cmd)
+				excludeOnBuild('android', false)
+
 				const cjson = readToJSON(confjson)
 				const ajson = readToJSON(appjson)
+
 				if (local) {
 					const fs = require('fs');
 					const path = require('path');
