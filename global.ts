@@ -33,7 +33,7 @@ export interface useGlobalOption {
 export interface useGlobalConnect<T> {
   render: (props: T) => any,
 }
-
+export let userDataReset: Function[] = []
 let timeoutFinish: NodeJS.Timeout
 export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): useGlobalReturn<T> {
   let STORAGE: any = undefined
@@ -121,6 +121,7 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
   /* register to userData to automatically reset state and persist */
   if (o?.isUserData) {
     if (o?.persistKey) {
+      userDataReset.push(del)
       const UserData = esp?.mod?.("user/data")
       if (UserData)
         UserData?.register?.(o?.persistKey)

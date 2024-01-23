@@ -1,6 +1,7 @@
 // noPage
 // withObject
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { userDataReset } from 'esoftplay/global';
 import FastStorage from 'esoftplay/mmkv';
 import Storage from 'esoftplay/storage';
 
@@ -27,6 +28,7 @@ export default {
   deleteAll(): void {
     AsyncStorage.getItem("user_data_dependent").then((x) => {
       if (x) {
+        userDataReset.forEach((f) => f())
         const arx = JSON.parse(x)
         AsyncStorage.multiRemove(arx)
         arx.forEach((ix) => { FastStorage.removeItem(ix) })
