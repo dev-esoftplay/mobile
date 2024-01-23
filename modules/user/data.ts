@@ -33,6 +33,7 @@ export default {
         AsyncStorage.multiRemove(arx)
         arx.forEach((ix) => { FastStorage.removeItem(ix) })
         arx.forEach((ix) => { Storage.removeItem(ix) })
+        AsyncStorage.removeItem("user_data_dependent")
       }
     })
   }

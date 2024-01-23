@@ -123,8 +123,9 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
     if (o?.persistKey) {
       userDataReset.push(del)
       const UserData = esp?.mod?.("user/data")
-      if (UserData)
+      if (UserData) {
         UserData?.register?.(o?.persistKey)
+      }
     }
   }
 
