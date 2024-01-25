@@ -67,6 +67,9 @@ export default function moment(date?: string | Date | any) {
     },
     /* last chain */
     fromNow: () => {
+      const currentLang = esp.modProp('lib/locale').default.state().get()
+      const localeId = langData?.filter?.((x) => x.name == currentLang)?.[0]?.code
+      moment().locale(localeId)
       const out = dayjs(resetTimeOffset(_date)).fromNow()
       return out
     },
