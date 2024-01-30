@@ -7,7 +7,7 @@ import { UserClass } from 'esoftplay/cache/user/class/import';
 import { UserRoutes } from 'esoftplay/cache/user/routes/import';
 
 import esp from 'esoftplay/esp';
-import React from "react";
+import React, { useEffect } from "react";
 
 export interface LibNavigationInjector {
   args: any,
@@ -66,6 +66,15 @@ export default {
   /* <T  EspRouterInterface>(path: T): EspRouterInterface[T] { */
   navigate<S extends keyof EspArgsInterface>(route: S, params?: EspArgsInterface[S]): void {
     this._ref?.navigate?.(route, params)
+  },
+  useBackResult(props: any): (res: any) => void {
+    const key = this.getResultKey(props)
+
+    useEffect(() => {
+      return () => this.cancelBackResult(key)
+    }, [])
+
+    return (res: any) => this.sendBackResult(res, key)
   },
   getResultKey(props: any): number {
     return this.getArgs(props, "_senderKey", 0)
