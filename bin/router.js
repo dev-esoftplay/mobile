@@ -282,11 +282,9 @@ export * as ${ucword(module) + ucword(task) + SuffixHooksProperty} from '../../.
       }
       if (HookModules.includes(nav)) {
         item += "" +
-          "import React from 'react'\n" +
-          "const _" + ucword(module) + ucword(task) + " = React.lazy(() => import('../../../../." + Modules[module][task] + "')); \n" +
+          "import _" + ucword(module) + ucword(task) + " from '../../../../." + Modules[module][task] + "'; \n" +
           "import * as " + ucword(module) + ucword(task) + SuffixHooksProperty + " from '../../../../." + Modules[module][task] + "';\n" +
-          "const UpdatedComponent = (OriginalComponent) => { function " + ucword(module) + ucword(task) + "Component(props) { return ( <React.Suspense><OriginalComponent {...props} /></React.Suspense> ) } return " + ucword(module) + ucword(task) + "Component; };\n" +
-          "const " + ucword(module) + ucword(task) + " = stable(UpdatedComponent(_" + ucword(module) + ucword(task) + ")); \n" +
+          "const " + ucword(module) + ucword(task) + " = stable(_" + ucword(module) + ucword(task) + "); \n" +
           "export { " + ucword(module) + ucword(task) + SuffixHooksProperty + ", " + ucword(module) + ucword(task) + " };\n"
       } else if (UseLibs.includes(nav)) {
         item += "" +
