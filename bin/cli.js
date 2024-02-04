@@ -13,6 +13,7 @@ const appdebug = DIR + "app.debug.json"
 const packjson = DIR + "package.json"
 const confjson = DIR + "config.json"
 const conflive = DIR + "config.live.json"
+const easjson = DIR + "eas.json"
 const confdebug = DIR + "config.debug.json"
 const gitignore = DIR + ".gitignore"
 const gplist = DIR + "GoogleService-Info.plist"
@@ -37,7 +38,7 @@ switch (args[0]) {
 		command('bun ./node_modules/esoftplay/bin/analyze.js')
 		break
 	case "ac":
-	case "analyze clear":
+	case "analyze-clear":
 		command('bun ./node_modules/esoftplay/bin/analyze.js clear')
 		break;
 	case "fr":
@@ -45,7 +46,7 @@ switch (args[0]) {
 		command('bun ./node_modules/esoftplay/bin/perf.js')
 		break
 	case "frc":
-	case "fastrefresh clear":
+	case "fastrefresh-clear":
 		command('bun ./node_modules/esoftplay/bin/perf.js clear')
 		break;
 	case "font":
@@ -118,7 +119,11 @@ switch (args[0]) {
 	case "u":
 	case "update":
 		update()
-		break
+		break;
+	case 'su':
+	case "setup-update":
+		setupUpdate()
+		break;
 	case "on":
 	case "online":
 		if (isWeb) {
@@ -146,6 +151,87 @@ switch (args[0]) {
 	default:
 		help()
 		break;
+}
+
+var easconfg = `{
+	"cli": {
+		"version": ">= 0.52.0"
+	},
+	"build": {
+		"development": {
+			"developmentClient": true,
+			"distribution": "internal",
+			"ios": {
+				"simulator": true
+			},
+			"channel": "default"
+		},
+		"development_build": {
+			"developmentClient": true,
+			"distribution": "internal",
+			"channel": "default"
+		},
+		"preview": {
+			"distribution": "internal",
+			"ios": {
+				"simulator": true
+			},
+			"channel": "default"
+		},
+		"preview_build": {
+			"distribution": "internal",
+			"android": {
+				"buildType": "apk"
+			},
+			"channel": "default"
+		},
+		"production": {
+			"channel": "default"
+		}
+	},
+	"submit": {
+		"production": {}
+	}
+}`
+
+
+
+function setupUpdate() {
+	command("eas update:configure")
+	fs.writeFileSync(easjson, easconfg, { encoding: 'utf8' })
+	fs.writeFileSync(isDebug() ? appdebug : applive, JSON.stringify(readToJSON(appjson), undefined, 2))
+}
+
+function isDebug() {
+	let cjson = readToJSON(confjson)
+	let status
+	let clive
+	let cdebug
+	let alive
+	let adebug
+	if (fs.existsSync(conflive)) {
+		clive = readToJSON(conflive)
+	}
+	if (fs.existsSync(applive)) {
+		alive = readToJSON(applive)
+	}
+	if (fs.existsSync(confdebug)) {
+		cdebug = readToJSON(confdebug)
+	}
+	if (fs.existsSync(appdebug)) {
+		adebug = readToJSON(appdebug)
+	}
+	if (clive) {
+		if (clive.config.domain == cjson.config.domain) {
+			status = "live"
+		}
+	}
+	if (cdebug) {
+		if (cdebug.config.domain == cjson.config.domain) {
+			status = "debug"
+		}
+	}
+	return status == "debug"
 }
 
 function createFontConfig() {
@@ -454,14 +540,21 @@ function readToJSON(path) {
 	return isJSON ? JSON.parse(txt) : txt
 }
 
+function isCustomUpdates() {
+	let ajson = readToJSON(appjson)
+	return ajson.expo.updates.hasOwnProperty('url') && !ajson.expo.updates.url.includes("https://u.expo.dev")
+}
 
 function publish(notes) {
-	consoleSucces("START PULL OTA..")
-	command('cd /var/www/html/ota && git fetch origin master && git reset --hard FETCH_HEAD && git clean -df')
-	consoleSucces("END PULL OTA..")
 	let status = "-"
 	let isCustomServer = false
 	let ajson = readToJSON(appjson)
+	if (ajson.expo.updates.hasOwnProperty('url') && !ajson.expo.updates.url.includes("https://u.expo.dev")) {
+		isCustomServer = true
+		consoleSucces("START PULL OTA..")
+		command('cd /var/www/html/ota && git fetch origin master && git reset --hard FETCH_HEAD && git clean -df')
+		consoleSucces("END PULL OTA..")
+	}
 	let pack = readToJSON(packjson)
 	if (fs.existsSync(confjson)) {
 		let cjson = readToJSON(confjson)
@@ -480,9 +573,6 @@ function publish(notes) {
 		}
 		if (fs.existsSync(appdebug)) {
 			adebug = readToJSON(appdebug)
-		}
-		if (ajson.expo.updates.hasOwnProperty('url')) {
-			isCustomServer = true
 		}
 		if (clive) {
 			if (clive.config.domain == cjson.config.domain) {
@@ -631,7 +721,8 @@ Pastikan data sudah benar sebelum anda melanjutkan, lanjut publish ketikkan runt
 		} else {
 			fs.writeFileSync(appjson, JSON.stringify(ajson, undefined, 2))
 			consoleSucces("start publishing " + status.toUpperCase() + " - PUBLISH_ID : " + (last_id + 1))
-			command("expo p")
+			command(`eas update --branch default --message "${notes}"`)
+			command("rm -rf ./dist")
 			consoleSucces("Berhasil")
 			const os = require('os')
 			var d = new Date();
@@ -792,6 +883,15 @@ function buildPrepare(include = true) {
 			});
 			consoleSucces("BUILD PREPARE SUCCESS..!")
 		}
+		if (isCustomUpdates()) {
+			let ejson = readToJSON(easjson)
+			delete ejson.build.development.channel
+			delete ejson.build.development_build.channel
+			delete ejson.build.preview.channel
+			delete ejson.build.preview_build.channel
+			delete ejson.build.production.channel
+			fs.writeFileSync(easjson, JSON.stringify(ejson, undefined, 2))
+		}
 	} else {
 		excludeOnBuild('ios', false)
 		if (fs.existsSync('./assets/esoftplaymodules')) {
@@ -800,6 +900,9 @@ function buildPrepare(include = true) {
 		}
 		else
 			consoleError('')
+		if (isCustomUpdates()) {
+			fs.writeFileSync(easjson, easconfg)
+		}
 	}
 }
 
@@ -1151,12 +1254,13 @@ function help() {
 		"\n\n OPTIONS :",
 		"\n - help                        : panduan penggunaan",
 		"\n - a|analyze                   : untuk menambahkan view render counter di semua component",
-		"\n - ac|analyze clear            : untuk menghapus view render counter di semua component",
+		"\n - ac|analyze-clear            : untuk menghapus view render counter di semua component",
 		"\n - font                        : untuk mengaktifkan font dari ./assets/fonts",
 		"\n - fr|fastrefresh              : untuk mengaktfikan fast refresh di semua component",
-		"\n - frc|fastrefresh clear       : untuk menonaktifkan fast refresh di semua component",
+		"\n - frc|fastrefresh-clear       : untuk menonaktifkan fast refresh di semua component",
+		"\n - su|setup-update             : untuk setup update esp module dengan EAS UPDATE SERVICES",
 		"\n - u|update                    : untuk update esp module ke versi terakhir",
-		"\n - u|update all                : untuk update semua esp module ke versi terakhir",
+		"\n - update all                  : untuk update semua esp module ke versi terakhir",
 		"\n - start                       : start esoftplay framework",
 		"\n - b|build                     : untuk build app .ipa .apk .aab",
 		"\n - bp|build-prepare            : untuk prepare for esp b",

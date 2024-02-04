@@ -165,26 +165,31 @@ if (fs.existsSync(packjson)) {
 			"developmentClient": true,
 			"distribution": "internal",
 			"ios": {
-				"simulator": true			
-			}
+				"simulator": true
+			},
+			"channel": "default"
 		},
 		"development_build": {
 			"developmentClient": true,
-			"distribution": "internal"
+			"distribution": "internal",
+			"channel": "default"
 		},
 		"preview": {
 			"distribution": "internal",
 			"ios": {
-				"simulator": true			
-			}
+				"simulator": true
+			},
+			"channel": "default"
 		},
 		"preview_build": {
 			"distribution": "internal",
 			"android": {
 				"buildType": "apk"
-			}
+			},
+			"channel": "default"
 		},
 		"production": {
+			"channel": "default"
 		}
 	},
 	"submit": {
@@ -363,6 +368,7 @@ export default UserIndex`;
 			execSync("cd ../../ && bun install || true")
 			execSync("cd ../../ && bun ./node_modules/esoftplay/bin/router.js || true")
 			execSync("cd ../../ && bun ./node_modules/esoftplay/bin/locale.js || true")
+			// execSync("cd ../../ && eas update:configure || true")
 			console.log('App.js has been replace to App.tsx');
 			if (appjson)
 

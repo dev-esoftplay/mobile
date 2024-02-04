@@ -1,8 +1,6 @@
 // withHooks
 // noPage
 
-// nunggu update master, margin sebelah kanan kegeser
-
 import { LibStyle } from 'esoftplay/cache/lib/style/import';
 import useGlobalState from 'esoftplay/global';
 import React, { useEffect } from 'react';
@@ -47,7 +45,7 @@ export default function m(props: LibToastProps): any {
 
   const style = useAnimatedProps(() => ({
     transform: [{
-      translateY: interpolate(anim.value, [0, 1], [-(LibStyle.STATUSBAR_HEIGHT + 400), 0])
+      translateY: interpolate(anim.value, [0, 1], [-200, 0])
     }],
     opacity: interpolate(anim.value, [0, 0.8, 1], [0, 0, 1])
   }))
