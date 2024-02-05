@@ -901,6 +901,47 @@ function buildPrepare(include = true) {
 		else
 			consoleError('')
 		if (isCustomUpdates()) {
+
+			var easconfg = `{
+				"cli": {
+					"version": ">= 0.52.0"
+				},
+				"build": {
+					"development": {
+						"developmentClient": true,
+						"distribution": "internal",
+						"ios": {
+							"simulator": true
+						},
+						"channel": "default"
+					},
+					"development_build": {
+						"developmentClient": true,
+						"distribution": "internal",
+						"channel": "default"
+					},
+					"preview": {
+						"distribution": "internal",
+						"ios": {
+							"simulator": true
+						},
+						"channel": "default"
+					},
+					"preview_build": {
+						"distribution": "internal",
+						"android": {
+							"buildType": "apk"
+						},
+						"channel": "default"
+					},
+					"production": {
+						"channel": "default"
+					}
+				},
+				"submit": {
+					"production": {}
+				}
+			}`
 			fs.writeFileSync(easjson, easconfg)
 		}
 	}
