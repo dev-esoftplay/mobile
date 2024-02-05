@@ -104,7 +104,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
 
   static fromCamera(options?: LibImageCameraOptions): Promise<string> {
     return new Promise((_r) => {
-     const timer = setTimeout(async () => {
+      const timer = setTimeout(async () => {
         const cameraPermission = await ImagePicker.getCameraPermissionsAsync();
         var finalStatus = cameraPermission.status
         if (finalStatus !== 'granted') {
@@ -127,10 +127,17 @@ class m extends LibComponent<LibImageProps, LibImageState> {
           aspect: options?.crop?.ratio?.split(':').map((x) => Number(x)),
           quality: 1,
           presentationStyle: ImagePicker.UIImagePickerPresentationStyle.FULL_SCREEN
-        }).then(async (result: any) => {
-          if (!result)
-            result = ImagePicker?.getPendingResultAsync()
-          if (!result?.cancelled) {
+        }).then(async (res: any) => {
+          if (!res)
+            res = ImagePicker?.getPendingResultAsync()
+          if (!res?.cancelled) {
+            let result: any = undefined
+            let hasUri = res?.uri
+            if (hasUri) {
+              result = res
+            } else if (res?.assets?.[0]) {
+              result = { ...res, ...res.assets[0] }
+            }
             if (Platform.OS == 'ios' && options && options.crop) {
               m.showCropper(result?.uri, options?.crop?.forceCrop, options?.crop?.ratio, options?.crop?.message, async (x) => {
                 let imageUri = await m.processImage(x, options?.maxDimension)
@@ -151,7 +158,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
 
   static fromGallery(options?: LibImageGalleryOptions): Promise<string | string[]> {
     return new Promise((_r) => {
-    const timer=  setTimeout(async () => {
+      const timer = setTimeout(async () => {
         const { status } = await ImagePicker.getMediaLibraryPermissionsAsync();
         var finalStatus = status
         if (finalStatus !== 'granted') {
@@ -174,8 +181,15 @@ class m extends LibComponent<LibImageProps, LibImageState> {
             allowsEditing: Platform.OS != 'ios' && options && options.crop ? true : false,
             aspect: options?.crop?.ratio?.split(':').map((x) => Number(x)),
             quality: 1,
-          }).then(async (x: any) => {
-            if (!x.cancelled) {
+          }).then(async (z: any) => {
+            if (!z.cancelled) {
+              let x: any = undefined
+              let hasUri = z?.uri
+              if (hasUri) {
+                x = z
+              } else if (z?.assets?.[0]) {
+                x = { ...z, ...z.assets[0] }
+              }
               if (Platform.OS == 'ios' && options && options.crop) {
                 m.showCropper(x.uri, options.crop.forceCrop, options.crop.ratio, options.crop?.message, async (x) => {
                   let imageUri = await m.processImage(x, options?.maxDimension)
@@ -257,7 +271,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
           }
         }
 
-     const timer=   setTimeout(async () => {
+        const timer = setTimeout(async () => {
           const manipImage = await ImageManipulator.manipulateAsync(
             result.uri,
             doResize ? [{ resize: { width: wantedwidth, height: wantedheight } }] : [],
@@ -272,7 +286,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
               LibProgress.hide()
               r(msg.message);
             }, 1)
-            clearTimeout(timer)
+          clearTimeout(timer)
         }, 1);
       }
     })
@@ -348,12 +362,12 @@ class m extends LibComponent<LibImageProps, LibImageState> {
                           </TouchableOpacity>
                           :
                           <TouchableOpacity onPress={() => {
-                          const timer =  setTimeout(
+                            const timer = setTimeout(
                               async () => {
                                 m.hide()
                                 this.setState({ image: null })
                               });
-                              clearTimeout(timer)
+                            clearTimeout(timer)
                           }} >
                             <LibIcon.Ionicons name='ios-close-circle' style={{ fontSize: 40, color: 'white' }} />
                           </TouchableOpacity>
