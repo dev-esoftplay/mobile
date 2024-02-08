@@ -271,42 +271,12 @@ function createFontConfig() {
 }
 
 function switchStatusAssets(status) {
-
-	const iconpng = DIR + "assets/icon.png"
-	const icondebug = DIR + "assets/icon.debug.png"
-	const iconlive = DIR + "assets/icon.live.png"
-
-	const icon_iospng = DIR + "assets/icon_ios.png"
-	const icon_iosdebug = DIR + "assets/icon_ios.debug.png"
-	const icon_ioslive = DIR + "assets/icon_ios.live.png"
-
-	const iconNotifpng = DIR + "assets/iconNotif.png"
-	const iconNotifdebug = DIR + "assets/iconNotif.debug.png"
-	const iconNotiflive = DIR + "assets/iconNotif.live.png"
-
-	const splashpng = DIR + "assets/splash.png"
-	const splashdebug = DIR + "assets/splash.debug.png"
-	const splashlive = DIR + "assets/splash.live.png"
-
-
 	function copyFileFromTo(from, to) {
 		if (fs.existsSync(from)) {
 			if (fs.existsSync(to))
 				command('rm ' + to)
 			command('cp ' + from + ' ' + to)
 		}
-	}
-	if (status.includes('l')) {
-		copyFileFromTo(iconlive, iconpng)
-		copyFileFromTo(icon_ioslive, icon_iospng)
-		copyFileFromTo(splashlive, splashpng)
-		copyFileFromTo(iconNotiflive, iconNotifpng)
-	}
-	if (status.includes('d')) {
-		copyFileFromTo(icondebug, iconpng)
-		copyFileFromTo(icon_iosdebug, icon_iospng)
-		copyFileFromTo(splashdebug, splashpng)
-		copyFileFromTo(iconNotifdebug, iconNotifpng)
 	}
 
 	fs.readdirSync(DIR + '/modules/').forEach((mod) => {
@@ -323,7 +293,17 @@ function switchStatusAssets(status) {
 					}
 			})
 	})
-
+	fs.readdirSync(DIR + '/assets/').forEach((file) => {
+		const path = DIR + '/assets/'
+		if (status.includes('d'))
+			if (file.match(/^.*.debug.*/g)) {
+				copyFileFromTo(path + '/' + file, path + '/' + file.replace('.debug.', '.'))
+			}
+		if (status.includes('l'))
+			if (file.match(/^.*.live.*/g)) {
+				copyFileFromTo(path + '/' + file, path + '/' + file.replace('.live.', '.'))
+			}
+	})
 }
 
 function excludeModules() {
