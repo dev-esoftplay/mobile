@@ -1,6 +1,5 @@
 // noPage
 // withObject
-import { LibToastProperty } from 'esoftplay/cache/lib/toast/import';
 import esp from 'esoftplay/esp';
 import useGlobalState from 'esoftplay/global';
 import moment from "esoftplay/moment";
@@ -251,10 +250,10 @@ export default {
   },
   mapDirectionTo(latlongFrom: string, latlongTo: string, travelmode: LibUtilsTravelMode): void {
     if (!this.isValidLatLong(latlongFrom)) {
-      return LibToastProperty.show(esp.lang("lib/utils", "toas_latlongfrom"))
+      return esp.modProp("lib/toast").show(esp.lang("lib/utils", "toas_latlongfrom"))
     }
     if (!this.isValidLatLong(latlongTo)) {
-      return LibToastProperty.show(esp.lang("lib/utils", "toas_latlongto"))
+      return esp.modProp("lib/toast").show(esp.lang("lib/utils", "toas_latlongto"))
     }
     Linking.openURL("https://www.google.com/maps/dir/?api=1&travelmode="
       + travelmode
@@ -307,7 +306,7 @@ export default {
       let out = installationId.get()
       if (!out) {
         if (Platform.OS == "android")
-          resolve(String(Application.androidId))
+          resolve(String(Application.androidId || Application.getAndroidId()))
         if (Platform.OS == "ios") {
           let code = await SecureStore.getItemAsync('installationId');
           if (!code) {
