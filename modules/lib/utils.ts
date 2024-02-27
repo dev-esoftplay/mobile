@@ -1,5 +1,8 @@
 // noPage
 // withObject
+
+//moveup for formatting currency with lang
+import { LibLocale } from 'esoftplay/cache/lib/locale/import';
 import esp from 'esoftplay/esp';
 import useGlobalState from 'esoftplay/global';
 import moment from "esoftplay/moment";
@@ -117,8 +120,13 @@ export default {
     } else {
       val = parseInt(value)?.toFixed?.(0)?.replace?.(/(\d)(?=(\d{3})+$)/g, "$1,")
     }
+    const locale = LibLocale.state().get()
     if (!currency) {
-      currency = "Rp"
+      if (locale == "id") {
+        currency = "Rp"
+      } else {
+        currency = "IDR"
+      }
     }
     if (typeof val === "number") {
       return currency?.replace?.(/\./g, "") + " " + String(val)?.replace?.(/,/g, ".");

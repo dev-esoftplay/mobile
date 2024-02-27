@@ -10,6 +10,7 @@ import { LibStyle } from 'esoftplay/cache/lib/style/import';
 import { LibToast } from 'esoftplay/cache/lib/toast/import';
 import { LibUpdaterProperty } from 'esoftplay/cache/lib/updater/import';
 import { LibVersion } from 'esoftplay/cache/lib/version/import';
+import { LibWorker } from 'esoftplay/cache/lib/worker/import';
 import { LibWorkloop } from 'esoftplay/cache/lib/workloop/import';
 import Navs from 'esoftplay/cache/navs';
 import { UseDeeplink } from 'esoftplay/cache/use/deeplink/import';
@@ -63,12 +64,13 @@ export default function m(props: UserIndexProps): any {
     }
   }, [fontLoaded])
 
-  
+
   //esoftplay-chatting
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={{ flex: 1 }}>
+        <LibWorker />
         {
           loading ?
             <UserLoading />
@@ -82,7 +84,6 @@ export default function m(props: UserIndexProps): any {
               <LibProgress />
               <LibToast />
               <UserHook />
-              {/* {__DEV__ && <Draggable />} */}
             </>
         }
       </View>
@@ -90,42 +91,3 @@ export default function m(props: UserIndexProps): any {
     </GestureHandlerRootView>
   )
 }
-
-
-
-
-// const Draggable = () => {
-//   const translateX = useSharedValue(0);
-//   const translateY = useSharedValue(0);
-//   const lastOffset = { x: 0, y: 0 };
-//   const handleGestureEvent = useAnimatedGestureHandler({
-//     onStart: (_, ctx: any) => {
-//       ctx.offsetX = translateX.value;
-//       ctx.offsetY = translateY.value;
-//     },
-//     onActive: (event, ctx) => {
-//       translateX.value = ctx.offsetX + event.translationX;
-//       translateY.value = ctx.offsetY + event.translationY;
-//     },
-//     onEnd: (event) => {
-//       lastOffset.x += event.translationX;
-//       lastOffset.y += event.translationY;
-//     },
-//   });
-//   const animatedStyle = useAnimatedStyle(() => {
-//     return {
-//       transform: [{ translateX: translateX.value }, { translateY: translateY.value }],
-//     };
-//   });
-//   return (
-//     <View style={{ position: 'absolute', right: 10 }}>
-//       <PanGestureHandler onGestureEvent={handleGestureEvent}>
-//         <Animated.View style={[animatedStyle]} >
-//           <Pressable onPress={() => { route.reset(); LibNavigation.backToRoot() }} style={{ right: 10, top: LibStyle.height * 0.5, padding: 10, backgroundColor: 'indigo', alignItems: 'center', justifyContent: 'center', borderRadius: 50 }} >
-//             <LibIcon name='delete-variant' color='white' />
-//           </Pressable>
-//         </Animated.View>
-//       </PanGestureHandler>
-//     </View>
-//   );
-// };
