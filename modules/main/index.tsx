@@ -12,7 +12,7 @@ export default function m(props: MainIndexProps): any {
 
   return (
     <View style={{ flex: 1, backgroundColor: "white", justifyContent: 'center', alignItems: 'center' }} >
-      <Text>{`Hellow Esoftplay Developer, jangan lupa ﷽ dulu ଘ(੭ˊᵕˋ)੭*`}</Text>
+      <Text>{`Hellow Esoftplay Developer, jangan lupa bismillah dulu ଘ(੭ˊᵕˋ)੭*`}</Text>
     </View>
   )
 }
