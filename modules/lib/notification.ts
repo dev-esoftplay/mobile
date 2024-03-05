@@ -45,6 +45,19 @@ Notifications.setNotificationHandler({
   },
 });
 
+export interface notificationTrigger {
+  delayInMinutes: number,
+  repeats?: boolean
+}
+
+export interface notificationContent {
+  title: string,
+  message: string,
+  module?: string,
+  url?: string
+  arguments?: any
+}
+
 const lastUrlState = useGlobalState<any>(undefined)
 
 function mainUrl(): string {
@@ -258,7 +271,7 @@ export default {
           if (String(experienceId).includes('/')) {
             expoToken = await Notifications.getExpoPushTokenAsync({ experienceId })
           } else {
-            expoToken = await Notifications.getExpoPushTokenAsync()
+            expoToken = await Notifications.getExpoPushTokenAsync({ projectId: experienceId })
           }
         }
         if (expoToken) {
@@ -268,6 +281,33 @@ export default {
         }
       }
     })
+  },
+  cancelLocalNotification(notif_id: string) {
+    Notifications.cancelScheduledNotificationAsync(notif_id)
+  },
+  setLocalNotification(action: "alert" | "default" | "update", content: notificationContent, trigger: notificationTrigger, callback?: (notif_id: string) => void): void {
+    const triggerSeconds = Number(trigger?.delayInMinutes) * 60
+    const _trigger = {
+      seconds: triggerSeconds,
+      repeats: !!trigger?.repeats,
+    }
+    const params = { status: 3, url: content?.url, ...content?.arguments }
+    Notifications.scheduleNotificationAsync({
+      content: {
+        title: content?.title,
+        body: content?.message,
+        data: {
+          action: action,
+          module: content.module,
+          title: content?.title,
+          message: content?.message,
+          params,
+        },
+      },
+      trigger: _trigger,
+    }).then((notifId) => {
+      callback?.(notifId)
+    }).catch((r) => { })
   },
   openPushNotif(data: any): void {
     if (!data) return
