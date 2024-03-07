@@ -70,7 +70,7 @@ export default {
         return
       }
       esp.mod("lib/notification").requestPermission(async (token) => {
-        if (token && token.includes("ExponentPushToken")) {
+        if (token) {
           const config = esp.config();
           const LibCrypt = esp.mod("lib/crypt")
           var post: any = {
@@ -81,6 +81,7 @@ export default {
             push_id: "",
             is_app: Constants.appOwnership == 'expo' ? 0 : 1,
             os: Platform.OS,
+            installation_id: await esp.mod("lib/utils").getInstallationID(),
             device: Constants.deviceName,
             secretkey: new LibCrypt().encode(config.salt + "|" + moment().format("YYYY-MM-DD hh:mm:ss"))
           }
