@@ -6,4 +6,4 @@ if (fs.existsSync('./worker')) {
     functions.push(fs.readFileSync('./worker/' + file).toString())
   })
 }
-fs.writeFileSync('./node_modules/esoftplay/modules/lib/out.js', "// useLibs\n\nmodule.exports = \`\n" + functions.join('\n') + "\n\`")
+fs.writeFileSync('./node_modules/esoftplay/modules/lib/out.js', "// useLibs //noPage \n\nmodule.exports = \`\n" + functions.join('\n') + "\n\`")
