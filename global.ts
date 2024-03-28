@@ -60,23 +60,28 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
     const LibCurl = esp.mod("lib/curl")
     const UseTasks = esp.mod("use/tasks")
     sync = UseTasks()((item) => new Promise((next) => {
-      if (o?.useAutoSync) {
-        o?.useAutoSync?.isSyncing?.(true)
-        new LibCurl(o.useAutoSync.url, o.useAutoSync?.post?.(item),
-          (res, msg) => {
-            set((old: T) => {
-              if (Array.isArray(old)) {
-                const index = old?.indexOf(item)
-                return esp.mod("lib/object").set(old, 1)(index, 'synced')
-              } else {
-                return old
-              }
-            })
-            next()
-          }, () => {
-            next()
-          }
-        )
+      const { isOnline, isInternetReachable } = esp.mod("lib/net_status").state().get()
+      if (isOnline && isInternetReachable) {
+        if (o?.useAutoSync) {
+          o?.useAutoSync?.isSyncing?.(true)
+          new LibCurl(o.useAutoSync.url, o.useAutoSync?.post?.(item),
+            (res, msg) => {
+              set((old: T) => {
+                if (Array.isArray(old)) {
+                  const index = old?.indexOf(item)
+                  return esp.mod("lib/object").set(old, 1)(index, 'synced')
+                } else {
+                  return old
+                }
+              })
+              next()
+            }, () => {
+              next()
+            }
+          )
+        }
+      } else {
+        next()
       }
     }), () => {
       o?.useAutoSync?.isSyncing?.(false)
