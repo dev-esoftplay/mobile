@@ -371,23 +371,29 @@ export default UserIndex`;
 			// execSync("cd ../../ && eas update:configure || true")
 			console.log('App.js has been replace to App.tsx');
 			if (appjson)
-
-				if (fs.existsSync('../@expo/vector-icons')) {
-					let esoftplayIcon = ''
-					fs.readdir('../@expo/vector-icons/build', (err, files) => {
-						const dfiles = files.filter((file) => file.includes('d.ts'))
-						dfiles.map((dfile, i) => {
-							const rdfile = fs.readFileSync('../@expo/vector-icons/build/' + dfile, { encoding: 'utf8' })
-							const names = (/import\("\.\/createIconSet"\)\.Icon<((.*))\,.*>/g).exec(rdfile);
-							if (names && names[1].includes('|')) {
-								esoftplayIcon += 'export type ' + dfile.replace('.d.ts', 'Types') + ' = ' + names[1] + '\n';
-							}
-						})
-						fs.writeFileSync('../@expo/vector-icons/build/esoftplay_icons.ts', esoftplayIcon)
-					})
-				} else {
-					console.log("@expo/vector-icons not installed")
+				/* bugfix AsyncStorage @firebase, remove this section if firebase has update the AsyncStorage */
+				if (fs.existsSync('../@firebase/app/dist/index.rn.cjs.js')) {
+					let firebaseText = fs.readFileSync('../@firebase/app/dist/index.rn.cjs.js', 'utf8')
+					firebaseText = firebaseText.replace("var AsyncStorage = require('react-native').AsyncStorage;", "var AsyncStorage = require('@react-native-async-storage/async-storage').default;")
+					fs.writeFileSync('../@firebase/app/dist/index.rn.cjs.js', firebaseText)
 				}
+			/* end AsyncStorage @firebase section */
+			if (fs.existsSync('../@expo/vector-icons')) {
+				let esoftplayIcon = ''
+				fs.readdir('../@expo/vector-icons/build', (err, files) => {
+					const dfiles = files.filter((file) => file.includes('d.ts'))
+					dfiles.map((dfile, i) => {
+						const rdfile = fs.readFileSync('../@expo/vector-icons/build/' + dfile, { encoding: 'utf8' })
+						const names = (/import\("\.\/createIconSet"\)\.Icon<((.*))\,.*>/g).exec(rdfile);
+						if (names && names[1].includes('|')) {
+							esoftplayIcon += 'export type ' + dfile.replace('.d.ts', 'Types') + ' = ' + names[1] + '\n';
+						}
+					})
+					fs.writeFileSync('../@expo/vector-icons/build/esoftplay_icons.ts', esoftplayIcon)
+				})
+			} else {
+				console.log("@expo/vector-icons not installed")
+			}
 			console.log('Please wait until processes has finished...');
 		});
 	}

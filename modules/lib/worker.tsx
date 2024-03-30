@@ -3,7 +3,7 @@ import esp from 'esoftplay/esp';
 import useGlobalSubscriber from 'esoftplay/subscribe';
 import { createTimeout } from 'esoftplay/timeout';
 import React, { useEffect, useRef } from 'react';
-import { AppState, View } from 'react-native';
+import { View } from 'react-native';
 import WebView from 'react-native-webview';
 
 export interface LibUseworkerArgs {
@@ -50,11 +50,6 @@ export default function m(props: LibUseworkerProps): any {
 
   useEffect(() => {
     ref.current?.injectJavaScript(`\n${require('./out')}\n`)
-    const c = AppState.addEventListener('focus', (status) => {
-      if (status == 'active')
-        ref.current?.injectJavaScript(`\n${require('./out')}\n`)
-    })
-    return () => c.remove()
   }, [])
 
   subs.useSubscribe(() => {
