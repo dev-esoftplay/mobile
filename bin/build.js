@@ -28,7 +28,7 @@ if (fs.existsSync(packjson)) {
 	/* ADD SCRIPTS.PRESTART AND SCRIPTS.POSTSTOP */
 
 	if (args[0] == "install") {
-		$package.scripts.start = "esp start && npx expo start --dev-client"
+		$package.scripts.start = "esp start && bunx expo start --dev-client"
 		$package.trustedDependencies = [
 			"esoftplay",
 			"esoftplay-android-print",
@@ -360,24 +360,29 @@ export default UserIndex`;
 			if (!fs.existsSync(DIR + 'modules'))
 				fs.mkdirSync(DIR + 'modules')
 			let cmd = "cd ../../ "
-			if (installDevLibs.length > 0)
+			if (installDevLibs.length > 0) {
+				// console.log(installDevLibs)
 				cmd += "&& bun add " + installDevLibs.join(" ") + " --dev "
-			if (installExpoLibs.length > 0)
-				cmd += "&& expo install " + installExpoLibs.join(" ")
+			}
+			if (installExpoLibs.length > 0) {
+				// console.log(installExpoLibs)
+				cmd += "&& bunx expo install " + installExpoLibs.join(" ")
+			}
+			console.log((JSON.stringify({ cmd }, undefined, 2)))
 			execSync(cmd + "|| true")
-			execSync("cd ../../ && bun install || true")
+			// execSync("cd ../../ && bun install --verbose || true")
 			execSync("cd ../../ && bun ./node_modules/esoftplay/bin/router.js || true")
 			execSync("cd ../../ && bun ./node_modules/esoftplay/bin/locale.js || true")
 			// execSync("cd ../../ && eas update:configure || true")
 			console.log('App.js has been replace to App.tsx');
-			if (appjson)
-				/* bugfix AsyncStorage @firebase, remove this section if firebase has update the AsyncStorage */
-				if (fs.existsSync('../@firebase/app/dist/index.rn.cjs.js')) {
-					let firebaseText = fs.readFileSync('../@firebase/app/dist/index.rn.cjs.js', 'utf8')
-					firebaseText = firebaseText.replace("var AsyncStorage = require('react-native').AsyncStorage;", "var AsyncStorage = require('@react-native-async-storage/async-storage').default;")
-					fs.writeFileSync('../@firebase/app/dist/index.rn.cjs.js', firebaseText)
-				}
-			/* end AsyncStorage @firebase section */
+			// if (appjson)
+			// /* bugfix AsyncStorage @firebase, remove this section if firebase has update the AsyncStorage */
+			if (fs.existsSync('../@firebase/app/dist/index.rn.cjs.js')) {
+				let firebaseText = fs.readFileSync('../@firebase/app/dist/index.rn.cjs.js', 'utf8')
+				firebaseText = firebaseText.replace("var AsyncStorage = require('react-native').AsyncStorage;", "var AsyncStorage = require('@react-native-async-storage/async-storage').default;")
+				fs.writeFileSync('../@firebase/app/dist/index.rn.cjs.js', firebaseText)
+			}
+			// /* end AsyncStorage @firebase section */
 			if (fs.existsSync('../@expo/vector-icons')) {
 				let esoftplayIcon = ''
 				fs.readdir('../@expo/vector-icons/build', (err, files) => {
