@@ -162,6 +162,7 @@ if (fs.existsSync(packjson)) {
 	},
 	"build": {
 		"development": {
+			"bun": "1.1.0",
 			"developmentClient": true,
 			"distribution": "internal",
 			"ios": {
@@ -170,11 +171,13 @@ if (fs.existsSync(packjson)) {
 			"channel": "default"
 		},
 		"development_build": {
+			"bun": "1.1.0",
 			"developmentClient": true,
 			"distribution": "internal",
 			"channel": "default"
 		},
 		"preview": {
+			"bun": "1.1.0",
 			"distribution": "internal",
 			"ios": {
 				"simulator": true
@@ -182,6 +185,7 @@ if (fs.existsSync(packjson)) {
 			"channel": "default"
 		},
 		"preview_build": {
+			"bun": "1.1.0",
 			"distribution": "internal",
 			"android": {
 				"buildType": "apk"
@@ -189,6 +193,7 @@ if (fs.existsSync(packjson)) {
 			"channel": "default"
 		},
 		"production": {
+			"bun": "1.1.0",
 			"channel": "default"
 		}
 	},
