@@ -1210,7 +1210,7 @@ function switchStatus(status) {
 		if (cjson.hasOwnProperty('config')) {
 			if (cjson.config.hasOwnProperty('build')) {
 				const [usr, pwd] = cjson.config.build
-				command(`eas logout && expect -c 'spawn eas login; expect "Email or username"; sleep 1; send "${usr}\r"; expect "Password"; sleep 1; send "${pwd}\r"; expect eof;'`)
+				command(`eas logout && expect -c 'spawn eas login; expect "Email or username"; send "${usr}\r"; expect "Password"; send "${pwd}\r"; expect eof;'`)
 			}
 		}
 	}
