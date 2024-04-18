@@ -1210,7 +1210,7 @@ function switchStatus(status) {
 		if (cjson.hasOwnProperty('config')) {
 			if (cjson.config.hasOwnProperty('build')) {
 				const [usr, pwd] = cjson.config.build
-				command(`expo logout && expo login -u ${usr} -p ${pwd}`)
+				command(`eas logout && expect -c 'spawn eas login; expect "Email or username"; sleep 1; send "${usr}\r"; expect "Password"; sleep 1; send "${pwd}\r"; expect eof;'`)
 			}
 		}
 	}
