@@ -248,7 +248,7 @@ function createRouter() {
   for (const module in Modules) {
     for (const task in Modules[module]) {
       nav = module + '/' + task;
-      if (NavsExclude[nav] == false) {
+      if (NavsExclude[nav] == false && !task.includes(".debug") && !task.includes(".live")) {
         Navigations.push(nav);
       }
       AllRoutes.push(nav)
@@ -412,11 +412,13 @@ export interface EspArgsInterface {
     const orientation = NavsOrientation[nav]
     const [module, task] = nav.split('/')
     const comp = ucword(module) + ucword(task)
-    importer.push(`import { ${comp} } from ${'"esoftplay/cache/' + module + '/' + task + '/import"'} `)
-    if (orientation)
-      screens.push("\t\t\t\t" + "<Stack.Screen name={\"" + nav + "\"} options={{ orientation: '" + orientation + "' }} component={" + comp + "} />")
-    else
-      screens.push("\t\t\t\t" + "<Stack.Screen name={\"" + nav + "\"} component={" + comp + "} />")
+    if (!task.includes(".debug") && !task.includes(".live")) {
+      importer.push(`import { ${comp} } from ${'"esoftplay/cache/' + module + '/' + task + '/import"'} `)
+      if (orientation)
+        screens.push("\t\t\t\t" + "<Stack.Screen name={\"" + nav + "\"} options={{ orientation: '" + orientation + "' }} component={" + comp + "} />")
+      else
+        screens.push("\t\t\t\t" + "<Stack.Screen name={\"" + nav + "\"} component={" + comp + "} />")
+    }
   })
 
   let N = Nav5(importer.join("\n"), screens.join("\n"))
