@@ -81,6 +81,10 @@ switch (args[0]) {
 	case "check":
 		doctor()
 		break
+	case "cm":
+	case "connect-module":
+		command('bun ./node_modules/esoftplay/bin/connector.js')
+		break
 	case "b":
 	case "build":
 		buildPrepare(true)
@@ -737,12 +741,6 @@ Pastikan data sudah benar sebelum anda melanjutkan, lanjut publish ketikkan runt
 				}
 			});
 		}
-		if (cjson.config.connected_modules) {
-			if (cjson.config.connected_modules.length > 0) {
-				consoleSucces("<== CONNECTED MODULE DETECTED ==>")
-				command('bun ./node_modules/esoftplay/bin/connector.js')
-			}
-		}
 	}     
 }
 
@@ -1256,6 +1254,7 @@ function help() {
 		"\n - bc|build-cancel             : untuk cancel build prepare",
 		"\n - f|file                      : untuk check status file",
 		"\n - c|check                     : untuk check status",
+		"\n - cm|connect-module           : untuk update module berdasarkan source",
 		"\n - create-master [moduleName]  : untuk create master module terpisah",
 		"\n - d|debug                     : untuk ubah status DEBUG",
 		"\n - l|live                      : untuk ubah status LIVE",

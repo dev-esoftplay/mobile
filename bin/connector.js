@@ -1,39 +1,36 @@
 const fs = require('fs')
 
-if (fs.existsSync('./config.json')) {
-  const config = JSON.parse(fs.readFileSync('./config.json', { encoding: 'utf8' }))
+if (fs.existsSync('./raw/connected.json')) {
+  const { source, modules } = JSON.parse(fs.readFileSync('./raw/connected.json'))
   const currentProject = './modules/';
 
-  if (config.config.connected_modules) {
-    if (config.config.connected_modules.length > 0) {
-      config.config.connected_modules.forEach((path) => {
-        const modules = JSON.parse(fs.readFileSync(path + '/raw/connected_modules.json', { encoding: 'utf8' }))
-        modules.forEach((module) => {
-          console.log('>_ connecting.. ' + module)
-          const ext = [
-            '.ts',
-            '.tsx',
-            '.js',
-            '.debug.ts',
-            '.debug.tsx',
-            '.debug.js',
-            '.live.ts',
-            '.live.tsx',
-            '.live.js',
-          ]
-          ext.forEach((fext) => {
-            const source = currentProject + module + fext;
-            const destination = path + "/modules/" + module + fext;
+  if (source) {
+    if (modules.length > 0) {
+      modules.forEach((module) => {
+        const ext = [
+          '.ts',
+          '.tsx',
+          '.js',
+          '.debug.ts',
+          '.debug.tsx',
+          '.debug.js',
+          '.live.ts',
+          '.live.tsx',
+          '.live.js',
+        ]
+        ext.forEach((fext) => {
+          const _source = source + "/modules/" + module + fext;
+          const _destination = currentProject + module + fext;
 
-            if (fs.existsSync(source)) {
-              const file = fs.readFileSync(source, { encoding: 'utf8' })
-              const [mod, task] = module.split('/')
-              if (!fs.existsSync(path + '/modules/' + mod)) {
-                fs.mkdirSync(path + '/modules/' + mod)
-              }
-              fs.writeFileSync(destination, file, { encoding: 'utf8' })
+          if (fs.existsSync(_source)) {
+            const file = fs.readFileSync(_source, { encoding: 'utf8' })
+            const [mod] = module.split('/')
+            if (!fs.existsSync(currentProject + mod)) {
+              fs.mkdirSync(currentProject + mod)
             }
-          })
+            fs.writeFileSync(_destination, file, { encoding: 'utf8' })
+            console.log('>_ ' + module + fext + ' connected!')
+          }
         })
       })
     }
