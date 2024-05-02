@@ -723,7 +723,7 @@ Pastikan data sudah benar sebelum anda melanjutkan, lanjut publish ketikkan runt
 					console.error(`exec error: ${error}`);
 					return;
 				}
-				let accountName = stdout.trim();
+				let accountName = stdout.trim();	
 				stringBuilder += "\npublisher: @" + accountName + "\n"
 				stringBuilder += (notes != '' ? ("\n\n- " + notes) : '')
 				tm(stringBuilder)
@@ -737,7 +737,13 @@ Pastikan data sudah benar sebelum anda melanjutkan, lanjut publish ketikkan runt
 				}
 			});
 		}
-	}
+		if (cjson.config.connected_modules) {
+			if (cjson.config.connected_modules.length > 0) {
+				consoleSucces("<== CONNECTED MODULE DETECTED ==>")
+				command('bun ./node_modules/esoftplay/bin/connector_modules.js')
+			}
+		}
+	}     
 }
 
 function doctor() {
