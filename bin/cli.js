@@ -740,7 +740,7 @@ Pastikan data sudah benar sebelum anda melanjutkan, lanjut publish ketikkan runt
 		if (cjson.config.connected_modules) {
 			if (cjson.config.connected_modules.length > 0) {
 				consoleSucces("<== CONNECTED MODULE DETECTED ==>")
-				command('bun ./node_modules/esoftplay/bin/connector_modules.js')
+				command('bun ./node_modules/esoftplay/bin/connector.js')
 			}
 		}
 	}     
