@@ -13,7 +13,7 @@ export interface LibSlidingupProps {
 export interface LibSlidingupState {
   show: boolean,
 }
-export default class m extends LibComponent<LibSlidingupProps, LibSlidingupState>{
+export default class m extends LibComponent<LibSlidingupProps, LibSlidingupState> {
 
   _show: boolean = false
   animValue: any = new Animated.Value(LibStyle.height)
@@ -46,7 +46,7 @@ export default class m extends LibComponent<LibSlidingupProps, LibSlidingupState
     Keyboard.dismiss()
     if (this.props.children) {
       this.setState({ show: true }, () => {
-       const timer = setTimeout(() => {
+        const timer = setTimeout(() => {
           this._toggleSubview(true)
           clearTimeout(timer)
         }, 1);
@@ -83,8 +83,8 @@ export default class m extends LibComponent<LibSlidingupProps, LibSlidingupState
     const { show } = this.state
     if (!show) return null
     return (
-      <LibKeyboard_avoid style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
-        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end', zIndex: 999999 }}>
+      <LibKeyboard_avoid style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 999999 }}>
+        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end', }}>
           <TouchableOpacity style={{ flex: 1 }} activeOpacity={1} onPress={() => this.hide()} />
           <Animated.View style={{ transform: [{ translateY: this.animValue }] }} >
             {this.props.children}
