@@ -323,6 +323,10 @@ export default class m {
     if ((/^[A-z]+:\/\//g).test(uri)) {
       this.setUrl(uri)
       this.setUri("")
+      const protocol = uri.split("://")[0]
+      if (protocol != esp.config("protocol")) {
+        reportApiError(uri, { error: `INCONSISTENCY PROTOCOL ${protocol} != ${esp.config("protocol")} at config` })
+      }
     } else {
       this.setUri(uri)
       this.setUrl(esp.config("url"))
