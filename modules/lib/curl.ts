@@ -325,7 +325,7 @@ export default class m {
       this.setUri("")
       const protocol = uri.split("://")[0]
       if (protocol != esp.config("protocol")) {
-        reportApiError(uri, { error: `INCONSISTENCY PROTOCOL ${protocol} != ${esp.config("protocol")} at config` })
+        reportApiError(uri, `INCONSISTENCY PROTOCOL ${protocol} != ${esp.config("protocol")} at config`)
       }
     } else {
       this.setUri(uri)
