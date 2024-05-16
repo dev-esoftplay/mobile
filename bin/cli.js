@@ -681,6 +681,7 @@ Pastikan data sudah benar sebelum anda melanjutkan, lanjut publish ketikkan runt
 					esplibs.forEach((key) => {
 						stringBuilder += ("\n" + key + ": " + pack.dependencies[key])
 					})
+					stringBuilder += "\n\nversionName: " + (ajson.expo.ios.buildNumber || ajson.expo.android.versionCode) + '-' + (last_id + 1) + ""
 					const { exec } = require('child_process');
 					exec("publisher=$(npx expo whoami &); echo $publisher;", (error, stdout, stderr) => {
 						if (error) {
@@ -721,13 +722,14 @@ Pastikan data sudah benar sebelum anda melanjutkan, lanjut publish ketikkan runt
 			esplibs.forEach((key) => {
 				stringBuilder += ("\n" + key + ": " + pack.dependencies[key])
 			})
+			stringBuilder += "\n\nversionName: " + (ajson.expo.ios.buildNumber || ajson.expo.android.versionCode) + '-' + (last_id + 1) + ""
 			const { exec } = require('child_process');
 			exec("publisher=$(npx expo whoami &); echo $publisher;", (error, stdout, stderr) => {
 				if (error) {
 					console.error(`exec error: ${error}`);
 					return;
 				}
-				let accountName = stdout.trim();	
+				let accountName = stdout.trim();
 				stringBuilder += "\npublisher: @" + accountName + "\n"
 				stringBuilder += (notes != '' ? ("\n\n- " + notes) : '')
 				tm(stringBuilder)
@@ -741,7 +743,7 @@ Pastikan data sudah benar sebelum anda melanjutkan, lanjut publish ketikkan runt
 				}
 			});
 		}
-	}     
+	}
 }
 
 function doctor() {
