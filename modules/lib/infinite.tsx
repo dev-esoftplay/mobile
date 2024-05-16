@@ -17,6 +17,8 @@ export interface LibInfiniteProps {
   isDebug?: 0 | 1,
   initialData?: any[],
   injectData?: any,
+  onRefresh?: () => void
+  onResponseEdit?: (res: any) => any,
   onDataChange?: (data: any, page: number) => void
   onResult?: (res: any, uri: string) => void,
   filterData?: (item: any, index: number, array: any[]) => boolean,
@@ -61,7 +63,7 @@ export interface LibInfiniteState {
   error: string
 }
 
-export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
+export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState> {
 
   isStop: boolean = false
   page: number | undefined = 0
@@ -106,16 +108,17 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
     if (!this.pages.includes(page)) {
       this.pages.push(page)
       new LibCurl().withHeader(this.props?.customHeader || {})(url, post,
-        (res, msg) => {
+        (_res, msg) => {
+          const data = this.props.onResponseEdit ? this.props.onResponseEdit(_res) : _res
           if (this.props.isDebug) {
-            esp.log(res);
+            esp.log(data);
           }
-          this.props.onResult && this.props.onResult(res, url)
+          this.props.onResult && this.props.onResult(data, url)
           const update = () => {
             this.props.onDataChange && this.props.onDataChange(this.state.data || [], this.page)
           }
-          let mainIndex: any = this.props.mainIndex && res[this.props.mainIndex] || res
-          if (mainIndex.list.length == 0 || res.list == '') {
+          let mainIndex: any = this.props.mainIndex && data[this.props.mainIndex] || data
+          if (mainIndex.list.length == 0 || data.list == '') {
             this.page = page
             this.isStop = true
             this.setState((state: LibInfiniteState, props: LibInfiniteProps) => {
@@ -132,6 +135,7 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
             this.setState((state: LibInfiniteState, props: LibInfiniteProps) => {
               const latestData = [...state.data, ...mainIndex.list]
               return {
+                error: '',
                 data: page == 0
                   ? (typeof this.props?.filterData == 'function' ? mainIndex.list.filter(this.props.filterData) : mainIndex.list)
                   : (typeof this.props?.filterData == 'function' ? latestData.filter(this.props.filterData) : latestData),
@@ -146,6 +150,7 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
           this.page = page
           this.isStop = true
           this.setState({
+            data: [],
             error: msg?.message,
           })
         }, this.props.isDebug
@@ -155,10 +160,10 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
 
   componentDidUpdate(prevProps: LibInfiniteProps, prevState: LibInfiniteState): void {
     if (this.props.initialData != undefined && prevProps.initialData != this.props.initialData && this.props.initialData.length != 0 && this.state.data.length == 0) {
-      this.setState({ data: this.props.initialData })
+      this.setState({ data: this.props.initialData, error: "" })
     }
     if (this.props.injectData !== undefined && !isEqual(this.props.injectData, this.state.data)) {
-      this.setState({ data: this.props.injectData })
+      this.setState({ data: this.props.injectData, error: "" })
     }
   }
 
@@ -179,17 +184,22 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
     const { data, error } = this.state
     const { errorView, refreshEnabled } = this.props
     // const AutoLayoutViewNativeComponent = require("@shopify/flash-list/src/native/auto-layout/AutoLayoutViewNativeComponent")
-    const List = /* !!AutoLayoutViewNativeComponent ? FlashList : */ FlashList
     return (
       <View style={{ flex: 1 }} >
         {
           (!data || data.length) == 0 && !this.isStop ?
             this.props.LoadingView || <LibLoading />
             :
-            <List
+            <FlashList
               ref={this.flatlist}
               data={data || []}
-              onRefresh={((refreshEnabled == undefined) || refreshEnabled) && (() => this.loadData())}
+              onRefresh={
+                ((refreshEnabled == undefined) || refreshEnabled)
+                  ? () => {
+                    this.loadData()
+                    this.props?.onRefresh?.()
+                  }
+                  : () => { }}
               refreshing={false}
               keyExtractor={this._keyExtractor}
               nestedScrollEnabled
@@ -207,8 +217,6 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState>{
               showsVerticalScrollIndicator={false}
               estimatedItemSize={this.props.staticHeight || 100}
               initialNumToRender={5}
-              maxToRenderPerBatch={10}
-              windowSize={10}
               ListFooterComponent={
                 (!this.isStop) ? <View style={{ padding: 20 }} ><LibLoading /></View> : (this.props?.ListEndedComponent || <View style={{ height: 50 }} />)
               }
