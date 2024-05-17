@@ -81,6 +81,13 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState> 
     this._renderItem = this._renderItem.bind(this);
     this._keyExtractor = this._keyExtractor.bind(this);
     this.scrollToIndex = this.scrollToIndex.bind(this);
+    /* DEPRECATED */
+    const dp = ['onResult', 'mainIndex', 'filterData']
+    dp.forEach((pr) => {
+      if (this.props.hasOwnProperty(pr)) {
+        console.warn(`props key ${pr} from LibInfinite has been DEPRECATED`)
+      }
+    })
   }
 
   componentDidMount(): void {

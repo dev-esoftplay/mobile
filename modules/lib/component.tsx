@@ -17,9 +17,9 @@ export default class m<K, S> extends Component<K, S> {
     this._isMounted = false;
   }
 
-  setState(obj: S, callback?: () => void): void {
+  setState(state: S | ((prevState: Readonly<S>, props: Readonly<K>) => S | Pick<S, keyof S> | null) | Pick<S, keyof S> | null, callback?: (() => void)): void {
     if (this._isMounted) {
-      super.setState(obj, callback);
+      super.setState(state, callback);
     }
   }
 
