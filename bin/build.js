@@ -263,6 +263,7 @@ certificate.pem\n\
 web-build/\n\
 npm-debug.*\n\
 package-lock.json\n\
+assets/esoftplaymodules/\n\
 bun.lockb\n\
 yarn.lock\n\
 yarn-error.log\n\

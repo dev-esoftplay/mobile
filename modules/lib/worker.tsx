@@ -49,7 +49,11 @@ export default function m(props: LibUseworkerProps): any {
   }
 
   useEffect(() => {
-    ref.current?.injectJavaScript(`\n${require('./out')}\n`)
+    try {
+      ref.current?.injectJavaScript(`\n${require('./out')}\n`)
+    } catch (error) {
+      
+    }
   }, [])
 
   subs.useSubscribe(() => {
