@@ -258,6 +258,7 @@ config.json\n\
 config.debug.json\n\
 config.live.json\n\
 node_modules/\n\
+dist/\n\
 code-signing/\n\
 certificate.pem\n\
 web-build/\n\
