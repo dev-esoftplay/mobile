@@ -1,9 +1,14 @@
 // useLibs
 // noPage
 
-export default function m<T>(): (task: (item: T) => Promise<void>, onDone?: () => void) => [(data: T[], success?: ((isSuccess: boolean) => void) | undefined) => void] {
+export default function m<T>(): (task: (item: T) => Promise<void>, onDone?: () => void) => [(data: T[], success?: ((isSuccess: boolean) => void) | undefined) => void, () => void] {
   let onProcess = false
-  return (task: (item: T) => Promise<void>, onDone?: () => void): [(data: T[], success?: (isSuccess: boolean) => void) => void] => {
+
+  function reset() {
+    onProcess = false;
+  }
+
+  return (task: (item: T) => Promise<void>, onDone?: () => void): [(data: T[], success?: (isSuccess: boolean) => void) => void, () => void] => {
     function run(data: any[], cb?: (isSuccess: boolean) => void) {
       if (data.length == 0) {
         if (cb) cb?.(false);
@@ -28,6 +33,6 @@ export default function m<T>(): (task: (item: T) => Promise<void>, onDone?: () =
         } catch (err) { }
       }
     };
-    return [run]
+    return [run, reset]
   }
 }
