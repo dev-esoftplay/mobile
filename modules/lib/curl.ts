@@ -61,7 +61,7 @@ export default class m {
       if (typeof this?.controller?.abort == 'function') {
         this.closeConnection()
         esp.mod("lib/progress").hide()
-        esp.modProp("lib/toast").show(this.refineErrorMessage('timeout exceeded'))
+        // esp.modProp("lib/toast").show(this.refineErrorMessage('timeout exceeded'))
       }
     }, customTimeout ?? this.timeout);
   }
@@ -167,7 +167,7 @@ export default class m {
         }).catch((r) => {
           this.cancelTimeout()
           esp.mod("lib/progress").hide()
-          esp.modProp("lib/toast").show(esp.lang("lib/curl", "msg_failed"))
+          // esp.modProp("lib/toast").show(esp.lang("lib/curl", "msg_failed"))
           this.onFetchFailed(r)
         })
       }
@@ -374,7 +374,7 @@ export default class m {
       if (__DEV__) {
         console.warn(r)
       } else
-        esp.modProp("lib/toast").show(esp.lang("lib/curl", "msg_failed"))
+        // esp.modProp("lib/toast").show(esp.lang("lib/curl", "msg_failed"))
       this.onFetchFailed(r)
       esp.mod("lib/progress").hide()
     })
