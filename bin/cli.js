@@ -529,19 +529,22 @@ function readToJSON(path) {
 
 function isCustomUpdates() {
 	let ajson = readToJSON(appjson)
-	return ajson.expo.updates.hasOwnProperty('url') && !ajson.expo.updates.url.includes("https://u.expo.dev")
+	if (ajson.expo.hasOwnProperty("updates"))
+		return ajson.expo.updates.hasOwnProperty('url') && !ajson.expo.updates.url.includes("https://u.expo.dev")
+	return false
 }
 
 function publish(notes) {
 	let status = "-"
 	let isCustomServer = false
 	let ajson = readToJSON(appjson)
-	if (ajson.expo.updates.hasOwnProperty('url') && !ajson.expo.updates.url.includes("https://u.expo.dev")) {
-		isCustomServer = true
-		consoleSucces("START PULL OTA..")
-		command('cd /var/www/html/ota && git fetch origin master && git reset --hard FETCH_HEAD && git clean -df')
-		consoleSucces("END PULL OTA..")
-	}
+	if (ajson.expo.hasOwnProperty("updates"))
+		if (ajson.expo.updates.hasOwnProperty('url') && !ajson.expo.updates.url.includes("https://u.expo.dev")) {
+			isCustomServer = true
+			consoleSucces("START PULL OTA..")
+			command('cd /var/www/html/ota && git fetch origin master && git reset --hard FETCH_HEAD && git clean -df')
+			consoleSucces("END PULL OTA..")
+		}
 	let pack = readToJSON(packjson)
 	if (fs.existsSync(confjson)) {
 		let cjson = readToJSON(confjson)
@@ -833,6 +836,8 @@ function devClientPre(file) {
 		}
 		let app = JSON.parse(txt)
 		app.expo.name = app.expo.name.includes("DC-") ? app.expo.name : ("DC-" + app.expo.name)
+		app.expo.extra = app.expo.updates
+		delete app.expo.updates
 		fs.writeFileSync(file, JSON.stringify(app, undefined, 2))
 	} else {
 		consoleError(file)
@@ -848,6 +853,8 @@ function devClientPos(file) {
 		}
 		let app = JSON.parse(txt)
 		app.expo.name = app.expo.name.replace("DC-", "")
+		app.expo.updates = app.expo.extra
+		delete app.expo.extra
 		fs.writeFileSync(file, JSON.stringify(app, undefined, 2))
 	} else {
 		consoleError(file)
