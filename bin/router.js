@@ -46,6 +46,7 @@ function m(props): any {
   const userApikey = UserClass.state().useSelector((s) => s?.apikey)
   const econf = config.config
   const appOrientation = econf?.orientation ? String(econf.orientation) : 'portrait'
+  const pageAnimation = econf?.page_animation ? 'default' : 'none';
 
   return (
     <NavigationContainer
@@ -55,7 +56,7 @@ function m(props): any {
       <Stack.Navigator
         headerMode="none"
         initialRouteName={(userEmail || userApikey) ? econf.home.member : econf.home.public}
-        screenOptions={{ orientation: appOrientation, headerShown: false, contentStyle: { backgroundColor: 'white' }, animation: Platform.OS == 'ios' ? 'default' : 'none', stackPresentation: 'push' }}>
+        screenOptions={{ orientation: appOrientation, headerShown: false, contentStyle: { backgroundColor: 'white' }, animation: Platform.OS == 'ios' ? 'default' : pageAnimation, stackPresentation: 'push' }}>
 `+ navs + `
       </Stack.Navigator>
     </NavigationContainer>
