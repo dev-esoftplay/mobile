@@ -42,6 +42,29 @@ export function resetTimeOffset(date: Date): Date {
   return originalTime;
 }
 
+
+export function useLocalFormatOnline(custom): [string, () => void] {
+  const [date, setDate] = useSafeState()
+
+  function get() {
+    const fetchtime = performance.now();
+    fetch('https://worldtimeapi.org/api/ip')
+      .then((res) => res.json())
+      .then((res) => {
+        const onlineTime = new Date(new Date(res.utc_datetime).getTime() + performance.now() - (fetchtime) + 2000)
+        const out = dayjs(onlineTime).format(custom)
+        setDate(out)
+      })
+      .catch(() => {
+        setDate(dayjs(new Date()).format(custom))
+      })
+  }
+
+  useEffect(get, [])
+
+  return [date, get]
+}
+
 export default function moment(date?: string | Date | any) {
   let _date = isNumeric(date) ? new Date(date * 1000) : date
   const langData = Object.values(esp.config('lang'))
