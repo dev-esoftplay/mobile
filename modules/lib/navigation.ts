@@ -3,11 +3,19 @@
 import { CommonActions, StackActions } from '@react-navigation/native';
 import { LibNavigationRoutes } from 'esoftplay';
 import { EspArgsInterface } from 'esoftplay/cache/args';
+import { EspRouterInterface } from 'esoftplay/cache/routers';
 import { UserClass } from 'esoftplay/cache/user/class/import';
 import { UserRoutes } from 'esoftplay/cache/user/routes/import';
 
 import esp from 'esoftplay/esp';
+import useGlobalState, { useGlobalReturn } from 'esoftplay/global';
 import React, { useEffect } from "react";
+
+export interface LibNavigationTabConfigReturn<S extends keyof EspArgsInterface> {
+  activeIndex: number,
+  defaultIndex: number,
+  modules: EspRouterInterface[S][]
+}
 
 export interface LibNavigationInjector {
   args: any,
@@ -15,9 +23,9 @@ export interface LibNavigationInjector {
 }
 
 export default {
-  _redirect: {},
-  _data: {},
-  _ref: {},
+  _redirect: {} as any,
+  _data: {} as any,
+  _ref: {} as any,
   _isReady: false,
   setRef(ref: any): void {
     this._ref = ref
@@ -67,9 +75,33 @@ export default {
   navigate<S extends keyof EspArgsInterface>(route: S, params?: EspArgsInterface[S]): void {
     this._ref?.navigate?.(route, params)
   },
+  navigateTab<S extends keyof EspArgsInterface>(route: S, tabIndex: number, params?: EspArgsInterface[S]): void {
+    this._ref?.navigate?.(route, params)
+    setTimeout(() => {
+      const TabConfig = esp.modProp(route)?.TabConfig;
+      if (TabConfig) {
+        TabConfig.set(esp.mod("lib/object").set(TabConfig.get(), tabIndex)('activeIndex'))
+      } else {
+        console.error("TabConfig not found or exported in module " + route);
+      }
+    }, 100);
+  },
+  createTabConfig<S extends keyof EspArgsInterface>(modules: S[], defaultIndex?: number): useGlobalReturn<LibNavigationTabConfigReturn<S>> {
+    const viewModules = modules.map((string: S) => esp.mod(string))
+    const tabConfig = useGlobalState({ activeIndex: defaultIndex || 0, defaultIndex: defaultIndex || 0, modules: viewModules })
+    return tabConfig
+  },
+  useTabConfigState<S extends keyof EspArgsInterface>(tabConfig: useGlobalReturn<LibNavigationTabConfigReturn<S>>) {
+    const [tabConfigState] = tabConfig.useState()
+    useEffect(() => {
+      return () => {
+        tabConfig.set(esp.mod("lib/object").set(tabConfig.get(), tabConfig.get().defaultIndex)('activeIndex'))
+      }
+    }, [])
+    return tabConfigState
+  },
   useBackResult(props: any): (res: any) => void {
     const key = this.getResultKey(props)
-
     useEffect(() => {
       return () => this.cancelBackResult(key)
     }, [])
