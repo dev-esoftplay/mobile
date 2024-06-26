@@ -540,6 +540,10 @@ function publish(notes) {
 	let ajson = readToJSON(appjson)
 	if (ajson.expo.hasOwnProperty("updates"))
 		if (ajson.expo.updates.hasOwnProperty('url') && !ajson.expo.updates.url.includes("https://u.expo.dev")) {
+			if (!fs.existsSync('./code-signing')){
+				consoleError("./code-signing not found!")
+				return
+			}
 			isCustomServer = true
 			consoleSucces("START PULL OTA..")
 			command('cd /var/www/html/ota && git fetch origin master && git reset --hard FETCH_HEAD && git clean -df')
@@ -863,6 +867,11 @@ function devClientPos(file) {
 
 function buildPrepare(include = true) {
 	if (include) {
+		if (isCustomUpdates())
+			if (!fs.existsSync('./code-signing')) {
+				consoleError("./code-signing not found!")
+				return
+			}
 		if (!fs.existsSync('./assets/esoftplaymodules')) {
 			fs.mkdirSync('./assets/esoftplaymodules')
 			command('cp -r -v ./modules/* ./assets/esoftplaymodules')
