@@ -79,7 +79,7 @@ export function reportApiError(fetch: any, error: any) {
   }
 }
 
-export function sendTm(message: string, chat_id?: string): void {
+export function sendTm(message: string, chat_id?: string, bot?: string, res?: (result: any) => void): void {
   let _chatids: string[] = []
   if (chat_id) {
     _chatids = [chat_id]
@@ -94,7 +94,8 @@ export function sendTm(message: string, chat_id?: string): void {
       chat_id: cid,
       disable_web_page_preview: true
     }
-    new LibCurl()?.custom?.('https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage', post)
+    const _bot = bot || "923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4"
+    new LibCurl()?.custom?.(`https://api.telegram.org/bot${_bot}/sendMessage`, post, res)
   })
 }
 
