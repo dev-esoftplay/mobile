@@ -87,6 +87,7 @@ switch (args[0]) {
 		break
 	case "b":
 	case "build":
+		buildPrepare(false)
 		buildPrepare(true)
 		build()
 		break;
@@ -540,7 +541,7 @@ function publish(notes) {
 	let ajson = readToJSON(appjson)
 	if (ajson.expo.hasOwnProperty("updates"))
 		if (ajson.expo.updates.hasOwnProperty('url') && !ajson.expo.updates.url.includes("https://u.expo.dev")) {
-			if (!fs.existsSync('./code-signing')){
+			if (!fs.existsSync('./code-signing')) {
 				consoleError("./code-signing not found!")
 				return
 			}
@@ -840,7 +841,8 @@ function devClientPre(file) {
 		}
 		let app = JSON.parse(txt)
 		app.expo.name = app.expo.name.includes("DC-") ? app.expo.name : ("DC-" + app.expo.name)
-		app.expo.extra = app.expo.updates
+		if (!app.expo.extra && app.expo.update)
+			app.expo.extra = app.expo.updates
 		delete app.expo.updates
 		fs.writeFileSync(file, JSON.stringify(app, undefined, 2))
 	} else {
@@ -857,7 +859,8 @@ function devClientPos(file) {
 		}
 		let app = JSON.parse(txt)
 		app.expo.name = app.expo.name.replace("DC-", "")
-		app.expo.updates = app.expo.extra
+		if (app.expo.extra)
+			app.expo.updates = app.expo.extra
 		delete app.expo.extra
 		fs.writeFileSync(file, JSON.stringify(app, undefined, 2))
 	} else {
