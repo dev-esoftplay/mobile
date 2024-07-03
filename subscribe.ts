@@ -22,10 +22,6 @@ export default function useGlobalSubscriber(defaultValue?: any): useGlobalSubscr
     value = defaultValue;
   }
 
-  const trigger = (newValue?: any) => {
-    notify(newValue);
-  }
-
   function useSubscribe(func: Function) {
     React.useLayoutEffect(() => {
       subscribers.add(func)
@@ -35,7 +31,7 @@ export default function useGlobalSubscriber(defaultValue?: any): useGlobalSubscr
       }
     }, [])
 
-    return trigger;
+    return notify;
   }
 
   function notify(newValue?: any) {
@@ -51,6 +47,6 @@ export default function useGlobalSubscriber(defaultValue?: any): useGlobalSubscr
     getValue,
     useSubscribe,
     reset,
-    trigger
+    trigger: notify
   };
 }
