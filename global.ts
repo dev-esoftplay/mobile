@@ -31,7 +31,8 @@ export interface useGlobalOption {
 }
 
 export interface useGlobalConnect<T> {
-  render: (props: T) => any,
+  selector?: (props: T) => any,
+  render: (props: any) => any,
 }
 export let userDataReset: Function[] = []
 let timeoutFinish: NodeJS.Timeout
@@ -225,7 +226,7 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
   };
 
   function _connect(props: useGlobalConnect<T>): any {
-    const [state] = useState()
+    const state = props.selector ? useSelector(props.selector) : useState()[0]
     const children = props.render(state)
     return children ? R.cloneElement(children) : null
   }
