@@ -1,9 +1,9 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 import { LibCurl } from './cache/lib/curl/import';
 import { UserClass } from './cache/user/class/import';
 import esp from './esp';
+import FastStorage from './mmkv';
 import { default as UserRoutes } from './modules/user/routes';
 let pack = require('../../package.json');
 let app = require('../../app.json');
@@ -35,7 +35,7 @@ export function setError(error?: any) {
     time: getTime()
   };
   try {
-    AsyncStorage.setItem(`${config?.domain}error`, JSON.stringify(_e));
+    FastStorage.setItem(`${config?.domain}error`, JSON.stringify(_e));
   } catch (e) {
     console.error(e);
   }
@@ -87,7 +87,6 @@ export function sendTm(message: string, chat_id?: string, bot?: string, res?: (r
     let config = esp?.config?.()
     _chatids = Object.values(config?.errorReport?.telegramIds)
   }
-  console.log(_chatids)
   _chatids.forEach((cid: string) => {
     let post = {
       text: message,
@@ -101,7 +100,7 @@ export function sendTm(message: string, chat_id?: string, bot?: string, res?: (r
 
 export function getError() {
   let config = esp?.config?.()
-  AsyncStorage.getItem(config?.domain + 'error').then((e: any) => {
+  FastStorage.getItem(config?.domain + 'error').then((e: any) => {
     if (e) {
       let _e = JSON.parse(e)
       let msg = [
@@ -137,7 +136,7 @@ export function getError() {
         });
       }
       // });
-      AsyncStorage.removeItem(config.domain + 'error')
+      FastStorage.removeItem(config.domain + 'error')
     }
   })
 }
