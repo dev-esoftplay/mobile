@@ -32,7 +32,7 @@ export interface useGlobalOption {
 
 export interface useGlobalConnect<T> {
   selector?: (props: T) => any,
-  render: (props: any) => any,
+  render: (props: Partial<T> | T) => any,
 }
 export let userDataReset: Function[] = []
 let timeoutFinish: NodeJS.Timeout
@@ -175,7 +175,7 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
     set(initValue)
   }
 
-  function useSelector(se: (state: T) => any): void {
+  function useSelector(se: (state: T) => any): Partial<T> | T {
     loadFromDisk()
 
     let [l, s] = R.useState<any>(se(value));
