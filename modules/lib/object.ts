@@ -59,7 +59,7 @@ export default class m {
     return this.cursorBuilder("assign", this.#value, deepCopy(obj1))
   }
 
-  removeKeys(deletedItemKeys: string[]): (cursor?: string | number, ...cursors: (string | number)[]) => any {
+  removeKeys(deletedItemKeys: string[]): (cursor?: string | number, ...cursors: (string | number)[]) => this {
     return this.cursorBuilder("batch", this.#value, (arr) => _removeKeys(arr, deletedItemKeys))
   }
 
