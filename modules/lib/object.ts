@@ -3,10 +3,10 @@
 import { update } from "immhelper";
 
 export default class m {
-  _value = undefined
+  #value = undefined
 
   constructor(array: any) {
-    this._value = array
+    this.#value = array
     this.value = this.value.bind(this)
     this.push = this.push.bind(this)
     this.unset = this.unset.bind(this)
@@ -27,40 +27,44 @@ export default class m {
         spec = { [pathToUpdate]: [command, ...allValues] }
       else
         spec = [command, ...allValues]
-      this._value = update(array, spec)
+      this.#value = update(array, spec)
       return this
     }
   }
 
   push(value?: any, ...values: any[]): (cursor?: string | number, ...cursors: (string | number)[]) => this {
-    return this.cursorBuilder("push", this._value, value, ...values)
+    return this.cursorBuilder("push", this.#value, value, ...values)
   }
 
   unshift(value?: any, ...values: any[]): (cursor?: string | number, ...cursors: (string | number)[]) => this {
-    return this.cursorBuilder("unshift", this._value, value, ...values)
+    return this.cursorBuilder("unshift", this.#value, value, ...values)
   }
 
   splice(index: number, deleteCount: number, value?: any, ...values: any[]): (cursor?: string | number, ...cursors: (string | number)[]) => this {
-    return this.cursorBuilder("splice", this._value, index, deleteCount, value, ...values)
+    return this.cursorBuilder("splice", this.#value, index, deleteCount, value, ...values)
   }
   unset(index: number | string, ...indexs: (string | number)[]): (cursor?: string | number, ...cursors: (string | number)[]) => this {
-    return this.cursorBuilder("unset", this._value, index, ...indexs)
+    return this.cursorBuilder("unset", this.#value, index, ...indexs)
   }
 
   set(value: any): (cursor?: string | number, ...cursors: (string | number)[]) => this {
-    return this.cursorBuilder("set", this._value, value)
+    return this.cursorBuilder("set", this.#value, value)
   }
 
   update(callback: (lastValue: any) => any): (cursor?: string | number, ...cursors: (string | number)[]) => this {
-    return this.cursorBuilder("batch", this._value, callback)
+    return this.cursorBuilder("batch", this.#value, callback)
   }
 
   assign(obj1: any): (cursor?: string | number, ...cursors: (string | number)[]) => this {
-    return this.cursorBuilder("assign", this._value, deepCopy(obj1))
+    return this.cursorBuilder("assign", this.#value, deepCopy(obj1))
+  }
+
+  removeKeys(deletedItemKeys: string[]): (cursor?: string | number, ...cursors: (string | number)[]) => any {
+    return this.cursorBuilder("batch", this.#value, (arr) => _removeKeys(arr, deletedItemKeys))
   }
 
   value(): any {
-    return this._value
+    return this.#value
   }
 
   static push(array: any, value?: any, ...values: any[]): (cursor?: string | number, ...cursors: (string | number)[]) => any {
@@ -68,6 +72,9 @@ export default class m {
   }
   static unshift(array: any, value?: any, ...values: any[]): (cursor?: string | number, ...cursors: (string | number)[]) => any {
     return cursorBuilder("unshift", array, value, ...values)
+  }
+  static removeKeys(arrayOrObj: any, deletedItemKeys: string[]): (cursor?: string | number, ...cursors: (string | number)[]) => any {
+    return cursorBuilder("batch", arrayOrObj, (arrOrObj) => _removeKeys(arrOrObj, deletedItemKeys))
   }
   static splice(array: any, index: number, deleteCount: number, value?: any, ...values: any[]): (cursor?: string | number, ...cursors: (string | number)[]) => any {
     return cursorBuilder("splice", array, index, deleteCount, value, ...values)
@@ -84,32 +91,6 @@ export default class m {
   static assign(obj: any, obj1: any): (cursor?: string | number, ...cursors: (string | number)[]) => any {
     return cursorBuilder("assign", obj, deepCopy(obj1))
   }
-
-  //   static deepMerge(obj: any, obj1: any) {
-  //     return (cursor?: string | number, ...cursors: (string | number)[]) => {
-  //       function mergeDeep(target: any, source: any): any {
-  //         const isObject = (obj) => obj && typeof obj === 'object';
-  //         if (!isObject(target) || !isObject(source)) {
-  //           return source;
-  //         }
-  //         Object.keys(source).forEach(key => {
-  //           const targetValue = target[key];
-  //           const sourceValue = source[key];
-  //           if (Array.isArray(targetValue) && Array.isArray(sourceValue)) {
-  //             target[key] = targetValue.concat(sourceValue);
-  //           } else if (isObject(targetValue) && isObject(sourceValue)) {
-  //             target[key] = mergeDeep(Object.assign({}, targetValue), sourceValue);
-  //           } else {
-  //             target[key] = sourceValue;
-  //           }
-  //         });
-  //         return target;
-  //       }
-  //       const allCursors = [cursor, ...cursors].filter((x) => x != undefined)
-  //       let addressedObj = obj[cursor]
-  //       return mergeDeep(addressedObj, obj1)
-  //     }
-  //   }
 }
 
 function cursorBuilder(command: string, array: any, value: any, ...values: any[]): (cursor?: string | number, ...cursors: (string | number)[]) => any {
@@ -126,6 +107,23 @@ function cursorBuilder(command: string, array: any, value: any, ...values: any[]
 }
 
 
+function _removeKeys(objOrArr, keysToRemove) {
+  if (Array.isArray(objOrArr)) {
+      return objOrArr.map(obj => {
+          let newObj = { ...obj };
+          keysToRemove.forEach(key => {
+              delete newObj[key];
+          });
+          return newObj;
+      });
+  } else {
+      let newObj = { ...objOrArr };
+      keysToRemove.forEach(key => {
+          delete newObj[key];
+      });
+      return newObj;
+  }
+}
 
 function deepCopy(o) {
   switch (typeof o) {
