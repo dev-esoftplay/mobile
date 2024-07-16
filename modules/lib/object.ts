@@ -132,14 +132,26 @@ function _removeKeys(objOrArr: any, keysToRemove: string[]) {
   }
 }
 
-function _replaceItem<T>(arr: T[], filter: (item: T, index: number) => boolean, newItem: T) {
-  return arr.map((item, index) => {
-    if (filter(item, index)) {
-      return newItem;
-    }
-    return item;
-  });
+function _replaceItem(data: any, predicate: (item: any, index: number) => boolean, newItem: any) {
+  if (Array.isArray(data)) {
+    return data.map((item, index) => {
+      if (predicate(item, index)) {
+        return newItem;
+      }
+      return item;
+    });
+  } else if (typeof data === 'object' && data !== null) {
+    let newData = { ...data };
+    Object.keys(newData).forEach((key, index) => {
+      if (predicate(newData[key], index)) {
+        newData[key] = newItem;
+      }
+    });
+    return newData;
+  } else
+    return data
 }
+
 
 function deepCopy(o: any) {
   switch (typeof o) {
