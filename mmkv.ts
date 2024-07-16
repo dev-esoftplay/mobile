@@ -3,7 +3,7 @@ import { MMKV } from 'react-native-mmkv';
 const storage = new MMKV()
 
 const FastStorage = {
-  getItemSync(key): string {
+  getItemSync(key: string): string {
     return storage.getString(key)
   },
   getItem(key: string): Promise<string | undefined | null> {
