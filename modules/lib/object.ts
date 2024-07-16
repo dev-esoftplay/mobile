@@ -60,7 +60,11 @@ export default class m {
   }
 
   removeKeys(deletedItemKeys: string[]): (cursor?: string | number, ...cursors: (string | number)[]) => this {
-    return this.cursorBuilder("batch", this.#value, (arr) => _removeKeys(arr, deletedItemKeys))
+    return this.cursorBuilder("batch", this.#value, (arr: any) => _removeKeys(arr, deletedItemKeys))
+  }
+
+  replaceItem<T>(filter: (item: T, index: number) => boolean, newItem: T): (cursor?: string | number, ...cursors: (string | number)[]) => this {
+    return this.cursorBuilder("batch", this.#value, (arr: any) => _replaceItem(arr, filter, newItem))
   }
 
   value(): any {
@@ -74,7 +78,10 @@ export default class m {
     return cursorBuilder("unshift", array, value, ...values)
   }
   static removeKeys(arrayOrObj: any, deletedItemKeys: string[]): (cursor?: string | number, ...cursors: (string | number)[]) => any {
-    return cursorBuilder("batch", arrayOrObj, (arrOrObj) => _removeKeys(arrOrObj, deletedItemKeys))
+    return cursorBuilder("batch", arrayOrObj, (arrOrObj: any) => _removeKeys(arrOrObj, deletedItemKeys))
+  }
+  static replaceItem<T>(arrayOrObj: any, filter: (item: T, index: number) => boolean, newItem: T): (cursor?: string | number, ...cursors: (string | number)[]) => any {
+    return cursorBuilder("batch", arrayOrObj, (arrOrObj: any) => _replaceItem(arrOrObj, filter, newItem))
   }
   static splice(array: any, index: number, deleteCount: number, value?: any, ...values: any[]): (cursor?: string | number, ...cursors: (string | number)[]) => any {
     return cursorBuilder("splice", array, index, deleteCount, value, ...values)
@@ -107,25 +114,34 @@ function cursorBuilder(command: string, array: any, value: any, ...values: any[]
 }
 
 
-function _removeKeys(objOrArr, keysToRemove) {
+function _removeKeys(objOrArr: any, keysToRemove: string[]) {
   if (Array.isArray(objOrArr)) {
-      return objOrArr.map(obj => {
-          let newObj = { ...obj };
-          keysToRemove.forEach(key => {
-              delete newObj[key];
-          });
-          return newObj;
-      });
-  } else {
-      let newObj = { ...objOrArr };
+    return objOrArr.map(obj => {
+      let newObj = { ...obj };
       keysToRemove.forEach(key => {
-          delete newObj[key];
+        delete newObj[key];
       });
       return newObj;
+    });
+  } else {
+    let newObj = { ...objOrArr };
+    keysToRemove.forEach(key => {
+      delete newObj[key];
+    });
+    return newObj;
   }
 }
 
-function deepCopy(o) {
+function _replaceItem<T>(arr: T[], filter: (item: T, index: number) => boolean, newItem: T) {
+  return arr.map((item, index) => {
+    if (filter(item, index)) {
+      return newItem;
+    }
+    return item;
+  });
+}
+
+function deepCopy(o: any) {
   switch (typeof o) {
     case 'object':
       if (o === null) return null;
