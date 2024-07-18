@@ -1,43 +1,46 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useLayoutEffect, useState } from 'react';
+import FastStorage from 'esoftplay/mmkv';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
+type usePersistStateReturn<T> = [T, (newState: T | ((newState: T) => T)) => void, () => T];
 
-let setter = new Set<Function>()
-export default function usePersistState(key: string, def?: any): any[] {
-  const [state, setState] = useState(def || undefined)
-
-  function set(value: any) {
-    if (value == undefined)
-      AsyncStorage.removeItem(key)
-    else
-      AsyncStorage.setItem(key, JSON.stringify(value));
-    setter.forEach((c) => c?.(value))
-  }
-
-  function updater(callback?: (a?: typeof def) => void) {
-    AsyncStorage.getItem(key).then((v: string | undefined) => {
-      if (v) {
-        const json = JSON.parse(v)
-        if (callback) callback(json)
-        set(json)
-      } else {
-        if (callback) callback(def)
-        set(def)
-      }
-    })
-  }
-
-  function del() {
-    AsyncStorage.removeItem(key)
-  }
-
-  useLayoutEffect(() => {
-    setter.add(setState)
-    updater()
-    return () => {
-      setter.delete(setState)
+export default function usePersistState<T = any>(persistKey: string, defaultValue?: T): usePersistStateReturn<T> {
+  const isMountedRef = useRef<boolean>(true);
+  const storedValue = FastStorage.getItemSync(persistKey);
+  let parsedValue: T | undefined;
+  if (storedValue) {
+    try {
+      parsedValue = JSON.parse(storedValue);
+    } catch (e) {
+      parsedValue = defaultValue;
     }
-  }, [])
+  } else {
+    parsedValue = defaultValue;
+  }
+  const valueRef = useRef<T>(parsedValue as T);
+  const [, rerender] = useState({});
 
-  return [state, set, updater, del]
+  const updateState = useCallback((value: T | ((prevState: T) => T)) => {
+    if (isMountedRef.current) {
+      if (typeof value === 'function') {
+        valueRef.current = (value as (prevState: T) => T)(valueRef.current);
+      } else {
+        valueRef.current = value;
+      }
+
+      if (valueRef.current != undefined)
+        FastStorage.setItem(persistKey, JSON.stringify(valueRef.current))
+      else
+        FastStorage.removeItem(persistKey)
+      rerender({});
+    }
+  }, []);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
+  return [valueRef.current, updateState, () => valueRef.current];
 }
