@@ -1,5 +1,6 @@
 import esp from 'esoftplay/esp';
 import * as R from 'react';
+import { createDebounce } from './timeout';
 
 export interface useGlobalReturn<T> {
   useState: () => [T, (newState: T | ((newState: T) => T)) => void, () => T],
@@ -15,6 +16,7 @@ export interface useGlobalReturn<T> {
 export interface useGlobalAutoSync {
   url: string,
   post: (item: any) => Object,
+  delayInMs?: number,
   isSyncing?: (isSync: boolean) => void
 }
 
@@ -61,6 +63,8 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
     const LibCurl = esp.mod("lib/curl")
     const UseTasks = esp.mod("use/tasks")
     sync = UseTasks()((item) => new Promise((next) => {
+      const debounce = createDebounce()
+      const delayInMs = o?.useAutoSync?.delayInMs || 0
       const { isOnline, isInternetReachable } = esp.mod("lib/net_status").state().get()
       if (isOnline && isInternetReachable) {
         if (o?.useAutoSync) {
@@ -75,14 +79,14 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
                   return old
                 }
               })
-              next()
+              debounce.set(next, delayInMs)
             }, () => {
-              next()
+              debounce.set(next, delayInMs)
             }
           )
         }
       } else {
-        next()
+        debounce.set(next, delayInMs)
       }
     }), () => {
       o?.useAutoSync?.isSyncing?.(false)
