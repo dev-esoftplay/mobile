@@ -1,3 +1,4 @@
+import { EspAssets } from 'esoftplay/cache/assets';
 import { LibLocale } from 'esoftplay/cache/lib/locale/import';
 import { EspRouterPropertyInterface } from 'esoftplay/cache/properties';
 import { EspRouterInterface } from 'esoftplay/cache/routers';
@@ -71,7 +72,7 @@ const esp = {
   appjson(): any {
     return esp.mergeDeep(app, conf)
   },
-  assets(path: string): any {
+  assets(path: EspAssets): any {
     const _assets = require('./cache/assets')
     return _assets(path)
   },
@@ -155,7 +156,7 @@ const esp = {
     const properties = require('./cache/properties')
     return properties(modtast.join("/"));
   },
-  _config(): string {
+  _config() {
     app = esp.mergeDeep(app, conf)
     var msg = ''
     if (!app.hasOwnProperty('config')) {

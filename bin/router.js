@@ -141,7 +141,9 @@ if (!fs.existsSync(pathAsset)) {
 listDir(pathAsset);
 var Assets = "";
 var pLength = pathAsset.length - 1;
+let dFiles = []
 assets.forEach(File => {
+  dFiles.push(File.substr(pLength))
   Assets += "\t\tcase \"" + File.substr(pLength) + "\":\n" +
     "\t\t\tOut = require(\"../../../" + File + "\");\n" +
     "\t\t\tbreak;\n";
@@ -154,12 +156,18 @@ Text = 'function assets(File) {' + "\n\t" +
   'return Out;' + "\n" +
   '}' + "\n" +
   'module.exports = assets;';
-if (isChange(tmpDir + "assets.js", Text))
+if (isChange(tmpDir + "assets.js", Text)) {
+  fs.writeFile(tmpDir + "assets.d.ts", `export type EspAssets = ${dFiles.map((x) => "\"" + x + "\"").join(" | ")}`, { flag: "w" }, (err) => {
+    if (err) {
+      return console.log(err);
+    }
+  })
   fs.writeFile(tmpDir + "assets.js", Text, { flag: 'w' }, function (err) {
     if (err) {
       return console.log(err);
     }
   });
+}
 
 /* CREATE INDEX.D.TS */
 function createIndex() {
