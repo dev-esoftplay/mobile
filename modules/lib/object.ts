@@ -55,9 +55,10 @@ export default class m {
         spec = { [pathToUpdate]: [command, ...allValues] }
       else
         spec = [command, ...allValues]
-      if (hasError)
+      if (hasError) {
+        console.warn("LibObject: Please check your cursor!")
         this.#value = array
-      else
+      } else
         this.#value = update(array, spec)
       return this
     }
@@ -169,9 +170,10 @@ function cursorBuilder(command: string, array: any, value: any, ...values: any[]
     else
       spec = [command, ...allValues]
 
-    if (hasError)
+    if (hasError) {
+      console.warn("LibObject: Please check your cursor!")
       return array
-    else
+    } else
       return update(array, spec)
   }
 }
