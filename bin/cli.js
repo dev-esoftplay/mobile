@@ -841,9 +841,9 @@ function devClientPre(file) {
 		}
 		let app = JSON.parse(txt)
 		app.expo.name = app.expo.name.includes("DC-") ? app.expo.name : ("DC-" + app.expo.name)
-		if (!app.expo.extra && app.expo.update)
-			app.expo.extra = app.expo.updates
-		delete app.expo.updates
+		// if (!app.expo.extra && app.expo.update)
+		// 	app.expo.extra = app.expo.updates
+		// delete app.expo.updates
 		fs.writeFileSync(file, JSON.stringify(app, undefined, 2))
 	} else {
 		consoleError(file)
@@ -859,9 +859,9 @@ function devClientPos(file) {
 		}
 		let app = JSON.parse(txt)
 		app.expo.name = app.expo.name.replace("DC-", "")
-		if (app.expo.extra)
-			app.expo.updates = app.expo.extra
-		delete app.expo.extra
+		// if (app.expo.extra)
+		// 	app.expo.updates = app.expo.extra
+		// delete app.expo.extra
 		fs.writeFileSync(file, JSON.stringify(app, undefined, 2))
 	} else {
 		consoleError(file)
