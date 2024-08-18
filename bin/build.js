@@ -227,6 +227,7 @@ if (fs.existsSync(packjson)) {
 	"compilerOptions": {\n\
 		"allowSyntheticDefaultImports": true,\n\
 		"experimentalDecorators": true,\n\
+		"resolveJsonModule": true, \n\
 		"forceConsistentCasingInFileNames": true,\n\
 		"importHelpers": true,\n\
 		"jsx": "react-native",\n\

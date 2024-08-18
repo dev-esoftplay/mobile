@@ -437,4 +437,39 @@ export interface EspArgsInterface {
         return console.log(err);
       }
     });
+
+  function readToJSON(path) {
+    var txt = fs.readFileSync(path, 'utf8');
+    let isJSON = txt.startsWith('{') || txt.startsWith('[')
+    return isJSON ? JSON.parse(txt) : txt
+  }
+  const espConfig = readToJSON("./config.json")
+  const presets = {
+    timezone: "",
+    protocol: "",
+    uri: "",
+    url: "",
+    content: "",
+    webviewOpen: "",
+    webviewClose: "",
+    api: "",
+    data: "",
+    home: {
+      member: "",
+      public: ""
+    },
+    group_id: 0,
+    langIds: [],
+    theme: [],
+    comment_login: 1,
+    notification: 0,
+    ...espConfig.config
+  }
+  if (isChange(tmpDir + "config.json", JSON.stringify(presets))) {
+    fs.writeFile(tmpDir + "config.json", JSON.stringify(presets), { flag: 'w' }, function (err) {
+      if (err) {
+        return console.log(err);
+      }
+    });
+  }
 }

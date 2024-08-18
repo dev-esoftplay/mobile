@@ -1,4 +1,5 @@
 import { EspAssets } from 'esoftplay/cache/assets';
+import cacheConfig from 'esoftplay/cache/config.json';
 import { LibLocale } from 'esoftplay/cache/lib/locale/import';
 import { EspRouterPropertyInterface } from 'esoftplay/cache/properties';
 import { EspRouterInterface } from 'esoftplay/cache/routers';
@@ -6,6 +7,8 @@ import Constants from 'expo-constants';
 import { LogBox, Platform } from 'react-native';
 import 'react-native-reanimated';
 import './oneplusfixfont';
+
+type ConfigType = typeof cacheConfig
 
 const ignoreWarns = [
   "Setting a timer for a long period of time",
@@ -79,21 +82,21 @@ const esp = {
   versionName(): string {
     return (Platform.OS == 'android' ? Constants?.expoConfig?.android?.versionCode : Constants?.expoConfig?.ios?.buildNumber) + '-' + esp.config('publish_id')
   },
-  config(param?: string, ...params: string[]): any {
-    let out: any = esp._config();
+  config<T = ConfigType>(param?: keyof ConfigType, ...params: string[]): T {
+    let out: any = this._config();
     if (param) {
-      var _params = [param, ...params]
-      if (_params.length > 0)
-        for (let i = 0; i < _params.length; i++) {
-          const key = _params[i];
-          if (out?.hasOwnProperty?.(key)) {
-            out = out[key];
-          } else {
-            out = {};
-          }
+      const _params = [param, ...params];
+      for (let i = 0; i < _params.length; i++) {
+        const key = _params[i];
+        if (out && typeof out === 'object' && out.hasOwnProperty(key)) {
+          out = out[key];
+        } else {
+          return {} as T; // Return empty object if key doesn't exist
         }
+      }
     }
-    return out;
+
+    return out as T;
   },
   isDebug(message: string): boolean {
     if (!lconf) {
@@ -117,7 +120,7 @@ const esp = {
       return out;
     }
   },
-  lang(moduleTask: string, langName: string, ...stringToBe: string[]): string {
+  lang<T extends keyof EspRouterInterface>(moduleTask: T, langName: string, ...stringToBe: string[]): string {
     let string = LibLocale.stateLang().get()?.[esp.langId()]?.[moduleTask]?.[langName]
     if (!string) {
       string = esp.assets("locale/id.json")?.[moduleTask]?.[langName]
@@ -156,7 +159,7 @@ const esp = {
     const properties = require('./cache/properties')
     return properties(modtast.join("/"));
   },
-  _config() {
+  _config(): typeof cacheConfig {
     app = esp.mergeDeep(app, conf)
     var msg = ''
     if (!app.hasOwnProperty('config')) {
@@ -173,7 +176,7 @@ const esp = {
       throw error;
     }
 
-    var config = {
+    const config = {
       // default config
       timezone: "Asia/Jakarta",
       protocol: "http",
