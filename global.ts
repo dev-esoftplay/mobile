@@ -8,7 +8,7 @@ export interface useGlobalReturn<T> {
   set: (x: T | ((old: T) => T)) => void,
   reset: () => void,
   listen: (cb: (value: T) => void) => () => void
-  sync: () => void,
+  sync: () => () => void,
   connect: (props: useGlobalConnect<T>) => any,
   useSelector: (selector: (state: T) => any) => any;
 }
@@ -45,7 +45,7 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
   let value: T = initValue;
   let listener = new Set<Function>()
   let loaded = -1
-  let sync: any = undefined
+  let taskSync: any = undefined
 
   if (o?.persistKey) {
     STORAGE = o?.inFastStorage ? require('esoftplay/mmkv').default : (o?.inFile ? (require('esoftplay/storage').default) : (require('@react-native-async-storage/async-storage').default))
@@ -55,14 +55,21 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
   }
 
   function _sync() {
-    if (o?.useAutoSync && sync && Array.isArray(value))
-      sync?.(value.filter((item: any) => item.synced != 1))
+    if (o?.useAutoSync && taskSync && Array.isArray(value)) {
+      taskSync[0]?.(value.filter((item: any) => item.synced != 1))
+    }
+    return () => {
+      if (o?.useAutoSync && taskSync && Array.isArray(value)) {
+        taskSync?.[1]?.()
+        taskSync?.[0]?.(value.filter((item: any) => item.synced != 1))
+      }
+    }
   }
 
   if (o?.useAutoSync) {
     const LibCurl = esp.mod("lib/curl")
     const UseTasks = esp.mod("use/tasks")
-    sync = UseTasks()((item) => new Promise((next) => {
+    taskSync = UseTasks()((item) => new Promise((next) => {
       const debounce = createDebounce()
       const delayInMs = o?.useAutoSync?.delayInMs || 0
       const { isOnline, isInternetReachable } = esp.mod("lib/net_status").state().get()
@@ -90,7 +97,7 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
       }
     }), () => {
       o?.useAutoSync?.isSyncing?.(false)
-    })[0]
+    })
   }
 
   function loadFromDisk() {
@@ -164,8 +171,8 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
       }
       if (o?.listener)
         o.listener(newValue)
-      if (o?.useAutoSync && sync)
-        sync?.(newValue.filter((item: any) => item.synced != 1))
+      if (o?.useAutoSync && taskSync)
+        taskSync?.[0]?.(newValue.filter((item: any) => item.synced != 1))
       if (listener.size > 0) {
         listener.forEach((fun) => fun?.(newValue))
       }
