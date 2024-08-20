@@ -55,13 +55,14 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
   }
 
   function _sync() {
+    const debounce = createDebounce()
     if (o?.useAutoSync && taskSync && Array.isArray(value)) {
-      taskSync[0]?.(value.filter((item: any) => item.synced != 1))
+      debounce.set(taskSync[0]?.(value.filter((item: any) => item.synced != 1)), 16)
     }
     return () => {
       if (o?.useAutoSync && taskSync && Array.isArray(value)) {
         taskSync?.[1]?.()
-        taskSync?.[0]?.(value.filter((item: any) => item.synced != 1))
+        debounce.set(taskSync[0]?.(value.filter((item: any) => item.synced != 1)), 16)
       }
     }
   }
