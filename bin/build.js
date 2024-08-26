@@ -320,6 +320,7 @@ export default UserIndex`;
 			'react-native-gesture-handler',
 			'react-native-awesome-gallery',
 			'react-native-fast-image',
+			'react-native-keyboard-controller',
 			'react-native-mmkv',
 			'react-native-pan-pinch-view',
 			'react-native-reanimated',
