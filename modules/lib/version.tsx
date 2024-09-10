@@ -22,7 +22,7 @@ export interface LibVersionState {
 export default class m extends LibComponent<LibVersionProps, LibVersionState> {
 
   static appVersion(): string {
-    let version: any = (Platform.OS == 'android' ? Constants?.expoConfig?.android?.versionCode : Constants?.expoConfig?.ios?.buildNumber)
+    let version: any = (Platform.OS == 'android' ? Constants?.manifest?.android?.versionCode : Constants?.manifest?.ios?.buildNumber)
     return version
   }
 
@@ -43,7 +43,7 @@ export default class m extends LibComponent<LibVersionProps, LibVersionState> {
   }
 
   static onDone(res: any, msg: string): void {
-    const { title, version, android, ios, isForceUpdate } = res
+    const { title, version, android, ios, version_publish } = res
 
     function isAvailableNewVersion(newVersion: string): boolean {
       let oldVersion = m.appVersion()
@@ -51,10 +51,13 @@ export default class m extends LibComponent<LibVersionProps, LibVersionState> {
     }
     if (isAvailableNewVersion(version)) {
       LibNavigation.backToRoot()
-      LibNavigation.replace("lib/version", { res, msg: msg == 'success' ? esp.lang("lib/version", "update_now") : msg })
-    }
-    if (isForceUpdate == 1) {
-      LibUpdaterProperty.check((isNew) => { if (isNew) LibUpdaterProperty.install() })
+      LibNavigation.replace("lib/version", { res, msg: msg == 'success' ? 'Update to a new version now' : msg })
+    } else {
+      const currentVersion = esp.config('publish_id')
+      if (currentVersion < version_publish && !__DEV__) {
+        LibNavigation.reset("lib/version_view")
+        LibUpdaterProperty.check((isNew) => { if (isNew) LibUpdaterProperty.install() })
+      }
     }
   }
   static check(): void {
@@ -67,7 +70,7 @@ export default class m extends LibComponent<LibVersionProps, LibVersionState> {
     return (
       <ImageBackground source={esp.assets("splash.png")} blurRadius={100} style={{ flex: 1, justifyContent: 'center', alignItems: 'center', borderStartColor: 'white', paddingHorizontal: 17 }} >
         <LibIcon.SimpleLineIcons name="info" size={60} />
-        <LibTextstyle textStyle="headline" text={title || esp.lang("lib/version", "version_available")} style={{ textAlign: 'center', marginTop: 10 }} />
+        <LibTextstyle textStyle="headline" text={title || 'A new version is available'} style={{ textAlign: 'center', marginTop: 10 }} />
         <LibTextstyle textStyle="callout" text={msg} style={{ textAlign: 'center', marginTop: 10, color: '#333' }} />
         <TouchableOpacity
           onPress={() => { Linking.openURL(link) }}
