@@ -130,6 +130,7 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState> 
             this.isStop = true
             this.setState((state: LibInfiniteState, props: LibInfiniteProps) => {
               return {
+                isStop: this.isStop,
                 error: this.props.error || esp.lang("lib/infinite", "empty_data"),
                 data: page == 0
                   ? []
@@ -142,6 +143,7 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState> 
             this.setState((state: LibInfiniteState, props: LibInfiniteProps) => {
               const latestData = [...state.data, ...mainIndex.list]
               return {
+                isStop: this.isStop,
                 error: '',
                 data: page == 0
                   ? (typeof this.props?.filterData == 'function' ? mainIndex.list.filter(this.props.filterData) : mainIndex.list)
