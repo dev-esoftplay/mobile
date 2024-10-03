@@ -7,7 +7,7 @@ import { LibProgress } from 'esoftplay/cache/lib/progress/import';
 import { LibStyle } from 'esoftplay/cache/lib/style/import';
 import esp from 'esoftplay/esp';
 import useGlobalState from 'esoftplay/global';
-import { Camera } from 'expo-camera';
+import { CameraView } from 'expo-camera';
 import * as ImageManipulator from 'expo-image-manipulator';
 import { SaveFormat } from 'expo-image-manipulator';
 import * as ImagePicker from 'expo-image-picker';
@@ -80,7 +80,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
   constructor(props: LibImageProps) {
     super(props);
     this.state = {
-      type: Camera.Constants.Type.back,
+      type: 'back',
       loading: false,
       image: null,
       flashLight: 'off'
@@ -302,17 +302,17 @@ class m extends LibComponent<LibImageProps, LibImageState> {
           return (
             <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} >
               <View style={{ flex: 1 }} >
-                <Camera
+                <CameraView
                   ref={(camera: any) => this.camera = camera}
-                  type={type}
+                  facing={type}
                   ratio={'4:3'}
-                  flashMode={flashLight}
+                  flash={flashLight}
                   zoom={0.1}
                   style={{ height: LibStyle.width * 4 / 3, width: LibStyle.width }}>
                   <View style={{ height: height, width: width, backgroundColor: 'transparent' }} >
-                    {image ? <Image source={image} style={{ height: LibStyle.width * 4 / 3, width: width, resizeMode: 'cover', transform: [{ scaleX: this.state.type == Camera.Constants.Type.back ? 1 : -1 }] }} /> : null}
+                    {image ? <Image source={image} style={{ height: LibStyle.width * 4 / 3, width: width, resizeMode: 'cover', transform: [{ scaleX: this.state.type == 'back' ? 'front' : 'back' }] }} /> : null}
                   </View>
-                </Camera>
+                </CameraView>
                 <View style={{ position: 'absolute', top: 10 + LibStyle.STATUSBAR_HEIGHT, left: 10 }} >
                   <TouchableOpacity onPress={() => this.setState({ flashLight: flashLight == 'on' ? 'off' : 'on' })} >
                     <LibIcon color={'white'} size={24} name={flashLight == 'on' ? 'flash' : "flash-off"} />
@@ -324,11 +324,11 @@ class m extends LibComponent<LibImageProps, LibImageState> {
                       {
                         image ?
                           <TouchableOpacity onPress={() => this.setState({ image: false })} >
-                            <LibIcon.Ionicons name='ios-close-circle' style={{ fontSize: 40, color: 'white' }} />
+                            <LibIcon.Ionicons name='close-circle' style={{ fontSize: 40, color: 'white' }} />
                           </TouchableOpacity>
                           :
-                          <TouchableOpacity onPress={() => this.setState({ type: this.state.type === Camera.Constants.Type.back ? Camera.Constants.Type.front : Camera.Constants.Type.back })} >
-                            <LibIcon.Ionicons name='ios-refresh-circle' style={{ fontSize: 40, color: 'white' }} />
+                          <TouchableOpacity onPress={() => this.setState({ type: this.state.type === 'back' ? 'front' : 'back' })} >
+                            <LibIcon.Ionicons name='refresh-circle' style={{ fontSize: 40, color: 'white' }} />
                           </TouchableOpacity>
                       }
                     </View>
@@ -358,7 +358,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
                                 clearTimeout(timer)
                               });
                           }} >
-                            <LibIcon.Ionicons name='ios-checkmark-circle' style={{ fontSize: 40, color: 'white' }} />
+                            <LibIcon.Ionicons name='checkmark-circle' style={{ fontSize: 40, color: 'white' }} />
                           </TouchableOpacity>
                           :
                           <TouchableOpacity onPress={() => {
@@ -369,7 +369,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
                               });
                             clearTimeout(timer)
                           }} >
-                            <LibIcon.Ionicons name='ios-close-circle' style={{ fontSize: 40, color: 'white' }} />
+                            <LibIcon.Ionicons name='close-circle' style={{ fontSize: 40, color: 'white' }} />
                           </TouchableOpacity>
                       }
                     </View>

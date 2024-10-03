@@ -278,9 +278,9 @@ yarn-error.log\n\
 		const AppJS = `import { LibNotification } from 'esoftplay/cache/lib/notification/import';
 import { UserIndex } from 'esoftplay/cache/user/index/import';
 import * as Notifications from 'expo-notifications';
-import { /* enableFreeze, */ enableScreens } from 'react-native-screens';
+import { enableFreeze, enableScreens } from 'react-native-screens';
 
-/* enableFreeze() */
+enableFreeze()
 enableScreens()
 
 Notifications.addNotificationResponseReceivedListener(x => LibNotification.onAction(x));
@@ -305,6 +305,7 @@ export default UserIndex`;
 			'expo-dev-client',
 			'expo-file-system',
 			'expo-font',
+			'expo-image',
 			'expo-image-manipulator',
 			'expo-image-picker',
 			'expo-linear-gradient',
@@ -313,13 +314,14 @@ export default UserIndex`;
 			'expo-status-bar',
 			'expo-splash-screen',
 			'expo-secure-store',
+			'expo-sqlite',
 			'expo-updates',
 			'immhelper',
 			'dayjs',
 			'react-fast-compare',
 			'react-native-gesture-handler',
 			'react-native-awesome-gallery',
-			'react-native-fast-image',
+			// 'react-native-fast-image',
 			'react-native-keyboard-controller',
 			'react-native-mmkv',
 			'react-native-pan-pinch-view',

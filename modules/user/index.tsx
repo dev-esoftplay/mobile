@@ -24,6 +24,8 @@ import { useFonts } from 'expo-font';
 import React, { useLayoutEffect } from 'react';
 import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { KeyboardProvider } from "react-native-keyboard-controller";
+
 
 export interface UserIndexProps {
 
@@ -69,26 +71,28 @@ export default function m(props: UserIndexProps): any {
   //esoftplay-chatting
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <View style={{ flex: 1 }}>
-        <LibWorker />
-        {
-          loading ?
-            <UserLoading />
-            :
-            <>
-              <LibWorkloop />
-              <Navs />
-              <LibNet_status />
-              <LibDialog style={'default'} />
-              <LibImage />
-              <LibProgress />
-              <LibToast />
-              <UserHook />
-            </>
-        }
-      </View>
-      <View style={{ backgroundColor: LibStyle?.colorNavigationBar || 'white', height: LibStyle.isIphoneX ? 35 : 0 }} />
-    </GestureHandlerRootView>
+    <KeyboardProvider>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <View style={{ flex: 1 }}>
+          <LibWorker />
+          {
+            loading ?
+              <UserLoading />
+              :
+              <>
+                <LibWorkloop />
+                <Navs />
+                <LibNet_status />
+                <LibDialog style={'default'} />
+                <LibImage />
+                <LibProgress />
+                <LibToast />
+                <UserHook />
+              </>
+          }
+        </View>
+        <View style={{ backgroundColor: LibStyle?.colorNavigationBar || 'white', height: LibStyle.isIphoneX ? 35 : 0 }} />
+      </GestureHandlerRootView>
+    </KeyboardProvider>
   )
 }

@@ -14,12 +14,12 @@ function getTime() {
   const isoStringWithGMTPlus7 = new Date(adjustedDate).toISOString();
   return isoStringWithGMTPlus7.replace('T', ' ').replace(/\.[0-9]+Z/g, "")
 }
-// const defaultErrorHandler = ErrorUtils?.getGlobalHandler?.()
+const defaultErrorHandler = ErrorUtils?.getGlobalHandler?.()
 
 const myErrorHandler = (e: any, isFatal: any) => {
-  if (!expoConfig?.packagerOpts)
+  if (!__DEV__)
     setError(e)
-  // defaultErrorHandler?.(e, isFatal)
+  defaultErrorHandler?.(e, isFatal)
 }
 
 export function setError(error?: any) {
@@ -59,7 +59,7 @@ export function reportApiError(fetch: any, error: any) {
     'fetch: ' + String(JSON.stringify(fetch || {}, undefined, 2)).replace(/[\[\]\{\}\"]+/g, ''),
   ].join('\n')
 
-  if (expoConfig?.packagerOpts) {
+  if (__DEV__) {
     let post = {
       text: msg,
       chat_id: '-1001737180019',
@@ -123,6 +123,13 @@ export function getError() {
         // remove error that unsolved
       } else if (msg.includes(`SyntaxError: JSON Parse error: Unexpected token:`)) {
         // remove error that unsolved
+      } else if (msg.includes(`FirebaseError: [code=invalid-argument]`)) {
+        let post = {
+          text: msg,
+          chat_id: '-1001737180019',
+          disable_web_page_preview: true
+        }
+        new LibCurl()?.custom?.('https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage', post)
       } else {
         const telegramIds = config?.errorReport?.telegramIds || {}
 
@@ -140,4 +147,4 @@ export function getError() {
     }
   })
 }
-//ErrorUtils[REMOVED by esoftplay web].setGlobalHandler(myErrorHandler)
+ErrorUtils.setGlobalHandler(myErrorHandler)

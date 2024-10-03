@@ -1,8 +1,8 @@
 // withHooks
 // noPage
+import { Image } from 'expo-image';
 import React from 'react';
 import { ImageStyle } from 'react-native';
-import FastImage from 'react-native-fast-image';
 
 export interface LibPictureSource {
   uri: string
@@ -11,7 +11,6 @@ export interface LibPictureProps {
   source: LibPictureSource | any,
   style: ImageStyle,
   resizeMode?: "contain" | "cover",
-  noCache?: boolean,
   onError?: () => void,
 }
 
@@ -19,15 +18,17 @@ export default function m(props: LibPictureProps): any {
 
   let resizeMode
   if (props?.style?.resizeMode == 'cover')
-    resizeMode = FastImage.resizeMode.cover
+    resizeMode = "cover"
   else if (props?.style?.resizeMode == 'contain')
-    resizeMode = FastImage.resizeMode.contain
+    resizeMode = "contain"
   else if (props?.resizeMode == 'cover')
-    resizeMode = FastImage.resizeMode.cover
+    resizeMode = "cover"
   else if (props?.resizeMode == 'contain')
-    resizeMode = FastImage.resizeMode.contain
+    resizeMode = "contain"
   else
-    resizeMode = FastImage.resizeMode.cover
+    resizeMode = "cover"
 
-  return <FastImage  {...props} resizeMode={resizeMode} />
+  return (
+    <Image {...props} contentFit={resizeMode} allowDownscaling cachePolicy={"memory-disk"} />
+  )
 }
