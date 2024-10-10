@@ -12,7 +12,8 @@ export interface RNTypes extends EspRouterInterface {
 }
 
 export const action: any = {
-  "navigate": (args: any[]) => esp.mod("lib/navigation").navigate(args[0], ...args),
+  "navigate": (args: any[]) => esp.mod("lib/navigation").navigate(args[0], args[1]),
+  "replace": (args: any[]) => esp.mod("lib/navigation").replace(args[0], args[1]),
   "back": (args: any[]) => esp.mod("lib/navigation").back(),
   "copy": (args: any[]) => {
     esp.mod("lib/utils").copyToClipboard(JSON.stringify(args))
