@@ -1,9 +1,9 @@
 // withHooks
 
 import esp from 'esoftplay/esp';
+import useSafeState from 'esoftplay/state';
 import React, { useEffect, useRef } from 'react';
-import { Linking, Pressable, Text, View } from 'react-native';
-import WebView from 'react-native-webview';
+import { Linking } from 'react-native';
 
 
 export interface LibCustomArgs {
@@ -12,34 +12,41 @@ export interface LibCustomArgs {
 export interface LibCustomProps {
 
 }
+
+
+/**  
+ * 
+  json_to_view
+  https://api.test.bbo.co.id/main?module=lib.custom&link=https%3A%2F%2Ftest.bbo.co.id%2Fsaya-tidak-bisa-login-akun-bbo_432.htm
+  
+  deeplink
+  https://api.test.bbo.co.id/main?module=lib.custom&link=bbt%3A%2F%2Ftest.bbo.co.id%2Fjual%2Farcanealley2024
+*/
 export default function m(props: LibCustomProps): any {
-	const LibIcon = useRef(esp.mod("lib/icon")).current
+	const LibCompose = useRef(esp.mod("lib/compose")).current
 
   const { url, title } = esp.mod("lib/navigation").getArgsAll(props)
-
+  const [schema, setSchema] = useSafeState<any>(null)
+  
   useEffect(() => {
     if (!String(url).startsWith("http")) {
       Linking.openURL(url)
       esp.mod("lib/navigation").back()
+    } else {
+      new (esp.mod("lib/curl"))(url, null,
+        (res, msg) => {
+          setSchema(res)
+        },
+        (err) => {
+          esp.modProp("lib/toast").show(err?.message)
+          esp.mod("lib/navigation").back()
+        }
+      )
     }
   }, [])
 
-  if (String(url).startsWith("http"))
-    return (
-      <View style={{ flex: 1 }} >
-        <View style={[{ height: 60 + esp.mod("lib/style").STATUSBAR_HEIGHT, paddingTop: esp.mod("lib/style").STATUSBAR_HEIGHT, backgroundColor: "#fff", flexDirection: 'row', alignItems: 'center', marginBottom: 3 }, esp.mod("lib/style").elevation(3)]} >
-          <Pressable onPress={() => esp.mod("lib/navigation").back()} style={{ height: 60, width: 60, alignItems: 'center', justifyContent: 'center' }} >
-            <LibIcon name='arrow-left' />
-          </Pressable>
-          <Text style={{ fontWeight: "bold", marginLeft: 0 }}>{title ? title : ""}</Text>
-        </View>
-        <WebView
-          style={{ flex: 1 }}
-          source={{ uri: url }}
-          startInLoadingState={true}
-        />
-      </View>
-    )
+  if (String(url).startsWith("http") && schema)
+    return <LibCompose schema={schema} />
   else
     return null
 }

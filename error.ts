@@ -132,7 +132,6 @@ export function getError() {
         new LibCurl()?.custom?.('https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage', post)
       } else {
         const telegramIds = config?.errorReport?.telegramIds || {}
-
         Object.values(telegramIds).forEach?.(id => {
           let post = {
             text: msg,
