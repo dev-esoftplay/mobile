@@ -1,17 +1,22 @@
 // withHooks
+import { LibObject } from 'esoftplay/cache/lib/object/import';
 import { EspRouterInterface } from 'esoftplay/cache/routers';
 import esp from 'esoftplay/esp';
+import useGlobalState from 'esoftplay/global';
 import React, { createElement, ReactElement } from 'react';
-import { ScrollView, Text, TextInput, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 
 export interface RNTypes extends EspRouterInterface {
   "View": typeof View,
   "Text": typeof Text,
   "ScrollView": typeof ScrollView,
-  "TextInput": typeof TextInput,
+  // "TouchableOpacity": typeof TouchableOpacity,
+  // "TextInput": typeof TextInput,
 }
 
-export const action: any = {
+const form = useGlobalState({})
+
+const action: any = {
   "navigate": (args: any[]) => esp.mod("lib/navigation").navigate(args[0], args[1]),
   "replace": (args: any[]) => esp.mod("lib/navigation").replace(args[0], args[1]),
   "back": (args: any[]) => esp.mod("lib/navigation").back(),
@@ -26,6 +31,7 @@ export const action: any = {
     } catch (error) {
       post = args?.[1]
     }
+    post = Object.assign({}, post, form.get())
     new (esp.mod('lib/curl'))(args[0], post, (res, msg) => {
       esp.modProp("lib/toast").show(msg)
     }, (err) => {
@@ -54,7 +60,24 @@ function buildUIFromJSON(json: any): ReactElement {
       if (typeof props[key] == 'string' && String(props[key]).includes("#action.")) {
         const cleanFunction = (props[key]).replace("#action.", "")
         const [func, argument] = cleanFunction.split('.')
-        _props[key] = () => { action[func](eval(argument)) }
+        _props[key] = () => {
+          action[func](eval(argument))
+        }
+      } else if (typeof props[key] == 'string' && String(props[key]).includes("#form.")) {
+        const cleanForm = (props[key]).replace("#form.", "")
+        const [type, postkey] = cleanForm.split('.')
+        if (type == 'input') {
+          _props[key] = (input: string) => {
+            form.set(LibObject.set(form.get(), input)(postkey))
+          }
+        }
+        if (type == 'select') {
+          console.log(type, postkey, key)
+          const [_key, _value] = postkey.split(":")
+          _props[key] = () => {
+            form.set(LibObject.set(form.get(), _value)(_key))
+          }
+        }
       } else {
         _props[key] = props[key]
       }
