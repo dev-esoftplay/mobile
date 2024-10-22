@@ -57,7 +57,19 @@ function buildUIFromJSON(json: any): ReactElement {
 
   if (props) {
     Object.keys(props).map((key) => {
-      if (typeof props[key] == 'string' && String(props[key]).includes("#action.")) {
+      if (typeof props[key] == 'string' && String(props[key]).includes("#esp|")) {
+        const cleanFunction = (props[key]).replace("#esp|", "")
+        const [modules, func, args] = cleanFunction.split("|")
+        _props[key] = () => {
+          esp.mod(modules)[func](...eval(args))
+        }
+      } else if (typeof props[key] == 'string' && String(props[key]).includes("#espProp|")) {
+        const cleanFunction = (props[key]).replace("#espProp|", "")
+        const [modules, func, args] = cleanFunction.split("|")
+        _props[key] = () => {
+          esp.modProp(modules)[func](...eval(args))
+        }
+      } else if (typeof props[key] == 'string' && String(props[key]).includes("#action.")) {
         const cleanFunction = (props[key]).replace("#action.", "")
         const [func, argument] = cleanFunction.split('.')
         _props[key] = () => {
