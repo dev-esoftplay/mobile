@@ -12,13 +12,13 @@ export interface LibImage_cropProps {
 
 }
 export default function m(props: LibImage_cropProps): any {
-	const LibIcon = useRef(esp.mod("lib/icon")).current
-	const LibNavigation = useRef(esp.mod("lib/navigation")).current
-	const LibProgress = useRef(esp.mod("lib/progress")).current
-	const LibStatusbar = useRef(esp.mod("lib/statusbar")).current
-	const LibStyle = useRef(esp.mod("lib/style")).current
-	const LibTextstyle = useRef(esp.mod("lib/textstyle")).current
-	const LibToastProperty = useRef(esp.modProp("lib/toast")).current
+  const LibIcon = useRef(esp.mod("lib/icon")).current
+  const LibNavigation = useRef(esp.mod("lib/navigation")).current
+  const LibProgress = useRef(esp.mod("lib/progress")).current
+  const LibStatusbar = useRef(esp.mod("lib/statusbar")).current
+  const LibStyle = useRef(esp.mod("lib/style")).current
+  const LibTextstyle = useRef(esp.mod("lib/textstyle")).current
+  const LibToastProperty = useRef(esp.modProp("lib/toast")).current
 
   const { image, ratio, forceCrop, message } = LibNavigation.getArgsAll(props)
   const [_image, setImage] = useSafeState(image)
@@ -42,6 +42,8 @@ export default function m(props: LibImage_cropProps): any {
   } else {
     ratioSize[1] = _ratio[1] / _ratio[0] * minimalRatioSize
   }
+
+
 
   function resize(image: string) {
     LibProgress.show(esp.lang("lib/image_crop", "waiting"))
@@ -124,6 +126,8 @@ export default function m(props: LibImage_cropProps): any {
             pageY: vls[5]
           }
 
+          console.warn({ img, crop })
+
           let fixPageY = crop.pageY - marginTop
 
           if (crop.pageX < 0) {
@@ -179,37 +183,7 @@ export default function m(props: LibImage_cropProps): any {
   return (
     <View style={{ flex: 1, backgroundColor: "#000" }} key={counter}  >
       <LibStatusbar style="light" />
-      <Image
-        ref={imageRef}
-        style={{ resizeMode: "contain", marginTop: marginTop, height: size, width: LibStyle.width }} source={{ uri: _image }} />
-      <View style={{ flex: 1, marginTop: -(LibStyle.height - marginTop - (LibStyle.isIphoneX ? 35 : 0)) + LibStyle.STATUSBAR_HEIGHT, alignItems: 'center', justifyContent: 'center' }} >
-        <PanPinchView
-          key={_image}
-          minScale={0.5}
-          containerDimensions={{
-            width: LibStyle.width,
-            height: size,
-          }}
-          contentDimensions={{
-            width: ratioSize[0],
-            height: ratioSize[1]
-          }}
-          // style={{ backgroundColor: "transparent", flex: undefined, width: LibStyle.height * 100, height: LibStyle.height * 100, alignSelf: 'center', justifyContent: 'center' }}
-          maxScale={2}>
-          {/* <> */}
-          {/* <View style={{ backgroundColor: "rgba(0,0,0,0.5 )", flex: 1 }} />
-            <View style={{ flexDirection: "row" }} >
-              <View style={{ backgroundColor: "rgba(0,0,0,0.5 )", flex: 1 }} /> */}
-          <View ref={viewRef} style={{ height: ratioSize[1], width: ratioSize[0], backgroundColor: 'transparent', borderWidth: 1.5, borderColor: "white", borderStyle: 'dashed' }} >
-            <View style={{ flex: 1, backgroundColor: 'transparent', borderWidth: 1.5, borderColor: "black", borderStyle: 'dashed' }} />
-          </View>
-          {/* <View style={{ backgroundColor: "rgba(0,0,0,0.5 )", flex: 1 }} />
-            </View>
-            <View style={{ backgroundColor: "rgba(0,0,0,0.5 )", flex: 1 }} /> */}
-          {/* </> */}
-        </PanPinchView>
-      </View>
-      <View style={{ position: "absolute", top: LibStyle.STATUSBAR_HEIGHT, left: 0, right: 0, height: 50, flexDirection: "row", justifyContent: 'space-between' }} >
+      <View style={{ marginTop: LibStyle.STATUSBAR_HEIGHT, height: 50, flexDirection: "row", justifyContent: 'space-between' }} >
         <TouchableOpacity
           onPress={() => LibNavigation.back()}
           style={{ height: 50, width: 50, alignItems: 'center', justifyContent: 'center' }} >
@@ -228,28 +202,63 @@ export default function m(props: LibImage_cropProps): any {
           </TouchableOpacity>
         </View>
       </View>
-      {
-        // hint &
-        <Pressable
-          onPress={() => setHint(!hint)}
-          style={{ opacity: hint ? 1 : 0, position: 'absolute', left: 0, right: 0, bottom: 50, backgroundColor: 'rgba(0,0,0,0.5)', alignItems: 'center', justifyContent: 'center', padding: 30 }} >
-          <Text style={{ color: "white", textAlign: 'center' }} >{message || esp.lang("lib/image_crop", "text_msg")}</Text>
-        </Pressable>
-      }
-      {
-        (!forceCrop || cropCount > 0) &&
-        <View style={{ position: "absolute", bottom: 10, left: 0, right: 0 }} >
-          <TouchableOpacity
-            onPress={() => {
-              Image.getSize(_image, (width, height) => {
-                LibNavigation.sendBackResult({ uri: _image, width, height }, LibNavigation.getResultKey(props))
-              }, () => { })
+      <View style={{ flex: 1 }} >
+
+        <Image
+          ref={imageRef}
+          // onLayout={(event) => { console.log("LAYOUT", event.nativeEvent.layout) }}
+          style={{ resizeMode: "contain", height: size, width: LibStyle.width }} source={{ uri: _image }} />
+        <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, alignItems: 'center', justifyContent: 'center' }} >
+          <PanPinchView
+            key={_image}
+            minScale={0.5}
+            containerDimensions={{
+              width: LibStyle.width,
+              height: size,
             }}
-            style={{ height: 50, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(255,255,255,0.3)' }} >
-            <LibTextstyle textStyle="body" text={esp.lang("lib/image_crop", "btn_save")} style={{ color: "white" }} />
-          </TouchableOpacity>
+            contentDimensions={{
+              width: ratioSize[0],
+              height: ratioSize[1]
+            }}
+            // style={{ backgroundColor: "transparent", flex: undefined, width: LibStyle.height * 100, height: LibStyle.height * 100, alignSelf: 'center', justifyContent: 'center' }}
+            maxScale={2}>
+            {/* <> */}
+            {/* <View style={{ backgroundColor: "rgba(0,0,0,0.5 )", flex: 1 }} />
+            <View style={{ flexDirection: "row" }} >
+              <View style={{ backgroundColor: "rgba(0,0,0,0.5 )", flex: 1 }} /> */}
+            <View ref={viewRef} style={{ height: ratioSize[1], width: ratioSize[0], backgroundColor: 'transparent', borderWidth: 1, borderColor: "white", borderStyle: 'dashed', zIndex: 100 }} >
+              <View style={{ flex: 1, backgroundColor: 'transparent', borderWidth: 1, borderColor: "black", borderStyle: 'dashed' }} />
+            </View>
+            {/* <View style={{ backgroundColor: "rgba(0,0,0,0.5 )", flex: 1 }} />
+            </View>
+            <View style={{ backgroundColor: "rgba(0,0,0,0.5 )", flex: 1 }} /> */}
+            {/* </> */}
+          </PanPinchView>
         </View>
-      }
+
+        {
+          // hint &
+          <Pressable
+            onPress={() => setHint(!hint)}
+            style={{ opacity: hint ? 1 : 0, position: 'absolute', left: 0, right: 0, bottom: 50, backgroundColor: 'rgba(0,0,0,0.5)', alignItems: 'center', justifyContent: 'center', padding: 30 }} >
+            <Text style={{ color: "white", textAlign: 'center' }} >{message || esp.lang("lib/image_crop", "text_msg")}</Text>
+          </Pressable>
+        }
+        {
+          (!forceCrop || cropCount > 0) &&
+          <View style={{ position: "absolute", bottom: 10, left: 0, right: 0 }} >
+            <TouchableOpacity
+              onPress={() => {
+                Image.getSize(_image, (width, height) => {
+                  LibNavigation.sendBackResult({ uri: _image, width, height }, LibNavigation.getResultKey(props))
+                }, () => { })
+              }}
+              style={{ height: 50, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(255,255,255,0.3)' }} >
+              <LibTextstyle textStyle="body" text={esp.lang("lib/image_crop", "btn_save")} style={{ color: "white" }} />
+            </TouchableOpacity>
+          </View>
+        }
+      </View>
     </View>
   )
 }
