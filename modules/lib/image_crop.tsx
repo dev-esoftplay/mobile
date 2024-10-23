@@ -126,8 +126,6 @@ export default function m(props: LibImage_cropProps): any {
             pageY: vls[5]
           }
 
-          console.warn({ img, crop })
-
           let fixPageY = crop.pageY - marginTop
 
           if (crop.pageX < 0) {
@@ -206,7 +204,6 @@ export default function m(props: LibImage_cropProps): any {
 
         <Image
           ref={imageRef}
-          // onLayout={(event) => { console.log("LAYOUT", event.nativeEvent.layout) }}
           style={{ resizeMode: "contain", height: size, width: LibStyle.width }} source={{ uri: _image }} />
         <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, alignItems: 'center', justifyContent: 'center' }} >
           <PanPinchView
