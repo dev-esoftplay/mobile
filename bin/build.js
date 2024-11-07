@@ -314,7 +314,7 @@ export default UserIndex`;
 			'expo-status-bar',
 			'expo-splash-screen',
 			'expo-secure-store',
-			'expo-sqlite',
+			// 'expo-sqlite',
 			'expo-updates',
 			'immhelper',
 			'dayjs',
