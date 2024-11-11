@@ -1,5 +1,8 @@
 // withHooks
+import { LibNavigationRoutes } from 'esoftplay';
+import { LibNavigation } from 'esoftplay/cache/lib/navigation/import';
 import { LibObject } from 'esoftplay/cache/lib/object/import';
+import { LibUtils } from 'esoftplay/cache/lib/utils/import';
 import { EspRouterInterface } from 'esoftplay/cache/routers';
 import esp from 'esoftplay/esp';
 import useGlobalState from 'esoftplay/global';
@@ -14,31 +17,7 @@ export interface RNTypes extends EspRouterInterface {
   // "TextInput": typeof TextInput,
 }
 
-const form = useGlobalState({})
-
-const action: any = {
-  "navigate": (args: any[]) => esp.mod("lib/navigation").navigate(args[0], args[1]),
-  "replace": (args: any[]) => esp.mod("lib/navigation").replace(args[0], args[1]),
-  "back": (args: any[]) => esp.mod("lib/navigation").back(),
-  "copy": (args: any[]) => {
-    esp.mod("lib/utils").copyToClipboard(JSON.stringify(args))
-    esp.modProp("lib/toast").show(args + " copied!")
-  },
-  "curl": (args: any[]) => {
-    let post = args?.[1]
-    try {
-      post = JSON.parse(args?.[1])
-    } catch (error) {
-      post = args?.[1]
-    }
-    post = Object.assign({}, post, form.get())
-    new (esp.mod('lib/curl'))(args[0], post, (res, msg) => {
-      esp.modProp("lib/toast").show(msg)
-    }, (err) => {
-      esp.modProp("lib/toast").show(err.message)
-    }, 1)
-  }
-}
+const formState = useGlobalState({})
 
 function buildUIFromJSON(json: any): ReactElement {
   const { component, props } = json;
@@ -80,14 +59,14 @@ function buildUIFromJSON(json: any): ReactElement {
         const [type, postkey] = cleanForm.split('.')
         if (type == 'input') {
           _props[key] = (input: string) => {
-            form.set(LibObject.set(form.get(), input)(postkey))
+            formState.set(LibObject.set(formState.get(), input)(postkey))
           }
         }
         if (type == 'select') {
           console.log(type, postkey, key)
           const [_key, _value] = postkey.split(":")
           _props[key] = () => {
-            form.set(LibObject.set(form.get(), _value)(_key))
+            formState.set(LibObject.set(formState.get(), _value)(_key))
           }
         }
       } else {
@@ -107,6 +86,60 @@ function buildUIFromJSON(json: any): ReactElement {
 
 export default function m({ schema }: { schema: any }): ReactElement {
   return buildUIFromJSON(schema)
+}
+
+const action: any = {
+  "navigate": (args: any[]) => esp.mod("lib/navigation").navigate(args[0], args[1]),
+  "replace": (args: any[]) => esp.mod("lib/navigation").replace(args[0], args[1]),
+  "back": (args: any[]) => esp.mod("lib/navigation").back(),
+  "copy": (args: any[]) => {
+    esp.mod("lib/utils").copyToClipboard(JSON.stringify(args))
+    esp.modProp("lib/toast").show(args + " copied!")
+  },
+  "curl": (args: any[]) => {
+    esp.mod("lib/progress").show("Please Wait..")
+    let post = args?.[1]
+    try {
+      post = JSON.parse(args?.[1])
+    } catch (error) {
+      post = args?.[1]
+    }
+    post = Object.assign({}, post, formState.get())
+    new (esp.mod('lib/curl'))(args[0], post, (res, msg) => {
+      esp.modProp("lib/toast").show(msg)
+      esp.mod("lib/progress").hide()
+    }, (err) => {
+      esp.modProp("lib/toast").show(err.message)
+      esp.mod("lib/progress").hide()
+    })
+  }
+}
+
+export const forms = {
+  select: (postKey: string, value: string) => `#form.select.${postKey}:${value}`,
+  input: (postKey: string) => `#form.input.${postKey}`,
+}
+export const actions = {
+  navigate: (module: LibNavigationRoutes, params: any) => {
+    LibNavigation.navigate(module, params)
+  },
+  replace: (module: LibNavigationRoutes, params: any) => {
+    LibNavigation.replace(module, params)
+  },
+  back: () => {
+    LibNavigation.back()
+  },
+  copy: (args: string) => {
+    LibUtils.copyToClipboard(args)
+    esp.modProp("lib/toast").show(args + " copied!")
+  },
+  curl: (uri: string, post?: any) => {
+    new (esp.mod('lib/curl'))(uri, post, (res, msg) => {
+      esp.modProp("lib/toast").show(msg)
+    }, (err) => {
+      esp.modProp("lib/toast").show(err.message)
+    }, 1)
+  }
 }
 
 export function build<T extends keyof RNTypes>(cmpn: T, props: React.ComponentProps<RNTypes[T]>): any {
