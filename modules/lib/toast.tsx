@@ -3,7 +3,7 @@
 
 import { LibStyle } from 'esoftplay/cache/lib/style/import';
 import useGlobalState from 'esoftplay/global';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Text, View } from 'react-native';
 import Animated, { interpolate, useAnimatedProps, useSharedValue, withTiming } from 'react-native-reanimated';
 
@@ -16,7 +16,7 @@ const initState = {
   timeout: 3000
 }
 
-const state = useGlobalState<any>(initState)
+const state = useGlobalState(initState)
 
 let _timeout: any = undefined
 
@@ -34,12 +34,13 @@ export function show(message: string, timeout?: number): void {
     _timeout = undefined
   }
   _timeout = setTimeout(() => {
-    hide()
     clearTimeout(_timeout)
+    hide()
   }, timeout || initState.timeout);
 }
 
 export default function m(props: LibToastProps): any {
+  const isFirstInit = useRef(true)
   const [data] = state.useState()
   const anim = useSharedValue(0)
 
@@ -51,11 +52,17 @@ export default function m(props: LibToastProps): any {
   }))
 
   useEffect(() => {
-    anim.value = withTiming(data?.message ? 1 : 0, { duration: 500 })
+    if (!isFirstInit.current && data.message == undefined) {
+      anim.value = 1
+    }
+    if (isFirstInit.current) {
+      isFirstInit.current = false
+    }
+    anim.value = withTiming(data.message != undefined ? 1 : 0, { duration: 500 })
   }, [data])
 
   return (
-    <Animated.View pointerEvents={'none'} style={[{ flex: 1, position: 'absolute', justifyContent: 'center', alignContent: 'center', alignItems: 'center', top: LibStyle.STATUSBAR_HEIGHT + 20, left: 0, right: 0, }, style, LibStyle.elevation(2)]} >
+    <Animated.View pointerEvents={'none'} style={[{ flex: 1, position: 'absolute', justifyContent: 'center', alignContent: 'center', alignItems: 'center', top: LibStyle.STATUSBAR_HEIGHT + 20, opacity: 0, left: 0, right: 0, }, style, LibStyle.elevation(2)]} >
       <View style={{ maxWidth: Math.min(500, LibStyle.width - 30), minWidth: Math.min(500, LibStyle.width - 30), marginHorizontal: 15, marginVertical: 4, borderRadius: 4, borderWidth: 1, borderColor: '#505050', backgroundColor: '#323232', paddingVertical: 13, paddingHorizontal: 16, }} >
         <Text style={{ fontSize: 14, textAlign: "center", color: 'white' }} >{String(data?.message || '')}</Text>
       </View>
