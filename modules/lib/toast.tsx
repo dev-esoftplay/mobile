@@ -5,7 +5,7 @@ import { LibStyle } from 'esoftplay/cache/lib/style/import';
 import useGlobalState from 'esoftplay/global';
 import React, { useEffect, useRef } from 'react';
 import { Text, View } from 'react-native';
-import Animated, { interpolate, useAnimatedProps, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, { interpolate, ReduceMotion, useAnimatedProps, useSharedValue, withTiming } from 'react-native-reanimated';
 
 export interface LibToastProps {
 
@@ -58,7 +58,7 @@ export default function m(props: LibToastProps): any {
     if (isFirstInit.current) {
       isFirstInit.current = false
     }
-    anim.value = withTiming(data.message != undefined ? 1 : 0, { duration: 500 })
+    anim.value = withTiming(data.message != undefined ? 1 : 0, { duration: 500, reduceMotion: ReduceMotion.Never })
   }, [data])
 
   return (
