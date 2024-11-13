@@ -1,9 +1,9 @@
 // withHooks
 // noPage
 import useSafeState from 'esoftplay/state';
-import React, { useEffect, useLayoutEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Pressable, ViewStyle } from 'react-native';
-import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, { ReduceMotion, runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 
 export interface LibCollapsArgs {
@@ -17,21 +17,15 @@ export interface LibCollapsProps {
 }
 export default function m(props: LibCollapsProps): any {
   const [expand, setExpand] = useSafeState(props.show)
+  const opacity = useSharedValue(0);
   const translateY = useSharedValue(-10);
-  const isAnimationOff = useSharedValue(0)
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
-      opacity: 1,
+      opacity: opacity.value,
       transform: [{ translateY: translateY.value }],
     };
   });
-
-  useLayoutEffect(() => {
-    checkIfAnimationsAreDisabled().then((isDisabled) => {
-      isAnimationOff.value = isDisabled ? 1 : 0
-    });
-  }, [])
 
   useEffect(() => {
     if (expand) {
@@ -40,15 +34,12 @@ export default function m(props: LibCollapsProps): any {
   }, [expand])
 
   const toggleAnimation = () => {
-    if (isAnimationOff.value) {
-      translateY.value = translateY.value !== -10 ? -10 : 0
-    } else {
-      translateY.value = withTiming(translateY.value !== -10 ? -10 : 0, { duration: 300 }, (status) => {
-        if (translateY.value == -10 && status) {
-          runOnJS(setExpand)(false)
-        }
-      })
-    }
+    opacity.value = withTiming(opacity.value === 0 ? 1 : 0, { duration: 300, reduceMotion: ReduceMotion.Never }, (status) => {
+      if (opacity.value == 0 && status) {
+        runOnJS(setExpand)(false)
+      }
+    });
+    translateY.value = withTiming(opacity.value !== 0 ? -10 : 0, { duration: 300 })
   };
 
   function toggle() {
@@ -76,21 +67,3 @@ export default function m(props: LibCollapsProps): any {
     </Animated.View>
   )
 }
-
-const checkIfAnimationsAreDisabled = async () => {
-  const value = useSharedValue(0);
-
-  const startTime = Date.now();
-
-  // Animate the shared value with a short duration
-  await new Promise((resolve) => {
-    value.value = withTiming(1, { duration: 50 }, () => {
-      resolve();
-    });
-  });
-
-  const elapsedTime = Date.now() - startTime;
-
-  // If animations are disabled, the elapsed time will be very short (e.g., < 10ms)
-  return elapsedTime < 10;
-};
