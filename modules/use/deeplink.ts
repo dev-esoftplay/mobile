@@ -47,10 +47,12 @@ export default function m(defaultUrl?: string): void {
   useEffect(() => {
     (async () => {
       const url = await Linking.getInitialURL();
-      doLink({ url: url })
+      if (url) {
+        doLink({ url: url })
+      }
     })()
 
-    Linking.addEventListener('url', doLink);
-    return () => Linking.removeEventListener('url', doLink)
+    const subs = Linking.addEventListener('url', doLink);
+    return () => subs.remove()
   }, [])
 }
