@@ -307,7 +307,7 @@ export default class m {
       if (upload) {
         let fd = new FormData();
         Object.keys(post).map(function (key) {
-          if (key !== undefined) {
+          if (key !== undefined && post[key] !== undefined) {
             fd.append(key, post[key])
           }
         });
