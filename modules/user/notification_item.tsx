@@ -18,6 +18,7 @@ export interface UserNotification_itemProps {
   updated: string,
   user_id: number,
 }
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/user/notification_item.md) untuk melihat dokumentasi*/
 export default function m(props: UserNotification_itemProps): any {
 	const LibStyle = useRef(esp.mod("lib/style")).current
 	const LibUtils = useRef(esp.mod("lib/utils")).current

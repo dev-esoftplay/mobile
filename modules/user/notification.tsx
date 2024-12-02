@@ -28,6 +28,7 @@ const initState = {
 };
 
 const state = useGlobalState<any>(initState, { persistKey: "user_notification_data", isUserData: true, loadOnInit: true })
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/user/notification.md) untuk melihat dokumentasi*/
 export default class m extends LibComponent<UserNotificationProps, UserNotificationState> {
 
   static state(): useGlobalReturn<any> {

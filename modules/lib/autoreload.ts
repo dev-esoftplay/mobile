@@ -3,7 +3,9 @@
 import { InteractionManager } from 'react-native'
 
 let updater: any
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/autoreload.md) untuk melihat dokumentasi*/
 export default {
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/autoreload.md#set) untuk melihat dokumentasi*/
   set(callback: () => void, duration?: number): void {
     if (updater != undefined) {
       clearInterval(updater)
@@ -15,6 +17,7 @@ export default {
       });
     }, duration || 6000)
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/autoreload.md#clear) untuk melihat dokumentasi*/
   clear(): void {
     if (updater != undefined) {
       clearInterval(updater)

@@ -84,6 +84,7 @@ function buildUIFromJSON(json: any): ReactElement {
 }
 
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/compose.md) untuk melihat dokumentasi*/
 export default function m({ schema }: { schema: any }): ReactElement {
   return buildUIFromJSON(schema)
 }
@@ -115,10 +116,12 @@ const action: any = {
   }
 }
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/compose.md#forms) untuk melihat dokumentasi*/
 export const forms = {
   select: (postKey: string, value: string) => `#form.select.${postKey}:${value}`,
   input: (postKey: string) => `#form.input.${postKey}`,
 }
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/compose.md#actions) untuk melihat dokumentasi*/
 export const actions = {
   navigate: (module: LibNavigationRoutes, params: any) => {
     LibNavigation.navigate(module, params)
@@ -142,6 +145,7 @@ export const actions = {
   }
 }
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/compose.md#build) untuk melihat dokumentasi*/
 export function build<T extends keyof RNTypes>(cmpn: T, props: React.ComponentProps<RNTypes[T]>): any {
   let obj: any = {};
   obj.component = cmpn;

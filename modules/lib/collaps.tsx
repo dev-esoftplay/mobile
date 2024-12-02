@@ -15,6 +15,7 @@ export interface LibCollapsProps {
   onToggle?: (expanded: boolean) => void,
   style?: ViewStyle
 }
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/collaps.md) untuk melihat dokumentasi*/
 export default function m(props: LibCollapsProps): any {
   const [expand, setExpand] = useSafeState(props.show)
   const opacity = useSharedValue(0);

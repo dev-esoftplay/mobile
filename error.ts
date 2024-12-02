@@ -22,6 +22,7 @@ const myErrorHandler = (e: any, isFatal: any) => {
   defaultErrorHandler?.(e, isFatal)
 }
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/error.md#setError) untuk melihat dokumentasi*/
 export function setError(error?: any) {
   const config = esp?.config?.();
   const routes = UserRoutes?.state()?.get?.();
@@ -42,6 +43,7 @@ export function setError(error?: any) {
 }
 
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/error.md#reportApiError) untuk melihat dokumentasi*/
 export function reportApiError(fetch: any, error: any) {
   let routes = UserRoutes?.state?.()?.get?.()
   let lastIndex = routes?.routes?.length - 1 ?? 0
@@ -79,6 +81,7 @@ export function reportApiError(fetch: any, error: any) {
   }
 }
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/error.md#sendTm) untuk melihat dokumentasi*/
 export function sendTm(message: string, chat_id?: string, bot?: string, res?: (result: any) => void): void {
   let _chatids: string[] = []
   if (chat_id) {

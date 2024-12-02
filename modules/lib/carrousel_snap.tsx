@@ -18,6 +18,7 @@ export interface LibCarrousel_snapProps {
   initialPage?: number,
   renderItem: (item: any, key: number | string, itemWidth: number) => any
 }
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/carrousel_snap.md) untuk melihat dokumentasi*/
 export default function m(props: LibCarrousel_snapProps): any {
   const LibFocus = useRef(esp.mod("lib/focus")).current
   const autoCycle = props.autoCycle || false

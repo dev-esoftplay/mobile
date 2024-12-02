@@ -39,6 +39,7 @@ export interface LibCarrouselState {
   childrenLength: number,
 }
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/carrousel.md) untuk melihat dokumentasi*/
 export default class m extends LibComponent<LibCarrouselProps, LibCarrouselState> {
 
   static defaultProps = {

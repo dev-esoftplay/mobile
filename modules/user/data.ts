@@ -5,7 +5,9 @@ import { userDataReset } from 'esoftplay/global';
 import FastStorage from 'esoftplay/mmkv';
 import Storage from 'esoftplay/storage';
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/user/data.md) untuk melihat dokumentasi*/
 export default {
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/user/data.md#register) untuk melihat dokumentasi*/
   register(name: string): void {
     AsyncStorage.getItem("user_data_dependent").then((x) => {
       let all: string[] = []

@@ -46,6 +46,8 @@ function getFontConfig() {
 }
 
 
+
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/user/index.md) untuk melihat dokumentasi*/
 export default function m(props: UserIndexProps): any {
   moment().locale(LibLocale.state().get())
   const [loading, setLoading] = useSafeState(true)

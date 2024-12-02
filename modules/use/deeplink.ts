@@ -52,7 +52,7 @@ export default function m(defaultUrl?: string): void {
       }
     })()
 
-    const subs = Linking.addEventListener('url', doLink);
-    return () => subs.remove()
+    Linking.addEventListener('url', doLink);
+    return () => Linking.removeAllListeners('url')
   }, [])
 }

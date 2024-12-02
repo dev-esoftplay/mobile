@@ -2,6 +2,7 @@
 import { Component } from "react";
 import isEqual from "react-fast-compare";
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/component.md) untuk melihat dokumentasi*/
 export default class m<K, S> extends Component<K, S> {
   private _isMounted: boolean = false;
 

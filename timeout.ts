@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/timeout.md#createTimeout) untuk melihat dokumentasi*/
 export function createTimeout() {
   let timeoutId: any = undefined;
   function set(callback: Function, delay: number) {
@@ -20,6 +21,7 @@ export function createTimeout() {
   return { set, clear };
 }
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/timeout.md#useTimeout) untuk melihat dokumentasi*/
 export function useTimeout() {
   const smartTimeout = useRef(createTimeout());
 
@@ -31,6 +33,7 @@ export function useTimeout() {
 }
 
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/timeout.md#createInterval) untuk melihat dokumentasi*/
 export function createInterval() {
   let timeoutId: any = undefined;
   function set(callback: Function, delay: number) {
@@ -50,6 +53,7 @@ export function createInterval() {
   return { set, clear };
 }
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/timeout.md#useInterval) untuk melihat dokumentasi*/
 export function useInterval() {
   const smartInterval = useRef(createInterval());
 
@@ -60,6 +64,7 @@ export function useInterval() {
   return smartInterval.current?.set;
 }
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/timeout.md#createDebounce) untuk melihat dokumentasi*/
 export function createDebounce() {
   let timeoutId: any = undefined;
   function set(callback: Function, delay: number) {
@@ -80,6 +85,7 @@ export function createDebounce() {
   return { set, clear };
 }
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/timeout.md#useDebounce) untuk melihat dokumentasi*/
 export function useDebounce() {
   const smartDebounce = useRef(createDebounce());
 
