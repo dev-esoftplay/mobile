@@ -9,7 +9,7 @@ export interface LibGradientArgs {
 }
 export interface LibGradientProps {
   style?: StyleProp<ViewStyle>,
-  children: any,
+  children?: any,
   direction: "top-to-bottom" | "bottom-to-top" | "left-to-right" | "right-to-left" | "top-left-to-bottom-right" | "bottom-right-to-top-left" | "top-right-to-bottom-left" | "bottom-left-to-top-right",
   colors: string[]
 }
@@ -54,7 +54,7 @@ export default function m(props: LibGradientProps): any {
       colors={props.colors}
       style={props.style}
       {...direction[props.direction]} >
-      {props.children}
+      {props?.children}
     </LinearGradient>
   )
 }
