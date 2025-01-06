@@ -1,6 +1,5 @@
 // withHooks
 
-import { ComponentMessage } from 'esoftplay/cache/component/message/import';
 import { LibCurl } from 'esoftplay/cache/lib/curl/import';
 import { LibLoading } from 'esoftplay/cache/lib/loading/import';
 import { LibUtils } from 'esoftplay/cache/lib/utils/import';
@@ -8,6 +7,7 @@ import { UserData } from 'esoftplay/cache/user/data/import';
 import FastStorage from 'esoftplay/mmkv';
 import useSafeState from 'esoftplay/state';
 import React, { ReactElement, useEffect } from 'react';
+import { Text } from 'react-native';
 
 
 export interface LibCurl_viewArgs {
@@ -28,7 +28,7 @@ export default function m(props: LibCurl_viewProps): any {
   let key = ""
   let initialData: any = undefined
   if (props.cache) {
-    
+
     key = "curl-view" + LibUtils.shorten(props.url + JSON.stringify(props.post))
     if (props.isUserData) {
       UserData.register(key)
@@ -62,7 +62,7 @@ export default function m(props: LibCurl_viewProps): any {
     return props.onLoading ? props.onLoading : <LibLoading />
   }
   if (data.ok == 0) {
-    return props.onError ? props.onError(data, retry) : <ComponentMessage message={data.message} />
+    return props.onError ? props.onError(data, retry) : <Text>{data.message}</Text>
   }
   return props.onSuccess ? props.onSuccess(data.result, data.message) : null
 }
