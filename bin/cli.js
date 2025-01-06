@@ -1237,6 +1237,12 @@ function switchStatus(status) {
 				const [usr, pwd] = cjson.config.build
 				command(`eas logout && expect -c 'spawn eas login; expect "Email or username"; send "${usr}\r"; expect "Password"; send "${pwd}\r"; expect eof;'`)
 			}
+			if (cjson.config.hasOwnProperty('post_script')) {
+				eval(cjson.config.post_script)
+			}
+		}
+		if (valid) {
+
 		}
 	}
 	if (valid && fs.existsSync(gplist))
