@@ -14,7 +14,7 @@ export interface LibImage_shadowProps {
   blurRadius?: number
 }
 export default function m(props: LibImage_shadowProps): any {
-	const LibPicture = useRef(esp.mod("lib/picture")).current
+  const LibPicture = useRef(esp.mod("lib/picture")).current
 
   let { height, width }: any = props.style
   if (!height || !width) throw new Error(esp.lang("lib/image_shadow", "error"))
@@ -22,7 +22,7 @@ export default function m(props: LibImage_shadowProps): any {
   const extra_height = (props.shadowRadius || 0.15) * (Number(height) || 1)
 
   return (
-    <View style={{ ...props.style, height: Number(height) + extra_height, width, backgroundColor: 'orange' }} >
+    <View style={{ ...props.style, height: Number(height) + extra_height, width }} >
       <Image source={props.source} blurRadius={props.blurRadius || 8} style={{ height, width, ...props.style, marginTop: extra_height }} />
       <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 0.55 * width, width }} >
         <LibPicture source={esp.assets('blur.png')} style={{ width: '100%', height: '100%' }} />
