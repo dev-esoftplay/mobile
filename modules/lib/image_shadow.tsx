@@ -24,7 +24,7 @@ export default function m(props: LibImage_shadowProps): any {
   return (
     <View style={{ ...props.style, height: Number(height) + extra_height, width }} >
       <Image source={props.source} blurRadius={props.blurRadius || 8} style={{ height, width, ...props.style, marginTop: extra_height }} />
-      <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 0.55 * width, width }} >
+      <View style={{ position: 'absolute', bottom: -1, left: 0, right: 0, height: 0.55 * width, width }} >
         <LibPicture source={esp.assets('blur.png')} style={{ width: '100%', height: '100%' }} />
       </View>
       <LibPicture source={props.source} style={{ height, width, ...props.style, position: 'absolute' }} />
