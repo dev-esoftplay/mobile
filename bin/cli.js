@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const fs = require('fs');
 const exec = require('child_process').execSync;
-
+const fetch = require("node-fetch")
 const path = require('path');
 const os = require('os')
 const readline = require('readline');
@@ -23,10 +23,15 @@ const gplistdebug = DIR + "GoogleService-Info.debug.plist"
 var args = process.argv.slice(2);
 
 // console.log(modpath, "sdofsjdofjsd")
-function execution() {
-	const cmd = `watchman watch-del ./ && watchman watch ./ && watchman -j <<< '["trigger","./",{"name":"esp","expression":["allof",["not",["dirname","node_modules"]],["not",["name","index.d.ts"]]],"command":["bun","./node_modules/esoftplay/bin/router.js"],"append_files":true}]' && bun ./node_modules/esoftplay/bin/run.js && bun ./node_modules/esoftplay/bin/gen.js && bun ./node_modules/esoftplay/bin/router.js`
-	command(cmd)
-
+async function execution() {
+	const preload = await preload_api()
+	console.log("PRELOAD", preload)
+	if (preload) {
+		const cmd = `watchman watch-del ./ && watchman watch ./ && watchman -j <<< '["trigger","./",{"name":"esp","expression":["allof",["not",["dirname","node_modules"]],["not",["name","index.d.ts"]]],"command":["bun","./node_modules/esoftplay/bin/router.js"],"append_files":true}]' && bun ./node_modules/esoftplay/bin/run.js && bun ./node_modules/esoftplay/bin/gen.js && bun ./node_modules/esoftplay/bin/router.js`
+		command(cmd)
+	} else {
+		console.log("SINI GAES")
+	}
 }
 
 if (args.length == 0) {
@@ -535,7 +540,49 @@ function isCustomUpdates() {
 	return false
 }
 
-function publish(notes) {
+async function preload_api() {
+	let out = true
+	let cjson = await readToJSON(confjson)
+	const { protocol, domain, uri, preload_api } = cjson.config
+	if (preload_api?.length > 0) {
+		for (const apiUri of preload_api) {
+			let fullUrl = apiUri.includes("://") ? apiUri : `${(protocol || 'http')}://api.${domain}${(uri || "/")}${apiUri}`
+			const lastString = fullUrl.slice(fullUrl.lastIndexOf("/") + 1) // Fixed index adjustment
+			try {
+				const data = await fetch(fullUrl).then((res) => res.text())
+				if (data) {
+					try {
+						if (JSON.parse(data).ok === 0) {
+							consoleError(`-> preload_api: ${fullUrl}`)
+							fs.writeFileSync(`./assets/preload_api/${lastString}.json`, data)
+							out = false
+							return out
+						}
+					} catch (error) {
+						fs.writeFileSync(`./assets/preload_api/${lastString}.json`, data)
+						consoleError(`-> preload_api: ${fullUrl}`)
+						out = false
+						return out
+					}
+					if (!fs.existsSync("./assets/preload_api")) {
+						fs.mkdirSync('./assets/preload_api', { recursive: true })
+					}
+					fs.writeFileSync(`./assets/preload_api/${lastString}.json`, data)
+					consoleSucces("-> preload_api: " + fullUrl)
+				}
+			} catch (error) {
+				out = false
+				consoleError(`-> preload_api: ${fullUrl}`)
+			}
+		}
+	}
+	return out
+}
+
+async function publish(notes) {
+	if (!await preload_api()) {
+		return consoleError("Preload API ada yg error, tidak bisa publish")
+	}
 	let status = "-"
 	let isCustomServer = false
 	let ajson = readToJSON(appjson)
