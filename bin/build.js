@@ -267,6 +267,7 @@ npm-debug.*\n\
 package-lock.json\n\
 assets/esoftplaymodules/\n\
 bun.lockb\n\
+bun.lock\n\
 yarn.lock\n\
 yarn-error.log\n\
 			`

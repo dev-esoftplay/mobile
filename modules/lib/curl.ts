@@ -422,7 +422,7 @@ export default class m {
     return out
   }
 
-  private onError(msg: string): void {
+  protected onError(msg: string): void {
     esp.log("\x1b[31m", msg)
     esp.log("\x1b[0m")
     this.fetchConf.options["status_code"] = this.resStatus
