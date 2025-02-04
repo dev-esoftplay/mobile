@@ -1,4 +1,5 @@
 import Constants from 'expo-constants';
+import * as FileSystem from 'expo-file-system';
 import { Platform } from 'react-native';
 import { LibCurl } from './cache/lib/curl/import';
 import { UserClass } from './cache/user/class/import';
@@ -37,6 +38,7 @@ export function setError(error?: any) {
   };
   try {
     FastStorage.setItem(`${config?.domain}error`, JSON.stringify(_e));
+    cleanCache()
   } catch (e) {
     console.error(e);
   }
@@ -105,6 +107,7 @@ export function getError() {
   let config = esp?.config?.()
   FastStorage.getItem(config?.domain + 'error').then((e: any) => {
     if (e) {
+      cleanCache()
       let _e = JSON.parse(e)
       let msg = [
         'slug: ' + "#" + expoConfig?.slug,
@@ -144,9 +147,18 @@ export function getError() {
           new LibCurl()?.custom?.('https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage', post)
         });
       }
-      // });
+
       FastStorage.removeItem(config.domain + 'error')
     }
   })
+}
+
+function cleanCache() {
+  try {
+    // try remove cache after errors
+    if (FileSystem.cacheDirectory) {
+      FileSystem.deleteAsync(FileSystem.cacheDirectory, { idempotent: true });
+    }
+  } catch (error) { }
 }
 ErrorUtils.setGlobalHandler(myErrorHandler)

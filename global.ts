@@ -1,6 +1,11 @@
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage directly
 import esp from 'esoftplay/esp';
+import MMKV from 'esoftplay/mmkv'; // Import MMKV directly
+import Storage from 'esoftplay/storage'; // Import Storage directly
 import * as R from 'react';
+import isEqual from 'react-fast-compare'; // Import directly
 import { createDebounce } from './timeout';
+
 
 export interface useGlobalReturn<T> {
   useState: () => [T, (newState: T | ((newState: T) => T)) => void, () => T],
@@ -38,21 +43,27 @@ export interface useGlobalConnect<T> {
 }
 export let userDataReset: Function[] = []
 let timeoutFinish: NodeJS.Timeout
-export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): useGlobalReturn<T> {
-  let STORAGE: any = undefined
-  const isEqual = require('react-fast-compare');
-  const subsSetter = new Set<Function>()
-  let value: T = initValue;
-  let listener = new Set<Function>()
-  let loaded = -1
-  let taskSync: any = undefined
 
-  if (o?.persistKey) {
-    STORAGE = o?.inFastStorage ? require('esoftplay/mmkv').default : (o?.inFile ? (require('esoftplay/storage').default) : (require('@react-native-async-storage/async-storage').default))
-    loaded = 0
-    if (o?.loadOnInit)
-      loadFromDisk()
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/global.md) untuk melihat dokumentasi*/
+export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): useGlobalReturn<T> {
+  const STORAGE = o?.inFastStorage ? MMKV : (o?.inFile ? Storage : AsyncStorage);
+  let value: T = initValue;
+  const subsSetter = new Set<(newValue: T) => void>(); // Typed Set
+  const listener = new Set<(value: T) => void>(); // Typed Set
+  let loaded = -1;
+  let taskSync: any = undefined;
+
+  // Optimization: Check persistKey only once
+  const hasPersistKey = !!o?.persistKey;
+  const persistKey = o?.persistKey; // Store it for easier access
+
+  if (hasPersistKey) {
+    loaded = 0;
+    if (o?.loadOnInit) {
+      loadFromDisk();
+    }
   }
+
 
   function _sync() {
     const debounce = createDebounce()
@@ -101,33 +112,38 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
     })
   }
 
+
   function loadFromDisk() {
-    if (loaded == 0) {
-      loaded = 1
-      let persistKey = o?.persistKey
-      STORAGE.getItem(String(persistKey)).then((p: any) => {
-        if (p) {
-          if (persistKey != '__globalReady')
-            if (p != undefined && typeof p == 'string' && (p.startsWith("{") || p.startsWith("[")))
-              try { set(JSON.parse(p)) } catch (error) { }
-            else {
-              if (p == "true" || p == "false") {
-                try { /* @ts-ignore */ set(eval(p)) } catch (error) { }
-              } else if (isNaN(p)) {
-                try { /* @ts-ignore */ set(p) } catch (error) { }
+    if (loaded === 0) {
+      loaded = 1;
+
+      if (hasPersistKey) { // Check hasPersistKey
+        STORAGE.getItem(String(persistKey)).then((p: any) => {
+          if (p) {
+            try {
+              if (persistKey !== '__globalReady' && ((p.startsWith('{') && String(p).endsWith('}')) || (p.startsWith('[') && String(p).endsWith(']')))) {
+                set(JSON.parse(p));
+              } else if (p === "true" || p === "false") {
+                set(JSON.parse(p)); // Directly parse boolean strings
+              } else if (!isNaN(p as any)) {
+                set(Number(p)); // Directly convert to number
               } else {
-                try { /* @ts-ignore */ set(eval(p)) } catch (error) { }
+                set(p); // No need for eval if not an object or boolean or number
               }
+            } catch (error) {
+              console.error("Error loading from disk:", error, p); // More informative error message
             }
-        }
-        if (o?.onFinish) {
-          clearTimeout(timeoutFinish)
-          timeoutFinish = setTimeout(() => {
-            o.onFinish?.()
-            clearTimeout(timeoutFinish)
-          }, 50);
-        }
-      })
+          }
+
+          if (o?.onFinish) {
+            clearTimeout(timeoutFinish);
+            timeoutFinish = setTimeout(() => {
+              o.onFinish?.();
+              clearTimeout(timeoutFinish);
+            }, 50);
+          }
+        });
+      }
     }
   }
 
@@ -148,37 +164,36 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
   }
 
   function set(ns: T | ((old: T) => T)) {
-    let newValue: any
+    let newValue: T; // Type newValue correctly
     if (ns instanceof Function) {
-      newValue = ns(value)
+      newValue = ns(value);
     } else {
-      newValue = ns
+      newValue = ns;
     }
-    const isChange = !isEqual(value, newValue)
-    if (isChange) {
-      value = newValue
-      subsSetter.forEach((c) => c?.(newValue))
-      if (o?.persistKey && newValue != undefined) {
-        let data: any
-        switch (typeof newValue) {
-          case 'object':
-            if (newValue != null || newValue != undefined)
-              data = o.jsonBeautify ? JSON.stringify(newValue, undefined, 2) : JSON.stringify(newValue)
-            break;
-          default:
-            data = String(newValue)
-        }
-        STORAGE.setItem(o.persistKey, data)
+
+    if (!isEqual(value, newValue)) { // Use direct import of isEqual
+      value = newValue;
+      subsSetter.forEach((c) => c(newValue)); // Directly call the callback
+
+      if (hasPersistKey && newValue !== undefined) { // Check hasPersistKey
+        const data = typeof newValue === 'object' && newValue !== null
+          ? (o.jsonBeautify ? JSON.stringify(newValue, null, 2) : JSON.stringify(newValue))
+          : String(newValue); // Simplified data assignment
+
+        STORAGE.setItem(persistKey, data); // Use the stored persistKey
       }
-      if (o?.listener)
-        o.listener(newValue)
-      if (o?.useAutoSync && taskSync)
-        taskSync?.[0]?.(newValue.filter((item: any) => item.synced != 1))
-      if (listener.size > 0) {
-        listener.forEach((fun) => fun?.(newValue))
+
+      if (o?.listener) {
+        o.listener(newValue);
       }
+
+      if (o?.useAutoSync && taskSync && Array.isArray(newValue)) {
+        taskSync[0](newValue.filter((item: any) => item.synced != 1));
+      }
+
+      listener.forEach((fun) => fun(newValue)); // Directly call the listener functions
     }
-  };
+  }
 
   function del() {
     if (o?.persistKey) {
