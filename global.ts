@@ -121,7 +121,7 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
         STORAGE.getItem(String(persistKey)).then((p: any) => {
           if (p) {
             try {
-              if (persistKey !== '__globalReady' && ((p.startsWith('{') && String(p).endsWith('}')) || (p.startsWith('[') && String(p).endsWith(']')))) {
+              if (persistKey !== '__globalReady' && typeof p == 'string' && ((String(p).startsWith('{') && String(p).endsWith('}')) || (String(p).startsWith('[') && String(p).endsWith(']')))) {
                 set(JSON.parse(p));
               } else if (p === "true" || p === "false") {
                 set(JSON.parse(p)); // Directly parse boolean strings
@@ -131,7 +131,7 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
                 set(p); // No need for eval if not an object or boolean or number
               }
             } catch (error) {
-              console.error("Error loading from disk:", error, p); // More informative error message
+              console.error("Error loading from disk:", persistKey, error, JSON.stringify(p)); // More informative error message
             }
           }
 
