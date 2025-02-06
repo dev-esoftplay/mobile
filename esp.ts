@@ -54,7 +54,7 @@ try {
 }
 if (conf?.config?.isDebug == 0)
   LogBox.ignoreAllLogs();
-
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/esp.md) untuk melihat dokumentasi*/
 const esp = {
   mergeDeep(target: any, ...sources: any[]) {
     target = Object(target);

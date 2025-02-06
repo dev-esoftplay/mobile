@@ -103,6 +103,7 @@ export function sendTm(message: string, chat_id?: string, bot?: string, res?: (r
   })
 }
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/error.md#getError) untuk melihat dokumentasi*/
 export function getError() {
   let config = esp?.config?.()
   FastStorage.getItem(config?.domain + 'error').then((e: any) => {

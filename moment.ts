@@ -19,6 +19,7 @@ const dayjsType: any = ["day", "week", "month", "quarter", "year", "hour", "minu
 function isNumeric(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
+
 export function setTimeOffset(date?: string | Date | any): Date {
   const _date = (date instanceof Date ? date : (typeof date == 'string' ? new Date(date) : new Date()))
   let currentOffsetInMinutes = _date.getTimezoneOffset();
@@ -67,6 +68,7 @@ export function useLocalFormatOnline(custom): [string, () => void] {
   return [date, get]
 }
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/moment.md) untuk melihat dokumentasi*/
 export default function moment(date?: string | Date | any) {
   let _date = isNumeric(date) ? new Date(date * 1000) : date
   const langData = Object.values(esp.config('lang'))

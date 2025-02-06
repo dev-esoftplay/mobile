@@ -9,7 +9,7 @@ export interface useGlobalSubscriberReturn {
   useSubscribe: Function,
   trigger: (newValue?: any) => void
 }
-
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/subscribe.md) untuk melihat dokumentasi*/
 export default function useGlobalSubscriber(defaultValue?: any): useGlobalSubscriberReturn {
   const subscribers = new Set<Function>();
   let value = defaultValue;
