@@ -3,6 +3,7 @@ const fs = require('fs');
 const exec = require('child_process').execSync;
 const fetch = require("node-fetch")
 const path = require('path');
+const https = require('https');
 const os = require('os')
 const readline = require('readline');
 const DIR = "./"
@@ -545,6 +546,8 @@ async function preload_api() {
 	let cjson = await readToJSON(confjson)
 	const { protocol, domain, uri, preload_api } = cjson.config
 	if (preload_api?.length > 0) {
+		fs.rmSync("./assets/preload_api", { recursive: true, force: true })
+		fs.rmSync("./assets/preload_assets", { recursive: true, force: true })
 		for (const apiUri of preload_api) {
 			let fullUrl = apiUri.includes("://") ? apiUri : `${(protocol || 'http')}://api.${domain}${(uri || "/")}${apiUri}`
 			const lastString = fullUrl.slice(fullUrl.lastIndexOf("/") + 1) // Fixed index adjustment
@@ -564,11 +567,110 @@ async function preload_api() {
 						out = false
 						return out
 					}
+					/* sukses */
 					if (!fs.existsSync("./assets/preload_api")) {
 						fs.mkdirSync('./assets/preload_api', { recursive: true })
 					}
 					fs.writeFileSync(`./assets/preload_api/${lastString}.json`, data)
+					let objectData = JSON.parse(data)
+
+					async function readDeepObject(obj, path = []) {
+						if (Array.isArray(obj)) {
+							obj.forEach(async (item, index) => {
+								await readDeepObject(item, [...path, index]);
+							});
+						} else if (typeof obj === "object" && obj !== null) {
+							Object.keys(obj).forEach(async (key) => {
+								await readDeepObject(obj[key], [...path, key]);
+							});
+						} else if (obj != undefined) {
+							const value = obj
+							var cursor = path.join(".")
+							if (/\.(jpg|jpeg|png|gif|bmp|webp|svg|pdf|txt)$/i.test(value)) {
+								const localFilePath = await downloadFile(value)
+								objectData = LibObject.set(objectData, localFilePath)(cursor)
+								const newData = JSON.stringify(objectData, undefined, 2)
+								fs.writeFileSync(`./assets/preload_api/${lastString}.json`, newData, { encoding: "utf8" })
+							}
+						}
+					}
+
+					async function downloadFile(url, downloadDir = "./assets/preload_assets", retries = 3) {
+						if (!fs.existsSync(downloadDir)) {
+							fs.mkdirSync(downloadDir, { recursive: true });
+						}
+
+						const fileName = path.basename(url);
+						const filePath = path.join(downloadDir, fileName);
+
+						for (let attempt = 1; attempt <= retries; attempt++) {
+							try {
+								return await new Promise((resolve, reject) => {
+									const fileStream = fs.createWriteStream(filePath);
+									const request = https.get(url, (response) => {
+										if (response.statusCode !== 200) {
+											reject(new Error(`Failed to fetch ${url}: ${response.statusCode}`));
+											return;
+										}
+
+										response.pipe(fileStream);
+
+										fileStream.on('finish', () => {
+											fileStream.close(() => {
+												// Validate that file is not empty
+												if (fs.statSync(filePath).size > 0) {
+													resolve(filePath);
+												} else {
+													reject(new Error(`Downloaded file is empty: ${filePath}`));
+												}
+											});
+										});
+
+										fileStream.on('error', (error) => {
+											fileStream.close(() => reject(error));
+										});
+									});
+
+									request.on('error', (error) => reject(error));
+								});
+							} catch (error) {
+								console.error(`Attempt ${attempt} failed:`, error);
+								if (attempt === retries) {
+									return null; // Return null after final attempt
+								}
+							}
+						}
+					}
+					// async function downloadFile(url, downloadDir = "./assets/preload_assets") {
+					// 	if (!fs.existsSync("./assets/preload_assets")) {
+					// 		fs.mkdirSync("./assets/preload_assets")
+					// 	}
+					// 	try {
+					// 		const https = require('https');
+					// 		const fileName = path.basename(url);
+					// 		const filePath = path.join(downloadDir, fileName);
+					// 		const fileStream = fs.createWriteStream(filePath);
+
+					// 		return new Promise((resolve, reject) => {
+					// 			https.get(url, (response) => {
+					// 				if (response.statusCode !== 200) {
+					// 					reject(new Error(`Failed to fetch ${url}: ${response.statusCode}`));
+					// 					return;
+					// 				}
+					// 				response.pipe(fileStream);
+					// 				fileStream.on('finish', () => resolve(filePath));
+					// 				fileStream.on('error', reject);
+					// 			}).on('error', reject);
+					// 		});
+					// 	} catch (error) {
+					// 		console.error(`Error downloading file ${url}:`, error);
+					// 		return null;
+					// 	}
+					// }
+
+					await readDeepObject(objectData)
 					consoleSucces("-> preload_api: " + fullUrl)
+					/* endSukses */
 				}
 			} catch (error) {
 				out = false
@@ -1307,6 +1409,173 @@ function switchStatus(status) {
 function tm(message) {
 	command("curl -d \"text=" + message + "&disable_web_page_preview=true&chat_id=-1001227788828\" 'https://api.telegram.org/bot112133589:AAFFyztZh79OsHRCxJ9rGCGpnxkcjWBP8kU/sendMessage'")
 }
+
+class LibObject {
+	#value = undefined;
+
+	constructor(array) {
+		this.#value = array;
+		this.value = this.value.bind(this);
+		this.push = this.push.bind(this);
+		this.unset = this.unset.bind(this);
+		this.unshift = this.unshift.bind(this);
+		this.set = this.set.bind(this);
+		this.splice = this.splice.bind(this);
+		this.update = this.update.bind(this);
+		this.assign = this.assign.bind(this);
+		this.cursorBuilder = this.cursorBuilder.bind(this);
+	}
+
+	cursorBuilder(command, array, value, ...values) {
+		return (cursor, ...cursors) => {
+			let pathToUpdate = [cursor, ...cursors].filter(x => x != undefined).join('.');
+			let allValues = [value, ...values].filter(x => x != undefined);
+			let spec = {};
+			if (pathToUpdate !== '') spec = { [pathToUpdate]: [command, ...allValues] };
+			else spec = [command, ...allValues];
+			this.#value = update(array, spec);
+			return this;
+		};
+	}
+
+	push(value, ...values) {
+		return this.cursorBuilder("push", this.#value, value, ...values);
+	}
+
+	unshift(value, ...values) {
+		return this.cursorBuilder("unshift", this.#value, value, ...values);
+	}
+
+	splice(index, deleteCount, value, ...values) {
+		return this.cursorBuilder("splice", this.#value, index, deleteCount, value, ...values);
+	}
+
+	unset(index, ...indexs) {
+		return this.cursorBuilder("unset", this.#value, index, ...indexs);
+	}
+
+	set(value) {
+		return this.cursorBuilder("set", this.#value, value);
+	}
+
+	update(callback) {
+		return this.cursorBuilder("batch", this.#value, callback);
+	}
+
+	assign(obj1) {
+		return this.cursorBuilder("assign", this.#value, deepCopy(obj1));
+	}
+
+	removeKeys(deletedItemKeys) {
+		return this.cursorBuilder("batch", this.#value, arr => _removeKeys(arr, deletedItemKeys));
+	}
+
+	replaceItem(filter, newItem) {
+		return this.cursorBuilder("batch", this.#value, arr => _replaceItem(arr, filter, newItem));
+	}
+
+	value() {
+		return this.#value;
+	}
+
+	static push(array, value, ...values) {
+		return cursorBuilder("push", array, value, ...values);
+	}
+
+	static unshift(array, value, ...values) {
+		return cursorBuilder("unshift", array, value, ...values);
+	}
+
+	static removeKeys(arrayOrObj, deletedItemKeys) {
+		return cursorBuilder("batch", arrayOrObj, arrOrObj => _removeKeys(arrOrObj, deletedItemKeys));
+	}
+
+	static replaceItem(arrayOrObj, filter, newItem) {
+		return cursorBuilder("batch", arrayOrObj, arrOrObj => _replaceItem(arrOrObj, filter, newItem));
+	}
+
+	static splice(array, index, deleteCount, value, ...values) {
+		return cursorBuilder("splice", array, index, deleteCount, value, ...values);
+	}
+
+	static unset(obj, index, ...indexs) {
+		return cursorBuilder("unset", obj, index, ...indexs);
+	}
+
+	static set(obj, value) {
+		return cursorBuilder("set", obj, value);
+	}
+
+	static update(obj, callback) {
+		return cursorBuilder("batch", obj, callback);
+	}
+
+	static assign(obj, obj1) {
+		return cursorBuilder("assign", obj, deepCopy(obj1));
+	}
+}
+
+function cursorBuilder(command, array, value, ...values) {
+	const update = require('immhelper').default
+	return function (cursor, ...cursors) {
+		let pathToUpdate = [cursor, ...cursors].filter(x => x != undefined).join('.');
+		let allValues = [value, ...values].filter(x => x != undefined);
+		let spec = {};
+		if (pathToUpdate !== '') spec = { [pathToUpdate]: [command, ...allValues] };
+		else spec = [command, ...allValues];
+		return update(array, spec);
+	};
+}
+
+function _removeKeys(objOrArr, keysToRemove) {
+	if (Array.isArray(objOrArr)) {
+		return objOrArr.map(obj => {
+			let newObj = { ...obj };
+			keysToRemove.forEach(key => {
+				delete newObj[key];
+			});
+			return newObj;
+		});
+	} else {
+		let newObj = { ...objOrArr };
+		keysToRemove.forEach(key => {
+			delete newObj[key];
+		});
+		return newObj;
+	}
+}
+
+function _replaceItem(data, predicate, newItem) {
+	if (Array.isArray(data)) {
+		return data.map((item, index) => (predicate(item, index) ? newItem : item));
+	} else if (typeof data === 'object' && data !== null) {
+		let newData = { ...data };
+		Object.keys(newData).forEach((key, index) => {
+			if (predicate(newData[key], index)) {
+				newData[key] = newItem;
+			}
+		});
+		return newData;
+	} else return data;
+}
+
+function deepCopy(o) {
+	switch (typeof o) {
+		case 'object':
+			if (o === null) return null;
+			if (Array.isArray(o)) return o.map(item => deepCopy(item));
+			let newO = Object.create(Object.getPrototypeOf(o));
+			for (let key in o) {
+				if (Object.prototype.hasOwnProperty.call(o, key)) {
+					newO[key] = deepCopy(o[key]);
+				}
+			}
+			return newO;
+		default:
+			return o;
+	}
+}
+
 
 function help() {
 	console.log(

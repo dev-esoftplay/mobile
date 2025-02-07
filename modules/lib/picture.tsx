@@ -1,5 +1,6 @@
 // withHooks
 // noPage
+import esp from 'esoftplay/esp';
 import { Image } from 'expo-image';
 import React from 'react';
 import { ImageStyle } from 'react-native';
@@ -28,7 +29,12 @@ export default function m(props: LibPictureProps): any {
   else
     resizeMode = "cover"
 
+  let source = props.source
+  if (typeof (props.source.uri) == 'string' && !String(props.source.uri).startsWith("http")) {
+    source = esp.assets(props.source.uri)
+  }
+
   return (
-    <Image {...props} contentFit={resizeMode} allowDownscaling cachePolicy={"memory-disk"} />
+    <Image {...props} source={source} contentFit={resizeMode} allowDownscaling cachePolicy={"memory-disk"} />
   )
 }
