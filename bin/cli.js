@@ -587,7 +587,7 @@ async function preload_api() {
 							const value = obj
 							var cursor = path.join(".")
 							if (/\.(jpg|jpeg|png|gif|bmp|webp|svg|pdf|txt)$/i.test(value)) {
-								const localFilePath = await downloadFile(value)
+								const localFilePath = await downloadFile(value, "./assets/preload_assets/" + lastString)
 								objectData = LibObject.set(objectData, localFilePath)(cursor)
 								const newData = JSON.stringify(objectData, undefined, 2)
 								fs.writeFileSync(`./assets/preload_api/${lastString}.json`, newData, { encoding: "utf8" })
@@ -599,7 +599,6 @@ async function preload_api() {
 						if (!fs.existsSync(downloadDir)) {
 							fs.mkdirSync(downloadDir, { recursive: true });
 						}
-
 						const fileName = path.basename(url);
 						const filePath = path.join(downloadDir, fileName);
 
