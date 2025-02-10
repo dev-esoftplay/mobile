@@ -588,7 +588,7 @@ async function preload_api() {
 							var cursor = path.join(".")
 							if (/\.(jpg|jpeg|png|gif|bmp|webp|svg|pdf|txt)$/i.test(value)) {
 								const localFilePath = await downloadFile(value, "./assets/preload_assets/" + lastString)
-								objectData = LibObject.set(objectData, localFilePath)(cursor)
+								objectData = LibObject.set(objectData, String(localFilePath)?.replace('assets/', ''))(cursor)
 								const newData = JSON.stringify(objectData, undefined, 2)
 								fs.writeFileSync(`./assets/preload_api/${lastString}.json`, newData, { encoding: "utf8" })
 							}
