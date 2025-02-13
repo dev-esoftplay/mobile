@@ -11,6 +11,7 @@ export interface LibLoadingArgs {
 export interface LibLoadingProps {
 
 }
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/loading.md) untuk melihat dokumentasi*/
 export default function m(props: LibLoadingProps): any {
   const LibStyle = useRef(esp.mod("lib/style")).current
   return (

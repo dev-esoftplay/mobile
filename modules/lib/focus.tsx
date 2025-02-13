@@ -16,7 +16,7 @@ export interface LibFocusProps {
 export interface LibFocusState {
 
 }
-
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/focus.md) untuk melihat dokumentasi*/
 export default function m(props: LibFocusProps): any {
   const isFocused = useIsFocused()
 

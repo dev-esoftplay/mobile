@@ -1,4 +1,4 @@
-// withHooks 
+// withHooks
 // noPage
 
 import { LibScrollpicker } from 'esoftplay/cache/lib/scrollpicker/import';
@@ -21,7 +21,7 @@ export interface LibTimepickerProps {
   /* hh:mm:ss */
   type?: "hour" | "hourMinute" | "hourMinuteSecond"
 }
-
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/timepicker.md) untuk melihat dokumentasi*/
 export default function m(props: LibTimepickerProps): any {
 
   const _mode = props.mode || 24

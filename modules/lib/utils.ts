@@ -24,7 +24,10 @@ export type LibUtilsTravelMode = 'driving' | 'walking'
 let installationIdDefault
 const installationId = useGlobalState(installationIdDefault, { persistKey: 'deviceId', loadOnInit: true })
 const cache = useGlobalState<any>({ inDebounce: undefined })
+
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md) untuk melihat dokumentasi*/
 export default {
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#checkUndefined) untuk melihat dokumentasi*/
   checkUndefined(obj: any, cursorsAsString: string): boolean {
     var args = cursorsAsString.split('.')
     for (var i = 0; i < args.length; i++) {
@@ -35,20 +38,25 @@ export default {
     }
     return true;
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#debounce) untuk melihat dokumentasi*/
   debounce(func: () => any, delay: number): void {
     clearTimeout(cache.get()?.inDebounce)
     cache.set({ ...cache.get(), inDebounce: setTimeout(() => func(), delay) })
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#decodeBase64) untuk melihat dokumentasi*/
   decodeBase64(chipper: string): string {
     return Buffer.from(chipper, 'base64').toString('ascii')
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#encodeBase64) untuk melihat dokumentasi*/
   encodeBase64(plain: string): string {
     return Buffer.from(plain, 'ascii').toString('base64')
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#qrGenerate) untuk melihat dokumentasi*/
   qrGenerate(string: string, size?: number): string {
     size = size || 20
     return 'http://qrcode.kaywa.com/img.php?s=' + size + '&d=' + string
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#uniqueArray) untuk melihat dokumentasi*/
   uniqueArray(array: any[]): any[] {
     let cleanArray: any[] = []
     array.forEach((item) => {
@@ -58,18 +66,21 @@ export default {
     })
     return cleanArray
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#getArgs) untuk melihat dokumentasi*/
   getArgs(props: any, key: string, defOutput?: any): any {
     if (defOutput == undefined) {
       defOutput = "";
     }
     return props?.route?.params?.[key] || defOutput;
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#getArgsAll) untuk melihat dokumentasi*/
   getArgsAll<S>(props: any, defOutput?: any): S {
     if (defOutput == undefined) {
       defOutput = "";
     }
     return props?.route?.params || defOutput;
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#objectToUrlParam) untuk melihat dokumentasi*/
   objectToUrlParam(obj: any): string {
     return Object.keys(obj).map((key, index) => {
       let out = ''
@@ -78,12 +89,14 @@ export default {
       return out
     }).join('')
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#moment) untuk melihat dokumentasi*/
   moment(date?: string, locale?: any) {
     if (locale) {
       moment().locale(locale)
     }
     return moment(date)
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#getUrlParams) untuk melihat dokumentasi*/
   getUrlParams(url: string): any {
     let hashes = url.slice(url.indexOf('?') + 1).split('&')
     let params = {}
@@ -93,6 +106,7 @@ export default {
     })
     return params
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#getTimezoneByConfig) untuk melihat dokumentasi*/
   getTimezoneByConfig(datetime?: Date | string): string {
     let timezone = esp.config("timezone")
     if (!datetime) {
@@ -100,18 +114,22 @@ export default {
     }
     return moment(datetime).tz(timezone).format('YYYY-MM-DD HH:mm:ss')
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#getRatingValue) untuk melihat dokumentasi*/
   getRatingValue(rating: string): number {
     return rating?.split?.(',')?.map?.((item) => parseInt(item))?.reduce?.((acc, curr, index) => acc + (curr * (index + 1)))
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#getRatingCount) untuk melihat dokumentasi*/
   getRatingCount(rating: string): number {
     return rating?.split?.(',')?.map?.((item) => parseInt(item))?.reduce?.((acc, curr) => acc + curr)
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#getRating) untuk melihat dokumentasi*/
   getRating(rating: string, decimalPlaces?: number): string {
     if (decimalPlaces == undefined) {
       decimalPlaces = 1
     }
     return (this.getRatingValue(rating) / this.getRatingCount(rating))?.toFixed?.(decimalPlaces)
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#money) untuk melihat dokumentasi*/
   money(value: string | number, currency?: string): string {
     if (!value) value = 0
     var val;
@@ -134,15 +152,18 @@ export default {
       return currency?.replace?.(/\./g, "") + " " + val?.replace?.(/,/g, ".");
     }
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#numberAbsolute) untuk melihat dokumentasi*/
   numberAbsolute(toNumber: string | number): number {
     let _toNumber = typeof toNumber == 'string' ? Number(toNumber) : toNumber
     return Math.abs(_toNumber || 0)
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#number) untuk melihat dokumentasi*/
   number(toNumber: string | number): string {
     if (!toNumber) toNumber = '0'
     var toNumb = typeof toNumber === "number" ? toNumber.toFixed(0).replace(/(\d)(?=(\d{3})+$)/g, "$1,") : parseInt(toNumber).toFixed(0).replace(/(\d)(?=(\d{3})+$)/g, "$1,")
     return String(toNumb).replace(/,/g, ".");
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#countDays) untuk melihat dokumentasi*/
   countDays(start: string | Date, end: string | Date): number {
     var _start = start instanceof Date ? start.getTime() : new Date(start).getTime()
     var _end = end instanceof Date ? end.getTime() : new Date(end).getTime()
@@ -151,6 +172,7 @@ export default {
     var day = Math.floor(diff / oneDay)
     return day
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#getDateTimeSeconds) untuk melihat dokumentasi*/
   getDateTimeSeconds(start: string | Date, end: string | Date): number {
     var mStart = start instanceof Date ? start : moment(start).toDate()
     var mEnd = end instanceof Date ? end : moment(end).toDate()
@@ -162,11 +184,13 @@ export default {
       return Math.round((stampEnd - stampStart) / 1000)
     }
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#ucwords) untuk melihat dokumentasi*/
   ucwords(str: string): string {
     return str?.replace?.(/\w\S*/g, function (txt) {
       return txt?.charAt?.(0)?.toUpperCase?.() + txt?.substr?.(1)?.toLowerCase?.();
     });
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#getCurrentDateTime) untuk melihat dokumentasi*/
   getCurrentDateTime(format?: string): string {
     if (!format) {
       format = "YYYY-MM-DD kk:mm:ss";
@@ -174,6 +198,7 @@ export default {
     moment().locale(esp.langId());
     return String(moment(new Date()).format(format))
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#getDateRange) untuk melihat dokumentasi*/
   getDateRange(start_date: string, end_date: string, separator?: string, format?: LibUtilsDate): string {
     if (!separator) {
       separator = ' - '
@@ -202,6 +227,7 @@ export default {
     }
     return out
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#getDateAsFormat) untuk melihat dokumentasi*/
   getDateAsFormat(input: string, format?: string): string {
     if (!format) {
       format = "dddd, DD MMMM YYYY";
@@ -209,11 +235,13 @@ export default {
     moment().locale(esp.langId());
     return moment(input).format(format)
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#telTo) untuk melihat dokumentasi*/
   telTo(number: string | number): void {
     if (typeof number == "string")
       number = number.match(/\d+/g)?.join('')
     Linking.openURL("tel:" + number)
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#smsTo) untuk melihat dokumentasi*/
   smsTo(number: string | number, message?: string): void {
     if (typeof number == 'string')
       number = number.match(/\d+/g)?.join('')
@@ -223,6 +251,7 @@ export default {
     var sparator = Platform.OS == "ios" ? "&" : "?"
     Linking.openURL("sms:" + number + sparator + "body=" + message)
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#mailTo) untuk melihat dokumentasi*/
   mailTo(email: string, subject?: string, message?: string): void {
     if (!subject) {
       subject = "";
@@ -232,6 +261,7 @@ export default {
     }
     Linking.openURL("mailto:" + email + "?subject=" + subject + "&body=" + message)
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#waTo) untuk melihat dokumentasi*/
   waTo(number: string, message?: string): void {
     number = number.match(/\d+/g)?.join('')
     if (!message) {
@@ -239,9 +269,11 @@ export default {
     }
     Linking.openURL("https://api.whatsapp.com/send?phone=" + number + "&text=" + encodeURI(message))
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#mapTo) untuk melihat dokumentasi*/
   mapTo(title: string, latlong: string): void {
     Linking.openURL("http://maps.google.com/maps?q=loc:" + latlong + "(" + title + ")")
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#isValidLatLong) untuk melihat dokumentasi*/
   isValidLatLong(latlong: string): boolean {
     let _latlong: any = latlong
     let valid = true
@@ -256,6 +288,7 @@ export default {
     }
     return valid
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#mapDirectionTo) untuk melihat dokumentasi*/
   mapDirectionTo(latlongFrom: string, latlongTo: string, travelmode: LibUtilsTravelMode): void {
     if (!this.isValidLatLong(latlongFrom)) {
       return esp.modProp("lib/toast").show(esp.lang("lib/utils", "toas_latlongfrom"))
@@ -270,12 +303,14 @@ export default {
       + "&origin="
       + encodeURI(latlongFrom))
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#copyToClipboard) untuk melihat dokumentasi*/
   copyToClipboard(string: string): Promise<any> {
     return new Promise((r) => {
       Clipboard.setString(string)
       r(true)
     })
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#colorAdjust) untuk melihat dokumentasi*/
   colorAdjust(hex: string, lum: number): string {
     hex = hex.replace(/[^0-9a-f]/gi, "");
     if (hex.length < 6) {
@@ -290,9 +325,11 @@ export default {
     }
     return rgb;
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#escapeRegExp) untuk melihat dokumentasi*/
   escapeRegExp(str: string): string {
     return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#hexToRgba) untuk melihat dokumentasi*/
   hexToRgba(hex: string, alpha: number): string {
     var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
     hex = hex.replace(shorthandRegex, (m, r, g, b) => { return r + r + g + g + b + b; });
@@ -301,14 +338,17 @@ export default {
       return "rgba(" + parseInt(result[1], 16) + "," + parseInt(result[2], 16) + "," + parseInt(result[3], 16) + "," + alpha + ")"
     return hex
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#shorten) untuk melihat dokumentasi*/
   shorten(string: string): string {
     return shorthash.unique(string)
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#share) untuk melihat dokumentasi*/
   share(url: string, message?: string): void {
     Share.share({
       message: url + (message ? ('\n' + message) : "")
     });
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#getInstallationID) untuk melihat dokumentasi*/
   getInstallationID(): Promise<string> {
     return new Promise(async (resolve, reject) => {
       let out = installationId.get()
@@ -331,6 +371,7 @@ export default {
       resolve(out)
     })
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#sprintf) untuk melihat dokumentasi*/
   sprintf(string: string, ...stringToBe: any[]): string {
     function spf(string: string, index: number) {
       if (stringToBe[index] != undefined) {

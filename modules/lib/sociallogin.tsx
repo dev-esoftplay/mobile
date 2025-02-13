@@ -17,7 +17,7 @@ export interface LibSocialloginProps {
 export interface LibSocialloginState {
 
 }
-
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/sociallogin.md) untuk melihat dokumentasi*/
 export default class m extends LibComponent<LibSocialloginProps, LibSocialloginState> {
   props: LibSocialloginProps
 
@@ -26,14 +26,17 @@ export default class m extends LibComponent<LibSocialloginProps, LibSocialloginS
     this.props = props
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/sociallogin.md#setUser) untuk melihat dokumentasi*/
   static setUser(userData: any): void {
     AsyncStorage.setItem(config.domain + "_user", JSON.stringify(userData));
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/sociallogin.md#delUser) untuk melihat dokumentasi*/
   static delUser(): void {
     AsyncStorage.removeItem(config.domain + "_user")
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/sociallogin.md#getUser) untuk melihat dokumentasi*/
   static getUser(callback?: (userData: any) => void): Promise<any> {
     return new Promise((r, j) => {
       AsyncStorage.getItem(config.domain + "_user").then((userData: any) => {

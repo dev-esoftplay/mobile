@@ -16,6 +16,7 @@ export interface LibDatepickerProps {
   type?: "date" | "month" | "year"
 }
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/datepicker.md) untuk melihat dokumentasi*/
 export default function m(props: LibDatepickerProps): any {
   const LibScrollpicker = useRef(esp.mod("lib/scrollpicker")).current
   const LibStyle = useRef(esp.mod("lib/style")).current

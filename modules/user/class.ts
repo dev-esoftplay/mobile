@@ -10,10 +10,13 @@ import { Platform } from 'react-native';
 
 const state = useGlobalState(null, { persistKey: "user", loadOnInit: true })
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/user/class.md) untuk melihat dokumentasi*/
 export default {
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/user/class.md#state) untuk melihat dokumentasi*/
   state(): useGlobalReturn<any> {
     return state
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/user/class.md#create) untuk melihat dokumentasi*/
   create(user: any): Promise<void> {
     return new Promise((r, j) => {
       const oldDt = state.get()
@@ -25,6 +28,7 @@ export default {
       r(user)
     })
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/user/class.md#load) untuk melihat dokumentasi*/
   load(callback?: (user?: any | null) => void): Promise<any> {
     return new Promise(async (r, j) => {
       AsyncStorage.getItem('user').then((user) => {
@@ -40,6 +44,7 @@ export default {
 
     })
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/user/class.md#isLogin) untuk melihat dokumentasi*/
   isLogin(callback: (user?: any | null) => void): Promise<any> {
     return new Promise((r, j) => {
       this.load().then((user) => {
@@ -51,6 +56,7 @@ export default {
       })
     })
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/user/class.md#delete) untuk melihat dokumentasi*/
   delete(): Promise<void> {
     return new Promise(async (r) => {
       Notifications.setBadgeCountAsync(0)
@@ -63,6 +69,7 @@ export default {
       r()
     })
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/user/class.md#pushToken) untuk melihat dokumentasi*/
   pushToken(): Promise<any> {
     return new Promise((resolve, reject) => {
       if (Constants.appOwnership == 'expo' && !esp.isDebug('')) {

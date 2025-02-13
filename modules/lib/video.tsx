@@ -14,6 +14,7 @@ export interface LibVideoProps {
   code: string,
   style?: ViewStyle
 }
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/video.md) untuk melihat dokumentasi*/
 export default function m(props: LibVideoProps): any {
   const code = props.code
 

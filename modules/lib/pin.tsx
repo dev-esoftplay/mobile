@@ -12,6 +12,7 @@ export interface LibPinProps {
   pinValue?: string,
   pinStyle?: ViewStyle
 }
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/pin.md) untuk melihat dokumentasi*/
 export default function m(props: LibPinProps): any {
   const [pin, setPin] = useState<string[]>([])
   const input = useRef<TextInput>(null)

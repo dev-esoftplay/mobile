@@ -22,46 +22,57 @@ export interface LibNavigationInjector {
   children?: any
 }
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md) untuk melihat dokumentasi*/
 export default {
   _redirect: {} as any,
   _data: {} as any,
   _ref: {} as any,
   _isReady: false,
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#setRef) untuk melihat dokumentasi*/
   setRef(ref: any): void {
     this._ref = ref
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#setIsReady) untuk melihat dokumentasi*/
   setIsReady(isReady: boolean): void {
     this._isReady = isReady;
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#getIsReady) untuk melihat dokumentasi*/
   getIsReady(): boolean {
     return this._isReady;
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#setNavigation) untuk melihat dokumentasi*/
   setNavigation(nav: any): void {
     this._data._navigation = nav
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#getArgs) untuk melihat dokumentasi*/
   getArgs(props: any, key: string, defOutput?: any): any {
     if (defOutput == undefined) {
       defOutput = "";
     }
     return props?.route?.params?.[key] || defOutput;
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#getArgsAll) untuk melihat dokumentasi*/
   getArgsAll<S extends keyof EspArgsInterface>(props: any, defOutput?: any): EspArgsInterface[S] {
     if (defOutput == undefined) {
       defOutput = "";
     }
     return props?.route?.params || defOutput;
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#navigation) untuk melihat dokumentasi*/
   navigation(): any {
     return this._data?._navigation
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#setRedirect) untuk melihat dokumentasi*/
   setRedirect(func: Function, key?: number) {
     if (!key) key = 1
     this._redirect[key] = { func }
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#delRedirect) untuk melihat dokumentasi*/
   delRedirect(key?: number) {
     if (!key) key = 1
     delete this._redirect[key]
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#redirect) untuk melihat dokumentasi*/
   redirect(key?: number) {
     if (!key) key = 1
     if (this._redirect?.[key]) {
@@ -72,9 +83,11 @@ export default {
     }
   },
   /* <T  EspRouterInterface>(path: T): EspRouterInterface[T] { */
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#navigate) untuk melihat dokumentasi*/
   navigate<S extends keyof EspArgsInterface>(route: S, params?: EspArgsInterface[S]): void {
     this._ref?.navigate?.(route, params)
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#navigateTab) untuk melihat dokumentasi*/
   navigateTab<S extends keyof EspArgsInterface>(route: S, tabIndex: number, params?: EspArgsInterface[S]): void {
     this._ref?.navigate?.(route, params)
     setTimeout(() => {
@@ -86,11 +99,13 @@ export default {
       }
     }, 100);
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#createTabConfig) untuk melihat dokumentasi*/
   createTabConfig<S extends keyof EspArgsInterface>(modules: S[], defaultIndex?: number): useGlobalReturn<LibNavigationTabConfigReturn<S>> {
     const viewModules = modules.map((string: S) => esp.mod(string))
     const tabConfig = useGlobalState({ activeIndex: defaultIndex || 0, defaultIndex: defaultIndex || 0, modules: viewModules })
     return tabConfig
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#useTabConfigState) untuk melihat dokumentasi*/
   useTabConfigState<S extends keyof EspArgsInterface>(tabConfig: useGlobalReturn<LibNavigationTabConfigReturn<S>>) {
     const [tabConfigState] = tabConfig.useState()
     useEffect(() => {
@@ -100,6 +115,7 @@ export default {
     }, [])
     return tabConfigState
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#useBackResult) untuk melihat dokumentasi*/
   useBackResult(props: any): (res: any) => void {
     const key = this.getResultKey(props)
     useEffect(() => {
@@ -108,9 +124,11 @@ export default {
 
     return (res: any) => this.sendBackResult(res, key)
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#getResultKey) untuk melihat dokumentasi*/
   getResultKey(props: any): number {
     return this.getArgs(props, "_senderKey", 0)
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#cancelBackResult) untuk melihat dokumentasi*/
   cancelBackResult(key?: number): void {
     if (!key) {
       key = 1
@@ -119,6 +137,7 @@ export default {
       delete this._data[key]
     } catch (error) { }
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#sendBackResult) untuk melihat dokumentasi*/
   sendBackResult(result: any, key?: number): void {
     if (!key) {
       key = 1
@@ -129,6 +148,7 @@ export default {
     }
     this.back()
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#navigateForResult) untuk melihat dokumentasi*/
   navigateForResult<S extends keyof EspArgsInterface>(route: S, params?: EspArgsInterface[S], key?: number): Promise<any> {
     if (!key) {
       key = 1
@@ -146,11 +166,13 @@ export default {
       this.push(route, params)
     })
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#replace) untuk melihat dokumentasi*/
   replace<S extends keyof EspArgsInterface>(route: S, params?: EspArgsInterface[S]): void {
     this._ref.dispatch(
       StackActions.replace(route, params)
     )
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#push) untuk melihat dokumentasi*/
   push<S extends keyof EspArgsInterface>(route: S, params?: EspArgsInterface[S]): void {
     this._ref?.dispatch?.(
       StackActions.push(
@@ -159,6 +181,7 @@ export default {
       )
     )
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#reset) untuk melihat dokumentasi*/
   reset(route?: LibNavigationRoutes, ...routes: LibNavigationRoutes[]): void {
     const user = UserClass.state().get()
     let _route = [route || esp.config('home', (user && (user.id || user.user_id || user.apikey)) ? 'member' : 'public')]
@@ -171,6 +194,7 @@ export default {
     });
     this._ref?.dispatch?.(resetAction);
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#back) untuk melihat dokumentasi*/
   back(deep?: number): void {
     let _deep = deep || 1
     const popAction = StackActions.pop(_deep);
@@ -178,15 +202,19 @@ export default {
   },
 
   /* return `root` on initialRoute otherwise return the route was active  */
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#getCurrentRouteName) untuk melihat dokumentasi*/
   getCurrentRouteName(): string {
     return UserRoutes.getCurrentRouteName()
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#isFirstRoute) untuk melihat dokumentasi*/
   isFirstRoute(): boolean {
     return this.getCurrentRouteName() == 'root'
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#backToRoot) untuk melihat dokumentasi*/
   backToRoot(): void {
     this._ref?.dispatch?.(StackActions.popToTop());
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#Injector) untuk melihat dokumentasi*/
   Injector(props: LibNavigationInjector): any {
     if (!props.children) return null
     return React.cloneElement(props.children, { navigation: { state: { params: props.args } } })

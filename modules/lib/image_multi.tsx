@@ -31,6 +31,7 @@ function Imageitem(props: any): any {
   )
 }
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/image_multi.md) untuk melihat dokumentasi*/
 export default function m(props: LibImage_multiProps): any {
 	const LibIcon = useRef(esp.mod("lib/icon")).current
 	const LibLoading = useRef(esp.mod("lib/loading")).current

@@ -15,7 +15,7 @@ export interface LibTextstyleProps {
 export interface LibTextstyleState {
 
 }
-
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/textstyle.md) untuk melihat dokumentasi*/
 export default class m extends LibComponent<LibTextstyleProps, LibTextstyleState>{
   props: any
 

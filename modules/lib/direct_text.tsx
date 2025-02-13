@@ -10,7 +10,7 @@ export interface LibDirect_textProps {
 export interface LibDirect_textState {
 
 }
-
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/direct_text.md) untuk melihat dokumentasi*/
 export default class m extends LibComponent<LibDirect_textProps, LibDirect_textState> {
   ref: React.RefObject<TextInput> = React.createRef()
   text = this.props.initialText
@@ -20,6 +20,7 @@ export default class m extends LibComponent<LibDirect_textProps, LibDirect_textS
     this.setText = this.setText.bind(this);
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/direct_text.md#setText) untuk melihat dokumentasi*/
   setText(text: string): void {
     this.text = text
     this.ref.current?.setNativeProps({ text })

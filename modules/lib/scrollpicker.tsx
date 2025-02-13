@@ -29,6 +29,7 @@ export interface LibScrollpickerState {
 const deviceWidth = Dimensions.get('window').width;
 const deviceHeight = Dimensions.get('window').height;
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/scrollpicker.md) untuk melihat dokumentasi*/
 export default class m extends LibComponent<LibScrollpickerProps, LibScrollpickerState> {
   itemHeight = 30;
   wrapperHeight = this.itemHeight * 5;
@@ -133,7 +134,7 @@ export default class m extends LibComponent<LibScrollpickerProps, LibScrollpicke
     let selectedIndex = Math.round(y / h);
     let _y = selectedIndex * h;
     if (_y !== y) {
-      // using scrollTo in ios, onMomentumScrollEnd will be invoked 
+      // using scrollTo in ios, onMomentumScrollEnd will be invoked
       if (Platform.OS === 'ios') {
         this.isScrollTo = true;
       }

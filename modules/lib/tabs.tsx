@@ -19,7 +19,7 @@ export interface LibTabsState {
   forceUpdate: number
 }
 
-
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/tabs.md) untuk melihat dokumentasi*/
 export default class m extends LibComponent<LibTabsProps, LibTabsState> {
 
   length = React.Children.toArray(this.props.children).length

@@ -4,6 +4,7 @@ import esp from 'esoftplay/esp';
 import { useCallback, useEffect } from 'react';
 import { Alert, Linking } from 'react-native';
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/use/deeplink.md) untuk melihat dokumentasi*/
 export default function m(defaultUrl?: string): void {
   const doLink = useCallback(({ url }: { url: string }) => {
     const { domain, uri, protocol } = esp.config()

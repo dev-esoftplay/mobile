@@ -88,11 +88,13 @@ function splitArray(array: any[], maxLength: number): any[] {
   }, [])
   return splitedArray
 }
-
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/notification.md) untuk melihat dokumentasi*/
 export default {
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/notification.md#state) untuk melihat dokumentasi*/
   state(): useGlobalReturn<any> {
     return lastUrlState
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/notification.md#loadData) untuk melihat dokumentasi*/
   loadData(isFirst?: boolean): void {
     // console.log('LOADDATA', isFirst)
     let _uri = mainUrl() + "user/push-notif/desc"
@@ -101,7 +103,7 @@ export default {
       lastUrl = undefined
     }
     if (lastUrl == -1) {
-      return
+      retur
     }
     if (lastUrl && !isFirst) {
       _uri = lastUrl
@@ -165,6 +167,7 @@ export default {
       }
     )
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/notification.md#add) untuk melihat dokumentasi*/
   add(id: number, user_id: number, group_id: number, title: string, message: string, params: string, status: 0 | 1 | 2, created?: string, updated?: string): void {
     const item = { id, user_id, group_id, title, message, params, status, created, updated }
     let data = UserNotification.state().get().data
@@ -174,9 +177,11 @@ export default {
       data: data
     })
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/notification.md#drop) untuk melihat dokumentasi*/
   drop(): void {
     UserNotification.state().reset()
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/notification.md#markRead) untuk melihat dokumentasi*/
   markRead(id?: string | number, ..._ids: (string | number)[]): void {
     // console.log("markRead")
     let { data, unread, urls } = UserNotification.state().get()
@@ -202,6 +207,7 @@ export default {
       readAll(ids)
     })
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/notification.md#onAction) untuk melihat dokumentasi*/
   onAction(notification: any): void {
     this.loadData(true)
     const data = this.getData(notification)
@@ -221,9 +227,11 @@ export default {
     }
     doOpen(data)
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/notification.md#getData) untuk melihat dokumentasi*/
   getData(x: any): any {
     return x?.notification?.request?.content?.data
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/notification.md#listen) untuk melihat dokumentasi*/
   listen(dataRef: any): void {
     if (esp.config('notification') == 1) {
       if (Platform.OS == 'android')
@@ -244,6 +252,7 @@ export default {
       dataRef.receive = Notifications.addNotificationReceivedListener(() => { })
     }
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/notification.md#requestPermission) untuk melihat dokumentasi*/
   requestPermission(callback?: (token: any) => void): Promise<any> {
     return new Promise(async (r) => {
       let settings = await Notifications.getPermissionsAsync();
@@ -282,9 +291,11 @@ export default {
       }
     })
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/notification.md#cancelLocalNotification) untuk melihat dokumentasi*/
   cancelLocalNotification(notif_id: string) {
     Notifications.cancelScheduledNotificationAsync(notif_id)
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/notification.md#setLocalNotification) untuk melihat dokumentasi*/
   setLocalNotification(action: "alert" | "default" | "update", content: notificationContent, trigger: notificationTrigger, callback?: (notif_id: string) => void): void {
     const triggerSeconds = Number(trigger?.delayInMinutes) * 60
     const _trigger = {
@@ -309,6 +320,7 @@ export default {
       callback?.(notifId)
     }).catch((r) => { })
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/notification.md#openPushNotif) untuk melihat dokumentasi*/
   openPushNotif(data: any): void {
     if (!data) return
     if (typeof data == 'string')
@@ -347,6 +359,7 @@ export default {
           break;
       }
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/notification.md#openNotif) untuk melihat dokumentasi*/
   openNotif(data: any): void {
     this.markRead(data.id)
     let param = JSON.parse(data.params)

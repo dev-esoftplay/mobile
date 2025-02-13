@@ -9,7 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const { colorPrimary, colorAccent } = LibStyle
 
 const state = useGlobalState({ theme: 'light' }, { persistKey: 'lib_theme' })
-
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/theme.md) untuk melihat dokumentasi*/
 export default {
   setTheme(themeName: string): void {
     state.set({ theme: themeName })

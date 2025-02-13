@@ -13,6 +13,7 @@ export interface LibSlidingupProps {
 export interface LibSlidingupState {
   show: boolean,
 }
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/slidingup.md) untuk melihat dokumentasi*/
 export default class m extends LibComponent<LibSlidingupProps, LibSlidingupState> {
 
   _show: boolean = false
@@ -27,6 +28,7 @@ export default class m extends LibComponent<LibSlidingupProps, LibSlidingupState
     this.handleBack = this.handleBack.bind(this);
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/slidingup.md#handleBack) untuk melihat dokumentasi*/
   handleBack(): boolean {
     this.hide()
     return true
@@ -42,6 +44,7 @@ export default class m extends LibComponent<LibSlidingupProps, LibSlidingupState
     }
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/slidingup.md#show) untuk melihat dokumentasi*/
   show(): void {
     Keyboard.dismiss()
     if (this.props.children) {
@@ -54,12 +57,14 @@ export default class m extends LibComponent<LibSlidingupProps, LibSlidingupState
     }
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/slidingup.md#hide) untuk melihat dokumentasi*/
   hide(): void {
     this._toggleSubview(false).then(() => {
       this.setState({ show: false })
     })
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/slidingup.md#_toggleSubview) untuk melihat dokumentasi*/
   _toggleSubview(isOpen: boolean): Promise<void> {
     return new Promise((r) => {
       var toValue = LibStyle.height;

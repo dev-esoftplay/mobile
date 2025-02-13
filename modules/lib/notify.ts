@@ -17,6 +17,7 @@ export interface LibNotifyProps {
 
 const state = useGlobalState([], { persistKey: 'lib_notify', inFile: true })
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/notify.md) untuk melihat dokumentasi*/
 export default function libnotify(res: LibNotifyProps): any {
   if (res.notifications && Array.isArray(res.notifications)) {
     res.notifications.forEach(curl)

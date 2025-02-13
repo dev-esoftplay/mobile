@@ -11,6 +11,8 @@ import PanPinchView from "react-native-pan-pinch-view";
 export interface LibImage_cropProps {
 
 }
+
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/image_crop.md) untuk melihat dokumentasi*/
 export default function m(props: LibImage_cropProps): any {
   const LibIcon = useRef(esp.mod("lib/icon")).current
   const LibNavigation = useRef(esp.mod("lib/navigation")).current

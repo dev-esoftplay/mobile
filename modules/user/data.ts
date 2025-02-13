@@ -1,4 +1,3 @@
-//[moved] add new function multiregister
 // noPage
 // withObject
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -27,6 +26,7 @@ export default {
     all.push(name)
     FastStorage.setItem("user_data_dependent", JSON.stringify(all))
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/user/data.md#multiRegister) untuk melihat dokumentasi*/
   async multiRegister(names: string[]): Promise<void> {
     try {
       const data = await FastStorage.getItem("user_data_dependent");
@@ -40,6 +40,7 @@ export default {
       console.error("Error registering multiple names:", error);
     }
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/user/data.md#unregister) untuk melihat dokumentasi*/
   unregister(name: string): void {
     FastStorage.getItem("user_data_dependent").then((x) => {
       let all = []
@@ -49,6 +50,7 @@ export default {
       FastStorage.setItem("user_data_dependent", JSON.stringify(all))
     })
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/user/data.md#deleteAll) untuk melihat dokumentasi*/
   deleteAll(): void {
     FastStorage.getItem("user_data_dependent").then((x) => {
       if (x) {

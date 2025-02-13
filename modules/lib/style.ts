@@ -82,6 +82,7 @@ const defaultStyle = {
   },
 }
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/style.md) untuk melihat dokumentasi*/
 export default class Style {
   static isIphoneX: boolean = isIphoneX();
   static STATUSBAR_HEIGHT: number = STATUSBAR_HEIGHT;

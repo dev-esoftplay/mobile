@@ -17,6 +17,8 @@ export interface LibFadescrollProps {
   interpolateOpacity: number[],
   interpolateScroll: number[],
 }
+
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/fadescroll.md) untuk melihat dokumentasi*/
 export default function m(props: LibFadescrollProps): any {
   let opacity = useSharedValue(0)
   const [pointerEvents, setPointerEvents] = useSafeState<any>('none')

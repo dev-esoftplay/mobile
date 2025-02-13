@@ -36,7 +36,7 @@ export interface LibWebviewState {
   source: any,
   isFinish: boolean
 }
-
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/webview.md) untuk melihat dokumentasi*/
 class ewebview extends LibComponent<LibWebviewProps, LibWebviewState> {
   props: LibWebviewProps
   state: LibWebviewState
@@ -68,11 +68,13 @@ class ewebview extends LibComponent<LibWebviewProps, LibWebviewState> {
     this.resetSmallHeight = this.resetSmallHeight.bind(this)
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/webview.md#getDerivedStateFromProps) untuk melihat dokumentasi*/
   static getDerivedStateFromProps(nextProps, prevState) {
     const config = esp.config();
     return { source: nextProps.source && nextProps.source.hasOwnProperty("html") ? { html: config.webviewOpen + nextProps.source.html + config.webviewClose } : nextProps.source }
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/webview.md#gotoShow) untuk melihat dokumentasi*/
   gotoShow(): void {
     if (this.props.needAnimate) this._animatedValue.setValue(0);
     Animated.timing(this._animatedValue, {
@@ -82,6 +84,7 @@ class ewebview extends LibComponent<LibWebviewProps, LibWebviewState> {
     }).start();
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/webview.md#getMessageFromWebView) untuk melihat dokumentasi*/
   getMessageFromWebView(event: any): void {
     let message = event.nativeEvent.data;
     const wbHeight = message.split('-')[1]
@@ -103,6 +106,7 @@ class ewebview extends LibComponent<LibWebviewProps, LibWebviewState> {
     }
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/webview.md#resetHeight) untuk melihat dokumentasi*/
   resetHeight(): void {
     if (this.heightMessage === undefined || this.heightMessage === null || this.heightMessage === "") {
       return;
@@ -142,8 +146,8 @@ class ewebview extends LibComponent<LibWebviewProps, LibWebviewState> {
           }}
           injectedJavaScript={'window.ReactNativeWebView.postMessage(document.body.scrollWidth+"-"+document.body.scrollHeight)'}
           onLoadEnd={() => {
-            if (this.props.onFinishLoad !== undefined){
-             const timer = setTimeout(() => {
+            if (this.props.onFinishLoad !== undefined) {
+              const timer = setTimeout(() => {
                 this.setState({ isFinish: true })
                 this.props.onFinishLoad()
                 clearTimeout(timer)

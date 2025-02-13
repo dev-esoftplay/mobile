@@ -7,7 +7,7 @@ export interface MainIndexArgs {
 export interface MainIndexProps {
 
 }
-
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/main/index.md) untuk melihat dokumentasi*/
 export default function m(props: MainIndexProps): any {
 
   return (

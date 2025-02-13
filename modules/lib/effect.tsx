@@ -11,6 +11,7 @@ export interface LibEffectState {
 
 }
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/effect.md) untuk melihat dokumentasi*/
 export default class m extends LibComponent<LibEffectProps, LibEffectState> {
   deps: any[] = []
 

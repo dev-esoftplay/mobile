@@ -63,6 +63,7 @@ export interface LibInfiniteState {
   error: string
 }
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/infinite.md) untuk melihat dokumentasi*/
 export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState> {
 
   isStop: boolean = false

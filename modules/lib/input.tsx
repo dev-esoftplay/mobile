@@ -47,7 +47,8 @@ export interface LibInputState {
   error?: string,
   helper?: string
 }
-export default class m extends LibComponent<LibInputProps, LibInputState>{
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/input.md) untuk melihat dokumentasi*/
+export default class m extends LibComponent<LibInputProps, LibInputState> {
   text: string
   ref: any
   constructor(props: LibInputProps) {
@@ -66,38 +67,47 @@ export default class m extends LibComponent<LibInputProps, LibInputState>{
     this.getTextMasked = this.getTextMasked.bind(this);
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/input.md#getText) untuk melihat dokumentasi*/
   getText(): string {
     return this.unmask(this.text)
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/input.md#getTextMasked) untuk melihat dokumentasi*/
   getTextMasked(): string {
     return this.text
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/input.md#focus) untuk melihat dokumentasi*/
   focus(): void {
     this.ref.focus()
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/input.md#blur) untuk melihat dokumentasi*/
   blur(): void {
     this.ref.blur()
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/input.md#setHelper) untuk melihat dokumentasi*/
   setHelper(msg: string): void {
     this.setState({ helper: msg })
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/input.md#clearHelper) untuk melihat dokumentasi*/
   clearHelper(msg: string): void {
     this.setState({ helper: undefined })
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/input.md#setError) untuk melihat dokumentasi*/
   setError(msg: string): void {
     this.setState({ error: msg })
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/input.md#clearError) untuk melihat dokumentasi*/
   clearError(): void {
     this.setState({ error: undefined })
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/input.md#reverseString) untuk melihat dokumentasi*/
   reverseString(str: string): string {
     let out = '';
     for (let i = str.length - 1; i >= 0; i--) {
@@ -106,6 +116,7 @@ export default class m extends LibComponent<LibInputProps, LibInputState>{
     return out;
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/input.md#mask) untuk melihat dokumentasi*/
   mask(text: string): string {
     let { mask, maskFrom } = this.props
     if (mask) {
@@ -144,6 +155,7 @@ export default class m extends LibComponent<LibInputProps, LibInputState>{
     return text
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/input.md#unmask) untuk melihat dokumentasi*/
   unmask(text: string): string {
     let _text = text
     let { mask } = this.props
@@ -159,6 +171,7 @@ export default class m extends LibComponent<LibInputProps, LibInputState>{
     return _text
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/input.md#setText) untuk melihat dokumentasi*/
   setText(text: string): void {
     if (this.ref) {
       this.ref.setNativeProps({ text: this.mask(text) })
@@ -179,7 +192,7 @@ export default class m extends LibComponent<LibInputProps, LibInputState>{
 
   componentDidMount(): void {
     super.componentDidMount()
-   const timer = setTimeout(() => {
+    const timer = setTimeout(() => {
       if (this.props.defaultValue) {
         this.setText(this.props.defaultValue)
       }

@@ -54,8 +54,10 @@ const initState = {
 }
 const state = useGlobalState<LibImageProps>(initState)
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/image.md) untuk melihat dokumentasi*/
 class m extends LibComponent<LibImageProps, LibImageState> {
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/image.md#setResult) untuk melihat dokumentasi*/
   static setResult(image: string): void {
     state.set({
       ...state.get(),
@@ -64,6 +66,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
     })
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/image.md#show) untuk melihat dokumentasi*/
   static show(): void {
     state.set({
       ...state.get(),
@@ -72,6 +75,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
     })
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/image.md#hide) untuk melihat dokumentasi*/
   static hide(): void {
     state.set(initState)
   }
@@ -89,6 +93,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
     this.takePicture = this.takePicture.bind(this);
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/image.md#takePicture) untuk melihat dokumentasi*/
   async takePicture(): Promise<void> {
     if (this.camera) {
       this.setState({ loading: true })
@@ -98,10 +103,12 @@ class m extends LibComponent<LibImageProps, LibImageState> {
   }
 
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/image.md#showCropper) untuk melihat dokumentasi*/
   static showCropper(uri: string, forceCrop: boolean, ratio: string, message: string, result: (x: any) => void): void {
     LibNavigation.navigateForResult("lib/image_crop", { image: uri, forceCrop, ratio, message }, 81793).then(result)
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/image.md#fromCamera) untuk melihat dokumentasi*/
   static fromCamera(options?: LibImageCameraOptions): Promise<string> {
     return new Promise((_r) => {
       const timer = setTimeout(async () => {
@@ -156,6 +163,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
     })
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/image.md#fromGallery) untuk melihat dokumentasi*/
   static fromGallery(options?: LibImageGalleryOptions): Promise<string | string[]> {
     return new Promise((_r) => {
       const timer = setTimeout(async () => {
@@ -251,6 +259,7 @@ class m extends LibComponent<LibImageProps, LibImageState> {
     })
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/image.md#processImage) untuk melihat dokumentasi*/
   static processImage(result: any, maxDimension?: number): Promise<string> {
     return new Promise((r) => {
       if (!result.cancelled) {

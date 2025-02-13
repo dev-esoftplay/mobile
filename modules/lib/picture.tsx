@@ -14,7 +14,7 @@ export interface LibPictureProps {
   resizeMode?: "contain" | "cover",
   onError?: () => void,
 }
-
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/picture.md) untuk melihat dokumentasi*/
 export default function m(props: LibPictureProps): any {
 
   let resizeMode

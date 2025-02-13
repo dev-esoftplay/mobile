@@ -2,6 +2,7 @@
 
 import { update } from "immhelper";
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/object.md) untuk melihat dokumentasi*/
 export default class m {
   #value = undefined
 
@@ -18,6 +19,7 @@ export default class m {
     this.cursorBuilder = this.cursorBuilder.bind(this)
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/object.md#cursorBuilder) untuk melihat dokumentasi*/
   cursorBuilder(command: string, array: any, value: any, ...values: any[]): (cursor?: string | number, ...cursors: (string | number)[]) => this {
     return (cursor?: string | number, ...cursors: (string | number)[]) => {
       let pathToUpdate = [cursor, ...cursors].filter(x => x != undefined).join('.')
@@ -32,74 +34,94 @@ export default class m {
     }
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/object.md#push) untuk melihat dokumentasi*/
   push(value?: any, ...values: any[]): (cursor?: string | number, ...cursors: (string | number)[]) => this {
     return this.cursorBuilder("push", this.#value, value, ...values)
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/object.md#unshift) untuk melihat dokumentasi*/
   unshift(value?: any, ...values: any[]): (cursor?: string | number, ...cursors: (string | number)[]) => this {
     return this.cursorBuilder("unshift", this.#value, value, ...values)
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/object.md#splice) untuk melihat dokumentasi*/
   splice(index: number, deleteCount: number, value?: any, ...values: any[]): (cursor?: string | number, ...cursors: (string | number)[]) => this {
     return this.cursorBuilder("splice", this.#value, index, deleteCount, value, ...values)
   }
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/object.md#unset) untuk melihat dokumentasi*/
   unset(index: number | string, ...indexs: (string | number)[]): (cursor?: string | number, ...cursors: (string | number)[]) => this {
     return this.cursorBuilder("unset", this.#value, index, ...indexs)
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/object.md#set) untuk melihat dokumentasi*/
   set(value: any): (cursor?: string | number, ...cursors: (string | number)[]) => this {
     return this.cursorBuilder("set", this.#value, value)
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/object.md#update) untuk melihat dokumentasi*/
   update(callback: (lastValue: any) => any): (cursor?: string | number, ...cursors: (string | number)[]) => this {
     return this.cursorBuilder("batch", this.#value, callback)
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/object.md#assign) untuk melihat dokumentasi*/
   assign(obj1: any): (cursor?: string | number, ...cursors: (string | number)[]) => this {
     return this.cursorBuilder("assign", this.#value, deepCopy(obj1))
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/object.md#removeKeys) untuk melihat dokumentasi*/
   removeKeys(deletedItemKeys: string[]): (cursor?: string | number, ...cursors: (string | number)[]) => this {
     return this.cursorBuilder("batch", this.#value, (arr: any) => _removeKeys(arr, deletedItemKeys))
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/object.md#replaceItem) untuk melihat dokumentasi*/
   replaceItem<T>(filter: (item: T, index: number) => boolean, newItem: T): (cursor?: string | number, ...cursors: (string | number)[]) => this {
     return this.cursorBuilder("batch", this.#value, (arr: any) => _replaceItem(arr, filter, newItem))
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/object.md#value) untuk melihat dokumentasi*/
   value(): any {
     return this.#value
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/object.md#push) untuk melihat dokumentasi*/
   static push(array: any, value?: any, ...values: any[]): (cursor?: string | number, ...cursors: (string | number)[]) => any {
     return cursorBuilder("push", array, value, ...values)
   }
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/object.md#unshift) untuk melihat dokumentasi*/
   static unshift(array: any, value?: any, ...values: any[]): (cursor?: string | number, ...cursors: (string | number)[]) => any {
     return cursorBuilder("unshift", array, value, ...values)
   }
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/object.md#removeKeys) untuk melihat dokumentasi*/
   static removeKeys(arrayOrObj: any, deletedItemKeys: string[]): (cursor?: string | number, ...cursors: (string | number)[]) => any {
     return cursorBuilder("batch", arrayOrObj, (arrOrObj: any) => _removeKeys(arrOrObj, deletedItemKeys))
   }
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/object.md#replaceItem) untuk melihat dokumentasi*/
   static replaceItem<T>(arrayOrObj: any, filter: (item: T, index: number) => boolean, newItem: T): (cursor?: string | number, ...cursors: (string | number)[]) => any {
     return cursorBuilder("batch", arrayOrObj, (arrOrObj: any) => _replaceItem(arrOrObj, filter, newItem))
   }
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/object.md#splice) untuk melihat dokumentasi*/
   static splice(array: any, index: number, deleteCount: number, value?: any, ...values: any[]): (cursor?: string | number, ...cursors: (string | number)[]) => any {
     return cursorBuilder("splice", array, index, deleteCount, value, ...values)
   }
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/object.md#unset) untuk melihat dokumentasi*/
   static unset(obj: any, index: number | string, ...indexs: (string | number)[]): (cursor?: string | number, ...cursors: (string | number)[]) => any {
     return cursorBuilder("unset", obj, index, ...indexs)
   }
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/object.md#set) untuk melihat dokumentasi*/
   static set(obj: any, value: any): (cursor?: string | number, ...cursors: (string | number)[]) => any {
     return cursorBuilder("set", obj, value)
   }
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/object.md#update) untuk melihat dokumentasi*/
   static update(obj: any, callback: (lastValue: any) => any): (cursor?: string | number, ...cursors: (string | number)[]) => any {
     return cursorBuilder("batch", obj, callback)
   }
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/object.md#assign) untuk melihat dokumentasi*/
   static assign(obj: any, obj1: any): (cursor?: string | number, ...cursors: (string | number)[]) => any {
     return cursorBuilder("assign", obj, deepCopy(obj1))
   }
 }
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/object.md#cursorBuilder) untuk melihat dokumentasi*/
 function cursorBuilder(command: string, array: any, value: any, ...values: any[]): (cursor?: string | number, ...cursors: (string | number)[]) => any {
   return function (cursor?: string | number, ...cursors: (string | number)[]) {
     let pathToUpdate = [cursor, ...cursors].filter(x => x != undefined).join('.')
@@ -114,6 +136,7 @@ function cursorBuilder(command: string, array: any, value: any, ...values: any[]
 }
 
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/object.md#_removeKeys) untuk melihat dokumentasi*/
 function _removeKeys(objOrArr: any, keysToRemove: string[]) {
   if (Array.isArray(objOrArr)) {
     return objOrArr.map(obj => {
@@ -132,6 +155,7 @@ function _removeKeys(objOrArr: any, keysToRemove: string[]) {
   }
 }
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/object.md#_replaceItem) untuk melihat dokumentasi*/
 function _replaceItem(data: any, predicate: (item: any, index: number) => boolean, newItem: any) {
   if (Array.isArray(data)) {
     return data.map((item, index) => {
@@ -153,6 +177,7 @@ function _replaceItem(data: any, predicate: (item: any, index: number) => boolea
 }
 
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/object.md#deepCopy) untuk melihat dokumentasi*/
 function deepCopy(o: any) {
   switch (typeof o) {
     case 'object':

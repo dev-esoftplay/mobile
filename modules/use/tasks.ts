@@ -1,9 +1,11 @@
 // useLibs
 // noPage
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/use/tasks.md) untuk melihat dokumentasi*/
 export default function m<T>(): (task: (item: T) => Promise<void>, onDone?: () => void) => [(data: T[], success?: ((isSuccess: boolean) => void) | undefined) => void, () => void] {
   let onProcess = false
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/use/tasks.md#reset) untuk melihat dokumentasi*/
   function reset() {
     onProcess = false;
   }

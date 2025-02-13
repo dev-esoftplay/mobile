@@ -7,7 +7,7 @@ import esp from 'esoftplay/esp';
 //api_logger_import
 
 
-
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/curl.md) untuk melihat dokumentasi*/
 export default class m {
   controller = new AbortController()
   signal = this.controller.signal
@@ -55,6 +55,7 @@ export default class m {
     }
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/curl.md#initTimeout) untuk melihat dokumentasi*/
   protected initTimeout(customTimeout?: number): void {
     this.cancelTimeout()
     this.timeoutContext = setTimeout(() => {
@@ -66,32 +67,39 @@ export default class m {
     }, customTimeout ?? this.timeout);
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/curl.md#cancelTimeout) untuk melihat dokumentasi*/
   private cancelTimeout(): void {
     clearTimeout(this.timeoutContext)
     this.timeoutContext = null;
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/curl.md#onFetchFailed) untuk melihat dokumentasi*/
   private onFetchFailed(message: string): void {
 
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/curl.md#buildUri) untuk melihat dokumentasi*/
   protected buildUri(uri: string): string {
     this.uri = uri
     return this.uri
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/curl.md#setUrl) untuk melihat dokumentasi*/
   protected setUrl(url: string): void {
     this.url = url
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/curl.md#setUri) untuk melihat dokumentasi*/
   protected setUri(uri: string): void {
     this.uri = uri
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/curl.md) untuk melihat dokumentasi*/
   protected setApiKey(apiKey: string): void {
     this.apiKey = apiKey
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/curl.md#setHeader) untuk melihat dokumentasi*/
   protected async setHeader(): Promise<void> {
     return new Promise((r) => {
       if ((/:\/\/data.*?\/(.*)/g).test(this.url)) {
@@ -102,22 +110,27 @@ export default class m {
     });
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/curl.md#closeConnection) untuk melihat dokumentasi*/
   protected closeConnection(): void {
     this.controller?.abort?.()
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/curl.md#onDone) untuk melihat dokumentasi*/
   protected onDone(result: any, msg?: string): void {
 
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/curl.md#onFailed) untuk melihat dokumentasi*/
   protected onFailed(error: any, timeout: boolean): void {
 
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/curl.md#onStatusCode) untuk melihat dokumentasi*/
   protected onStatusCode(ok: number, status_code: number, message: string, result: any): boolean {
     return true
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/curl.md#secure) untuk melihat dokumentasi*/
   public secure(token_uri?: string): (apiKey?: string) => (uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (error: any, timeout: boolean) => void, debug?: number) => void {
     return (apiKey?: string): (uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (error: any, timeout: boolean) => void, debug?: number) => void => {
       return async (uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (error: any, timeout: boolean) => void, debug?: number) => {
@@ -174,11 +187,13 @@ export default class m {
     }
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/curl.md#withHeader) untuk melihat dokumentasi*/
   public withHeader(header: any): (uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (error: any, timeout: boolean) => void, debug?: number) => void {
     this.header = { ...this.header, ...header }
     return (uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (error: any, timeout: boolean) => void, debug?: number) => this.init(uri, post, onDone, onFailed, debug)
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/curl.md#upload) untuk melihat dokumentasi*/
   public upload(uri: string, postKey: string, fileUri: string, mimeType: string, onDone?: (res: any, msg: string) => void, onFailed?: (error: any, timeout: boolean) => void, debug?: number): void {
     postKey = postKey || "image";
     var uName = fileUri.substring(fileUri.lastIndexOf("/") + 1, fileUri.length);
@@ -190,6 +205,7 @@ export default class m {
     this.init(uri, post, onDone, onFailed, debug, true)
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/curl.md) untuk melihat dokumentasi*/
   private urlEncode(str: string): string {
     return str
       .replace(/\!/g, '%21')
@@ -200,6 +216,7 @@ export default class m {
       .replace(/%20/g, '+')
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/curl.md#encodeGetValue) untuk melihat dokumentasi*/
   private encodeGetValue(_get: string): string {
     if (_get != '') {
       let hashes = _get.split('&')
@@ -222,6 +239,7 @@ export default class m {
     return _get
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/curl.md#signatureBuild) untuk melihat dokumentasi*/
   private signatureBuild(): string {
     let signature = '';
     if (this.url.includes(esp.config('url'))) {
@@ -245,6 +263,7 @@ export default class m {
     return signature
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/curl.md#custom) untuk melihat dokumentasi*/
   async custom(uri: string, post?: any, onDone?: (res: any, timeout: boolean) => void, debug?: number): Promise<void> {
     const str: any = esp.mod("lib/net_status").state().get()
     if (str.isOnline) {
@@ -302,6 +321,7 @@ export default class m {
     }
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/curl.md#init) untuk melihat dokumentasi*/
   private async init(uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (error: any, timeout: boolean) => void, debug?: number, upload?: boolean): Promise<void> {
     if (post) {
       if (upload) {
@@ -376,13 +396,14 @@ export default class m {
         console.warn(r)
       } else
         // esp.modProp("lib/toast").show(esp.lang("lib/curl", "msg_failed"))
-      this.onFetchFailed(r)
+        this.onFetchFailed(r)
       esp.mod("lib/progress").hide()
     })
   }
 
 
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/curl.md#onFetched) untuk melihat dokumentasi*/
   protected onFetched(resText: string | Object, onDone?: (res: any, msg: string) => void, onFailed?: (error: any, timeout: boolean) => void, debug?: number): void {
     var resJson = typeof resText == 'string' && ((resText.startsWith("{") && resText.endsWith("}")) || (resText.startsWith("[") && resText.endsWith("]"))) ? JSON.parse(resText) : resText
     if (typeof resJson == "object") {
@@ -403,6 +424,7 @@ export default class m {
     }
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/curl.md#refineErrorMessage) untuk melihat dokumentasi*/
   private refineErrorMessage(resText: string): string {
     let out = resText
     if (!esp.isDebug('')) {
@@ -422,6 +444,7 @@ export default class m {
     return out
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/curl.md#onError) untuk melihat dokumentasi*/
   protected onError(msg: string): void {
     esp.log("\x1b[31m", msg)
     esp.log("\x1b[0m")
@@ -439,6 +462,7 @@ export default class m {
     esp.mod("lib/progress").hide()
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/curl.md#getTimeByTimeZone) untuk melihat dokumentasi*/
   protected getTimeByTimeZone(GMT: number): number {
     const date = new Date()
     let currentOffsetInMinutes = date.getTimezoneOffset();

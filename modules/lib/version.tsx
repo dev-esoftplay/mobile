@@ -18,18 +18,21 @@ export interface LibVersionProps {
 export interface LibVersionState {
 
 }
-
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/version.md) untuk melihat dokumentasi*/
 export default class m extends LibComponent<LibVersionProps, LibVersionState> {
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/version.md#appVersion) untuk melihat dokumentasi*/
   static appVersion(): string {
     let version: any = (Platform.OS == 'android' ? Constants?.manifest?.android?.versionCode : Constants?.manifest?.ios?.buildNumber)
     return version
   }
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/version.md#showDialog) untuk melihat dokumentasi*/
   static showDialog(title: string, message: string, link: string, onOk: (link: string) => void, onCancel: () => void): void {
     LibDialog.confirm(title, message, esp.lang("lib/version", "update"), () => onOk(link), esp.lang("lib/version", "skip"), onCancel)
   }
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/version.md#closeApp) untuk melihat dokumentasi*/
   static closeApp(): void {
     if (Platform.OS == 'ios') {
       // Updates.reload()
@@ -38,10 +41,12 @@ export default class m extends LibComponent<LibVersionProps, LibVersionState> {
     }
   }
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/version.md#toStore) untuk melihat dokumentasi*/
   static toStore(link: string): void {
     Linking.openURL(link)
   }
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/version.md#onDone) untuk melihat dokumentasi*/
   static onDone(res: any, msg: string): void {
     const { title, version, android, ios, version_publish } = res
 
@@ -60,6 +65,7 @@ export default class m extends LibComponent<LibVersionProps, LibVersionState> {
       }
     }
   }
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/version.md#check) untuk melihat dokumentasi*/
   static check(): void {
     new LibCurl("public_version", null, m.onDone)
   }

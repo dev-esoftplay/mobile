@@ -10,7 +10,7 @@ export interface UseMapProps {
   renderItem: (item: any, index: number) => any,
   keyExtractor?: (item: any, index: number) => string,
 }
-
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/use/map.md) untuk melihat dokumentasi*/
 export default function m(props: UseMapProps): any {
   return props.data?.map?.((item, index) => {
     return (

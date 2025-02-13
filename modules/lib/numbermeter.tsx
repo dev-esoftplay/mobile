@@ -16,6 +16,7 @@ export interface LibNumbermeterProps {
   onValueChange: (value: number) => void,
   valueDisplayEdit?: (value: string) => string
 }
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/numbermeter.md) untuk melihat dokumentasi*/
 export default function m(props: LibNumbermeterProps): any {
   const valueRef = useRef<TextInput>(null)
 

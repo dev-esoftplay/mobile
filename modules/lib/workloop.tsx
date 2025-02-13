@@ -18,6 +18,7 @@ export interface LibWorkloopState {
 let workloopRef = React.createRef<WebView>()
 let workloopTasks = []
 let workloopHasTask = false
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/workloop.md) untuk melihat dokumentasi*/
 export default class m extends LibComponent<LibWorkloopProps, LibWorkloopState> {
   isReady = false
 

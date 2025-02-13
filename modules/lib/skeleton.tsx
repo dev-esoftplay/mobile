@@ -18,28 +18,33 @@ export interface LibSkeletonStatic {
   size: number
 }
 
-
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/skeleton.md) untuk melihat dokumentasi*/
 export default class m extends LibComponent<LibSkeletonProps, LibSkeletonState> {
   constructor(props: LibSkeletonProps) {
     super(props);
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/skeleton.md#BoxFull) untuk melihat dokumentasi*/
   static BoxFull(props: LibSkeletonStatic): any {
     return <View style={{ margin: '2.5%', marginVertical: 8, alignSelf: 'center', backgroundColor: 'black', height: props.size, width: '95%', borderRadius: 10 }} />
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/skeleton.md#BoxFlex) untuk melihat dokumentasi*/
   static BoxFlex(props: LibSkeletonStatic): any {
     return (<View style={{ margin: '2.5%', marginVertical: 8, backgroundColor: 'black', flexGrow: 1, height: props.size, borderRadius: 10 }} />)
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/skeleton.md#BoxHalf) untuk melihat dokumentasi*/
   static BoxHalf(props: LibSkeletonStatic): any {
     return <View style={{ margin: '2.5%', marginVertical: 8, backgroundColor: 'black', height: props.size, width: '45%', borderRadius: 10 }} />
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/skeleton.md#Box) untuk melihat dokumentasi*/
   static Box(props: LibSkeletonStatic): any {
     return <View style={{ margin: '2.5%', marginVertical: 8, backgroundColor: 'black', height: props.size, width: props.size, borderRadius: 10 }} />
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/skeleton.md#Circle) untuk melihat dokumentasi*/
   static Circle(props: LibSkeletonStatic): any {
     return <View style={{ margin: '2.5%', marginVertical: 8, backgroundColor: 'black', height: props.size, width: props.size, borderRadius: props.size * 0.5 }} />
   }

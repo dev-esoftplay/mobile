@@ -15,6 +15,7 @@ export interface LibUpdaterProps {
   show: boolean
 }
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/updater.md#install) untuk melihat dokumentasi*/
 export function install(): void {
   const timeout = createTimeout()
   timeout.set(() => {
@@ -24,6 +25,7 @@ export function install(): void {
 
 }
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/updater.md#alertInstall) untuk melihat dokumentasi*/
 export function alertInstall(title?: string, msg?: string): void {
   Alert.alert(title || esp.lang("lib/updater", "alert_info"), msg || esp.lang("lib/updater", "alert_msg"), [{
     onPress: () => {
@@ -33,10 +35,12 @@ export function alertInstall(title?: string, msg?: string): void {
   }], { cancelable: false })
 }
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/updater.md#checkAlertInstall) untuk melihat dokumentasi*/
 export function checkAlertInstall(): void {
   check((isNew) => { if (isNew) alertInstall() })
 }
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/updater.md#check) untuk melihat dokumentasi*/
 export function check(callback?: (isNew: boolean) => void): void {
   if (__DEV__) {
     callback?.(false)
@@ -58,7 +62,7 @@ export function check(callback?: (isNew: boolean) => void): void {
     }
   })
 }
-
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/updater.md) untuk melihat dokumentasi*/
 export default function m(props: LibUpdaterProps): any {
   return (
     <>

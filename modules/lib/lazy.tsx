@@ -27,6 +27,7 @@ export interface LibLazyProps {
 //   }, delay);
 // }
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/lazy.md) untuk melihat dokumentasi*/
 export default function m(props: LibLazyProps): any {
   const [done, setDone] = useSafeState(false);
 

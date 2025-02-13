@@ -5,6 +5,7 @@ import { useLayoutEffect } from 'react';
 
 
 let dt = {}
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/use/form.md) untuk melihat dokumentasi*/
 export default function m<S>(formName: string, def?: S): [S, (a: string) => (v: any) => void, (a?: (x?: S) => void) => void, () => void, (x: S) => void] {
   const [a, b] = useSafeState<S>(dt && dt[formName] || def)
 

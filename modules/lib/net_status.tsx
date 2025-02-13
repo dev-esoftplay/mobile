@@ -18,11 +18,14 @@ const state = useGlobalState({
   isInternetReachable: true
 })
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/net_status.md) untuk melihat dokumentasi*/
 class net_status extends LibComponent<LibNet_statusProps, LibNet_statusState> {
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/net_status.md#state) untuk melihat dokumentasi*/
   static state(): useGlobalReturn<any> {
     return state
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/net_status.md#setOnline) untuk melihat dokumentasi*/
   static setOnline(isOnline: boolean, isInternetReachable: boolean): void {
     state.set({ isOnline: isOnline, isInternetReachable: isInternetReachable })
   }

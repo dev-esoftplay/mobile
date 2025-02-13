@@ -13,6 +13,7 @@ export interface LibImage_shadowProps {
   shadowRadius?: number,
   blurRadius?: number
 }
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/image_shadow.md) untuk melihat dokumentasi*/
 export default function m(props: LibImage_shadowProps): any {
   const LibPicture = useRef(esp.mod("lib/picture")).current
 

@@ -50,7 +50,7 @@ export interface LibScrollState {
   width: number,
   data: any
 }
-
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/scroll.md) untuk melihat dokumentasi*/
 export default class m extends LibComponent<LibScrollProps, LibScrollState> {
 
   flatscroll = React.createRef<ScrollView>();

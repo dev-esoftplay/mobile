@@ -51,9 +51,10 @@ const initState = {
 }
 
 const state = useGlobalState<any>(initState)
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/editbox.md) untuk melihat dokumentasi*/
+class m extends LibComponent<ComponentEditboxProps, ComponentEditboxState> {
 
-class m extends LibComponent<ComponentEditboxProps, ComponentEditboxState>{
-
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/editbox.md#show) untuk melihat dokumentasi*/
   static show(label: string, defaultValue: string, keyboardType: "default" | "email-address" | "numeric" | "phone-pad", onSubmit: (e: string) => void): void {
     state.set(
       {
@@ -65,6 +66,7 @@ class m extends LibComponent<ComponentEditboxProps, ComponentEditboxState>{
     )
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/editbox.md#hide) untuk melihat dokumentasi*/
   static hide(): void {
     state.set(initState)
   }

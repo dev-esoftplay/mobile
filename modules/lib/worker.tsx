@@ -15,6 +15,7 @@ export interface LibUseworkerProps {
 
 const subs = useGlobalSubscriber()
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/worker.md#createTask) untuk melihat dokumentasi*/
 export function createTask(functionName: string, ...params: string[]): (res: (data: string) => void) => void {
   return (res: (data: string) => void) => {
     subs.trigger({
@@ -24,7 +25,7 @@ export function createTask(functionName: string, ...params: string[]): (res: (da
     })
   }
 }
-
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/worker.md) untuk melihat dokumentasi*/
 export default function m(props: LibUseworkerProps): any {
   let ref = useRef<WebView>(null)
   let isReady = useRef<number>(0)
@@ -52,7 +53,7 @@ export default function m(props: LibUseworkerProps): any {
     try {
       ref.current?.injectJavaScript(`\n${require('./out')}\n`)
     } catch (error) {
-      
+
     }
   }, [])
 
@@ -68,10 +69,12 @@ export default function m(props: LibUseworkerProps): any {
     })();`, res)
   })
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/worker.md#deleteTask) untuk melihat dokumentasi*/
   const deleteTask = (taskId: string): void => {
     tasks.current.delete(String(taskId))
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/worker.md#onMessage) untuk melihat dokumentasi*/
   const onMessage = (withRefName: string): any => {
     return (e: any) => {
       if (e.nativeEvent.data == withRefName) {

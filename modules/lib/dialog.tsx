@@ -39,9 +39,10 @@ const state = useGlobalState<LibDialogProps>({
   onPressCancel: undefined,
 })
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/dialog.md) untuk melihat dokumentasi*/
+export default class m extends LibComponent<LibDialogProps, LibDialogState> {
 
-export default class m extends LibComponent<LibDialogProps, LibDialogState>{
-
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/dialog.md#initState) untuk melihat dokumentasi*/
   static initState = {
     visible: false,
     style: 'default',
@@ -54,6 +55,7 @@ export default class m extends LibComponent<LibDialogProps, LibDialogState>{
     onPressCancel: undefined,
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/dialog.md#hide) untuk melihat dokumentasi*/
   static hide(): void {
     state.set({
       visible: false,
@@ -69,26 +71,32 @@ export default class m extends LibComponent<LibDialogProps, LibDialogState>{
     })
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/dialog.md#info) untuk melihat dokumentasi*/
   static info(title: string, msg: string): void {
     m.show("default", 'information', title, msg, "OK", undefined, () => m.hide(), undefined)
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/dialog.md#confirm) untuk melihat dokumentasi*/
   static confirm(title: string, msg: string, ok: string, onPressOK: () => void, cancel: string, onPressCancel: () => void): void {
     m.show("default", 'help-circle', title, msg, ok, cancel, onPressOK, onPressCancel)
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/dialog.md#warningConfirm) untuk melihat dokumentasi*/
   static warningConfirm(title: string, msg: string, ok: string, onPressOK: () => void, cancel: string, onPressCancel: () => void): void {
     m.show("danger", 'help-circle', title, msg, ok, cancel, onPressOK, onPressCancel)
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/dialog.md#failed) untuk melihat dokumentasi*/
   static failed(title: string, msg: string): void {
     m.show("danger", 'alert-circle', title, msg, "OK", undefined, () => m.hide(), undefined)
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/dialog.md#warning) untuk melihat dokumentasi*/
   static warning(title: string, msg: string): void {
     m.show("danger", 'alert-circle', title, msg, "OK", undefined, () => m.hide(), undefined)
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/dialog.md#show) untuk melihat dokumentasi*/
   static show(style: 'default' | 'danger', icon: LibIconStyle, title: string, msg: string, ok?: string, cancel?: string, onPressOK?: () => void, onPressCancel?: () => void): void {
     Keyboard.dismiss()
     state.set({
@@ -105,6 +113,7 @@ export default class m extends LibComponent<LibDialogProps, LibDialogState>{
 
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/dialog.md#custom) untuk melihat dokumentasi*/
   static custom(view: any): void {
     Keyboard.dismiss()
     state.set({
@@ -130,10 +139,12 @@ export default class m extends LibComponent<LibDialogProps, LibDialogState>{
   }
 }
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/dialog.md#handleBack) untuk melihat dokumentasi*/
 function handleBack(): boolean {
   return true
 }
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/dialog.md#Dialog) untuk melihat dokumentasi*/
 function Dialog(): any {
   const { visible, icon, view, style, title, msg, ok, cancel, onPressOK, onPressCancel } = state.useSelector(s => s)
   if (!visible)

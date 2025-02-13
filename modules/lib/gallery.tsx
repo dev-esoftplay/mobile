@@ -11,6 +11,7 @@ export interface LibGalleryArgs {
 export interface LibGalleryProps {
 
 }
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/gallery.md) untuk melihat dokumentasi*/
 export default function m(props: LibGalleryProps): any {
 	const LibIcon = useRef(esp.mod("lib/icon")).current
 	const LibNavigation = useRef(esp.mod("lib/navigation")).current

@@ -23,6 +23,7 @@ export interface LibCurl_viewProps {
   onError?: (err: any, retry: Function) => ReactElement;
   onLoading?: ReactElement;
 }
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/curl_view.md) untuk melihat dokumentasi*/
 export default function m(props: LibCurl_viewProps): any {
 
   let key = ""

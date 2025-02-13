@@ -13,6 +13,7 @@ export interface LibVersion_viewArgs {
 export interface LibVersion_viewProps {
 
 }
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/version_view.md) untuk melihat dokumentasi*/
 export default function m(props: LibVersion_viewProps): any {
   const timeout = useTimeout()
   useEffect(() => {

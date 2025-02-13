@@ -1,7 +1,7 @@
 // noPage
 
 
-// 
+//
 import { ContentStyle, FlashList } from "@shopify/flash-list";
 import { LibComponent } from 'esoftplay/cache/lib/component/import';
 import React from "react";
@@ -47,7 +47,7 @@ export interface LibListProps {
 
 export interface LibListState {
 }
-
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/list.md) untuk melihat dokumentasi*/
 export default class m extends LibComponent<LibListProps, LibListState> {
 
   view: any = React.createRef()

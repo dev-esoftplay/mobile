@@ -20,10 +20,12 @@ const state = useGlobalState(initState)
 
 let _timeout: any = undefined
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/toast.md#hide) untuk melihat dokumentasi*/
 export function hide(): void {
   state.set(initState)
 }
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/toast.md#show) untuk melihat dokumentasi*/
 export function show(message: string, timeout?: number): void {
   state.set({
     message: message,
@@ -38,7 +40,7 @@ export function show(message: string, timeout?: number): void {
     hide()
   }, timeout || initState.timeout);
 }
-
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/toast.md) untuk melihat dokumentasi*/
 export default function m(props: LibToastProps): any {
   const isFirstInit = useRef(true)
   const [data] = state.useState()

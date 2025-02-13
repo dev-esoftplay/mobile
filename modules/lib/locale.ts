@@ -10,20 +10,26 @@ import { NativeModules, Platform } from 'react-native';
 const state = useGlobalState("id", { persistKey: 'lib_locale_lang', loadOnInit: true })
 const lang = useGlobalState({}, { persistKey: 'lib_locale_lang_data', inFile: true, loadOnInit: true })
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/locale.md) untuk melihat dokumentasi*/
 export default {
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/locale.md#state) untuk melihat dokumentasi*/
   state(): useGlobalReturn<any> {
     return state
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/locale.md#stateLang) untuk melihat dokumentasi*/
   stateLang(): useGlobalReturn<any> {
     return lang
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/locale.md#setLanguageData) untuk melihat dokumentasi*/
   setLanguageData(langId: string, data: any) {
     lang.set(LibObject.set(lang.get(), data)(langId))
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/locale.md#setLanguage) untuk melihat dokumentasi*/
   setLanguage(langId: string): void {
     LibNavigation.reset()
     state.set(langId)
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/locale.md#getDeviceLanguange) untuk melihat dokumentasi*/
   getDeviceLanguange(): string {
     const appLanguage =
       Platform.OS === 'ios'
