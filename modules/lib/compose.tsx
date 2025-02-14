@@ -145,7 +145,7 @@ export const actions = {
   }
 }
 
-/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/compose.md#build) untuk melihat dokumentasi*/
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/compose.md#buildcmpn-props) untuk melihat dokumentasi*/
 export function build<T extends keyof RNTypes>(cmpn: T, props: React.ComponentProps<RNTypes[T]>): any {
   let obj: any = {};
   obj.component = cmpn;

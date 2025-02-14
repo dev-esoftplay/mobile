@@ -20,7 +20,7 @@ export default class m extends LibComponent<LibDirect_textProps, LibDirect_textS
     this.setText = this.setText.bind(this);
   }
 
-  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/direct_text.md#setText) untuk melihat dokumentasi*/
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/direct_text.md#settexttext-string-void) untuk melihat dokumentasi*/
   setText(text: string): void {
     this.text = text
     this.ref.current?.setNativeProps({ text })

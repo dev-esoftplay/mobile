@@ -20,11 +20,11 @@ export default {
   stateLang(): useGlobalReturn<any> {
     return lang
   },
-  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/locale.md#setLanguageData) untuk melihat dokumentasi*/
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/locale.md#setlanguagedatalangid-string-data-any) untuk melihat dokumentasi*/
   setLanguageData(langId: string, data: any) {
     lang.set(LibObject.set(lang.get(), data)(langId))
   },
-  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/locale.md#setLanguage) untuk melihat dokumentasi*/
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/locale.md#setlanguagelangid-string) untuk melihat dokumentasi*/
   setLanguage(langId: string): void {
     LibNavigation.reset()
     state.set(langId)
