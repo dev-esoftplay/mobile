@@ -25,7 +25,7 @@ const state = useGlobalState<LibProgressProps>({
 /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/progress.md) untuk melihat dokumentasi*/
 class m extends LibComponent<LibProgressProps, LibProgressState> {
 
-  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/progress.md#show) untuk melihat dokumentasi*/
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/progress.md#libprogressshowmessage-string) untuk melihat dokumentasi*/
   static show(message?: string): void {
     state.set({
       show: true,
@@ -33,7 +33,7 @@ class m extends LibComponent<LibProgressProps, LibProgressState> {
     })
   }
 
-  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/progress.md#hide) untuk melihat dokumentasi*/
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/progress.md#libprogresshide) untuk melihat dokumentasi*/
   static hide(): void {
     state.set({ show: false, message: undefined })
   }
