@@ -93,7 +93,7 @@ export default function m(props: LibDatepickerProps): any {
     setMonths(_months)
     if (reset) {
     const timer = setTimeout(() => {
-        refMonth.current!.scrollToIndex(0)
+        refMonth.current?.scrollToIndex?.(0)
         clearTimeout(timer)
       }, 200);
       setMonth(allMonths[0])
@@ -121,7 +121,7 @@ export default function m(props: LibDatepickerProps): any {
     setDates(_dates)
     if (reset) {
       const timer = setTimeout(() => {
-        refDate.current!.scrollToIndex(0)
+        refDate.current?.scrollToIndex?.(0)
         clearTimeout(timer)
       }, 200);
       setDate(_dates[0])
