@@ -137,15 +137,17 @@ export default class m {
         this.isSecure = true
         await this.setHeader();
         const _apiKey = apiKey || this.apiKey
+        let _post: any = {}
         Object.keys(post).forEach((key) => {
           const postkey = post[key]
-          post[key] = (typeof postkey == 'string') && postkey.includes('\\') && (postkey.startsWith("{") || postkey.startsWith("[")) ? JSON.parse(postkey) : postkey
+          if (post[key] !== undefined)
+            _post[key] = (typeof postkey == 'string') && postkey.includes('\\') && (postkey.startsWith("{") || postkey.startsWith("[")) ? JSON.parse(postkey) : postkey
         })
         let _payload: any = {}
-        Object.keys(post).map((key) => {
-          _payload[decodeURIComponent(encodeURIComponent(key))] = decodeURIComponent(encodeURIComponent(post[key]))
+        Object.keys(_post).map((key) => {
+          _payload[decodeURIComponent(encodeURIComponent(key))] = decodeURIComponent(encodeURIComponent(_post[key]))
         })
-        let _post: any = { payload: JSON.stringify(_payload) }
+        _post = { payload: JSON.stringify(_payload) }
         if (_apiKey) {
           _post.api_key = _apiKey
           post.api_key = _apiKey
@@ -269,7 +271,8 @@ export default class m {
     if (str.isOnline) {
       if (post) {
         let ps = Object.keys(post).map((key) => {
-          return encodeURIComponent(key) + '=' + encodeURIComponent(post[key]);
+          if (post[key] !== undefined)
+            return encodeURIComponent(key) + '=' + encodeURIComponent(post[key]);
         }).join('&');
         this.post = ps
       }
@@ -321,13 +324,14 @@ export default class m {
     }
   }
 
+
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/curl.md#inituri-string-post-any-ondone-res-any-msg-string--void-onfailed-error-any-timeout-boolean--void-debug-number-upload-boolean-promisevoid) untuk melihat dokumentasi*/
   private async init(uri: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (error: any, timeout: boolean) => void, debug?: number, upload?: boolean): Promise<void> {
     if (post) {
       if (upload) {
         let fd = new FormData();
         Object.keys(post).map(function (key) {
-          if (key !== undefined && post[key] !== undefined) {
+          if (post[key] !== undefined) {
             fd.append(key, post[key])
           }
         });
