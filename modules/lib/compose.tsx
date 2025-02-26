@@ -2,7 +2,6 @@
 import { LibNavigationRoutes } from 'esoftplay';
 import { LibNavigation } from 'esoftplay/cache/lib/navigation/import';
 import { LibObject } from 'esoftplay/cache/lib/object/import';
-import { LibUtils } from 'esoftplay/cache/lib/utils/import';
 import { EspRouterInterface } from 'esoftplay/cache/routers';
 import esp from 'esoftplay/esp';
 import useGlobalState from 'esoftplay/global';
@@ -13,8 +12,6 @@ export interface RNTypes extends EspRouterInterface {
   "View": typeof View,
   "Text": typeof Text,
   "ScrollView": typeof ScrollView,
-  // "TouchableOpacity": typeof TouchableOpacity,
-  // "TextInput": typeof TextInput,
 }
 
 const formState = useGlobalState({})
@@ -63,7 +60,6 @@ function buildUIFromJSON(json: any): ReactElement {
           }
         }
         if (type == 'select') {
-          console.log(type, postkey, key)
           const [_key, _value] = postkey.split(":")
           _props[key] = () => {
             formState.set(LibObject.set(formState.get(), _value)(_key))
@@ -109,9 +105,15 @@ const action: any = {
     new (esp.mod('lib/curl'))(args[0], post, (res, msg) => {
       esp.modProp("lib/toast").show(msg)
       esp.mod("lib/progress").hide()
+      if (res.includes("navigate")) {
+        LibNavigation.replace(res.navigate.module, res.navigate.params)
+      }
     }, (err) => {
       esp.modProp("lib/toast").show(err.message)
       esp.mod("lib/progress").hide()
+      if (err.result.includes("navigate")) {
+        LibNavigation.replace(err.result.navigate.module, err.result.navigate.params)
+      }
     })
   }
 }
@@ -124,24 +126,19 @@ export const forms = {
 /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/compose.md#actions) untuk melihat dokumentasi*/
 export const actions = {
   navigate: (module: LibNavigationRoutes, params: any) => {
-    LibNavigation.navigate(module, params)
+    return `#action.navigate.[${module},${params}]`
   },
   replace: (module: LibNavigationRoutes, params: any) => {
-    LibNavigation.replace(module, params)
+    return `#action.replace.[${module},${params}]`
   },
   back: () => {
-    LibNavigation.back()
+    return `#action.back`
   },
   copy: (args: string) => {
-    LibUtils.copyToClipboard(args)
-    esp.modProp("lib/toast").show(args + " copied!")
+    return `#action.copy.[${args}]`
   },
   curl: (uri: string, post?: any) => {
-    new (esp.mod('lib/curl'))(uri, post, (res, msg) => {
-      esp.modProp("lib/toast").show(msg)
-    }, (err) => {
-      esp.modProp("lib/toast").show(err.message)
-    }, 1)
+    return `#action.curl.["${uri}", ${post}]`
   }
 }
 
