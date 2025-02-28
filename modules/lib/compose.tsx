@@ -117,7 +117,7 @@ const action: any = {
       if (err.result.includes("navigate")) {
         LibNavigation.replace(err.result.navigate.module, err.result.navigate.params)
       }
-    })
+    }, 1)
   }
 }
 
