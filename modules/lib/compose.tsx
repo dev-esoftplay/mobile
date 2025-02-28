@@ -93,6 +93,9 @@ const action: any = {
     esp.mod("lib/utils").copyToClipboard(JSON.stringify(args))
     esp.modProp("lib/toast").show(args + " copied!")
   },
+  "share": (args: any[]) => {
+    esp.mod("lib/utils").share(args?.[0], args?.[1])
+  },
   "curl": (args: any[]) => {
     esp.mod("lib/progress").show("Please Wait..")
     let post = args?.[1]
@@ -102,6 +105,7 @@ const action: any = {
       post = args?.[1]
     }
     post = Object.assign({}, post, formState.get())
+    console.log(post)
     new (esp.mod('lib/curl'))(args[0], post, (res, msg) => {
       esp.modProp("lib/toast").show(msg)
       esp.mod("lib/progress").hide()
@@ -136,6 +140,9 @@ export const actions = {
   },
   copy: (args: string) => {
     return `#action.copy.[${args}]`
+  },
+  share: (url: string, message?: string) => {
+    return message ? `#action.share.["${url}", "${message}"]` : `#action.share.["${url}"]`
   },
   curl: (uri: string, post?: any) => {
     return `#action.curl.["${uri}", ${post}]`
