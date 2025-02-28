@@ -105,7 +105,6 @@ const action: any = {
       post = args?.[1]
     }
     post = Object.assign({}, post, formState.get())
-    console.log(post)
     new (esp.mod('lib/curl'))(args[0], post, (res, msg) => {
       esp.modProp("lib/toast").show(msg)
       esp.mod("lib/progress").hide()
