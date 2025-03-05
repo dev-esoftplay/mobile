@@ -30,7 +30,7 @@ export default function m(props: LibPictureProps): any {
     resizeMode = "cover"
 
   let source = props.source
-  if (typeof (props.source.uri) == 'string' && !String(props.source.uri).startsWith("http")) {
+  if (typeof (props.source?.uri) == 'string' && !String(props.source?.uri).startsWith("http")) {
     source = esp.assets(props.source.uri)
   }
 
