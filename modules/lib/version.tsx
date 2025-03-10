@@ -8,8 +8,8 @@ import { LibStyle } from 'esoftplay/cache/lib/style/import';
 import { LibTextstyle } from 'esoftplay/cache/lib/textstyle/import';
 import { LibUpdaterProperty } from 'esoftplay/cache/lib/updater/import';
 import esp from 'esoftplay/esp';
+import * as Application from 'expo-application';
 
-import Constants from 'expo-constants';
 import React from 'react';
 import { BackHandler, ImageBackground, Linking, Platform, TouchableOpacity } from 'react-native';
 export interface LibVersionProps {
@@ -23,7 +23,7 @@ export default class m extends LibComponent<LibVersionProps, LibVersionState> {
 
 /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/version.md#appVersion) untuk melihat dokumentasi*/
   static appVersion(): string {
-    let version: any = (Platform.OS == 'android' ? Constants?.manifest?.android?.versionCode : Constants?.manifest?.ios?.buildNumber)
+    let version: any = Application.nativeBuildVersion
     return version
   }
 
