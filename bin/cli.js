@@ -823,11 +823,12 @@ Pastikan data sudah benar sebelum anda melanjutkan, lanjut publish ketikkan runt
 
 			rl.on("close", function () {
 				if (out && out == ajson.expo.runtimeVersion) {
+					const os = require('os')
+					tm(os.userInfo().username + '@' + os.hostname() + " -- start publishing " + ajson.expo.name + "@" + (last_id + 1))
 					fs.writeFileSync(appjson, JSON.stringify(ajson, undefined, 2))
 					consoleSucces("start publishing " + status.toUpperCase() + " - PUBLISH_ID : " + (last_id + 1))
 					command("rm -rf ./dist && esp start && currentPath=$(pwd) && cd /var/www/html/ota/ && npm run publish $currentPath \"" + notes + "\" && cd $currentPath && rm -rf ./dist")
 					consoleSucces("Berhasil")
-					const os = require('os')
 					var d = new Date();
 					d = new Date(d.getTime() - 3000000);
 					var date_format_str = d.getFullYear().toString() + "-" + ((d.getMonth() + 1).toString().length == 2 ? (d.getMonth() + 1).toString() : "0" + (d.getMonth() + 1).toString()) + "-" + (d.getDate().toString().length == 2 ? d.getDate().toString() : "0" + d.getDate().toString());
