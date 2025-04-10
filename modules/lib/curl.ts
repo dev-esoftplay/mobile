@@ -31,7 +31,7 @@ export default class m {
   }
 
   constructor(uri?: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (error: any, timeout: boolean) => void, debug?: number) {
-    this.header = {}
+    this.header = { version: esp.config()?.publish_id }
     // this.maxRetry = 2;
     this.setUri = this.setUri.bind(this);
     this.setUrl = this.setUrl.bind(this);
