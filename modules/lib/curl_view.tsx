@@ -62,8 +62,7 @@ export default function m(props: LibCurl_viewProps): any {
   if (!data) {
     return props.onLoading ? props.onLoading : <LibLoading />
   }
-  if (data.ok == 0) {
-    return props.onError ? props.onError(data, retry) : <Text>{data.message}</Text>
-  }
-  return props.onSuccess ? props.onSuccess(data.result, data.message) : null
+  if (data.ok == 1)
+    return props.onSuccess ? props.onSuccess(data.result, data.message) : null
+  return props.onError ? props.onError(data, retry) : <Text>{data?.message}</Text>
 }
