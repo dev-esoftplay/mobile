@@ -46,7 +46,7 @@ export default function m(props: LibCurl_viewProps): any {
       if (props.cache) {
         FastStorage.setItem(key, JSON.stringify({ result, message }))
       }
-      setData({ result, message })
+      setData({ result, message, ok: 1 })
     }, (err) => {
       setData(err)
     })
