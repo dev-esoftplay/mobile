@@ -548,22 +548,25 @@ async function preload_api() {
 	if (preload_api?.length > 0) {
 		fs.rmSync("./assets/preload_api", { recursive: true, force: true })
 		fs.rmSync("./assets/preload_assets", { recursive: true, force: true })
+		fs.mkdirSync("./assets/preload_api")
+		fs.mkdirSync("./assets/preload_assets")
 		for (const apiUri of preload_api) {
 			let fullUrl = apiUri.includes("://") ? apiUri : `${(protocol || 'http')}://api.${domain}${(uri || "/")}${apiUri}`
 			const lastString = fullUrl.slice(fullUrl.lastIndexOf("/") + 1) // Fixed index adjustment
 			try {
+				// console.log(data, fullUrl)
 				const data = await fetch(fullUrl).then((res) => res.text())
 				if (data) {
 					try {
 						if (JSON.parse(data).ok === 0) {
-							consoleError(`-> preload_api: ${fullUrl}`)
+							consoleError(`-> 1 preload_api: ${fullUrl}`)
 							fs.writeFileSync(`./assets/preload_api/${lastString}.json`, data)
 							out = false
 							return out
 						}
 					} catch (error) {
 						fs.writeFileSync(`./assets/preload_api/${lastString}.json`, data)
-						consoleError(`-> preload_api: ${fullUrl}`)
+						consoleError(`-> 2 preload_api: ${fullUrl}`)
 						out = false
 						return out
 					}
@@ -668,12 +671,12 @@ async function preload_api() {
 					// }
 
 					await readDeepObject(objectData)
-					consoleSucces("-> preload_api: " + fullUrl)
+					consoleSucces("-> 3 preload_api: " + fullUrl)
 					/* endSukses */
 				}
 			} catch (error) {
 				out = false
-				consoleError(`-> preload_api: ${fullUrl}`)
+				consoleError(`-> 4 preload_api: ${fullUrl}${error}`,)
 			}
 		}
 	}
