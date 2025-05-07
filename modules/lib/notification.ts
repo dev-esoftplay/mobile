@@ -103,7 +103,7 @@ export default {
       lastUrl = undefined
     }
     if (lastUrl == -1) {
-      retur
+      return
     }
     if (lastUrl && !isFirst) {
       _uri = lastUrl
