@@ -37,7 +37,7 @@ if (fs.existsSync("../" + mainModule + "/" + moduleName)) {
       const config = "../" + mainModule + "/config.json"
       const exsConf = readAsJson(configPath)
       const conf = readAsJson(config)
-      let _cf = merge({ config: conf }, exsConf)
+      let _cf = mergeDeep({ config: conf }, exsConf)
       fs.writeFileSync(configPath, JSON.stringify({ ..._cf }, undefined, 2))
     }
   }
