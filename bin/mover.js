@@ -1,6 +1,6 @@
+//@ts-check
 const fs = require('fs');
 const shell = require('child_process').execSync;
-const merge = require('lodash/merge')
 const assetsFonts = "assets/fonts"
 let args = process.argv.slice(2);
 
@@ -71,7 +71,7 @@ if (fs.existsSync("../" + mainModule + "/" + moduleName)) {
     let moduleLang = readAsJson("../" + mainModule + "/id.json")
     if (fs.existsSync("../../assets/locale/id.json")) {
       let projectLang = readAsJson("../../assets/locale/id.json")
-      let _lg = merge(moduleLang, projectLang)
+      let _lg = mergeDeep(moduleLang, projectLang)
       moduleLang = { ..._lg }
     }
     fs.writeFileSync("../../assets/locale/id.json", JSON.stringify(moduleLang, undefined, 2))
@@ -107,4 +107,20 @@ if (fs.existsSync("../" + mainModule + "/" + moduleName)) {
   if (fs.existsSync("../" + mainModule + "/mover.js")) {
     shell("bun ../" + mainModule + "/mover.js", { stdio: 'inherit' })
   }
+}
+function mergeDeep(target, ...sources) {
+  target = Object(target);
+  for (const source of sources) {
+    const sourceObj = Object(source);
+    for (const [key, value] of Object.entries(sourceObj)) {
+      if (value ?? null !== null) {
+        if (value !== null && typeof value === "object") {
+          target[key] = mergeDeep(target[key] ?? {}, value);
+        } else {
+          target[key] = value;
+        }
+      }
+    }
+  }
+  return target;
 }

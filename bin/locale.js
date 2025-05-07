@@ -1,6 +1,5 @@
 //@ts-check
 const fs = require('fs')
-const merge = require('lodash/merge')
 const idJsonPath ="./assets/locale/id.json"
 
 function readAsJson(path) {
@@ -17,7 +16,7 @@ if (!fs.existsSync(idJsonPath)) {
 if (fs.existsSync(idJsonPath)) {
   let masterLocale = readAsJson('./node_modules/esoftplay/assets/locale/id.json')
   let projectLang = readAsJson(idJsonPath)
-  let _lg = merge(masterLocale, projectLang)
+  let _lg = mergeDeep(masterLocale, projectLang)
   masterLocale = { ..._lg }
   fs.writeFileSync(idJsonPath, JSON.stringify(sortObject(masterLocale), undefined, 2), { encoding: 'utf8' })
 }
@@ -39,4 +38,21 @@ function sortObject(obj) {
   }
 
   return sortedObj;
+}
+
+function mergeDeep(target, ...sources) {
+  target = Object(target);
+  for (const source of sources) {
+    const sourceObj = Object(source);
+    for (const [key, value] of Object.entries(sourceObj)) {
+      if (value ?? null !== null) {
+        if (value !== null && typeof value === "object") {
+          target[key] = mergeDeep(target[key] ?? {}, value);
+        } else {
+          target[key] = value;
+        }
+      }
+    }
+  }
+  return target;
 }
