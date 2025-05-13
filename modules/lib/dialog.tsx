@@ -40,7 +40,7 @@ const state = useGlobalState<LibDialogProps>({
   {
     listener(data) {
       let backListener;
-      if (data.show)
+      if (data.visible)
         backListener = BackHandler.addEventListener("hardwareBackPress", handleBack);
       else
         backListener?.remove?.();
