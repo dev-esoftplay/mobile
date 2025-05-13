@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const fs = require('fs');
 const exec = require('child_process').execSync;
-const fetch = require("node-fetch")
+// const fetch = require("node-fetch")
 const path = require('path');
 const https = require('https');
 const os = require('os')
@@ -856,7 +856,7 @@ Pastikan data sudah benar sebelum anda melanjutkan, lanjut publish ketikkan runt
 							const config = readToJSON(confjson).config;
 							const ajson = readToJSON(appjson);
 							const url = config.publish_uri + ajson.config.publish_id
-							const fetch = require('node-fetch')
+							// const fetch = require('node-fetch')
 							console.log("\n\nPROCESSING FORCE UPDATE")
 							fetch(url).then((res) => JSON.stringify(res.json(), undefined, 2)).then(consoleSucces)
 						}
@@ -897,7 +897,7 @@ Pastikan data sudah benar sebelum anda melanjutkan, lanjut publish ketikkan runt
 					const config = readToJSON(confjson).config;
 					const ajson = readToJSON(appjson);
 					const url = config.publish_uri + ajson.config.publish_id
-					const fetch = require('node-fetch')
+					// const fetch = require('node-fetch')
 					console.log("\n\nPROCESSING FORCE UPDATE")
 					fetch(url).then((res) => JSON.stringify(res.json(), undefined, 2)).then(consoleSucces)
 				}
@@ -1386,7 +1386,7 @@ function switchStatus(status) {
 		const cjson = readToJSON(confjson)
 		if (cjson.hasOwnProperty('config')) {
 			if (cjson.config.hasOwnProperty('build')) {
-				const [usr, pwd] = cjson.config.build
+				const [usr, pwd] = Object.values(cjson.config.build)
 				command(`eas logout && expect -c 'spawn eas login; expect "Email or username"; send "${usr}\r"; expect "Password"; send "${pwd}\r"; expect eof;'`)
 			}
 			if (cjson.config.hasOwnProperty('post_script')) {

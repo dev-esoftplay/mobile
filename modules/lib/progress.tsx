@@ -5,7 +5,6 @@ import { LibTextstyle } from 'esoftplay/cache/lib/textstyle/import';
 import { LibTheme } from 'esoftplay/cache/lib/theme/import';
 import useGlobalState from 'esoftplay/global';
 
-import React from 'react';
 import { ActivityIndicator, BackHandler, View } from 'react-native';
 
 export interface LibProgressProps {
@@ -20,6 +19,14 @@ export interface LibProgressState {
 const state = useGlobalState<LibProgressProps>({
   show: false,
   message: undefined
+}, {
+  listener(data) {
+    let backListener;
+    if (data.show)
+      backListener = BackHandler.addEventListener("hardwareBackPress", handleBack);
+    else
+      backListener?.remove?.();
+  },
 })
 
 /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/progress.md) untuk melihat dokumentasi*/
@@ -53,8 +60,6 @@ function handleBack(): boolean {
 /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/progress.md#Progress) untuk melihat dokumentasi*/
 function Progress(): any {
   const { message, show } = state.useSelector(s => s)
-  if (!show) BackHandler.removeEventListener("hardwareBackPress", handleBack)
-  else BackHandler.addEventListener("hardwareBackPress", handleBack)
   if (!show)
     return null
   return (

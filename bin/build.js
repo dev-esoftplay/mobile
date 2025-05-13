@@ -36,6 +36,7 @@ if (fs.existsSync(packjson)) {
 			"esoftplay-firestore",
 			"esoftplay-content",
 			"esoftplay-lib-print",
+			"esoftplay-event",
 			"esoftplay-log",
 			"esoftplay-market",
 			"esoftplay-ppob",
@@ -339,7 +340,7 @@ export default UserIndex`;
 		if ($config.config.hasOwnProperty('excludePackages')) {
 			if ($config.config.excludePackages) {
 				const excludePackages = $config.config.excludePackages
-				expoLib = expoLib.filter((item) => !excludePackages.includes(item))
+				expoLib = expoLib.filter((item) => !excludePackages?.includes?.(item))
 			}
 		}
 		let devLibs = [

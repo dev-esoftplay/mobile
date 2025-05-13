@@ -3,7 +3,6 @@ import { LibComponent } from 'esoftplay/cache/lib/component/import';
 import { LibKeyboard_avoid } from 'esoftplay/cache/lib/keyboard_avoid/import';
 import { LibStyle } from 'esoftplay/cache/lib/style/import';
 
-import React from 'react';
 import { Animated, BackHandler, Keyboard, TouchableOpacity, View } from 'react-native';
 
 export interface LibSlidingupProps {
@@ -17,6 +16,7 @@ export interface LibSlidingupState {
 export default class m extends LibComponent<LibSlidingupProps, LibSlidingupState> {
 
   _show: boolean = false
+  backListener = undefined
   animValue: any = new Animated.Value(LibStyle.height)
   constructor(props: LibSlidingupProps) {
     super(props);
@@ -36,10 +36,10 @@ export default class m extends LibComponent<LibSlidingupProps, LibSlidingupState
 
   componentDidUpdate(prevProps: LibSlidingupProps, prevState: LibSlidingupState): void {
     if (prevState.show == false && this.state.show == true) {
-      BackHandler.addEventListener("hardwareBackPress", this.handleBack)
+
       this.props?.onChangeShow?.(this.state.show)
     } else if (prevState.show == true && this.state.show == false) {
-      BackHandler.removeEventListener("hardwareBackPress", this.handleBack)
+
       this.props?.onChangeShow?.(this.state.show)
     }
   }
@@ -48,6 +48,7 @@ export default class m extends LibComponent<LibSlidingupProps, LibSlidingupState
   show(): void {
     Keyboard.dismiss()
     if (this.props.children) {
+      this.backListener = BackHandler.addEventListener("hardwareBackPress", this.handleBack);
       this.setState({ show: true }, () => {
         const timer = setTimeout(() => {
           this._toggleSubview(true)
@@ -59,6 +60,7 @@ export default class m extends LibComponent<LibSlidingupProps, LibSlidingupState
 
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/slidingup.md#hide) untuk melihat dokumentasi*/
   hide(): void {
+    this.backListener?.remove?.()
     this._toggleSubview(false).then(() => {
       this.setState({ show: false })
     })

@@ -6,7 +6,6 @@ import { LibTextstyle } from 'esoftplay/cache/lib/textstyle/import';
 import { LibTheme } from 'esoftplay/cache/lib/theme/import';
 import useGlobalState from 'esoftplay/global';
 
-import React from 'react';
 import { BackHandler, Keyboard, TouchableOpacity, View } from 'react-native';
 import { LibIconStyle } from './icon';
 
@@ -37,7 +36,17 @@ const state = useGlobalState<LibDialogProps>({
   cancel: undefined,
   onPressOK: undefined,
   onPressCancel: undefined,
-})
+},
+  {
+    listener(data) {
+      let backListener;
+      if (data.show)
+        backListener = BackHandler.addEventListener("hardwareBackPress", handleBack);
+      else
+        backListener?.remove?.();
+    },
+  }
+)
 
 /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/dialog.md) untuk melihat dokumentasi*/
 export default class m extends LibComponent<LibDialogProps, LibDialogState> {
@@ -147,11 +156,6 @@ function handleBack(): boolean {
 /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/dialog.md#Dialog) untuk melihat dokumentasi*/
 function Dialog(): any {
   const { visible, icon, view, style, title, msg, ok, cancel, onPressOK, onPressCancel } = state.useSelector(s => s)
-  if (!visible)
-    BackHandler.removeEventListener("hardwareBackPress", handleBack)
-  else
-    BackHandler.addEventListener("hardwareBackPress", handleBack)
-
   if (!visible) return null
   var color = LibTheme._colorPrimary()
   if (style == 'danger') {
