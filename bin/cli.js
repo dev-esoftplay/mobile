@@ -531,7 +531,7 @@ function checkGplist() {
 function readToJSON(path) {
 	var txt = fs.readFileSync(path, 'utf8');
 	let isJSON = txt.startsWith('{') || txt.startsWith('[')
-	return isJSON ? JSON.parse(txt) : txt
+	return (isJSON && typeof txt == 'string') ? JSON.parse(txt) : txt
 }
 
 function isCustomUpdates() {

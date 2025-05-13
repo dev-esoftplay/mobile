@@ -108,13 +108,19 @@ if (fs.existsSync("../" + mainModule + "/" + moduleName)) {
     shell("bun ../" + mainModule + "/mover.js", { stdio: 'inherit' })
   }
 }
+
 function mergeDeep(target, ...sources) {
   target = Object(target);
+
   for (const source of sources) {
     const sourceObj = Object(source);
+
     for (const [key, value] of Object.entries(sourceObj)) {
       if (value ?? null !== null) {
-        if (value !== null && typeof value === "object") {
+        if (Array.isArray(value)) {
+          // Overwrite arrays completely
+          target[key] = value.slice(); // shallow copy
+        } else if (typeof value === "object") {
           target[key] = mergeDeep(target[key] ?? {}, value);
         } else {
           target[key] = value;
@@ -122,5 +128,6 @@ function mergeDeep(target, ...sources) {
       }
     }
   }
+
   return target;
 }

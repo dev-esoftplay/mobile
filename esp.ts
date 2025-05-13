@@ -56,13 +56,18 @@ if (conf?.config?.isDebug == 0)
   LogBox.ignoreAllLogs();
 /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/esp.md) untuk melihat dokumentasi*/
 const esp = {
-  mergeDeep(target: any, ...sources: any[]) {
+  mergeDeep(target, ...sources) {
     target = Object(target);
+
     for (const source of sources) {
       const sourceObj = Object(source);
+
       for (const [key, value] of Object.entries(sourceObj)) {
         if (value ?? null !== null) {
-          if (value !== null && typeof value === "object") {
+          if (Array.isArray(value)) {
+            // Overwrite arrays completely
+            target[key] = value.slice(); // shallow copy
+          } else if (typeof value === "object") {
             target[key] = esp.mergeDeep(target[key] ?? {}, value);
           } else {
             target[key] = value;
@@ -70,8 +75,10 @@ const esp = {
         }
       }
     }
+
     return target;
-  },
+  }
+  ,
   appjson(): any {
     return esp.mergeDeep(app, conf)
   },

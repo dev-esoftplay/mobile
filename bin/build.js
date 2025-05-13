@@ -21,7 +21,7 @@ if (fs.existsSync(packjson)) {
 	let txt = fs.readFileSync(packjson, 'utf8');
 	let $package
 	try {
-		$package = JSON.parse(txt)
+		$package = typeof txt == 'string' ? JSON.parse(txt) : txt
 	} catch (error) { }
 	let args = process.argv.slice(2);
 
@@ -54,7 +54,8 @@ if (fs.existsSync(packjson)) {
 		let $config = {}
 		if (fs.existsSync(confjson))
 			try {
-				$config = JSON.parse(fs.readFileSync(confjson, 'utf8')) || {};
+				let conf = fs.readFileSync(confjson, 'utf8') || {}
+				$config = typeof conf == 'string' ? JSON.parse(conf) : conf
 			} catch (error) { }
 		if (!$config.hasOwnProperty('config')) {
 			$config.config = {
@@ -88,7 +89,8 @@ if (fs.existsSync(packjson)) {
 		let $appjson = {}
 		if (fs.existsSync(appjson))
 			try {
-				$appjson = JSON.parse(fs.readFileSync(appjson, 'utf8')) || {};
+				let appj = fs.readFileSync(appjson, 'utf8') || {}
+				$appjson = typeof appj == 'string' ? JSON.parse(appj) : appj;
 			} catch (error) { }
 		if (!$appjson?.expo?.hasOwnProperty?.('runtimeVersion')) {
 			$appjson.expo.runtimeVersion = "1"
