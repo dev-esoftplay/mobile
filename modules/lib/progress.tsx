@@ -19,21 +19,14 @@ export interface LibProgressState {
 const state = useGlobalState<LibProgressProps>({
   show: false,
   message: undefined
-}, {
-  listener(data) {
-    let backListener;
-    if (data.show)
-      backListener = BackHandler.addEventListener("hardwareBackPress", handleBack);
-    else
-      backListener?.remove?.();
-  },
 })
+let backListener;
 
 /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/progress.md) untuk melihat dokumentasi*/
 class m extends LibComponent<LibProgressProps, LibProgressState> {
-
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/progress.md#libprogressshowmessage-string) untuk melihat dokumentasi*/
   static show(message?: string): void {
+    backListener = BackHandler.addEventListener("hardwareBackPress", handleBack);
     state.set({
       show: true,
       message: message
@@ -42,6 +35,7 @@ class m extends LibComponent<LibProgressProps, LibProgressState> {
 
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/progress.md#libprogresshide) untuk melihat dokumentasi*/
   static hide(): void {
+    backListener?.remove?.();
     state.set({ show: false, message: undefined })
   }
 
@@ -53,7 +47,7 @@ class m extends LibComponent<LibProgressProps, LibProgressState> {
 
 /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/progress.md#handleBack) untuk melihat dokumentasi*/
 function handleBack(): boolean {
-  state.set({ show: false, message: undefined })
+  m.hide()
   return true
 }
 

@@ -36,18 +36,8 @@ const state = useGlobalState<LibDialogProps>({
   cancel: undefined,
   onPressOK: undefined,
   onPressCancel: undefined,
-},
-  {
-    listener(data) {
-      let backListener;
-      if (data.visible)
-        backListener = BackHandler.addEventListener("hardwareBackPress", handleBack);
-      else
-        backListener?.remove?.();
-    },
-  }
-)
-
+})
+let backListener;
 /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/dialog.md) untuk melihat dokumentasi*/
 export default class m extends LibComponent<LibDialogProps, LibDialogState> {
 
@@ -66,6 +56,7 @@ export default class m extends LibComponent<LibDialogProps, LibDialogState> {
 
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/dialog.md#hide) untuk melihat dokumentasi*/
   static hide(): void {
+    backListener?.remove?.();
     state.set({
       visible: false,
       style: 'default',
@@ -107,6 +98,7 @@ export default class m extends LibComponent<LibDialogProps, LibDialogState> {
 
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/dialog.md#show) untuk melihat dokumentasi*/
   static show(style: 'default' | 'danger', icon: LibIconStyle, title: string, msg: string, ok?: string, cancel?: string, onPressOK?: () => void, onPressCancel?: () => void): void {
+    backListener = BackHandler.addEventListener("hardwareBackPress", handleBack);
     Keyboard.dismiss()
     state.set({
       visible: true,
@@ -124,6 +116,7 @@ export default class m extends LibComponent<LibDialogProps, LibDialogState> {
 
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/dialog.md#custom) untuk melihat dokumentasi*/
   static custom(view: any): void {
+    backListener = BackHandler.addEventListener("hardwareBackPress", handleBack);
     Keyboard.dismiss()
     state.set({
       visible: true,

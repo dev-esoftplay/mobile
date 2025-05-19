@@ -6,7 +6,7 @@ import { LibUtils } from 'esoftplay/cache/lib/utils/import';
 import { UserData } from 'esoftplay/cache/user/data/import';
 import FastStorage from 'esoftplay/mmkv';
 import useSafeState from 'esoftplay/state';
-import React, { ReactElement, useEffect } from 'react';
+import { ReactElement, useEffect } from 'react';
 import { Text } from 'react-native';
 
 
@@ -44,7 +44,7 @@ export default function m(props: LibCurl_viewProps): any {
   function fetchData() {
     new LibCurl(props.url, props.post, (result, message) => {
       if (props.cache) {
-        FastStorage.setItem(key, JSON.stringify({ result, message }))
+        FastStorage.setItem(key, JSON.stringify({ result, message, ok: 1 }))
       }
       setData({ result, message, ok: 1 })
     }, (err) => {

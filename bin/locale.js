@@ -46,7 +46,7 @@ function mergeDeep(target, ...sources) {
     const sourceObj = Object(source);
 
     for (const [key, value] of Object.entries(sourceObj)) {
-      if (value ?? null !== null) {
+      if (value !== undefined && value !== null) {
         if (Array.isArray(value)) {
           // Overwrite arrays completely
           target[key] = value.slice(); // shallow copy
