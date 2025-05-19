@@ -7,7 +7,7 @@ import { Alert, Linking } from 'react-native';
 
 
 export const params = useGlobalState<any>(undefined)
-
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/use/deeplink.md) untuk melihat dokumentasi*/
 export default function m(defaultUrl?: string): void {
   const doLink = useCallback(({ url }: { url: string }) => {
     const { domain, uri, protocol } = esp.config()
