@@ -290,7 +290,19 @@ function switchStatusAssets(status) {
 			command('cp ' + from + ' ' + to)
 		}
 	}
-
+	fs.readdirSync(DIR).forEach((file) => {
+		consoleError(file)
+		if (!fs.statSync(DIR+'/'+file).isDirectory()) {
+			if (status.includes('d'))
+				if (file.match(/^.*.debug.*/g)) {
+					copyFileFromTo(file, file.replace('.debug.', '.'))
+				}
+			if (status.includes('l'))
+				if (file.match(/^.*.live.*/g)) {
+					copyFileFromTo(file, file.replace('.live.', '.'))
+				}
+		}
+	})
 	fs.readdirSync(DIR + '/modules/').forEach((mod) => {
 		const path = DIR + '/modules/' + mod
 		if (fs.statSync(path).isDirectory())
@@ -1361,7 +1373,6 @@ function doInc(file) {
 		consoleSucces(file + " Versi yang lama " + app.expo.version)
 		app.expo.android.versionCode = lastVersion + 1
 		app.expo.ios.buildNumber = String(lastVersion + 1)
-		// app.expo.runtimeVersion = String(lastVersion + 1)
 		app.expo.version = args[1] || ('0.' + String(lastVersion + 1))
 		consoleSucces(file + " Berhasil diupdate ke versi " + app.expo.version)
 		fs.writeFileSync(file, JSON.stringify(app, undefined, 2))

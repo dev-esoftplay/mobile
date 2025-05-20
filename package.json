@@ -1,6 +1,6 @@
 {
   "name": "esoftplay",
-  "version": "0.0.144",
+  "version": "0.0.147",
   "description": "embedding data from esoftplay framework (web based) into mobile app",
   "main": "cache/index.js",
   "types": "../../index.d.ts",
@@ -33,7 +33,7 @@
     "url": "https://github.com/esoftplay/mobile/issues"
   },
   "bin": {
-    "esoftplay": "./bin/cli.js"
+    "esoftplay": "bin/cli.js"
   },
   "homepage": "https://github.com/esoftplay/mobile#readme"
 }
