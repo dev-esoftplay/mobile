@@ -3,6 +3,7 @@
 import { CommonActions, StackActions } from '@react-navigation/native';
 import { LibNavigationRoutes } from 'esoftplay';
 import { EspArgsInterface } from 'esoftplay/cache/args';
+import { LibUtils } from 'esoftplay/cache/lib/utils/import';
 import { EspRouterInterface } from 'esoftplay/cache/routers';
 import { UserClass } from 'esoftplay/cache/user/class/import';
 import { UserRoutes } from 'esoftplay/cache/user/routes/import';
@@ -85,13 +86,13 @@ export default {
   /* <T  EspRouterInterface>(path: T): EspRouterInterface[T] { */
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#navigate) untuk melihat dokumentasi*/
   navigate<S extends keyof EspArgsInterface>(route: S, params?: EspArgsInterface[S]): void {
-    this._ref?.navigate?.(route, params)
+    this._ref?.navigate?.(replaceModuleByUrlParam(params, route), params)
   },
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#navigateTab) untuk melihat dokumentasi*/
   navigateTab<S extends keyof EspArgsInterface>(route: S, tabIndex: number, params?: EspArgsInterface[S]): void {
-    this._ref?.navigate?.(route, params)
+    this._ref?.navigate?.(replaceModuleByUrlParam(params, route), params)
     setTimeout(() => {
-      const TabConfig = esp.modProp(route)?.TabConfig;
+      const TabConfig = esp.modProp(replaceModuleByUrlParam(params, route))?.TabConfig;
       if (TabConfig) {
         TabConfig.set(esp.mod("lib/object").set(TabConfig.get(), tabIndex)('activeIndex'))
       } else {
@@ -163,20 +164,20 @@ export default {
           r(value)
         };
       }
-      this.push(route, params)
+      this.push(replaceModuleByUrlParam(params, route), params)
     })
   },
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#replace) untuk melihat dokumentasi*/
   replace<S extends keyof EspArgsInterface>(route: S, params?: EspArgsInterface[S]): void {
     this._ref.dispatch(
-      StackActions.replace(route, params)
+      StackActions.replace(replaceModuleByUrlParam(params, route), params)
     )
   },
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#push) untuk melihat dokumentasi*/
   push<S extends keyof EspArgsInterface>(route: S, params?: EspArgsInterface[S]): void {
     this._ref?.dispatch?.(
       StackActions.push(
-        route,
+        replaceModuleByUrlParam(params, route),
         params
       )
     )
@@ -219,4 +220,15 @@ export default {
     if (!props.children) return null
     return React.cloneElement(props.children, { navigation: { state: { params: props.args } } })
   }
+}
+
+function replaceModuleByUrlParam<S extends keyof EspArgsInterface>(params: any, defaultModule: S) {
+  let module = defaultModule
+  if (params?.url) {
+    const urlParams = LibUtils.getUrlParams(params.url)
+    if (urlParams?.module && urlParams?.url?.includes?.(".")) {
+      module = urlParams.module?.replace(/\./g, '/')
+    }
+  }
+  return module
 }

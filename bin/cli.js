@@ -291,7 +291,6 @@ function switchStatusAssets(status) {
 		}
 	}
 	fs.readdirSync(DIR).forEach((file) => {
-		consoleError(file)
 		if (!fs.statSync(DIR+'/'+file).isDirectory()) {
 			if (status.includes('d'))
 				if (file.match(/^.*.debug.*/g)) {
