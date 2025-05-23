@@ -291,7 +291,7 @@ function switchStatusAssets(status) {
 		}
 	}
 	fs.readdirSync(DIR).forEach((file) => {
-		if (!fs.statSync(DIR+'/'+file).isDirectory()) {
+		if (!fs.statSync(DIR + '/' + file).isDirectory()) {
 			if (status.includes('d'))
 				if (file.match(/^.*.debug.*/g)) {
 					copyFileFromTo(file, file.replace('.debug.', '.'))
@@ -904,6 +904,9 @@ Pastikan data sudah benar sebelum anda melanjutkan, lanjut publish ketikkan runt
 				stringBuilder += "\npublisher: @" + accountName + "\n"
 				stringBuilder += (notes != '' ? ("\n\n- " + notes) : '')
 				tm(stringBuilder)
+				if (cjson.config.hasOwnProperty('post_publish_script')) {
+					eval(cjson.config.post_publish_script)
+				}
 				if (notes.startsWith('*') && ajson.config.publish_id) {
 					const config = readToJSON(confjson).config;
 					const ajson = readToJSON(appjson);
