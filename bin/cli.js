@@ -1006,10 +1006,12 @@ function devClientPre(file) {
 			return
 		}
 		let app = JSON.parse(txt)
-		app.expo.name = app.expo.name.includes("DC-") ? app.expo.name : ("DC-" + app.expo.name)
-		// if (!app.expo.extra && app.expo.update)
-		// 	app.expo.extra = app.expo.updates
-		// delete app.expo.updates
+		app.expo.name = app.expo.name.includes("DC|") ? app.expo.name : ("DC|" + app.expo.name)
+		if (app.expo.android)
+			app.expo.android.package = String(app.expo.android.package).endsWith(".dc") ? app.expo.android.package : (app.expo.android.package + ".dc")
+		if (app.expo.ios)
+			app.expo.ios.bundleIdentifier = String(app.expo.ios.bundleIdentifier).endsWith(".dc") ? app.expo.ios.bundleIdentifier : (app.expo.ios.bundleIdentifier + ".dc")
+		delete app.expo.extra
 		fs.writeFileSync(file, JSON.stringify(app, undefined, 2))
 	} else {
 		consoleError(file)
@@ -1024,10 +1026,11 @@ function devClientPos(file) {
 			return
 		}
 		let app = JSON.parse(txt)
-		app.expo.name = app.expo.name.replace("DC-", "")
-		// if (app.expo.extra)
-		// 	app.expo.updates = app.expo.extra
-		// delete app.expo.extra
+		app.expo.name = app.expo.name.replace("DC|", "")
+		if (app.expo.android)
+			app.expo.android.package = String(app.expo.android.package).replace('.dc', "")
+		if (app.expo.ios)
+			app.expo.ios.bundleIdentifier = String(app.expo.ios.bundleIdentifier).replace(".dc", "")
 		fs.writeFileSync(file, JSON.stringify(app, undefined, 2))
 	} else {
 		consoleError(file)
@@ -1078,6 +1081,7 @@ function buildPrepare(include = true) {
 			fs.writeFileSync(easjson, easconfg())
 		}
 	}
+	devClientPos(appjson)
 }
 
 function configAvailable(enabled) {
