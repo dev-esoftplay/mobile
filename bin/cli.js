@@ -287,7 +287,15 @@ function switchStatusAssets(status) {
 		if (fs.existsSync(from)) {
 			if (fs.existsSync(to))
 				command('rm ' + to)
-			command('cp ' + from + ' ' + to)
+			const oldscript = fs.readFileSync(from, 'utf8')
+			const data = oldscript.match(new RegExp(/^\/\/\s{0,}export\s{1}default/gm))
+			let newData = data;
+			if (data && data.length > 0) {
+				newData = oldscript.replace((new RegExp(/^\/\//gm)), "")
+				fs.writeFileSync(to, newData)
+			} else {
+				command('cp ' + from + ' ' + to)
+			}
 		}
 	}
 	fs.readdirSync(DIR).forEach((file) => {
