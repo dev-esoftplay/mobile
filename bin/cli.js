@@ -291,7 +291,7 @@ function switchStatusAssets(status) {
 			const data = oldscript.match(new RegExp(/^\/\/\s{0,}export\s{1}default/gm))
 			let newData = data;
 			if (data && data.length > 0) {
-				newData = oldscript.replace((new RegExp(/^\/\//gm)), "")
+				newData = oldscript.replace((new RegExp(/^\/\/\s{0,}/gm)), "")
 				fs.writeFileSync(to, newData)
 			} else {
 				command('cp ' + from + ' ' + to)
