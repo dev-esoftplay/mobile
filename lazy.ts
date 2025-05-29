@@ -14,8 +14,6 @@ export default function useLazyState<T>(initialState?: T): [T, (newValue: T | ((
         value.current = newValue;
       }
     }
-
-    
     return () => {
       if (isMounted.current) {
         dispatch();
