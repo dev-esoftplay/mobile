@@ -6,6 +6,7 @@ import { useCallback, useEffect } from 'react';
 import { Alert, Linking } from 'react-native';
 
 
+/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/use/deeplink.md#params) untuk melihat dokumentasi*/
 export const params = useGlobalState<any>(undefined)
 /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/use/deeplink.md) untuk melihat dokumentasi*/
 export default function m(defaultUrl?: string): void {

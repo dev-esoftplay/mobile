@@ -25,6 +25,7 @@ var args = process.argv.slice(2);
 
 // console.log(modpath, "sdofsjdofjsd")
 async function execution() {
+	command('bun ./node_modules/esoftplay/bin/connector.js')
 	const preload = await preload_api()
 	console.log("PRELOAD", preload)
 	if (preload) {

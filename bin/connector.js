@@ -2,7 +2,7 @@ const fs = require('fs')
 
 if (fs.existsSync('./raw/connected.json')) {
   const { source, modules } = JSON.parse(fs.readFileSync('./raw/connected.json'))
-  const currentProject = './modules/';
+  const currentProject = './node_modules/esoftplay/modules/';
 
   if (source) {
     if (modules.length > 0) {
@@ -29,7 +29,7 @@ if (fs.existsSync('./raw/connected.json')) {
               fs.mkdirSync(currentProject + mod)
             }
             fs.writeFileSync(_destination, file, { encoding: 'utf8' })
-            console.log('>_ ' + module + fext + ' connected!')
+            console.log('>_ ' + module + fext + ' connected from ' + source)
           }
         })
       })
