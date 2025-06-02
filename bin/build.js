@@ -136,6 +136,12 @@ if (fs.existsSync(packjson)) {
 					]
 				}
 			}
+			$appjson.expo.plugins = [
+				"./node_modules/esoftplay/assets/plugins/heapSize",
+				"./node_modules/esoftplay/assets/plugins/fcmIcon",
+				"./node_modules/esoftplay/assets/plugins/noDarkAndroid",
+				"./node_modules/esoftplay/assets/plugins/withAndroidVerifiedLinksWorkaround",
+			]
 
 			fs.writeFile(appjson, JSON.stringify($appjson, null, 2), (err) => {
 				if (err) throw err;
