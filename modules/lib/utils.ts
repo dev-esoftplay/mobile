@@ -131,26 +131,42 @@ export default {
   },
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#money) untuk melihat dokumentasi*/
   money(value: string | number, currency?: string): string {
-    if (!value) value = 0
-    var val;
-    if (typeof value === "number") {
-      val = value?.toFixed?.(0)?.replace?.(/(\d)(?=(\d{3})+$)/g, "$1,")
-    } else {
-      val = parseInt(value)?.toFixed?.(0)?.replace?.(/(\d)(?=(\d{3})+$)/g, "$1,")
-    }
-    const locale = LibLocale.state().get()
+    if (!value) value = 0;
+
+    let numberValue = typeof value === "number" ? value : parseFloat(value);
+
+    // Dapatkan locale & tentukan currency
+    const locale = LibLocale.state().get();
     if (!currency) {
-      if (locale == "id") {
-        currency = "Rp"
-      } else {
-        currency = "IDR"
-      }
+      currency = locale === "id" ? "Rp" : "IDR";
     }
-    if (typeof val === "number") {
-      return currency?.replace?.(/\./g, "") + " " + String(val)?.replace?.(/,/g, ".");
-    } else {
-      return currency?.replace?.(/\./g, "") + " " + val?.replace?.(/,/g, ".");
-    }
+
+    // Cek apakah IDR/Rp → format Indonesia
+    const isIDR = currency === "IDR" || currency === "Rp";
+
+    // Jika IDR, bulatkan angkanya
+    numberValue = isIDR ? Math.round(numberValue) : numberValue;
+
+    // Format dasar
+    const isInteger = Number.isInteger(numberValue);
+    let val = numberValue.toFixed(isIDR ? 0 : isInteger ? 0 : 2);
+
+    // Pisahkan jadi integer dan decimal
+    const parts = val.split(".");
+    let integerPart = parts[0];
+    const decimalPart = parts[1] || "";
+
+    // Format ribuan
+    integerPart = isIDR
+      ? integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".") // ribuan titik
+      : integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ","); // ribuan koma
+
+    // Gabungkan dengan desimal sesuai format
+    val = decimalPart && !isIDR
+      ? `${integerPart}.${decimalPart}`
+      : integerPart;
+
+    return currency.replace(/\./g, "") + " " + val;
   },
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#numberAbsolute) untuk melihat dokumentasi*/
   numberAbsolute(toNumber: string | number): number {
