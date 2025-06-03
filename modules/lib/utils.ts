@@ -1,7 +1,5 @@
 // noPage
 // withObject
-
-//moveup for formatting currency with lang
 import { LibLocale } from 'esoftplay/cache/lib/locale/import';
 import esp from 'esoftplay/esp';
 import useGlobalState from 'esoftplay/global';
