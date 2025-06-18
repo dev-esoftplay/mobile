@@ -8,6 +8,8 @@ const utc = require('dayjs/plugin/utc')
 const timezone = require('dayjs/plugin/timezone') // dependent on utc plugin
 const relativeTime = require('dayjs/plugin/relativeTime')
 var duration = require('dayjs/plugin/duration')
+const localeData = require('dayjs/plugin/localeData')
+dayjs.extend(localeData)
 dayjs.extend(duration)
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -89,39 +91,50 @@ export default function moment(date?: string | Date | any) {
       require('dayjs/locale/en')
       require('dayjs/locale/id')
       require('dayjs/locale/zh-cn')
-      const out = dayjs.locale(locale_id)
+      // Remove global locale set, just return a new moment with locale set on instance
+      const out = dayjs(_date).locale(locale_id)
       return moment(out)
     },
     /* last chain */
     fromNow: () => {
       const currentLang = esp.modProp('lib/locale').default.state().get()
       const localeId = langData?.filter?.((x) => x.name == currentLang)?.[0]?.code
-      moment().locale(localeId)
-      const out = dayjs(resetTimeOffset(_date)).fromNow()
+      // Set locale on instance, not globally
+      const out = dayjs(resetTimeOffset(_date)).locale(localeId).fromNow()
       return out
     },
     format: (custom: string, ignoreTimezone?: boolean) => {
       const currentLang = esp.modProp('lib/locale').default.state().get()
-      const localeId = langData?.filter?.((x) => x.name == currentLang)?.[0]?.code
-      moment().locale(localeId)
+      const localeId = langData?.filter?.((x) => x.name == currentLang)?.[0]?.code || 'en'
+      try {
+        require(`dayjs/locale/${localeId}`)
+      } catch (e) {
+      }
       const _d = ignoreTimezone ? _date : resetTimeOffset(_date)
-      const out = dayjs(_d).format(custom)
+      // Set locale on instance, not globally
+      const out = dayjs(_d).locale(localeId).format(custom)
       return out
     },
     serverFormat: (custom: string) => {
       const currentLang = esp.modProp('lib/locale').default.state().get()
-      const localeId = langData?.filter?.((x) => x.name == currentLang)?.[0]?.code
-      moment().locale(localeId)
+      const localeId = langData?.filter?.((x) => x.name == currentLang)?.[0]?.code || 'en'
+      try {
+        require(`dayjs/locale/${localeId}`)
+      } catch (e) {
+      }
       const _d = resetTimeOffset(_date)
-      const out = dayjs(_d).format(custom)
+      const out = dayjs(_d).locale(localeId).format(custom)
       return out
     },
     localeFormat: (custom: string, ignoreTimezone?: boolean) => {
       const currentLang = esp.modProp('lib/locale').default.state().get()
-      const localeId = langData?.filter?.((x) => x.name == currentLang)?.[0]?.code
-      moment().locale(localeId)
+      const localeId = langData?.filter?.((x) => x.name == currentLang)?.[0]?.code || 'en'
+      try {
+        require(`dayjs/locale/${localeId}`)
+      } catch (e) {
+      }
       const _d = _date
-      const out = dayjs(_d).format(custom)
+      const out = dayjs(_d).locale(localeId).format(custom)
       return out
     },
     toDate: () => {
