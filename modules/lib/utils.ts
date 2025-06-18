@@ -145,9 +145,8 @@ export default {
     // Jika IDR, bulatkan angkanya
     numberValue = isIDR ? Math.round(numberValue) : numberValue;
 
-    // Format dasar
-    const isInteger = Number.isInteger(numberValue);
-    let val = numberValue.toFixed(isIDR ? 0 : isInteger ? 0 : 2);
+    let val = isIDR ? numberValue.toFixed(0) : String(Math.round(numberValue * 100) / 100)
+    // let val = isIDR?  numberValue.toFixed(isIDR ? 0 : isInteger ? 0 : 2);
 
     // Pisahkan jadi integer dan decimal
     const parts = val.split(".");

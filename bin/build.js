@@ -137,13 +137,13 @@ if (fs.existsSync(packjson)) {
 				}
 			}
 			$appjson.expo.plugins = [
-				"./assets/plugins/heapSize",
-				"./assets/plugins/fcmIcon",
-				"./assets/plugins/noDarkAndroid",
-				"./assets/plugins/withAndroidVerifiedLinksWorkaround",
+				"./raw/plugins/heapSize",
+				"./raw/plugins/fcmIcon",
+				"./raw/plugins/noDarkAndroid",
+				"./raw/plugins/withAndroidVerifiedLinksWorkaround",
 			]
-
-			execSync("cp -r ./node_modules/esoftplay/plugins ./assets")
+			
+			execSync("mkdir -p ./raw && cp -r ./node_modules/esoftplay/assets/plugins ./raw")
 			fs.writeFile(appjson, JSON.stringify($appjson, null, 2), (err) => {
 				if (err) throw err;
 				console.log('app.json has been updated');
