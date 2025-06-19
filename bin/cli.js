@@ -12,6 +12,8 @@ const appjson = DIR + "app.json"
 const applive = DIR + "app.live.json"
 const appdebug = DIR + "app.debug.json"
 const packjson = DIR + "package.json"
+const packdebugjson = DIR + "package.debug.json"
+const packlivejson = DIR + "package.live.json"
 const confjson = DIR + "config.json"
 const conflive = DIR + "config.live.json"
 const easjson = DIR + "eas.json"
@@ -1431,6 +1433,10 @@ function switchStatus(status) {
 		checkApp()
 		checkConfig()
 		checkGplist()
+	}
+	const hasSeparatePackageJson = status.includes("l") ? fs.existsSync(packlivejson) : fs.existsSync(packdebugjson)
+	if (hasSeparatePackageJson) {
+		command(`rm -rf ${DIR}node_modules ${DIR}package-lock.json ${DIR}yarn.lock ${DIR}bun.lockb && bun install`)
 	}
 	return valid
 }
