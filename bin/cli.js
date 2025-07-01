@@ -1442,7 +1442,7 @@ function switchStatus(status) {
 }
 
 function tm(message) {
-	command("curl -d \"text=" + message + "&disable_web_page_preview=true&chat_id=-1001227788828\" 'https://api.telegram.org/bot112133589:AAFFyztZh79OsHRCxJ9rGCGpnxkcjWBP8kU/sendMessage'")
+	command("curl -d \"text=" + message + "&disable_web_page_preview=true&chat_id=-1001227788828\" 'https://api.telegram.org/bot112133589:AAFENoEa4IY_YDam8YDoltqayawGyYPDBN8/sendMessage'")
 }
 
 class LibObject {
