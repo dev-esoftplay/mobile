@@ -1016,12 +1016,20 @@ function devClientPre(file) {
 			consoleError('app.json tidak valid')
 			return
 		}
+		if (isDebug()) {
+			copyFromTo('./GoogleService-Info.debug.dc.plist', './GoogleService-Info.plist')
+		} else {
+			copyFromTo('./GoogleService-Info.live.dc.plist', './GoogleService-Info.plist')
+		}
 		let app = JSON.parse(txt)
 		app.expo.name = app.expo.name.includes("DC|") ? app.expo.name : ("DC|" + app.expo.name)
 		if (app.expo.android)
 			app.expo.android.package = String(app.expo.android.package).endsWith(".dc") ? app.expo.android.package : (app.expo.android.package + ".dc")
 		if (app.expo.ios)
 			app.expo.ios.bundleIdentifier = String(app.expo.ios.bundleIdentifier).endsWith(".dc") ? app.expo.ios.bundleIdentifier : (app.expo.ios.bundleIdentifier + ".dc")
+		if (app.expo.updates.enabled = true) {
+			app.expo.updates = { enabled: false }
+		}
 		delete app.expo.extra
 		fs.writeFileSync(file, JSON.stringify(app, undefined, 2))
 	} else {
@@ -1037,6 +1045,15 @@ function devClientPos(file) {
 			return
 		}
 		let app = JSON.parse(txt)
+		if (isDebug()) {
+			copyFromTo('./GoogleService-Info.debug.plist', './GoogleService-Info.plist')
+			if (app.expo.name.includes('DC|'))
+				copyFromTo('./app.debug.json', './app.json')
+		} else {
+			copyFromTo('./GoogleService-Info.live.plist', './GoogleService-Info.plist')
+			if (app.expo.name.includes('DC|'))
+				copyFromTo('./app.live.json', './app.json')
+		}
 		app.expo.name = app.expo.name.replace("DC|", "")
 		if (app.expo.android)
 			app.expo.android.package = String(app.expo.android.package).replace('.dc', "")
