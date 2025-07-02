@@ -37,7 +37,7 @@ export function resetTimeOffset(date: Date): Date {
   }
   let currentOffsetInMinutes = date.getTimezoneOffset();
   let currentOffsetInHours = currentOffsetInMinutes / 60;
-  let currentGMT = -currentOffsetInHours;
+  let currentGMT = ((esp.config()?.['forcedGMT+']) || (-currentOffsetInHours));
   let currentOffset = currentGMT * 60 * 60 * 1000;
   let targetOffset = 7/* Asia/Jakarta */ * 60 * 60 * 1000;
   let gmtDiff = targetOffset - currentOffset;
