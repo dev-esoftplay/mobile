@@ -10,7 +10,6 @@ import { LibUpdaterProperty } from 'esoftplay/cache/lib/updater/import';
 import esp from 'esoftplay/esp';
 import * as Application from 'expo-application';
 
-import React from 'react';
 import { BackHandler, ImageBackground, Linking, Platform, TouchableOpacity } from 'react-native';
 export interface LibVersionProps {
 
@@ -21,18 +20,18 @@ export interface LibVersionState {
 /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/version.md) untuk melihat dokumentasi*/
 export default class m extends LibComponent<LibVersionProps, LibVersionState> {
 
-/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/version.md#appVersion) untuk melihat dokumentasi*/
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/version.md#appVersion) untuk melihat dokumentasi*/
   static appVersion(): string {
     let version: any = Application.nativeBuildVersion
     return version
   }
 
-/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/version.md#showDialog) untuk melihat dokumentasi*/
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/version.md#showDialog) untuk melihat dokumentasi*/
   static showDialog(title: string, message: string, link: string, onOk: (link: string) => void, onCancel: () => void): void {
     LibDialog.confirm(title, message, esp.lang("lib/version", "update"), () => onOk(link), esp.lang("lib/version", "skip"), onCancel)
   }
 
-/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/version.md#closeApp) untuk melihat dokumentasi*/
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/version.md#closeApp) untuk melihat dokumentasi*/
   static closeApp(): void {
     if (Platform.OS == 'ios') {
       // Updates.reload()
@@ -41,12 +40,12 @@ export default class m extends LibComponent<LibVersionProps, LibVersionState> {
     }
   }
 
-/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/version.md#toStore) untuk melihat dokumentasi*/
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/version.md#toStore) untuk melihat dokumentasi*/
   static toStore(link: string): void {
     Linking.openURL(link)
   }
 
-/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/version.md#onDone) untuk melihat dokumentasi*/
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/version.md#onDone) untuk melihat dokumentasi*/
   static onDone(res: any, msg: string): void {
     const { title, version, android, ios, version_publish } = res
 
@@ -54,18 +53,19 @@ export default class m extends LibComponent<LibVersionProps, LibVersionState> {
       let oldVersion = m.appVersion()
       return newVersion > oldVersion
     }
-    if (isAvailableNewVersion(version)) {
-      LibNavigation.backToRoot()
-      LibNavigation.replace("lib/version", { res, msg: msg == 'success' ? 'Update to a new version now' : msg })
-    } else {
-      const currentVersion = esp.config('publish_id')
-      if (currentVersion < version_publish && !__DEV__) {
-        LibNavigation.reset("lib/version_view")
-        LibUpdaterProperty.check((isNew) => { if (isNew) LibUpdaterProperty.install() })
+    if (!__DEV__)
+      if (isAvailableNewVersion(version)) {
+        LibNavigation.backToRoot()
+        LibNavigation.replace("lib/version", { res, msg: msg == 'success' ? 'Update to a new version now' : msg })
+      } else {
+        const currentVersion = esp.config('publish_id')
+        if (currentVersion < version_publish && !__DEV__) {
+          LibNavigation.reset("lib/version_view")
+          LibUpdaterProperty.check((isNew) => { if (isNew) LibUpdaterProperty.install() })
+        }
       }
-    }
   }
-/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/version.md#check) untuk melihat dokumentasi*/
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/version.md#check) untuk melihat dokumentasi*/
   static check(): void {
     new LibCurl("public_version", null, m.onDone)
   }
