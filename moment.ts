@@ -37,7 +37,7 @@ function parseGMTOffset(gmtString) {
   const match = gmtString.match(regex);
 
   if (!match) {
-    throw new Error('Invalid GMT format');
+    return null
   }
 
   const sign = match[1] === '+' ? 1 : -1;
@@ -130,7 +130,7 @@ export default function moment(date?: string | Date | any) {
       const out = dayjs(_d).format(custom)
       return out
     },
-    serverFormat: (custom: string, timezone: string) => {
+    serverFormat: (custom: string, timezone?: string) => {
       const currentLang = esp.modProp('lib/locale').default.state().get()
       const localeId = langData?.filter?.((x) => x.name == currentLang)?.[0]?.code
       moment().locale(localeId)
