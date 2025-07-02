@@ -1098,6 +1098,7 @@ function buildPrepare(include = true) {
 			fs.writeFileSync(easjson, JSON.stringify(ejson, undefined, 2))
 		}
 	} else {
+		configAvailable(false)
 		excludeOnBuild('ios', false)
 		if (fs.existsSync('./assets/esoftplaymodules')) {
 			command('rm -rf ./modules && mv ./assets/esoftplaymodules modules')
