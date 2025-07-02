@@ -31,13 +31,35 @@ export function setTimeOffset(date?: string | Date | any): Date {
   let timeWithOffset = new Date(_date.getTime() + gmtDiff);
   return timeWithOffset
 }
-export function resetTimeOffset(date: Date): Date {
+
+function parseGMTOffset(gmtString) {
+  const regex = /^GMT([+-])(\d{1,2})(?::(\d{2}))?$/;
+  const match = gmtString.match(regex);
+
+  if (!match) {
+    throw new Error('Invalid GMT format');
+  }
+
+  const sign = match[1] === '+' ? 1 : -1;
+  const hours = parseInt(match[2], 10);
+  const minutes = match[3] ? parseInt(match[3], 10) : 0;
+
+  return sign * (hours + minutes / 60);
+}
+
+export function resetTimeOffset(date: Date, timeZone?: string): Date {
   if (!(date instanceof Date)) {
     date = dayjs(date).toDate()
   }
+  let numberTimeZone = 0
+  if (timeZone) {
+    numberTimeZone = parseGMTOffset(timeZone)
+  } else {
+    numberTimeZone = esp.config()?.['forcedGMT+']
+  }
   let currentOffsetInMinutes = date.getTimezoneOffset();
   let currentOffsetInHours = currentOffsetInMinutes / 60;
-  let currentGMT = ((esp.config()?.['forcedGMT+']) || (-currentOffsetInHours));
+  let currentGMT = (numberTimeZone || (-currentOffsetInHours));
   let currentOffset = currentGMT * 60 * 60 * 1000;
   let targetOffset = 7/* Asia/Jakarta */ * 60 * 60 * 1000;
   let gmtDiff = targetOffset - currentOffset;
@@ -108,11 +130,11 @@ export default function moment(date?: string | Date | any) {
       const out = dayjs(_d).format(custom)
       return out
     },
-    serverFormat: (custom: string) => {
+    serverFormat: (custom: string, timezone: string) => {
       const currentLang = esp.modProp('lib/locale').default.state().get()
       const localeId = langData?.filter?.((x) => x.name == currentLang)?.[0]?.code
       moment().locale(localeId)
-      const _d = resetTimeOffset(_date)
+      const _d = resetTimeOffset(_date, timezone)
       const out = dayjs(_d).format(custom)
       return out
     },
@@ -139,4 +161,6 @@ export default function moment(date?: string | Date | any) {
     },
   }
 }
+
+
 
