@@ -4,6 +4,7 @@ import NetInfo from '@react-native-community/netinfo';
 import { LibComponent } from 'esoftplay/cache/lib/component/import';
 import esp from 'esoftplay/esp';
 import useGlobalState, { useGlobalReturn } from 'esoftplay/global';
+import useGlobalSubscriber from 'esoftplay/subscribe';
 import { Animated, Text } from "react-native";
 
 export interface LibNet_statusProps {
@@ -13,10 +14,16 @@ export interface LibNet_statusState {
   zeroHeight: any
 }
 
-const state = useGlobalState({
+export interface status {
+  isOnline: boolean,
+  isInternetReachable: boolean
+}
+
+const state = useGlobalState<status>({
   isOnline: true,
   isInternetReachable: true
 })
+
 
 /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/net_status.md) untuk melihat dokumentasi*/
 class net_status extends LibComponent<LibNet_statusProps, LibNet_statusState> {
@@ -25,12 +32,17 @@ class net_status extends LibComponent<LibNet_statusProps, LibNet_statusState> {
     return state
   }
 
+  static subscriber = useGlobalSubscriber<status>({
+    isOnline: true,
+    isInternetReachable: true
+  })
+
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/net_status.md#setOnline) untuk melihat dokumentasi*/
   static setOnline(isOnline: boolean, isInternetReachable: boolean): void {
+    net_status.subscriber.trigger({ isOnline, isInternetReachable })
     state.set({ isOnline: isOnline, isInternetReachable: isInternetReachable })
   }
 
-  timeout
   unsubscribe: any
   constructor(props: LibNet_statusProps) {
     super(props)

@@ -3,14 +3,14 @@
 import React from 'react';
 import { InteractionManager } from 'react-native';
 
-export interface useGlobalSubscriberReturn {
+export interface useGlobalSubscriberReturn<T> {
   getValue: () => any,
   reset: () => void,
-  useSubscribe: Function,
-  trigger: (newValue?: any) => void
+  useSubscribe: (func: (value: T) => void) => (newValue?: any) => void,
+  trigger: (newValue?: T) => void
 }
 /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/subscribe.md) untuk melihat dokumentasi*/
-export default function useGlobalSubscriber(defaultValue?: any): useGlobalSubscriberReturn {
+export default function useGlobalSubscriber<T>(defaultValue?: any): useGlobalSubscriberReturn<T> {
   const subscribers = new Set<Function>();
   let value = defaultValue;
 
@@ -22,7 +22,7 @@ export default function useGlobalSubscriber(defaultValue?: any): useGlobalSubscr
     value = defaultValue;
   }
 
-  function useSubscribe(func: Function) {
+  function useSubscribe(func: (value: T) => void) {
     React.useLayoutEffect(() => {
       subscribers.add(func)
       return () => {
