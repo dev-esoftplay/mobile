@@ -1,7 +1,7 @@
 // withHooks
 // noPage
 
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { TextInput, View, ViewStyle } from 'react-native';
 
 export interface LibPinProps {
@@ -48,7 +48,7 @@ export default function m(props: LibPinProps): any {
                 autoFocus
                 onChangeText={(t: string) => {
                   if (t.length == props.length) {
-                    input.current!.blur()
+                    input.current?.blur()
                   }
                   let _t: string[] = t.split('')
                   setPin(_t)

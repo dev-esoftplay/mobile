@@ -4,7 +4,7 @@
 import esp from 'esoftplay/esp';
 import useSafeState from 'esoftplay/state';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 type DateFormat = `${number}-${number}-${number}`
 export interface LibDatepickerProps {
@@ -137,9 +137,9 @@ export default function m(props: LibDatepickerProps): any {
   }, [month, year])
 
   function getDateChange() {
-    const monthNumber = allMonths.indexOf(refMonth.current!.getSelected()) + 1
-    const date = refDate.current!.getSelected()
-    const dateSelected = refYear.current!.getSelected() + '-' + String(monthNumber < 10 ? ('0' + monthNumber) : monthNumber) + '-' + String(date < 10 ? ('0' + date) : date)
+    const monthNumber = allMonths.indexOf(refMonth.current?.getSelected()) + 1
+    const date = refDate.current?.getSelected()
+    const dateSelected = refYear.current?.getSelected() + '-' + String(monthNumber < 10 ? ('0' + monthNumber) : monthNumber) + '-' + String(date < 10 ? ('0' + date) : date)
     if (props.onDateChange)
       props.onDateChange(dateSelected)
     else {

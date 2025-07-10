@@ -3,7 +3,7 @@ import esp from 'esoftplay/esp';
 import useSafeState from 'esoftplay/state';
 
 import * as ImageManipulator from "expo-image-manipulator";
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { Image, Pressable, Text, TouchableOpacity, View } from 'react-native';
 import PanPinchView from "react-native-pan-pinch-view";
 
@@ -109,7 +109,7 @@ export default function m(props: LibImage_cropProps): any {
       pageY: 0
     }
     Image.getSize(_image, (actualWidth, actualHeight) => {
-      viewRef.current!.measure((...vls: number[]) => {
+      viewRef.current?.measure((...vls: number[]) => {
         crop = {
           x: vls[0],
           y: vls[1],
@@ -118,7 +118,7 @@ export default function m(props: LibImage_cropProps): any {
           pageX: vls[4],
           pageY: vls[5]
         }
-        imageRef.current!.measure((...vls: number[]) => {
+        imageRef.current?.measure((...vls: number[]) => {
           img = {
             x: vls[0],
             y: vls[1],

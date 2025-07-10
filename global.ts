@@ -81,6 +81,7 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
   if (o?.useAutoSync) {
     const LibCurl = esp.mod("lib/curl")
     const UseTasks = esp.mod("use/tasks")
+
     taskSync = UseTasks()((item) => new Promise((next) => {
       const debounce = createDebounce()
       const delayInMs = o?.useAutoSync?.delayInMs || 0
@@ -109,6 +110,11 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
       }
     }), () => {
       o?.useAutoSync?.isSyncing?.(false)
+    })
+    esp.mod("lib/net_status").subscriber.useSubscribe(({ isInternetReachable, isOnline }) => {
+      if (isInternetReachable && isOnline) {
+        _sync()
+      }
     })
   }
 

@@ -61,7 +61,7 @@ export default class m extends LibComponent<LibListProps, LibListState> {
 
   scrollToIndex(x: number, anim?: boolean, viewOffset?: number, viewPosition?: number): void {
     if (!anim) anim = true;
-    this.flatlist.current!.scrollToIndex({ index: x, animated: anim, viewOffset: viewOffset, viewPosition: viewPosition })
+    this.flatlist.current?.scrollToIndex({ index: x, animated: anim, viewOffset: viewOffset, viewPosition: viewPosition })
   }
 
   rowRenderer({ item, index }): any {

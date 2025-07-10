@@ -73,7 +73,7 @@ export default class m extends LibComponent<LibScrollProps, LibScrollState> {
 
   scrollToIndex(x: number, anim?: boolean): void {
     if (anim == undefined) anim = true;
-    this.flatscroll.current!.scrollTo({
+    this.flatscroll.current?.scrollTo({
       x: this.props.horizontal ? this.idxNumber[x] : 0,
       y: !this.props.horizontal ? this.idxNumber[x] : 0,
       animated: anim

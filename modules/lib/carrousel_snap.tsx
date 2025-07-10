@@ -1,7 +1,7 @@
 // withHooks
 // noPage
 import esp from 'esoftplay/esp';
-import React, { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { ScrollView, StyleProp, View, ViewStyle } from 'react-native';
 
 export interface LibCarrousel_snapProps {
@@ -42,7 +42,7 @@ export default function m(props: LibCarrousel_snapProps): any {
     }
     thisPage = initialPage
     if (props.onChangePage) props.onChangePage(indexes[initialPage])
-    sRef.current!.scrollTo({ x: renderOffsets[initialPage], animated: false })
+    sRef.current?.scrollTo({ x: renderOffsets[initialPage], animated: false })
     if (autoCycle && props.loop && props.align == 'center')
       timmer()
     return () => {
@@ -79,13 +79,13 @@ export default function m(props: LibCarrousel_snapProps): any {
       if (out >= (props.data.length + adderLength)) {
         const a = indexes[out];
         const b = indexsData.indexOf(a) + adderLength
-        sRef.current!.scrollTo({ x: renderOffsets[out], animated: true })
+        sRef.current?.scrollTo({ x: renderOffsets[out], animated: true })
         thisPage = b
         return
       }
     }
     thisPage = out
-    sRef.current!.scrollTo({ x: renderOffsets[out], animated: true })
+    sRef.current?.scrollTo({ x: renderOffsets[out], animated: true })
   }
 
   function onChangePage(e: any) {
@@ -105,7 +105,7 @@ export default function m(props: LibCarrousel_snapProps): any {
       if (x <= adderLength || x >= (props.data.length + adderLength)) {
         const a = indexes[x];
         const b = indexsData.indexOf(a) + adderLength
-        sRef.current!.scrollTo({ x: renderOffsets[b], animated: false })
+        sRef.current?.scrollTo({ x: renderOffsets[b], animated: false })
         thisPage = b
         if (timmerTick) {
           clearInterval(timmerTick)
