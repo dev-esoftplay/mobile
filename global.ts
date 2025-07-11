@@ -111,11 +111,6 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
     }), () => {
       o?.useAutoSync?.isSyncing?.(false)
     })
-    esp.mod("lib/net_status").subscriber.useSubscribe(({ isInternetReachable, isOnline }) => {
-      if (isInternetReachable && isOnline) {
-        _sync()
-      }
-    })
   }
 
 
@@ -194,7 +189,8 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
       }
 
       if (o?.useAutoSync && taskSync && Array.isArray(newValue)) {
-        taskSync[0](newValue.filter((item: any) => item.synced != 1));
+        // taskSync[0](newValue.filter((item: any) => item.synced != 1));
+        _sync()
       }
 
       listener.forEach((fun) => fun(newValue)); // Directly call the listener functions
@@ -263,6 +259,7 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
     const children = props.render(state)
     return children ? R.cloneElement(children) : null
   }
+  
 
   return { useState, get, set, useSelector, reset: del, connect: _connect, sync: _sync, listen: listen };
 }
