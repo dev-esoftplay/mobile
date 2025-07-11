@@ -14,6 +14,7 @@ export interface useGlobalReturn<T> {
   reset: () => void,
   listen: (cb: (value: T) => void) => () => void
   sync: () => () => void,
+  useAutoSyncOnNetworkChanges: () => void,
   connect: (props: useGlobalConnect<T>) => any,
   useSelector: (selector: (state: T) => any) => any;
 }
@@ -189,7 +190,6 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
       }
 
       if (o?.useAutoSync && taskSync && Array.isArray(newValue)) {
-        // taskSync[0](newValue.filter((item: any) => item.synced != 1));
         _sync()
       }
 
@@ -223,6 +223,15 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
     }, [sl]);
 
     return l;
+  }
+
+  function useAutoSyncOnNetworkChanges() {
+    esp.mod("lib/net_status").subscriber.useSubscribe(({ isInternetReachable, isOnline }) => {
+      if (isInternetReachable && isOnline) {
+        _sync()
+      }
+    })
+
   }
 
   function get(param?: string, ...params: string[]): any {
@@ -259,7 +268,6 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
     const children = props.render(state)
     return children ? R.cloneElement(children) : null
   }
-  
 
-  return { useState, get, set, useSelector, reset: del, connect: _connect, sync: _sync, listen: listen };
+  return { useState, get, set, useSelector, reset: del, connect: _connect, sync: _sync, listen: listen, useAutoSyncOnNetworkChanges };
 }
