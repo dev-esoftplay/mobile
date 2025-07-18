@@ -1,6 +1,26 @@
-import { MMKV } from 'react-native-mmkv';
 
-const storage = new MMKV()
+let storage: any;
+let isWeb = typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
+if (isWeb) {
+  storage = {
+    getString(key: string) {
+      return window.localStorage.getItem(key) || '';
+    },
+    set(key: string, value: string) {
+      window.localStorage.setItem(key, value);
+    },
+    delete(key: string) {
+      window.localStorage.removeItem(key);
+    },
+    clearAll() {
+      window.localStorage.clear();
+    }
+  }
+} else {
+  // @ts-ignore
+  const MMKV = require('react-native-mmkv').MMKV;
+  storage = new MMKV();
+}
 
 /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/mmkv.md) untuk melihat dokumentasi*/
 const FastStorage = {
@@ -22,7 +42,7 @@ const FastStorage = {
   },
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/mmkv.md#clear) untuk melihat dokumentasi*/
   clear(): void {
-    storage.clearAll()
+    storage.clearAll();
   },
 };
 

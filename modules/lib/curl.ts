@@ -153,7 +153,7 @@ export default class m {
           post.api_key = _apiKey
         }
         let ps = Object.keys(_post).map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(_post[key])).join('&');
-        var options: any = {
+        let options: any = {
           method: "POST",
           signal: this.signal,
           headers: {
@@ -198,12 +198,12 @@ export default class m {
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/curl.md#uploaduri-string-postkey-string-fileuri-string-mimetype-string-ondone-res-any-msg-string--void-onfailed-error-any-timeout-boolean--void-debug-number-void) untuk melihat dokumentasi*/
   public upload(uri: string, postKey: string, fileUri: string, mimeType: string, onDone?: (res: any, msg: string) => void, onFailed?: (error: any, timeout: boolean) => void, debug?: number): void {
     postKey = postKey || "image";
-    var uName = fileUri.substring(fileUri.lastIndexOf("/") + 1, fileUri.length);
+    let uName = fileUri.substring(fileUri.lastIndexOf("/") + 1, fileUri.length);
     if (!uName.includes('.')) {
       uName += '.jpg'
     }
-    var uType = mimeType || "image/jpeg"
-    var post = { [postKey]: { uri: fileUri, type: uType, name: uName } }
+    let uType = mimeType || "image/jpeg"
+    let post = { [postKey]: { uri: fileUri, type: uType, name: uName } }
     this.init(uri, post, onDone, onFailed, debug, true)
   }
 
@@ -284,7 +284,7 @@ export default class m {
         this.setUrl(esp.config("url"))
       }
       await this.setHeader()
-      var options: any = {
+      let options: any = {
         method: !this.post ? "GET" : "POST",
         signal: this.signal,
         headers: {
@@ -304,9 +304,9 @@ export default class m {
       //api_init_time
       fetch(this.url + this.uri, options).then(async (res) => {
         this.cancelTimeout()
-        var resText = await res.text()
+        let resText = await res.text()
         this.resStatus = res.status
-        var resJson = (resText.startsWith("{") || resText.startsWith("[")) ? JSON.parse(resText) : null
+        let resJson = (resText.startsWith("{") || resText.startsWith("[")) ? JSON.parse(resText) : null
         if (resJson) {
           if (onDone) onDone(resJson, false)
           this.onDone(resJson)
@@ -361,7 +361,7 @@ export default class m {
       this.header["Content-Type"] = "multipart/form-data"
     else
       this.header["Content-Type"] = "application/x-www-form-urlencoded;charset=UTF-8"
-    var options: any = {
+    let options: any = {
       method: !this.post ? "GET" : "POST",
       headers: this.header,
       body: this.post,
@@ -409,7 +409,7 @@ export default class m {
 
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/curl.md#onfetchedrestext-string--object-ondone-res-any-msg-string--void-onfailed-error-any-timeout-boolean--void-debug-number-void) untuk melihat dokumentasi*/
   protected onFetched(resText: string | Object, onDone?: (res: any, msg: string) => void, onFailed?: (error: any, timeout: boolean) => void, debug?: number): void {
-    var resJson = typeof resText == 'string' && ((resText.startsWith("{") && resText.endsWith("}")) || (resText.startsWith("[") && resText.endsWith("]"))) ? JSON.parse(resText) : resText
+    let resJson = typeof resText == 'string' && ((resText.startsWith("{") && resText.endsWith("}")) || (resText.startsWith("[") && resText.endsWith("]"))) ? JSON.parse(resText) : resText
     if (typeof resJson == "object") {
       if (!resJson.status_code || this.onStatusCode(resJson.ok, resJson.status_code, resJson.message, resJson.result)) {
         if (resJson.ok === 1) {
