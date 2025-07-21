@@ -306,7 +306,7 @@ export default class m {
         this.cancelTimeout()
         let resText = await res.text()
         this.resStatus = res.status
-        let resJson = (resText.startsWith("{") || resText.startsWith("[")) ? JSON.parse(resText) : null
+        var resJson = (resText.startsWith("{") || resText.startsWith("[")) ? JSON.parse(resText) : null
         if (resJson) {
           if (onDone) onDone(resJson, false)
           this.onDone(resJson)
