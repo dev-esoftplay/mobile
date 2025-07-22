@@ -47,6 +47,10 @@ let timeoutFinish: NodeJS.Timeout
 
 /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/global.md) untuk melihat dokumentasi*/
 export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): useGlobalReturn<T> {
+  if (o?.useAutoSync && o.persistKey) {
+    o.inFastStorage = true
+    o.loadOnInit = true
+  }
   const STORAGE = o?.inFastStorage ? MMKV : (o?.inFile ? Storage : AsyncStorage);
   let value: T = initValue;
   const subsSetter = new Set<(newValue: T) => void>(); // Typed Set
