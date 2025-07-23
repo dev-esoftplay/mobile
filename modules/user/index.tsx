@@ -21,11 +21,23 @@ import esp from 'esoftplay/esp';
 import moment from 'esoftplay/moment';
 import useSafeState from 'esoftplay/state';
 import { useFonts } from 'expo-font';
-import React, { useLayoutEffect } from 'react';
-import { View } from 'react-native';
+import * as SplashScreen from 'expo-splash-screen';
+import { useLayoutEffect } from 'react';
+import { Dimensions, Platform, SafeAreaView, StatusBar, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from "react-native-keyboard-controller";
 
+
+import {
+  configureReanimatedLogger,
+  ReanimatedLogLevel,
+} from 'react-native-reanimated';
+
+// This is the default configuration
+configureReanimatedLogger({
+  level: ReanimatedLogLevel.warn,
+  strict: true, // Reanimated runs in strict mode by default
+});
 
 export interface UserIndexProps {
 
@@ -45,9 +57,10 @@ function getFontConfig() {
   return fonts
 }
 
-
+SplashScreen.preventAutoHideAsync();
 
 /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/user/index.md) untuk melihat dokumentasi*/
+
 export default function m(props: UserIndexProps): any {
   moment().locale(LibLocale.state().get())
   const [loading, setLoading] = useSafeState(true)
@@ -61,40 +74,51 @@ export default function m(props: UserIndexProps): any {
     LibVersion.check()
   }, [])
 
+
+  const screenHeight = Dimensions.get('screen').height;
+  const windowHeight = Dimensions.get('window').height;
+  const statusBarHeight = StatusBar.currentHeight ?? 0;
+  const navigationBarHeight = screenHeight - windowHeight - statusBarHeight;
+
   useLayoutEffect(() => {
     if (fontLoaded) {
       UserClass.isLogin(() => {
         setLoading(false)
       })
+      SplashScreen.hideAsync()
     }
   }, [fontLoaded])
 
 
   //esoftplay-chatting
 
+  const Main = Platform.OS == 'ios' ? View : SafeAreaView
+
   return (
-    <KeyboardProvider>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <View style={{ flex: 1 }}>
-          <LibWorker />
-          {
-            loading ?
-              <UserLoading />
-              :
-              <>
-                <LibWorkloop />
-                <Navs />
-                <LibNet_status />
-                <LibDialog style={'default'} />
-                <LibImage />
-                <LibProgress />
-                <LibToast />
-                <UserHook />
-              </>
-          }
-        </View>
-        <View style={{ backgroundColor: LibStyle?.colorNavigationBar || 'white', height: LibStyle.isIphoneX ? 35 : 0 }} />
-      </GestureHandlerRootView>
-    </KeyboardProvider>
+    <Main style={{ flex: 1 }} >
+      <KeyboardProvider >
+        <GestureHandlerRootView>
+          <View style={{ flex: 1 }}>
+            <LibWorker />
+            {
+              loading ?
+                <UserLoading />
+                :
+                <>
+                  <LibWorkloop />
+                  <Navs />
+                  <LibNet_status />
+                  <LibDialog style={'default'} />
+                  <LibImage />
+                  <LibProgress />
+                  <LibToast />
+                  <UserHook />
+                </>
+            }
+          </View>
+          <View style={{ backgroundColor: LibStyle?.colorNavigationBar || Platform.OS == 'android' ? '#ddd' : 'white', height: LibStyle.isIphoneX ? 35 : navigationBarHeight }} />
+        </GestureHandlerRootView>
+      </KeyboardProvider>
+    </Main>
   )
 }
