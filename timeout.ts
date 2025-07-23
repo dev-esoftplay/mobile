@@ -6,7 +6,7 @@ export function createTimeout() {
   function set(callback: Function, delay: number) {
     clear();
     timeoutId = setTimeout(() => {
-      callback();
+      callback?.();
       clear()
     }, delay);
   }
@@ -39,7 +39,7 @@ export function createInterval() {
   function set(callback: Function, delay: number) {
     clear();
     timeoutId = setInterval(() => {
-      callback();
+      callback?.();
     }, delay);
   }
 
@@ -70,7 +70,7 @@ export function createDebounce() {
   function set(callback: Function, delay: number) {
     clear();
     timeoutId = setTimeout(() => {
-      callback();
+      callback?.();
       clear()
     }, delay);
   }
