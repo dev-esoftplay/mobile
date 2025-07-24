@@ -288,6 +288,7 @@ yarn-error.log
 		const AppJS = `import { LibNotification } from 'esoftplay/cache/lib/notification/import';
 import { UserIndex } from 'esoftplay/cache/user/index/import';
 import * as Notifications from 'expo-notifications';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { enableFreeze, enableScreens } from 'react-native-screens';
 
 enableFreeze()
@@ -296,7 +297,13 @@ enableScreens()
 Notifications.addNotificationResponseReceivedListener(x => LibNotification.onAction(x));
 Notifications.addNotificationReceivedListener(x => LibNotification.onAction(x));
 
-export default UserIndex`;
+export default function App() {
+  return (
+    <SafeAreaProvider>
+      <UserIndex />
+    </SafeAreaProvider>
+  )
+}`;
 		let expoLib = [
 			'@expo/vector-icons',
 			'@react-native-async-storage/async-storage',

@@ -1,9 +1,11 @@
+//[moved] add effect lib/notification
 // withHooks
 // noPage
 import { LibDialog } from 'esoftplay/cache/lib/dialog/import';
 import { LibImage } from 'esoftplay/cache/lib/image/import';
 import { LibLocale } from 'esoftplay/cache/lib/locale/import';
 import { LibNet_status } from 'esoftplay/cache/lib/net_status/import';
+import { LibNotification } from 'esoftplay/cache/lib/notification/import';
 import { LibProgress } from 'esoftplay/cache/lib/progress/import';
 import { LibStyle } from 'esoftplay/cache/lib/style/import';
 import { LibToast } from 'esoftplay/cache/lib/toast/import';
@@ -22,10 +24,11 @@ import moment from 'esoftplay/moment';
 import useSafeState from 'esoftplay/state';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import { useLayoutEffect } from 'react';
-import { Dimensions, Platform, SafeAreaView, StatusBar, View } from 'react-native';
+import { useEffect, useLayoutEffect } from 'react';
+import { Platform, SafeAreaView, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from "react-native-keyboard-controller";
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 
 import {
@@ -59,14 +62,21 @@ function getFontConfig() {
 
 SplashScreen.preventAutoHideAsync();
 
+// (async () => {
+//   await NavigationBar.setPositionAsync('relative');
+//   await NavigationBar.setBackgroundColorAsync('#ffffff');
+//   await NavigationBar.setButtonStyleAsync("light")
+// })()
 /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/user/index.md) untuk melihat dokumentasi*/
-
 export default function m(props: UserIndexProps): any {
   moment().locale(LibLocale.state().get())
   const [loading, setLoading] = useSafeState(true)
   const [fontLoaded] = useFonts(getFontConfig())
   //esoftplay-user-class-hook
   UseDeeplink()
+
+
+  useEffect(LibNotification.effect, []) // add this
 
   useLayoutEffect(() => {
     ErrorReport.getError()
@@ -75,10 +85,8 @@ export default function m(props: UserIndexProps): any {
   }, [])
 
 
-  const screenHeight = Dimensions.get('screen').height;
-  const windowHeight = Dimensions.get('window').height;
-  const statusBarHeight = StatusBar.currentHeight ?? 0;
-  const navigationBarHeight = screenHeight - windowHeight - statusBarHeight;
+  const insets = useSafeAreaInsets();
+  const navigationBarHeight = insets.bottom;
 
   useLayoutEffect(() => {
     if (fontLoaded) {
