@@ -53,7 +53,7 @@ if (fs.existsSync("../" + mainModule + "/" + moduleName)) {
     if (!fs.existsSync("../../assets/" + moduleName))
       shell("mkdir -p ../../assets/" + moduleName)
     try {
-      shell("cp -r --update=none ../" + mainModule + "/assets/* ../../assets/" + moduleName + "/")
+      shell("cp -r -n ../" + mainModule + "/assets/* ../../assets/" + moduleName + "/")
     } catch (error) { }
   }
 
@@ -62,7 +62,7 @@ if (fs.existsSync("../" + mainModule + "/" + moduleName)) {
     if (!fs.existsSync("../../" + assetsFonts))
       shell("mkdir -p ../../" + assetsFonts)
     try {
-      shell("cp -r --update=none ../" + mainModule + "/fonts/* ../../" + assetsFonts + "/")
+      shell("cp -r -n ../" + mainModule + "/fonts/* ../../" + assetsFonts + "/")
     } catch (error) { }
   }
 
