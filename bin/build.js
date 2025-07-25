@@ -142,8 +142,13 @@ if (fs.existsSync(packjson)) {
 				"./raw/plugins/noDarkAndroid",
 				"./raw/plugins/withAndroidVerifiedLinksWorkaround",
 			]
-			
-			execSync("mkdir -p ./raw && cp -r ./node_modules/esoftplay/assets/plugins ./raw")
+
+			if (fs.existsSync("./node_modules/esoftplay/assets/plugins")) {
+				execSync("mkdir -p ./raw && cp -r ./node_modules/esoftplay/assets/plugins ./raw");
+			} else {
+				console.warn("Skipping copy: ./node_modules/esoftplay/assets/plugins not found");
+			}
+			// execSync("mkdir -p ./raw && cp -rf ./node_modules/esoftplay/assets/plugins ./raw/")
 			fs.writeFile(appjson, JSON.stringify($appjson, null, 2), (err) => {
 				if (err) throw err;
 				console.log('app.json has been updated');

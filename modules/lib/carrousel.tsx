@@ -2,7 +2,7 @@
 import { LibComponent } from 'esoftplay/cache/lib/component/import';
 import { LibFocus } from 'esoftplay/cache/lib/focus/import';
 import React from 'react';
-import { Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { Platform, ScrollView, StyleSheet, Text, View, ViewStyle } from 'react-native';
 
 export interface LibCarrouselProps {
   children: any,
@@ -158,9 +158,9 @@ export default class m extends LibComponent<LibCarrouselProps, LibCarrouselState
       pages.push(<View><Text>You are supposed to add children inside Carousel</Text></View>);
     }
     return pages.map((page, i) => (
-      <TouchableOpacity activeOpacity={1} style={[{ ...size }, pageStyle]} key={`page${i}`}>
+      <View activeOpacity={1} style={[{ ...size }, pageStyle]} key={`page${i}`}>
         {page}
-      </TouchableOpacity>
+      </View>
     ));
   }
 
@@ -341,13 +341,13 @@ export default class m extends LibComponent<LibCarrouselProps, LibCarrouselState
     const bullets: any[] = [];
     for (let i = 0; i < pageLength; i += 1) {
       bullets.push(
-        <TouchableOpacity activeOpacity={1} onPress={() => this.animateToPage(i)} key={`bullet${i}`}>
+        <View activeOpacity={1} onPress={() => this.animateToPage(i)} key={`bullet${i}`}>
           <View
             style={i === this.state.currentPage ?
               [styles.chosenBullet, this.props.chosenBulletStyle] :
               [styles.bullet, this.props.bulletStyle]}
           />
-        </TouchableOpacity>);
+        </View>);
     }
     return (
       <View style={[styles.bullets, this.props.bulletsContainerStyle]} pointerEvents="box-none">
@@ -364,16 +364,16 @@ export default class m extends LibComponent<LibCarrouselProps, LibCarrouselState
     return (
       <View style={styles.arrows} pointerEvents="box-none">
         <View style={[styles.arrowsContainer, this.props.arrowsContainerStyle]} pointerEvents="box-none">
-          <TouchableOpacity onPress={this._animatePreviousPage} style={this.props.arrowStyle} >
+          <View onPress={this._animatePreviousPage} style={this.props.arrowStyle} >
             <Text style={this.props.leftArrowStyle}>
               {this.props.leftArrowText ? this.props.leftArrowText : 'Left'}
             </Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={this._animateNextPage} style={this.props.arrowStyle} >
+          </View>
+          <View onPress={this._animateNextPage} style={this.props.arrowStyle} >
             <Text style={this.props.rightArrowStyle}>
               {this.props.rightArrowText ? this.props.rightArrowText : 'Right'}
             </Text>
-          </TouchableOpacity>
+          </View>
         </View>
       </View>
     );
