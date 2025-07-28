@@ -1067,6 +1067,7 @@ function devClientPos(file) {
 
 function buildPrepare(include = true) {
 	if (include) {
+		command("esp start")
 		if (isCustomUpdates())
 			if (!fs.existsSync('./code-signing')) {
 				consoleError("./code-signing not found!")
