@@ -85,6 +85,9 @@
     "version_available": "A new version is available",
     "btn_update": "Update Sekarang"
   },
+  "lib/version_view": {
+    "msg": "A new version is available"
+  },
   "lib/video": {
     "missing_code": "Missing Youtube Code in Props"
   },

@@ -396,7 +396,7 @@ function update() {
 			if (key != 'esoftplay') {
 				if (args[1] == 'all')
 					command('bun add ' + key)
-				command("cd node_modules/" + key + " && bun mover.js")
+				command(`bun ./node_modules/esoftplay/bin/mover.js ${key}`)
 				consoleSucces(key + " succesfully implemented!")
 			}
 		})
@@ -407,7 +407,7 @@ function update() {
 }
 
 function createMaster(module_name) {
-	if (module_name) {
+	if (module_name) { 
 		const PATH = "../"
 		const index = `const moduleName = "` + module_name + `"
 		module.exports = { moduleName }`

@@ -4,7 +4,7 @@ import { LibTextstyle } from 'esoftplay/cache/lib/textstyle/import';
 import esp from 'esoftplay/esp';
 import { useTimeout } from 'esoftplay/timeout';
 import * as Updates from 'expo-updates';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { ActivityIndicator, ImageBackground, View } from 'react-native';
 
 export interface LibVersion_viewArgs {
