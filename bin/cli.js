@@ -1201,11 +1201,23 @@ function build() {
 		return
 	}
 
-	const { getCurrentVersion } = require('/var/www/html/ota/scripts/config_version')
-	if (getCurrentVersion)
-		if (cjson.updated < getCurrentVersion(ajson.expo.slug)) {
-			consoleError('config.json is outdated, please update to continue!')
-			return
+	let ajson = readToJSON(appjson)
+	if (ajson.expo.hasOwnProperty("updates"))
+		if (ajson.expo.updates.hasOwnProperty('url') && !ajson.expo.updates.url.includes("https://u.expo.dev")) {
+			if (!fs.existsSync('./code-signing')) {
+				consoleError("./code-signing not found!")
+				return
+			}
+			consoleSucces("START PULL OTA..")
+			command('cd /var/www/html/ota && git fetch origin master && git reset --hard FETCH_HEAD && git clean -df')
+			consoleSucces("END PULL OTA..")
+
+			const { getCurrentVersion } = require('/var/www/html/ota/scripts/config_version')
+			if (getCurrentVersion)
+				if (readToJSON(confjson).updated < getCurrentVersion(ajson.expo.slug)) {
+					consoleError('config.json is outdated, please update to continue!')
+					return
+				}
 		}
 
 	const local = args[1] == 'local' ? ' --local' : ''
