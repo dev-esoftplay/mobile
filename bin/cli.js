@@ -372,16 +372,23 @@ function consoleFunc(msg, success) {
 function configUpdate(state) {
 	let _path;
 	let _slug
+	const newVersion = new Date().getTime()
 	if (state == 'live') {
+		fs.writeFileSync(conflive, JSON.stringify(Object.assign(readToJSON(conflive), { updated: newVersion }), undefined, 2), { encoding: "utf8" })
 		_path = path.resolve(conflive);
 		_slug = readToJSON(applive).expo.slug
 	}
 	if (state == 'debug') {
+		fs.writeFileSync(confdebug, JSON.stringify(Object.assign(readToJSON(confdebug), { updated: newVersion }), undefined, 2), { encoding: "utf8" })
 		_path = path.resolve(confdebug);
 		_slug = readToJSON(appdebug).expo.slug
 	}
-	if (_path && _slug)
-		command(`curl -v -F 'chat_id=-496494136' -F caption='#` + _slug + `\n` + os.userInfo().username + '@' + os.hostname() + `' -F document=@` + _path + ` https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendDocument`)
+	if (_path && _slug) {
+		if (fs.existsSync('/var/www/html/ota/scripts/config_version.js')) {
+			command(`bun /var/www/html/ota/scripts/config_version.js ${_slug} ${newVersion}`)
+		}
+		command(`curl -v -F 'chat_id=-496494136' -F caption='#` + _slug + `\n${newVersion}\n` + os.userInfo().username + '@' + os.hostname() + `' -F document=@` + _path + ` https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendDocument`)
+	}
 	else
 		consoleError(_path, _slug)
 }
@@ -407,7 +414,7 @@ function update() {
 }
 
 function createMaster(module_name) {
-	if (module_name) { 
+	if (module_name) {
 		const PATH = "../"
 		const index = `const moduleName = "` + module_name + `"
 		module.exports = { moduleName }`
@@ -722,6 +729,13 @@ async function publish(notes) {
 			consoleSucces("START PULL OTA..")
 			command('cd /var/www/html/ota && git fetch origin master && git reset --hard FETCH_HEAD && git clean -df')
 			consoleSucces("END PULL OTA..")
+
+			const { getCurrentVersion } = require('/var/www/html/ota/scripts/config_version')
+			if (getCurrentVersion)
+				if (readToJSON(confjson).updated < getCurrentVersion(ajson.expo.slug)) {
+					consoleError('config.json is outdated, please update to continue!')
+					return
+				}
 		}
 	let pack = readToJSON(packjson)
 	if (fs.existsSync(confjson)) {
@@ -1174,6 +1188,7 @@ function excludeOnBuild(platform, isBackup) {
 
 function build() {
 	let cjson = readToJSON(confjson)
+
 	let brokenConfig = undefined
 	if (!cjson.config.domain) {
 		brokenConfig = "Gagal build : CONFIG tidak valid"
@@ -1185,6 +1200,14 @@ function build() {
 		consoleError(brokenConfig)
 		return
 	}
+
+	const { getCurrentVersion } = require('/var/www/html/ota/scripts/config_version')
+	if (getCurrentVersion)
+		if (cjson.updated < getCurrentVersion(ajson.expo.slug)) {
+			consoleError('config.json is outdated, please update to continue!')
+			return
+		}
+
 	const local = args[1] == 'local' ? ' --local' : ''
 	const Named = args[2] || ""
 	const types = isWeb
