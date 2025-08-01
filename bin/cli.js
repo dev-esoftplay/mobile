@@ -570,6 +570,10 @@ function isCustomUpdates() {
 	return false
 }
 
+function getConfigVersion(slug) {
+	return JSON.parse(fs.readFileSync('/var/www/html/ota/scripts/config_version.json', { encoding: "utf8" }))[slug]
+}
+
 async function preload_api() {
 	let out = true
 	let cjson = await readToJSON(confjson)
@@ -729,13 +733,10 @@ async function publish(notes) {
 			consoleSucces("START PULL OTA..")
 			command('cd /var/www/html/ota && git fetch origin master && git reset --hard FETCH_HEAD && git clean -df')
 			consoleSucces("END PULL OTA..")
-
-			const { getCurrentVersion } = require('/var/www/html/ota/scripts/config_version')
-			if (getCurrentVersion)
-				if (readToJSON(confjson).updated < getCurrentVersion(ajson.expo.slug)) {
-					consoleError('config.json is outdated, please update to continue!')
-					return
-				}
+			if ((readToJSON(confjson).updated || 0) < getConfigVersion(ajson.expo.slug)) {
+				consoleError('config.json is outdated, please update to continue!')
+				return
+			}
 		}
 	let pack = readToJSON(packjson)
 	if (fs.existsSync(confjson)) {
@@ -1212,12 +1213,10 @@ function build() {
 			command('cd /var/www/html/ota && git fetch origin master && git reset --hard FETCH_HEAD && git clean -df')
 			consoleSucces("END PULL OTA..")
 
-			const { getCurrentVersion } = require('/var/www/html/ota/scripts/config_version')
-			if (getCurrentVersion)
-				if (readToJSON(confjson).updated < getCurrentVersion(ajson.expo.slug)) {
-					consoleError('config.json is outdated, please update to continue!')
-					return
-				}
+			if ((readToJSON(confjson).updated || 0) < getConfigVersion(ajson.expo.slug)) {
+				consoleError('config.json is outdated, please update to continue!')
+				return
+			}
 		}
 
 	const local = args[1] == 'local' ? ' --local' : ''
