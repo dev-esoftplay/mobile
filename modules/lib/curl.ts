@@ -55,6 +55,20 @@ export default class m {
     }
   }
 
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/curl.md#await) untuk melihat dokumentasi*/
+  static async(uriOrUrl: string, post: any): Promise<{ ok: 0 | 1, message: string, result: any }> {
+    return new Promise((resolve, reject) => {
+      new (esp.mod("lib/curl"))(uriOrUrl, post,
+        (result, message) => {
+          resolve({ ok: 1, result, message })
+        },
+        (error) => {
+          reject(error)
+        }
+      )
+    })
+  }
+
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/curl.md#inittimeoutcustomtimeout-number-void) untuk melihat dokumentasi*/
   protected initTimeout(customTimeout?: number): void {
     this.cancelTimeout()
