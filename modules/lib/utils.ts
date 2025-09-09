@@ -71,6 +71,69 @@ export default {
     }
     return props?.route?.params?.[key] || defOutput;
   },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#hexToHSL) untuk melihat dokumentasi*/
+  hexToHSL(hex: string) {
+    hex = hex.replace(/^#/, "");
+    if (hex.length === 3) {
+      hex = hex.split("").map(x => x + x).join("");
+    }
+    const r = parseInt(hex.substr(0, 2), 16) / 255;
+    const g = parseInt(hex.substr(2, 2), 16) / 255;
+    const b = parseInt(hex.substr(4, 2), 16) / 255;
+
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h, s, l = (max + min) / 2;
+
+    if (max === min) {
+      h = s = 0; // achromatic
+    } else {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      switch (max) {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+        case g: h = (b - r) / d + 2; break;
+        case b: h = (r - g) / d + 4; break;
+      }
+      h *= 60;
+    }
+
+    return { h, s: s * 100, l: l * 100 };
+  },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#hslToHex) untuk melihat dokumentasi*/
+  hslToHex(h, s, l) {
+    s /= 100;
+    l /= 100;
+
+    const c = (1 - Math.abs(2 * l - 1)) * s;
+    const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+    const m = l - c / 2;
+    let r = 0, g = 0, b = 0;
+
+    if (h >= 0 && h < 60) { r = c; g = x; b = 0; }
+    else if (h >= 60 && h < 120) { r = x; g = c; b = 0; }
+    else if (h >= 120 && h < 180) { r = 0; g = c; b = x; }
+    else if (h >= 180 && h < 240) { r = 0; g = x; b = c; }
+    else if (h >= 240 && h < 300) { r = x; g = 0; b = c; }
+    else if (h >= 300 && h < 360) { r = c; g = 0; b = x; }
+
+    r = Math.round((r + m) * 255);
+    g = Math.round((g + m) * 255);
+    b = Math.round((b + m) * 255);
+
+    return `#${[r, g, b].map(x => x.toString(16).padStart(2, "0")).join("")}`;
+  },
+  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#adjustHexColor) untuk melihat dokumentasi*/
+  adjustHexColor(hex, deltaHue = 0, deltaSaturation = 0, deltaLightness = 0) {
+    const { h, s, l } = this.hexToHSL(hex);
+
+    let newH = (h + deltaHue) % 360;
+    if (newH < 0) newH += 360;
+
+    let newS = Math.min(100, Math.max(0, s + deltaSaturation));
+    let newL = Math.min(100, Math.max(0, l + deltaLightness));
+
+    return this.hslToHex(newH, newS, newL);
+  },
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/utils.md#getArgsAll) untuk melihat dokumentasi*/
   getArgsAll<S>(props: any, defOutput?: any): S {
     if (defOutput == undefined) {
