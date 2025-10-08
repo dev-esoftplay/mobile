@@ -73,10 +73,11 @@ export function useLocalFormatOnline(custom): [string, () => void] {
 
   function get() {
     const fetchtime = performance.now();
-    fetch('https://worldtimeapi.org/api/ip')
+    const config = esp.config()
+    fetch(`${config.protocol}://${config.domain}${config.uri}t.php`)
       .then((res) => res.json())
       .then((res) => {
-        const onlineTime = new Date(new Date(res.utc_datetime).getTime() + performance.now() - (fetchtime) + 2000)
+        const onlineTime = new Date(Number(res) + performance.now() - (fetchtime) + 2000)
         const out = dayjs(onlineTime).format(custom)
         setDate(out)
       })
