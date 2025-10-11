@@ -401,7 +401,7 @@ export default function App() {
 			}
 			if (installExpoLibs.length > 0) {
 				// console.log(installExpoLibs)
-				cmd += "&& bunx expo install " + installExpoLibs.join(" ")
+				cmd += "&& npx expo install " + installExpoLibs.join(" ")
 			}
 			console.log((JSON.stringify({ cmd }, undefined, 2)))
 			execSync(cmd + "|| true")
