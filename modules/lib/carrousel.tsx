@@ -183,7 +183,9 @@ export default class m extends LibComponent<LibCarrouselProps, LibCarrouselState
   _onScrollEnd(event: any): void {
     const offset = { ...event.nativeEvent.contentOffset };
     const page = this._calculateCurrentPage(offset.x);
-    this._placeCritical(page);
+    const originalPage = Math.round(offset / this.state.size.width);
+    if (originalPage != page)
+      this._placeCritical(page);
     this._setCurrentPage(page);
     this._setUpTimer();
   }
