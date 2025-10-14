@@ -311,8 +311,6 @@ export default function App() {
 }`;
 		let expoLib = [
 			'@expo/vector-icons',
-			'@react-native-firebase/app',
-			'@react-native-firebase/messaging',
 			'@react-native-async-storage/async-storage',
 			'@react-native-masked-view/masked-view',
 			'@react-native-community/netinfo',
