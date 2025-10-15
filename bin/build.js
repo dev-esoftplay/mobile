@@ -313,6 +313,8 @@ export default function App() {
 			'@expo/vector-icons',
 			'@react-native-async-storage/async-storage',
 			'@react-native-masked-view/masked-view',
+			'@react-native-firebase/app',
+			'@react-native-firebase/messaging',
 			'@react-native-community/netinfo',
 			'@react-navigation/native-stack',
 			'@react-navigation/native',
