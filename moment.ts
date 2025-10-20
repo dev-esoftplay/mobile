@@ -67,6 +67,18 @@ export function resetTimeOffset(date: Date, timeZone?: string): Date {
   return originalTime;
 }
 
+export function useLocalTimeChecker(callback?: (valid: boolean) => void): boolean {
+  const [isValid, setIsValid] = useSafeState()
+  const [compare] = useLocalFormatOnline('YYYY-MM-DD HH:mm:ss')
+  useEffect(() => {
+    const valid = Math.abs(new Date(compare).getTime() - new Date().getTime()) < 5000
+    if (typeof callback == "function")
+      callback(valid)
+    setIsValid(valid)
+  }, [])
+  return isValid
+}
+
 
 export function useLocalFormatOnline(custom): [string, () => void] {
   const [date, setDate] = useSafeState()
