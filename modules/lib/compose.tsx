@@ -213,15 +213,16 @@ export default function m(props: LibComposeProps): any {
   let [_schema, _setSchema, _getSchema] = useLazyState(props.schema)
   const [state] = schema.useState()
   
-  UserRoutes.state().listen(() => {
-    if (state.length)
-      for (const row of state) {
-        if (UserRoutes.getCurrentRouteName() == row?.module && row?.schema && row.id == props.id) {
-          _setSchema(row?.schema)
+  if (props.id)
+    UserRoutes.state().listen(() => {
+      if (state.length)
+        for (const row of state) {
+          if (UserRoutes.getCurrentRouteName() == row?.module && row?.schema && row.id == props.id) {
+            _setSchema(row?.schema)
+          }
         }
-      }
       _setSchema(_getSchema())()
-  })
+    })
 
   return Boolean(_schema)
     ? renderUIFromJSON(_schema)
