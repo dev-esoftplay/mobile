@@ -1,168 +1,40 @@
 // withHooks
-import { LibNavigationRoutes } from 'esoftplay';
-import { LibNavigation } from 'esoftplay/cache/lib/navigation/import';
+
 import { LibObject } from 'esoftplay/cache/lib/object/import';
+import { LibUtils } from 'esoftplay/cache/lib/utils/import';
 import { EspRouterInterface } from 'esoftplay/cache/routers';
+import { UserRoutes } from 'esoftplay/cache/user/routes/import';
 import esp from 'esoftplay/esp';
 import useGlobalState from 'esoftplay/global';
-import React, { createElement, ReactElement } from 'react';
-import { ScrollView, Text, View } from "react-native";
+import useLazyState from 'esoftplay/lazy';
+import React, { ReactElement } from 'react';
+import * as RNCOMPONENT from "react-native";
 
-export interface RNTypes extends EspRouterInterface {
-  "View": typeof View,
-  "Text": typeof Text,
-  "ScrollView": typeof ScrollView,
+
+export interface LibComposeArgs {
+
+}
+export interface LibComposeProps {
+  schema?: any,
+  id?: string,
+  children?: ReactElement
 }
 
-const formState = useGlobalState({})
-
-function buildUIFromJSON(json: any): ReactElement {
-  const { component, props } = json;
-
-  let children = null;
-  if (props?.children) {
-    if (Array.isArray(props?.children)) {
-      children = props?.children?.map?.((child: any) => buildUIFromJSON(child));
-    } else if (typeof props.children != 'string') {
-      children = buildUIFromJSON(props?.children);
-    } else {
-      children = props.children;
-    }
-  }
-  let _props = props
-
-  if (props) {
-    Object.keys(props).map((key) => {
-      if (typeof props[key] == 'string' && String(props[key]).includes("#esp|")) {
-        const cleanFunction = (props[key]).replace("#esp|", "")
-        const [modules, func, args] = cleanFunction.split("|")
-        _props[key] = () => {
-          esp.mod(modules)[func](...eval(args))
-        }
-      } else if (typeof props[key] == 'string' && String(props[key]).includes("#espProp|")) {
-        const cleanFunction = (props[key]).replace("#espProp|", "")
-        const [modules, func, args] = cleanFunction.split("|")
-        _props[key] = () => {
-          esp.modProp(modules)[func](...eval(args))
-        }
-      } else if (typeof props[key] == 'string' && String(props[key]).includes("#action.")) {
-        const cleanFunction = (props[key]).replace("#action.", "")
-        const [func, argument] = cleanFunction.split('.')
-        _props[key] = () => {
-          action[func](eval(argument))
-        }
-      } else if (typeof props[key] == 'string' && String(props[key]).includes("#form.")) {
-        const cleanForm = (props[key]).replace("#form.", "")
-        const [type, postkey] = cleanForm.split('.')
-        if (type == 'input') {
-          _props[key] = (input: string) => {
-            formState.set(LibObject.set(formState.get(), input)(postkey))
-          }
-        }
-        if (type == 'select') {
-          const [_key, _value] = postkey.split(":")
-          _props[key] = () => {
-            formState.set(LibObject.set(formState.get(), _value)(_key))
-          }
-        }
-      } else {
-        _props[key] = props[key]
-      }
-    })
-  }
-
-  // Create the element based on the component type
-  if (component?.includes?.('/')) {
-    return esp.mod(component)(_props);
-  } else {
-    return createElement("RCT" + component, { ..._props, children });
-  }
-}
+export type RNTypes = EspRouterInterface & typeof RNCOMPONENT;
 
 
-/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/compose.md) untuk melihat dokumentasi*/
-export default function m({ schema }: { schema: any }): ReactElement {
-  return buildUIFromJSON(schema)
-}
+export const schema = useGlobalState<any[]>([])
+const values = useGlobalState({})
 
-const action: any = {
-  "navigate": (args: any[]) => esp.mod("lib/navigation").navigate(args[0], args[1]),
-  "replace": (args: any[]) => esp.mod("lib/navigation").replace(args[0], args[1]),
-  "back": (args: any[]) => esp.mod("lib/navigation").back(),
-  "copy": (args: any[]) => {
-    esp.mod("lib/utils").copyToClipboard(JSON.stringify(args))
-    esp.modProp("lib/toast").show(args + " copied!")
-  },
-  "share": (args: any[]) => {
-    esp.mod("lib/utils").share(args?.[0], args?.[1])
-  },
-  "curl": (args: any[]) => {
-    esp.mod("lib/progress").show("Please Wait..")
-    let post = args?.[1]
-    try {
-      post = JSON.parse(args?.[1])
-    } catch (error) {
-      post = args?.[1]
-    }
-    post = Object.assign({}, post, formState.get())
-    new (esp.mod('lib/curl'))(args[0], post, (res, msg) => {
-      esp.modProp("lib/toast").show(msg)
-      esp.mod("lib/progress").hide()
-      if (res.includes("navigate")) {
-        LibNavigation.replace(res.navigate.module, res.navigate.params)
-      }
-    }, (err) => {
-      esp.modProp("lib/toast").show(err.message)
-      esp.mod("lib/progress").hide()
-      if (err.result.includes("navigate")) {
-        LibNavigation.replace(err.result.navigate.module, err.result.navigate.params)
-      }
-    }, 1)
-  }
-}
-
-/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/compose.md#forms) untuk melihat dokumentasi*/
-export const forms = {
-  select: (postKey: string, value: string) => `#form.select.${postKey}:${value}`,
-  input: (postKey: string) => `#form.input.${postKey}`,
-}
-/** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/compose.md#actions) untuk melihat dokumentasi*/
-export const actions = {
-  navigate: (module: LibNavigationRoutes, params: any) => {
-    return `#action.navigate.[${module},${params}]`
-  },
-  replace: (module: LibNavigationRoutes, params: any) => {
-    return `#action.replace.[${module},${params}]`
-  },
-  back: () => {
-    return `#action.back`
-  },
-  copy: (args: string) => {
-    return `#action.copy.[${args}]`
-  },
-  share: (url: string, message?: string) => {
-    return message ? `#action.share.["${url}", "${message}"]` : `#action.share.["${url}"]`
-  },
-  curl: (uri: string, post?: any) => {
-    return `#action.curl.["${uri}", ${post}]`
-  }
+export function addUi<T extends keyof EspRouterInterface>(obj: { id: string, module: T, schema: any }) {
+  schema.set(LibUtils.uniqueArray(LibObject.push(schema.get(), obj)()))
 }
 
 /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/compose.md#buildcmpn-props) untuk melihat dokumentasi*/
 export function build<T extends keyof RNTypes>(cmpn: T, props: React.ComponentProps<RNTypes[T]>): any {
   let obj: any = {};
   obj.component = cmpn;
-  let _props = props
-  if (props) {
-    Object.keys(props).map((key) => {
-      if (typeof props[key] == 'function') {
-        _props[key] = `@clientFn` + String(props[key])
-      } else {
-        _props[key] = props[key]
-      }
-    })
-  }
-  obj.props = { ..._props }; // Shallow copy the props
+  obj.props = { ...props }; // Shallow copy the props
 
   // If there are children, process them
   if (props?.children) {
@@ -176,6 +48,183 @@ export function build<T extends keyof RNTypes>(cmpn: T, props: React.ComponentPr
       obj.props.children = build(props.children.component, props.children.props);
     }
   }
-
   return obj;
+}
+
+
+export type onPressInterface = {
+  action: 'rn' | 'mod' | 'modProp',
+  module: keyof RNTypes,
+  function: string,
+  params: any[]
+}
+
+type Num1to9 = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+type ParamKeys = `$${Num1to9}`;
+
+export type callbackInterface = {
+  action: 'rn' | 'mod' | 'modProp',
+  module: keyof RNTypes,
+  function: string,
+  params: ParamKeys[]
+}
+
+export function onPress(obj: onPressInterface) {
+  return obj
+}
+
+export type onChangeTextInterface = {
+  label: string
+}
+
+export function onChangeText(obj: onChangeTextInterface) {
+  return obj
+}
+
+export type setValueInterface = {
+  label: string,
+  value: any
+}
+
+export function getValue(key: string) {
+  return {
+    "@value": key
+  }
+}
+
+export function getValues() {
+  return {
+    "@values": "all"
+  }
+}
+
+export function setValue(obj: setValueInterface) {
+  return values.set(LibObject.set(values.get(), obj.value)(obj.label))
+}
+
+export function callback(obj: callbackInterface) {
+  return {
+    ...obj,
+    "@callback": true
+  }
+}
+
+function readValueFrom(key: any) {
+  if (typeof key === 'object') {
+    if (key.hasOwnProperty("@value")) {
+      return values.get(key['@value'])
+    }
+    if (key.hasOwnProperty("@values")) {
+      return values.get()
+    }
+    if (key.hasOwnProperty("@callback")) {
+      return (...cbparams: any) => {
+        const actualIndex = key.params?.map?.((x: string) => readValueFrom(x.includes("$") ? cbparams[(Number(x.replace('$', '')) - 1)] : x))
+        if (key.action == 'mod')
+          esp.mod(key.module)[key.function](...actualIndex)
+        else if (key.action == 'modProp')
+          esp.modProp(key.module)[key.function](...actualIndex)
+        else if (key.action == 'rn') {
+          //@ts-ignore
+          RNCOMPONENT[key.module][key.function](...actualIndex)
+        }
+      }
+    }
+    return key
+  }
+  return key
+}
+
+
+function renderUIFromJSON(node: any) {
+  if (!node || typeof node !== "object") return null;
+
+  const { component, props = {} } = node;
+
+  // Clone props to avoid mutating schema
+  let resolvedProps = { ...props };
+
+  // Replace string event handlers with actual functions
+  Object.keys(resolvedProps).forEach((key) => {
+    if (typeof resolvedProps[key] === "object") {
+      switch (key) {
+        case 'onPress':
+          const d = resolvedProps[key]
+          const thisfunction = () => {
+            let params = d?.params?.map((param: any) => readValueFrom(param))
+            if (d.action == 'mod')
+              esp.mod(d.module)[d.function](...params)
+            else if (d.action == 'modProp')
+              esp.modProp(d.module)[d.function](...params)
+            else if (d.action == 'rn') {
+              //@ts-ignore
+              RNCOMPONENT[d.module][d.function](...params)
+            }
+          }
+          resolvedProps[key] = thisfunction
+          break;
+        case 'onChangeText':
+          let c = resolvedProps[key]
+          if (c.label) {
+            resolvedProps[key] = (text: string) => values.set(LibObject.set(values.get(), text)(c.label))
+          }
+          break;
+        case '@value':
+          let b = resolvedProps[key]
+          if (b['@value']) {
+            resolvedProps[key] = values.get(b["@value"])
+          }
+          break;
+        case '@values':
+          let x = resolvedProps[key]
+          if (x["@values"]) {
+            resolvedProps[key] = values.get()
+          }
+          break;
+      }
+    }
+  });
+  // Handle children recursively
+  let resolvedChildren = null;
+  const children = props?.children
+  if (children)
+    if (Array.isArray(children)) {
+      resolvedChildren = children.map((child, idx) => (
+        <React.Fragment key={idx}>{renderUIFromJSON(child)}</React.Fragment>
+      ));
+    } else if (typeof children === "object") {
+      resolvedChildren = renderUIFromJSON(children);
+    } else if (typeof children === "string") {
+      resolvedChildren = children;
+    }
+
+  //@ts-ignore
+  const Component = component.includes('/') ? esp.mod(component) : RNCOMPONENT[component];
+
+  if (!Component) {
+    console.warn(`Unsupported component type: ${component}`);
+    return null;
+  }
+
+  return <Component {...resolvedProps}>{resolvedChildren}</Component>;
+}
+
+export default function m(props: LibComposeProps): any {
+  let [_schema, _setSchema, _getSchema] = useLazyState(props.schema)
+  const [state] = schema.useState()
+  
+  UserRoutes.state().listen(() => {
+    if (state.length)
+      for (const row of state) {
+        if (UserRoutes.getCurrentRouteName() == row?.module && row?.schema && row.id == props.id) {
+          _setSchema(row?.schema)
+        }
+      }
+      _setSchema(_getSchema())()
+  })
+
+  return Boolean(_schema)
+    ? renderUIFromJSON(_schema)
+    :
+    props.children ? props.children : null
 }

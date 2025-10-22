@@ -131,7 +131,21 @@ export default class m {
 
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/curl.md#ondoneresult-any-msg-string-void) untuk melihat dokumentasi*/
   protected onDone(result: any, msg?: string): void {
-
+    if (result?.compose?.module) {
+      // const a = [
+      //   {
+      //     module: "payment/detail",
+      //     id: "HxT7sbcd",
+      //     schema: "a"
+      //   },
+      //   {
+      //     module: "payment/detail",
+      //     id: "HxT7sbcad",
+      //     schema: "a"
+      //   }
+      // ]
+      esp.modProp("lib/compose").addUi(result.compose)
+    }
   }
 
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/curl.md#onfailederror-any-timeout-boolean-void) untuk melihat dokumentasi*/
