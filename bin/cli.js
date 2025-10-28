@@ -1374,15 +1374,60 @@ function build() {
 							if (tmid) tmId = tmid;
 						}
 					}
-					const os = require('os')
-					const message = " ✅ Build Success by " + os.userInfo().username + '@' + os.hostname()
-					// command("curl -d \"text=" + message + "&disable_web_page_preview=true&chat_id=" + tmId + "\" 'https://api.telegram.org/bot112133589:AAFFyztZh79OsHRCxJ9rGCGpnxkcjWBP8kU/sendMessage'")
 				}
+				const os = require('os')
+
+				// build commands as label + command
+				const cmds = [
+					{ label: 'node', cmd: 'node -v' },
+					{ label: 'npm', cmd: 'npm -v' },
+					{ label: 'eas', cmd: 'eas -v' },
+					{ label: 'bun', cmd: 'bun -v' },
+					{ label: 'yarn', cmd: 'yarn -v' },
+					{ label: 'esp', cmd: 'esp c' },
+				];
+
+				if (os.type() === 'Darwin') {
+					cmds.push({ label: 'MAC ONLY', cmd: '' });
+					cmds.push({ label: 'ruby', cmd: 'ruby -v' });
+					cmds.push({ label: 'fastlane', cmd: 'fastlane -v' });
+				}
+
+				function runCommandCapture(cmd) {
+					if (!cmd) return '';
+					try {
+						// capture stdout as utf8 string; use /bin/bash on non-Darwin for compatibility
+						const out = exec(cmd, {
+							encoding: 'utf8',
+							shell: os.type() === 'Darwin' ? undefined : '/bin/bash'
+						});
+						return String(out).trim();
+					} catch (err) {
+						// prefer stdout/stderr from the thrown error if available
+						if (err && err.stdout) return String(err.stdout).trim();
+						if (err && err.stderr) return String(err.stderr).trim();
+						return String(err && err.message ? err.message : err);
+					}
+				}
+
+				const lines = cmds.map(({ label, cmd }) => {
+					const out = runCommandCapture(cmd);
+					// align label and append output; if empty output, show "-" to indicate missing result
+					return `${(label + '    ').slice(0, 8)}: ${out || '-'}`;
+				});
+
+				// allOutputString contains the full captured output as a single JS string
+				const allOutputString = lines.join('\n');
+				// also print to stdout for convenience
+				const message = " ✅ Build Success by " + os.userInfo().username + '@' + os.hostname() + "\n" + allOutputString
+				let tmId = "-1001429450501"
+				command("curl -d \"text=" + encodeURIComponent(message) + "&disable_web_page_preview=true&chat_id=" + tmId + "\" 'https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage'")
 				if (fs.existsSync('./build/post.js'))
 					command('bun ./build/post.js')
 				configAvailable(false)
 				devClientPos(appjson)
 				buildPrepare(false)
+
 			} else if (d === false) {
 				consoleError("Build Canceled")
 			} else {
