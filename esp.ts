@@ -133,7 +133,7 @@ const esp = {
     }
     function sprintf(string: string, index: number): string {
       if (stringToBe[index] != undefined) {
-        string = string.replace("%s", stringToBe[index])
+        string = string?.replace?.("%s", stringToBe[index])
         if (string?.includes?.("%s")) {
           return sprintf(string, index + 1)
         }
