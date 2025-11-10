@@ -253,7 +253,9 @@ export default class m extends LibComponent<LibInputProps, LibInputState> {
               this.text = this.mask(e)
               if (error != undefined)
                 this.clearError()
-              if (this.props.onChangeText) this.props.onChangeText(e)
+              if (this.props.onChangeText) {
+                this.props.onChangeText(this.unmask(e), this.text)
+              }
             }}
           />
           {
