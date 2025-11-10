@@ -23,6 +23,12 @@ export interface LibNavigationInjector {
   children?: any
 }
 
+export const lastArgs = useGlobalState(undefined, { persistKey: "lib/navigation/lastargs" })
+
+function logArgs(params: any) {
+  lastArgs.set(params)
+}
+
 /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md) untuk melihat dokumentasi*/
 export default {
   _redirect: {} as any,
@@ -86,10 +92,12 @@ export default {
   /* <T  EspRouterInterface>(path: T): EspRouterInterface[T] { */
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#navigate) untuk melihat dokumentasi*/
   navigate<S extends keyof EspArgsInterface>(route: S, params?: EspArgsInterface[S]): void {
+    logArgs(params)
     this._ref?.navigate?.(replaceModuleByUrlParam(params, route), params)
   },
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#navigateTab) untuk melihat dokumentasi*/
   navigateTab<S extends keyof EspArgsInterface>(route: S, tabIndex: number, params?: EspArgsInterface[S]): void {
+    logArgs(params)
     this._ref?.navigate?.(replaceModuleByUrlParam(params, route), params)
     setTimeout(() => {
       const TabConfig = esp.modProp(replaceModuleByUrlParam(params, route))?.TabConfig;
@@ -164,17 +172,20 @@ export default {
           r(value)
         };
       }
+      logArgs(params)
       this.push(replaceModuleByUrlParam(params, route), params)
     })
   },
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#replace) untuk melihat dokumentasi*/
   replace<S extends keyof EspArgsInterface>(route: S, params?: EspArgsInterface[S]): void {
+    logArgs(params)
     this._ref.dispatch(
       StackActions.replace(replaceModuleByUrlParam(params, route), params)
     )
   },
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#push) untuk melihat dokumentasi*/
   push<S extends keyof EspArgsInterface>(route: S, params?: EspArgsInterface[S]): void {
+    logArgs(params)
     this._ref?.dispatch?.(
       StackActions.push(
         replaceModuleByUrlParam(params, route),
@@ -224,6 +235,7 @@ export default {
 
 function replaceModuleByUrlParam<S extends keyof EspArgsInterface>(params: any, defaultModule: S) {
   let module = defaultModule
+  logArgs(params)
   if (params?.url) {
     const urlParams = LibUtils.getUrlParams(params.url)
     if (urlParams?.module && urlParams?.url?.includes?.(".")) {

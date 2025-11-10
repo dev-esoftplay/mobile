@@ -2,6 +2,7 @@ import Constants from 'expo-constants';
 import * as FileSystem from 'expo-file-system';
 import { Platform } from 'react-native';
 import { LibCurl } from './cache/lib/curl/import';
+import { LibNavigationProperty } from './cache/lib/navigation/import';
 import { UserClass } from './cache/user/class/import';
 import esp from './esp';
 import FastStorage from './mmkv';
@@ -34,6 +35,7 @@ export function setError(error?: any) {
     user,
     error: String(error),
     routes: routesName,
+    args: LibNavigationProperty.lastArgs.get(),
     time: getTime()
   };
   try {
