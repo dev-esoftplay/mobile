@@ -3,7 +3,7 @@ import cacheConfig from 'esoftplay/cache/config.json';
 import { LibLocale } from 'esoftplay/cache/lib/locale/import';
 import { EspRouterPropertyInterface } from 'esoftplay/cache/properties';
 import { EspRouterInterface } from 'esoftplay/cache/routers';
-import Constants from 'expo-constants';
+import * as Application from 'expo-application';
 import { LogBox, Platform } from 'react-native';
 import 'react-native-reanimated';
 import './oneplusfixfont';
@@ -86,7 +86,7 @@ const esp = {
     return _assets(path)
   },
   versionName(): string {
-    return (Platform.OS == 'android' ? Constants?.expoConfig?.android?.versionCode : Constants?.expoConfig?.ios?.buildNumber) + '-' + esp.config('publish_id')
+    return (Application.nativeBuildVersion) + '-' + esp.config('publish_id')
   },
   config<T = ConfigType>(param?: keyof ConfigType, ...params: string[]): T {
     let out: any = this._config();
