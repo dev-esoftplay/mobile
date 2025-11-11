@@ -1,3 +1,4 @@
+import * as Application from 'expo-application';
 import Constants from 'expo-constants';
 import * as FileSystem from 'expo-file-system';
 import { Platform } from 'react-native';
@@ -120,7 +121,7 @@ export function getError() {
         'time: \n' + _e?.time,
         'domain: ' + config.domain + config.uri,
         'runtimeVersion:' + app.expo.runtimeVersion,
-        'package: ' + (Platform.OS == 'ios' ? expoConfig?.ios?.bundleIdentifier : expoConfig?.android?.package) + ' - v' + (Platform.OS == 'ios' ? app.expo.ios.buildNumber : app.expo.android.versionCode),
+        'package: ' + (Application.nativeBuildVersion) + ' - v' + (Platform.OS == 'ios' ? app.expo.ios.buildNumber : app.expo.android.versionCode),
         'device: ' + Platform.OS + ' | ' + Constants.deviceName,
         'native/pub_id: ' + expoConfig?.sdkVersion + '/' + (config?.publish_id || '-'),
         'user_id: ' + _e?.user?.id || _e?.user?.user_id || '-',
