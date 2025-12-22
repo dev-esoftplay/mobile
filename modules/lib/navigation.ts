@@ -195,12 +195,12 @@ export default {
   },
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#reset) untuk melihat dokumentasi*/
   reset(route?: LibNavigationRoutes, ...routes: LibNavigationRoutes[]): void {
+    this._ref?.dispatch?.(StackActions.popToTop());
     const user = UserClass.state().get()
     let _route = [route || esp.config('home', (user && (user.id || user.user_id || user.apikey)) ? 'member' : 'public')]
     if (routes && routes.length > 0) {
       _route = [..._route, ...routes]
     }
-    this._ref?.dispatch?.(StackActions.popToTop());
     const resetAction = CommonActions.reset({
       index: _route.length - 1,
       routes: _route.map((rn) => ({ name: rn }))
