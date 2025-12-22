@@ -200,6 +200,7 @@ export default {
     if (routes && routes.length > 0) {
       _route = [..._route, ...routes]
     }
+    this._ref?.dispatch?.(StackActions.popToTop());
     const resetAction = CommonActions.reset({
       index: _route.length - 1,
       routes: _route.map((rn) => ({ name: rn }))
