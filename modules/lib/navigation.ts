@@ -1,10 +1,11 @@
 // noPage
 // withObject
-import { StackActions } from '@react-navigation/native';
+import { CommonActions, StackActions } from '@react-navigation/native';
 import { LibNavigationRoutes } from 'esoftplay';
 import { EspArgsInterface } from 'esoftplay/cache/args';
 import { LibUtils } from 'esoftplay/cache/lib/utils/import';
 import { EspRouterInterface } from 'esoftplay/cache/routers';
+import { UserClass } from 'esoftplay/cache/user/class/import';
 import { UserRoutes } from 'esoftplay/cache/user/routes/import';
 
 import esp from 'esoftplay/esp';
@@ -92,20 +93,24 @@ export default {
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#navigate) untuk melihat dokumentasi*/
   navigate<S extends keyof EspArgsInterface>(route: S, params?: EspArgsInterface[S]): void {
     logArgs(params)
-    this._ref?.navigate?.(replaceModuleByUrlParam(params, route), params)
+    doIt(() => {
+      this._ref?.navigate?.(replaceModuleByUrlParam(params, route), params)
+    })
   },
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#navigateTab) untuk melihat dokumentasi*/
   navigateTab<S extends keyof EspArgsInterface>(route: S, tabIndex: number, params?: EspArgsInterface[S]): void {
     logArgs(params)
-    this._ref?.navigate?.(replaceModuleByUrlParam(params, route), params)
-    setTimeout(() => {
-      const TabConfig = esp.modProp(replaceModuleByUrlParam(params, route))?.TabConfig;
-      if (TabConfig) {
-        TabConfig.set(esp.mod("lib/object").set(TabConfig.get(), tabIndex)('activeIndex'))
-      } else {
-        console.error("TabConfig not found or exported in module " + route);
-      }
-    }, 100);
+    doIt(() => {
+      this._ref?.navigate?.(replaceModuleByUrlParam(params, route), params)
+      setTimeout(() => {
+        const TabConfig = esp.modProp(replaceModuleByUrlParam(params, route))?.TabConfig;
+        if (TabConfig) {
+          TabConfig.set(esp.mod("lib/object").set(TabConfig.get(), tabIndex)('activeIndex'))
+        } else {
+          console.error("TabConfig not found or exported in module " + route);
+        }
+      }, 100);
+    })
   },
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#createTabConfig) untuk melihat dokumentasi*/
   createTabConfig<S extends keyof EspArgsInterface>(modules: S[], defaultIndex?: number): useGlobalReturn<LibNavigationTabConfigReturn<S>> {
@@ -171,46 +176,54 @@ export default {
           r(value)
         };
       }
-      logArgs(params)
-      this.push(replaceModuleByUrlParam(params, route), params)
+      doIt(() => {
+        this.push(replaceModuleByUrlParam(params, route), params)
+      })
     })
   },
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#replace) untuk melihat dokumentasi*/
   replace<S extends keyof EspArgsInterface>(route: S, params?: EspArgsInterface[S]): void {
-    logArgs(params)
-    this._ref.dispatch(
-      StackActions.replace(replaceModuleByUrlParam(params, route), params)
-    )
+    doIt(() => {
+      this._ref.dispatch(
+        StackActions.replace(replaceModuleByUrlParam(params, route), params)
+      )
+    })
   },
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#push) untuk melihat dokumentasi*/
   push<S extends keyof EspArgsInterface>(route: S, params?: EspArgsInterface[S]): void {
     logArgs(params)
-    this._ref?.dispatch?.(
-      StackActions.push(
-        replaceModuleByUrlParam(params, route),
-        params
+    doIt(() => {
+
+      this._ref?.dispatch?.(
+        StackActions.push(
+          replaceModuleByUrlParam(params, route),
+          params
+        )
       )
-    )
+    })
   },
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#reset) untuk melihat dokumentasi*/
   reset(route?: LibNavigationRoutes, ...routes: LibNavigationRoutes[]): void {
-    this._ref?.dispatch?.(StackActions.popToTop());
-    // const user = UserClass.state().get()
-    // let _route = [route || esp.config('home', (user && (user.id || user.user_id || user.apikey)) ? 'member' : 'public')]
-    // if (routes && routes.length > 0) {
-    //   _route = [..._route, ...routes]
-    // }
-    // const resetAction = CommonActions.reset({
-    //   index: _route.length - 1,
-    //   routes: _route.map((rn) => ({ name: rn }))
-    // });
-    // this._ref?.dispatch?.(resetAction);
+
+    const user = UserClass.state().get()
+    let _route = [route || esp.config('home', (user && (user.id || user.user_id || user.apikey)) ? 'member' : 'public')]
+    if (routes && routes.length > 0) {
+      _route = [..._route, ...routes]
+    }
+    // this._ref?.dispatch?.(StackActions.popToTop());
+    const resetAction = CommonActions.reset({
+      index: _route.length - 1,
+      routes: _route.map((rn) => ({ name: rn }))
+    });
+    this._ref?.dispatch?.(resetAction);
   },
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#back) untuk melihat dokumentasi*/
   back(deep?: number): void {
     let _deep = deep || 1
     const popAction = StackActions.pop(_deep);
-    this._ref?.dispatch?.(popAction)
+    doIt(() => {
+      this._ref?.dispatch?.(popAction)
+    })
   },
 
   /* return `root` on initialRoute otherwise return the route was active  */
@@ -232,6 +245,11 @@ export default {
     return React.cloneElement(props.children, { navigation: { state: { params: props.args } } })
   }
 }
+
+function doIt(func: Function) {
+  requestAnimationFrame(() => func())
+}
+
 
 function replaceModuleByUrlParam<S extends keyof EspArgsInterface>(params: any, defaultModule: S) {
   let module = defaultModule
