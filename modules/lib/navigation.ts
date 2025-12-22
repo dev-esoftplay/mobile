@@ -1,11 +1,10 @@
 // noPage
 // withObject
-import { CommonActions, StackActions } from '@react-navigation/native';
+import { StackActions } from '@react-navigation/native';
 import { LibNavigationRoutes } from 'esoftplay';
 import { EspArgsInterface } from 'esoftplay/cache/args';
 import { LibUtils } from 'esoftplay/cache/lib/utils/import';
 import { EspRouterInterface } from 'esoftplay/cache/routers';
-import { UserClass } from 'esoftplay/cache/user/class/import';
 import { UserRoutes } from 'esoftplay/cache/user/routes/import';
 
 import esp from 'esoftplay/esp';
@@ -196,16 +195,16 @@ export default {
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#reset) untuk melihat dokumentasi*/
   reset(route?: LibNavigationRoutes, ...routes: LibNavigationRoutes[]): void {
     this._ref?.dispatch?.(StackActions.popToTop());
-    const user = UserClass.state().get()
-    let _route = [route || esp.config('home', (user && (user.id || user.user_id || user.apikey)) ? 'member' : 'public')]
-    if (routes && routes.length > 0) {
-      _route = [..._route, ...routes]
-    }
-    const resetAction = CommonActions.reset({
-      index: _route.length - 1,
-      routes: _route.map((rn) => ({ name: rn }))
-    });
-    this._ref?.dispatch?.(resetAction);
+    // const user = UserClass.state().get()
+    // let _route = [route || esp.config('home', (user && (user.id || user.user_id || user.apikey)) ? 'member' : 'public')]
+    // if (routes && routes.length > 0) {
+    //   _route = [..._route, ...routes]
+    // }
+    // const resetAction = CommonActions.reset({
+    //   index: _route.length - 1,
+    //   routes: _route.map((rn) => ({ name: rn }))
+    // });
+    // this._ref?.dispatch?.(resetAction);
   },
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#back) untuk melihat dokumentasi*/
   back(deep?: number): void {
