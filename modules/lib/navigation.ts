@@ -183,17 +183,15 @@ export default {
   },
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#replace) untuk melihat dokumentasi*/
   replace<S extends keyof EspArgsInterface>(route: S, params?: EspArgsInterface[S]): void {
-    doIt(() => {
-      this._ref.dispatch(
-        StackActions.replace(replaceModuleByUrlParam(params, route), params)
-      )
-    })
+    logArgs(params)
+    this._ref?.dispatch?.(
+      StackActions.replace(replaceModuleByUrlParam(params, route), params)
+    )
   },
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#push) untuk melihat dokumentasi*/
   push<S extends keyof EspArgsInterface>(route: S, params?: EspArgsInterface[S]): void {
     logArgs(params)
     doIt(() => {
-
       this._ref?.dispatch?.(
         StackActions.push(
           replaceModuleByUrlParam(params, route),
