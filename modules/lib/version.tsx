@@ -51,8 +51,9 @@ export default class m extends LibComponent<LibVersionProps, LibVersionState> {
 
     function isAvailableNewVersion(newVersion: string): boolean {
       let oldVersion = m.appVersion()
-      return newVersion > oldVersion
+      return Number(newVersion) > Number(oldVersion)
     }
+
     if (!__DEV__)
       if (isAvailableNewVersion(version)) {
         LibNavigation.backToRoot()
@@ -71,7 +72,14 @@ export default class m extends LibComponent<LibVersionProps, LibVersionState> {
   }
 
   render(): any {
-    const { res: { title, version, android, ios }, msg } = LibNavigation.getArgsAll<any>(this.props)
+    const { res, msg } = LibNavigation.getArgsAll<any>(this.props)
+    let title, version, android, ios
+    if (res) {
+      title = res.title
+      version = res.version
+      android = res.android
+      ios = res.ios
+    }
     const link = Platform.OS == 'ios' ? ios : android
     return (
       <ImageBackground source={esp.assets("splash.png")} blurRadius={100} style={{ flex: 1, justifyContent: 'center', alignItems: 'center', borderStartColor: 'white', paddingHorizontal: 17 }} >
