@@ -346,7 +346,6 @@ export default function App() {
 			'react-native-image-crop-picker',
 			'react-native-keyboard-controller',
 			'react-native-mmkv',
-			'react-native-pan-pinch-view',
 			'react-native-reanimated',
 			'react-native-safe-area-context',
 			'react-native-screens',
