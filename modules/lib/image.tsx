@@ -1,18 +1,16 @@
+//[moved] change native cropper
 // noPage
 import { LibComponent } from 'esoftplay/cache/lib/component/import';
 import { LibCurl } from 'esoftplay/cache/lib/curl/import';
 import { LibIcon } from 'esoftplay/cache/lib/icon/import';
-import { LibNavigation } from 'esoftplay/cache/lib/navigation/import';
 import { LibProgress } from 'esoftplay/cache/lib/progress/import';
 import { LibStyle } from 'esoftplay/cache/lib/style/import';
 import esp from 'esoftplay/esp';
 import useGlobalState from 'esoftplay/global';
 import { CameraView } from 'expo-camera';
-import * as ImageManipulator from 'expo-image-manipulator';
-import { SaveFormat } from 'expo-image-manipulator';
-import * as ImagePicker from 'expo-image-picker';
 import React from 'react';
-import { ActivityIndicator, Alert, Image, Platform, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Image, TouchableOpacity, View } from 'react-native';
+import ImagePicker from "react-native-image-crop-picker";
 const { height, width } = LibStyle;
 
 
@@ -103,200 +101,83 @@ class m extends LibComponent<LibImageProps, LibImageState> {
   }
 
 
-  /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/image.md#showCropper) untuk melihat dokumentasi*/
-  static showCropper(uri: string, forceCrop: boolean, ratio: string, message: string, result: (x: any) => void): void {
-    LibNavigation.navigateForResult("lib/image_crop", { image: uri, forceCrop, ratio, message }, 81793).then(result)
+  private static ratio2Size(ratio: string, maxDimension: number = 1200): [width: number, height: number] {
+    if (maxDimension <= 0 || !isFinite(maxDimension)) {
+      console.error("Invalid maxDimension provided, returning [0, 0].");
+      return [0, 0];
+    }
+    
+    const parts = ratio?.split(":");
+    if (parts?.length !== 2) {
+      return [maxDimension, maxDimension];
+    }
+
+    const [aspectRatioWidth, aspectRatioHeight] = parts.map(Number);
+
+    if (isNaN(aspectRatioWidth) || isNaN(aspectRatioHeight) || aspectRatioWidth <= 0 || aspectRatioHeight <= 0) {
+      return [maxDimension, maxDimension];
+    }
+
+    if (aspectRatioWidth > aspectRatioHeight) {
+      const width = maxDimension;
+      const height = (aspectRatioHeight / aspectRatioWidth) * width;
+      return [width, height];
+    } else {
+      const height = maxDimension;
+      const width = (aspectRatioWidth / aspectRatioHeight) * height;
+      return [width, height];
+    }
   }
 
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/image.md#fromCamera) untuk melihat dokumentasi*/
   static fromCamera(options?: LibImageCameraOptions): Promise<string> {
     return new Promise((_r) => {
-      const timer = setTimeout(async () => {
-        const cameraPermission = await ImagePicker.getCameraPermissionsAsync();
-        var finalStatus = cameraPermission.status
-        if (finalStatus !== 'granted') {
-          const { status } = await ImagePicker.requestCameraPermissionsAsync();
-          finalStatus = status
-        }
-        if (finalStatus === 'granted') {
-          const rollPermission = await ImagePicker.getMediaLibraryPermissionsAsync();
-          finalStatus = rollPermission.status
-          if (finalStatus !== 'granted') {
-            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-            finalStatus = status
-          }
-        }
-        if (finalStatus != 'granted') {
-          Alert.alert(esp.lang("lib/image", "cam_title", esp.appjson().expo.name), esp.lang("lib/image", "cam_msg", esp.appjson().expo.name))
-        }
-        ImagePicker.launchCameraAsync({
-          allowsEditing: Platform.OS != 'ios' && options && options.crop ? true : false,
-          aspect: options?.crop?.ratio?.split(':').map((x) => Number(x)),
-          quality: 1,
-          presentationStyle: ImagePicker.UIImagePickerPresentationStyle.FULL_SCREEN
-        }).then(async (res: any) => {
-          if (!res)
-            res = ImagePicker?.getPendingResultAsync()
-          if (!res?.cancelled) {
-            let result: any = undefined
-            let hasUri = res?.uri
-            if (hasUri) {
-              result = res
-            } else if (res?.assets?.[0]) {
-              result = { ...res, ...res.assets[0] }
-            }
-            if (Platform.OS == 'ios' && options && options.crop) {
-              m.showCropper(result?.uri, options?.crop?.forceCrop, options?.crop?.ratio, options?.crop?.message, async (x) => {
-                let imageUri = await m.processImage(x, options?.maxDimension)
-                m.setResult(imageUri)
-                _r(imageUri)
-              })
-            } else {
-              let imageUri = await m.processImage(result, options?.maxDimension)
-              m.setResult(imageUri)
-              _r(imageUri)
-            }
-          }
-        })
-        clearTimeout(timer)
-      }, 1);
+      const [w, h] = m.ratio2Size(options?.crop?.ratio)
+      ImagePicker.openCamera({
+        width: w,
+        height: h,
+        cropping: true,
+      }).then(async (image) => {
+        let imageUri = await m.processImage(image.path, options?.maxDimension)
+        m.setResult(imageUri)
+        _r(imageUri)
+      });
+
     })
   }
 
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/image.md#fromGallery) untuk melihat dokumentasi*/
   static fromGallery(options?: LibImageGalleryOptions): Promise<string | string[]> {
-    return new Promise((_r) => {
-      const timer = setTimeout(async () => {
-        const { status } = await ImagePicker.getMediaLibraryPermissionsAsync();
-        var finalStatus = status
-        if (finalStatus !== 'granted') {
-          const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-          finalStatus = status
+    const [w, h] = m.ratio2Size(options?.crop?.ratio)
+    return new Promise(async (_r) => {
+      ImagePicker.openPicker({
+        width: w,
+        height: h,
+        cropping: true,
+      }).then(async (z) => {
+        if (z) {
+          let imageUri = await m.processImage(z.path, options?.maxDimension)
+          m.setResult(imageUri)
+          _r(imageUri)
         }
-        if (finalStatus != 'granted') {
-          Alert.alert(esp.lang("lib/image", "gallery_title"), esp.lang("lib/image", "gallery_msg"))
-          return
-        }
-        let max = 0
-        if (options?.multiple == true) {
-          max = options?.max || 0
-        } else {
-          max = 1
-        }
-        if (max == 1) {
-          ImagePicker.launchImageLibraryAsync({
-            presentationStyle: ImagePicker.UIImagePickerPresentationStyle.FULL_SCREEN,
-            allowsEditing: Platform.OS != 'ios' && options && options.crop ? true : false,
-            aspect: options?.crop?.ratio?.split(':').map((x) => Number(x)),
-            quality: 1,
-          }).then(async (z: any) => {
-            if (!z.cancelled) {
-              let x: any = undefined
-              let hasUri = z?.uri
-              if (hasUri) {
-                x = z
-              } else if (z?.assets?.[0]) {
-                x = { ...z, ...z.assets[0] }
-              }
-              if (Platform.OS == 'ios' && options && options.crop) {
-                m.showCropper(x.uri, options.crop.forceCrop, options.crop.ratio, options.crop?.message, async (x) => {
-                  let imageUri = await m.processImage(x, options?.maxDimension)
-                  m.setResult(imageUri)
-                  _r(imageUri)
-                })
-              } else {
-                let imageUri = await m.processImage(x, options?.maxDimension)
-                m.setResult(imageUri)
-                _r(imageUri)
-              }
-            }
-          })
-          return
-        }
-        LibNavigation.navigateForResult("lib/image_multi", { max: max }).then((x: any[]) => {
-          let a: string[] = []
-          x.forEach(async (t: any, i) => {
-            if (i == 0) {
-              LibProgress.show(esp.lang("lib/image", "wait"))
-            }
-            var wantedMaxSize = options?.maxDimension || 1280
-            var rawheight = t.height
-            var rawwidth = t.width
-            var ratio = rawwidth / rawheight
-            if (rawheight > rawwidth) {
-              var wantedwidth = wantedMaxSize * ratio;
-              var wantedheight = wantedMaxSize;
-            } else {
-              var wantedwidth = wantedMaxSize;
-              var wantedheight = wantedMaxSize / ratio;
-            }
-            const manipImage = await ImageManipulator.manipulateAsync(
-              t.uri,
-              [{ resize: { width: wantedwidth, height: wantedheight } }],
-              { format: SaveFormat.JPEG }
-            );
-            new LibCurl().upload('image_upload', "image", String(manipImage.uri), 'image/jpeg',
-              (res: any, msg: string) => {
-                a.push(String(res));
-                if (a.length == x.length) {
-                  if (max == 1) {
-                    _r(res)
-                  } else {
-                    _r(a)
-                  }
-                  LibProgress.hide()
-                }
-              },
-              (msg: any) => {
-                console.log(msg.message, "NOOO")
-                if (x.length - 1 == i)
-                  LibProgress.hide()
-              }, 1)
-          });
-        })
-        clearTimeout(timer)
-      }, 1)
+      });
     })
   }
 
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/image.md#processImage) untuk melihat dokumentasi*/
   static processImage(result: any, maxDimension?: number): Promise<string> {
     return new Promise((r) => {
-      if (!result.cancelled) {
+      if (result) {
         LibProgress.show(esp.lang("lib/image", "wait_upload"))
-        var wantedMaxSize = maxDimension || 1280
-        var rawheight = result.height
-        var rawwidth = result.width
-        let doResize = false
-        if (wantedMaxSize < Math.max(rawheight, rawwidth)) {
-          doResize = true
-          var ratio = rawwidth / rawheight
-          if (rawheight > rawwidth) {
-            var wantedwidth = wantedMaxSize * ratio;
-            var wantedheight = wantedMaxSize;
-          } else {
-            var wantedwidth = wantedMaxSize;
-            var wantedheight = wantedMaxSize / ratio;
-          }
-        }
-
-        const timer = setTimeout(async () => {
-          const manipImage = await ImageManipulator.manipulateAsync(
-            result.uri,
-            doResize ? [{ resize: { width: wantedwidth, height: wantedheight } }] : [],
-            { format: SaveFormat.JPEG, compress: 1.0 }
-          );
-          new LibCurl().upload('image_upload', "image", String(manipImage.uri), 'image/jpeg',
-            (res: any, msg: string) => {
-              r(res);
-              LibProgress.hide()
-            },
-            (msg: any) => {
-              LibProgress.hide()
-              r(msg.message);
-            }, 1)
-          clearTimeout(timer)
-        }, 1);
+        new LibCurl().upload('image_upload', "image", String(result), 'image/jpeg',
+          (res: any, msg: string) => {
+            r(res);
+            LibProgress.hide()
+          },
+          (msg: any) => {
+            LibProgress.hide()
+            r(msg.message);
+          }, 1)
       }
     })
   }
