@@ -6,13 +6,11 @@ import esp from 'esoftplay/esp';
 
 //api_logger_import
 
-
 /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/curl.md) untuk melihat dokumentasi*/
 export default class m {
   controller = new AbortController()
   signal = this.controller.signal
   timeout = 30000;
-  // maxRetry = 3;
   resStatus?: number = undefined
   timeoutContext: any = null;
   isDebug = esp.config("isDebug");
@@ -56,9 +54,9 @@ export default class m {
   }
 
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/curl.md#await) untuk melihat dokumentasi*/
-  static async(uriOrUrl: string, post: any): Promise<{ ok: 0 | 1, message: string, result: any }> {
+  static async(uriOrUrl: string, post?: any): Promise<{ ok: 0 | 1, message: string, result: any }> {
     return new Promise((resolve, reject) => {
-      new (esp.mod("lib/curl"))(uriOrUrl, post,
+      new (m)(uriOrUrl, post,
         (result, message) => {
           resolve({ ok: 1, result, message })
         },
