@@ -8,6 +8,7 @@ import { LibStyle } from 'esoftplay/cache/lib/style/import';
 import { LibTextstyle } from 'esoftplay/cache/lib/textstyle/import';
 import { LibUpdaterProperty } from 'esoftplay/cache/lib/updater/import';
 import esp from 'esoftplay/esp';
+import useGlobalState from 'esoftplay/global';
 import * as Application from 'expo-application';
 
 import { BackHandler, ImageBackground, Linking, Platform, TouchableOpacity } from 'react-native';
@@ -17,6 +18,9 @@ export interface LibVersionProps {
 export interface LibVersionState {
 
 }
+
+const isFirstOpen = useGlobalState(1, { persistKey: "lib/version.isFirstOpen", inFastStorage: true, loadOnInit: true })
+
 /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/version.md) untuk melihat dokumentasi*/
 export default class m extends LibComponent<LibVersionProps, LibVersionState> {
 
@@ -60,9 +64,17 @@ export default class m extends LibComponent<LibVersionProps, LibVersionState> {
         LibNavigation.replace("lib/version", { res, msg: msg == 'success' ? 'Update to a new version now' : msg })
       } else {
         const currentVersion = esp.config('publish_id')
-        if (currentVersion < version_publish && !__DEV__) {
+        // Alert.alert("ForceUpdate", JSON.stringify({ res, isFirstOpen: isFirstOpen.get() }, undefined, 2))
+        if (((currentVersion < version_publish) || (isFirstOpen.get() == 1 && res.app_update == 1)) && !__DEV__) {
+          isFirstOpen.set(0)
           LibNavigation.reset("lib/version_view")
-          LibUpdaterProperty.check((isNew) => { if (isNew) LibUpdaterProperty.install() })
+          LibUpdaterProperty.check((isNew) => {
+            if (isNew) {
+              LibUpdaterProperty.install()
+            } else {
+              LibNavigation.reset()
+            }
+          })
         }
       }
   }
