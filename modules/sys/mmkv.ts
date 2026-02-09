@@ -1,4 +1,5 @@
-
+// noPage
+// withObject
 let storage: any;
 let isWeb = typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
 if (isWeb) {

@@ -9,8 +9,8 @@ import * as Application from 'expo-application';
 import Constants from 'expo-constants';
 import * as FileSystem from 'expo-file-system';
 import { Platform } from 'react-native';
-let pack = require('../../package.json');
-let app = require('../../app.json');
+let pack = require('../../../../package.json');
+let app = require('../../../../app.json');
 const { expoConfig } = Constants;
 
 function getTime() {

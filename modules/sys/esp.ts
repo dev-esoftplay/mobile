@@ -41,8 +41,8 @@ console.warn = (...arg) => {
 };
 LogBox.ignoreLogs(ignoreWarns);
 
-let app = require('../../app.json');
-let conf = require('../../config.json');
+let app = require('../../../../app.json');
+let conf = require('../../../../config.json');
 if (!__DEV__) {
   if (Platform.OS == 'web') {
     conf.config.domain = window.location.hostname
@@ -50,7 +50,7 @@ if (!__DEV__) {
 }
 let lconf: any
 try {
-  lconf = require('../../config.live.json');
+  lconf = require('../../../../config.live.json');
 } catch (error) {
 
 }
@@ -84,7 +84,7 @@ const esp = {
     return esp.mergeDeep(app, conf)
   },
   assets(path: EspAssets): any {
-    const _assets = require('./cache/assets')
+    const _assets = require('../../cache/assets')
     return _assets(path)
   },
   versionName(): string {
@@ -156,7 +156,7 @@ const esp = {
     if (modtast[1] == "") {
       modtast[1] = "index";
     }
-    const routers = require('./cache/routers')
+    const routers = require('../../cache/routers')
     return routers(modtast.join("/"));
   },
   modProp<T extends keyof EspRouterPropertyInterface>(path: T): EspRouterPropertyInterface[T] {
@@ -164,7 +164,7 @@ const esp = {
     if (modtast[1] == "") {
       modtast[1] = "index";
     }
-    const properties = require('./cache/properties')
+    const properties = require('../../cache/properties')
     return properties(modtast.join("/"));
   },
   _config(): typeof cacheConfig {
@@ -214,7 +214,7 @@ const esp = {
     return config;
   },
   navigations(): string[] {
-    const navs = require('./cache/navs').default
+    const navs = require('../../cache/navs').default
     return navs;
   },
   home(): any {
