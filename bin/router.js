@@ -5,6 +5,7 @@ const fs = require('fs');
 var checks = ['./node_modules/esoftplay/modules/', './modules/', './templates/'];
 var pathAsset = "./assets";
 var tmpDir = "./node_modules/esoftplay/cache/";
+var mainDir = "./node_modules/esoftplay/";
 var typesDir = "./"
 var replacer = new RegExp(/(?:\-|\.(?:ios|android))?\.(?:jsx|js|ts|tsx)$/);
 var Text = "";
@@ -312,21 +313,26 @@ export * as ${ucword(module) + ucword(task) + SuffixHooksProperty} from '../../.
 
         if (!fs.existsSync(tmpDir + nav))
           fs.mkdirSync(tmpDir + nav)
+        if (nav.startsWith('sys/')) {
+          const string = `export * from '${"../." + Modules[module][task]}';
+export { default } from '${"../." + Modules[module][task]}';`
+          fs.writeFileSync(mainDir + task + ".ts", string)
+        } else {
+          if (isChange(tmpDir + nav + '/import.d.ts', deItem)) {
+            fs.writeFile(tmpDir + nav + '/import.d.ts', deItem, { flag: 'w' }, function (err) {
+              if (err) {
+                return console.log(err);
+              }
+            });
+          }
 
-        if (isChange(tmpDir + nav + '/import.d.ts', deItem)) {
-          fs.writeFile(tmpDir + nav + '/import.d.ts', deItem, { flag: 'w' }, function (err) {
-            if (err) {
-              return console.log(err);
-            }
-          });
-        }
-
-        if (isChange(tmpDir + nav + "/import.js", item)) {
-          fs.writeFile(tmpDir + nav + '/import.js', item, { flag: 'w' }, function (err) {
-            if (err) {
-              return console.log(err);
-            }
-          });
+          if (isChange(tmpDir + nav + "/import.js", item)) {
+            fs.writeFile(tmpDir + nav + '/import.js', item, { flag: 'w' }, function (err) {
+              if (err) {
+                return console.log(err);
+              }
+            });
+          }
         }
       }
     }
