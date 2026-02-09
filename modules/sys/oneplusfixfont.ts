@@ -1,3 +1,4 @@
+//noPage
 //@ts-nocheck
 export default (() => {
   const React = require('react');

@@ -1,4 +1,6 @@
 // MMKV web shim using localStorage
+//noPage
+
 const isWeb = typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
 
 const storage = {
