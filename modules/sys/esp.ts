@@ -1,5 +1,6 @@
 //noPage
 
+import { appjson, configjson, configlivejson } from 'esoftplay/bin/files';
 import { EspAssets } from 'esoftplay/cache/assets';
 import cacheConfig from 'esoftplay/cache/config.json';
 import { LibLocale } from 'esoftplay/cache/lib/locale/import';
@@ -41,20 +42,18 @@ console.warn = (...arg) => {
 };
 LogBox.ignoreLogs(ignoreWarns);
 
-let app = require('../../../../app.json');
-let conf = require('../../../../config.json');
 if (!__DEV__) {
   if (Platform.OS == 'web') {
-    conf.config.domain = window.location.hostname
+    configjson.config.domain = window.location.hostname
   }
 }
 let lconf: any
 try {
-  lconf = require('../../../../config.live.json');
+  lconf = configlivejson;
 } catch (error) {
 
 }
-if (conf?.config?.isDebug == 0)
+if (configjson?.config?.isDebug == 0)
   LogBox.ignoreAllLogs();
 /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/esp.md) untuk melihat dokumentasi*/
 const esp = {
@@ -81,10 +80,10 @@ const esp = {
     return target;
   },
   appjson(): any {
-    return esp.mergeDeep(app, conf)
+    return esp.mergeDeep(appjson, configjson)
   },
   assets(path: EspAssets): any {
-    const _assets = require('../../cache/assets')
+    const _assets = require('esoftplay/cache/assets')
     return _assets(path)
   },
   versionName(): string {
@@ -110,7 +109,7 @@ const esp = {
     if (!lconf) {
       return false
     }
-    return conf.config.domain != lconf.config.domain
+    return configjson.config.domain != lconf.config.domain
   },
   readDeepObj(obj: any) {
     return function (param?: string, ...params: string[]): any {
@@ -156,7 +155,7 @@ const esp = {
     if (modtast[1] == "") {
       modtast[1] = "index";
     }
-    const routers = require('../../cache/routers')
+    const routers = require('esoftplay/cache/routers')
     return routers(modtast.join("/"));
   },
   modProp<T extends keyof EspRouterPropertyInterface>(path: T): EspRouterPropertyInterface[T] {
@@ -164,11 +163,11 @@ const esp = {
     if (modtast[1] == "") {
       modtast[1] = "index";
     }
-    const properties = require('../../cache/properties')
+    const properties = require('esoftplay/cache/properties')
     return properties(modtast.join("/"));
   },
   _config(): typeof cacheConfig {
-    app = esp.mergeDeep(app, conf)
+    let app = esp.mergeDeep(appjson, configjson)
     var msg = ''
     if (!app.hasOwnProperty('config')) {
       msg = "tidak ada config"
@@ -214,7 +213,7 @@ const esp = {
     return config;
   },
   navigations(): string[] {
-    const navs = require('../../cache/navs').default
+    const navs = require('esoftplay/cache/navs').default
     return navs;
   },
   home(): any {
@@ -225,7 +224,7 @@ const esp = {
     return UserRoutes.state().get();
   },
   log(message?: any, ...optionalParams: any[]) {
-    if (esp.config("isDebug") == 1) {
+    if (esp.config()?.isDebug == 1) {
       let out = [message]
       if (optionalParams)
         out.push(...optionalParams)

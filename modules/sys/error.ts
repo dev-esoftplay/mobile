@@ -1,4 +1,5 @@
 //noPage
+import { appjson, packagejson } from 'esoftplay/bin/files';
 import { LibCurl } from 'esoftplay/cache/lib/curl/import';
 import { LibNavigationProperty } from 'esoftplay/cache/lib/navigation/import';
 import { UserClass } from 'esoftplay/cache/user/class/import';
@@ -9,8 +10,6 @@ import * as Application from 'expo-application';
 import Constants from 'expo-constants';
 import * as FileSystem from 'expo-file-system';
 import { Platform } from 'react-native';
-let pack = require('../../../../package.json');
-let app = require('../../../../app.json');
 const { expoConfig } = Constants;
 
 function getTime() {
@@ -60,7 +59,7 @@ export function reportApiError(fetch: any, error: any) {
     'error: ' + error,
     '\n\n\ndev: ' + Platform.OS + ' - ' + Constants.deviceName,
     'time: ' + getTime(),
-    'runtimeVersion:' + app.expo.runtimeVersion,
+    'runtimeVersion:' + appjson.expo.runtimeVersion,
     'app/pub_id: ' + Constants.appOwnership + '/' + (config?.publish_id || '-'),
     'user_id: ' + user?.id || user?.user_id || '-',
     'username: ' + user?.username || '-',
@@ -118,11 +117,11 @@ export function getError() {
       let msg = [
         'slug: ' + "#" + expoConfig?.slug,
         'error: \n' + _e.error,
-        '\n\nname: ' + expoConfig?.name + ' - sdk' + pack?.dependencies?.expo,
+        '\n\nname: ' + expoConfig?.name + ' - sdk' + packagejson?.dependencies?.expo,
         'time: \n' + _e?.time,
         'domain: ' + config.domain + config.uri,
-        'runtimeVersion:' + app.expo.runtimeVersion,
-        'package: ' + (Application.nativeBuildVersion) + ' - v' + (Platform.OS == 'ios' ? app.expo.ios.buildNumber : app.expo.android.versionCode),
+        'runtimeVersion:' + appjson.expo.runtimeVersion,
+        'package: ' + (Application.nativeBuildVersion) + ' - v' + (Platform.OS == 'ios' ? appjson.expo.ios.buildNumber : appjson.expo.android.versionCode),
         'device: ' + Platform.OS + ' | ' + Constants.deviceName,
         'native/pub_id: ' + expoConfig?.sdkVersion + '/' + (config?.publish_id || '-'),
         'user_id: ' + _e?.user?.id || _e?.user?.user_id || '-',
