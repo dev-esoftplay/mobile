@@ -221,7 +221,7 @@ if (fs.existsSync(packjson)) {
 		const babelconf = `module.exports = function (api) {
 	api.cache(true);
 	let plugins = []
-	plugins.push("react-native-reanimated/plugin")
+	//plugins.push("react-native-reanimated/plugin")
 	return {
 		presets: ["babel-preset-expo"],
 		plugins
