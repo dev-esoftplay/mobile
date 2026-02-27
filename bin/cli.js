@@ -1236,7 +1236,7 @@ function build() {
 		[
 			{
 				name: "1. IOS (Development) - Simulator",
-				cmd: "eas build --platform ios --profile development" + local,
+				cmd: "eas build --platform ios --profile development --clear-cache" + local,
 				pre: () => {
 					configAvailable(true)
 					devClientPre(appjson)
@@ -1245,7 +1245,7 @@ function build() {
 			},
 			{
 				name: "2. IOS (Development) - Non Simulator",
-				cmd: "eas build --platform ios --profile development_build" + local,
+				cmd: "eas build --platform ios --profile development_build --clear-cache" + local,
 				pre: () => {
 					configAvailable(true)
 					devClientPre(appjson)
@@ -1254,7 +1254,7 @@ function build() {
 			},
 			{
 				name: "3. IOS (Preview) - Simulator",
-				cmd: "eas build --platform ios --profile preview" + local,
+				cmd: "eas build --platform ios --profile preview --clear-cache" + local,
 				pre: () => {
 					configAvailable(true)
 					devClientPos(appjson)
@@ -1263,7 +1263,7 @@ function build() {
 			},
 			{
 				name: "4. IOS (Preview) - Non Simulator",
-				cmd: "eas build --platform ios --profile preview_build" + local,
+				cmd: "eas build --platform ios --profile preview_build --clear-cache" + local,
 				pre: () => {
 					configAvailable(true)
 					devClientPos(appjson)
@@ -1272,7 +1272,7 @@ function build() {
 			},
 			{
 				name: "5. IOS (Production) - ipa",
-				cmd: "eas build --platform ios --profile production" + local,
+				cmd: "eas build --platform ios --profile production --clear-cache" + local,
 				pre: () => {
 					configAvailable(true)
 					devClientPos(appjson)
@@ -1281,7 +1281,7 @@ function build() {
 			},
 			{
 				name: "6. Android (Development) - apk",
-				cmd: "eas build --platform android --profile development" + local,
+				cmd: "eas build --platform android --profile development --clear-cache" + local,
 				pre: () => {
 					configAvailable(true)
 					devClientPre(appjson)
@@ -1290,7 +1290,7 @@ function build() {
 			},
 			{
 				name: "7. Android (Preview) - apk",
-				cmd: "eas build --platform android --profile preview" + local,
+				cmd: "eas build --platform android --profile preview --clear-cache" + local,
 				pre: () => {
 					configAvailable(true)
 					devClientPos(appjson)
@@ -1299,7 +1299,7 @@ function build() {
 			},
 			{
 				name: "8. Android (Production) - aab",
-				cmd: "eas build --platform android --profile production" + local,
+				cmd: "eas build --platform android --profile production --clear-cache" + local,
 				pre: () => {
 					configAvailable(true)
 					devClientPos(appjson)
