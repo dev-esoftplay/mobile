@@ -1090,7 +1090,11 @@ function buildPrepare(include = true) {
 			}
 		if (!fs.existsSync('./assets/esoftplaymodules')) {
 			fs.mkdirSync('./assets/esoftplaymodules')
-			command('cp -r -v ./modules/* ./assets/esoftplaymodules')
+			try {
+				command('cp -r -v ./modules/* ./assets/esoftplaymodules')
+			} catch (error) {
+				
+			}
 		}
 
 		if (fs.existsSync('./node_modules/esoftplay/modules')) {

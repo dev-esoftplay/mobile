@@ -17,6 +17,17 @@ const pathJSTimer = DIR + "node_modules/react-native/Libraries/Core/Timers/JSTim
 const lowercasePrompt = 'if (/^[a-z]/.test(component.name)) {'
 const pathLowercasePrompt = DIR + 'node_modules/@react-navigation/core/src/useNavigationBuilder.tsx'
 
+// helper that always writes synchronously and logs
+function writeFileSyncWithLog(path, data, options) {
+	try {
+		fs.writeFileSync(path, data, options || { encoding: 'utf8' });
+		console.log(`${path} has been written`);
+	} catch (e) {
+		console.error(`failed to write ${path}`, e);
+		throw e;
+	}
+}
+
 if (fs.existsSync(packjson)) {
 	let txt = fs.readFileSync(packjson, 'utf8');
 	let $package
@@ -43,10 +54,7 @@ if (fs.existsSync(packjson)) {
 			"esoftplay-web",
 			"esoftplay-web-pwa"
 		]
-		fs.writeFile(packjson, JSON.stringify($package, null, 2), (err) => {
-			if (err) throw err;
-			console.log('package.json has been updated');
-		});
+		writeFileSyncWithLog(packjson, JSON.stringify($package, null, 2));
 	}
 
 	/* Update app.json */
@@ -75,15 +83,9 @@ if (fs.existsSync(packjson)) {
 				}
 			}
 		}
-		fs.writeFile(confjson, JSON.stringify($config, null, 2), (err) => {
-			if (err) throw err;
-			console.log('config.json has been created');
-		});
+		writeFileSyncWithLog(confjson, JSON.stringify($config, null, 2));
 		if (!fs.existsSync(conflivejson)) {
-			fs.writeFile(conflivejson, JSON.stringify($config, null, 2), (err) => {
-				if (err) throw err;
-				console.log('config.live.json has been created');
-			});
+			writeFileSyncWithLog(conflivejson, JSON.stringify($config, null, 2));
 		}
 
 		let $appjson = {}
@@ -143,16 +145,15 @@ if (fs.existsSync(packjson)) {
 				"./raw/plugins/withAndroidVerifiedLinksWorkaround",
 			]
 
-			if (fs.existsSync("./node_modules/esoftplay/assets/plugins")) {
-				execSync("mkdir -p ./raw && cp -r ./node_modules/esoftplay/assets/plugins ./raw");
+			if (fs.existsSync("../../node_modules/esoftplay/assets/plugins")) {
+				// console.log("SAMPE SINI", "cd ../../ && mkdir -p ./raw && cp -r ./node_modules/esoftplay/assets/plugins ./raw")
+				execSync("cd ../../ && mkdir -p ./raw && cp -r ./node_modules/esoftplay/assets/plugins ./raw");
 			} else {
+				// console.log(__dirname, "DIRNAMEEE")
 				console.warn("Skipping copy: ./node_modules/esoftplay/assets/plugins not found");
 			}
 			// execSync("mkdir -p ./raw && cp -rf ./node_modules/esoftplay/assets/plugins ./raw/")
-			fs.writeFile(appjson, JSON.stringify($appjson, null, 2), (err) => {
-				if (err) throw err;
-				console.log('app.json has been updated');
-			});
+			writeFileSyncWithLog(appjson, JSON.stringify($appjson, null, 2));
 		}
 		/* Fix Code android timers */
 		if (fs.existsSync(pathJSTimer)) {
@@ -213,10 +214,7 @@ if (fs.existsSync(packjson)) {
 	}
 }`
 
-		fs.writeFile(easjson, easconfg, (err) => {
-			if (err) throw err;
-			console.log('eas.json has been updated');
-		})
+		writeFileSyncWithLog(easjson, easconfg);
 
 		const babelconf = `module.exports = function (api) {
 	api.cache(true);
@@ -229,10 +227,7 @@ if (fs.existsSync(packjson)) {
 };
 
 `
-		fs.writeFile(babelconfig, babelconf, (err) => {
-			if (err) throw err;
-			console.log('babel.config.js has been updated');
-		})
+		writeFileSyncWithLog(babelconfig, babelconf)
 		/* Update App.js */
 		const TSconfig = `{\n\
 	"compilerOptions": {\n\
@@ -258,10 +253,7 @@ if (fs.existsSync(packjson)) {
 		"node_modules"\n\
 	]\n\
 }`
-		fs.writeFile(tsconfig, TSconfig, (err) => {
-			if (err) throw err;
-			console.log('tsconfig has been created');
-		});
+		writeFileSyncWithLog(tsconfig, TSconfig);
 
 		const GitIgnore = `
 .expo*/
@@ -285,10 +277,7 @@ yarn.lock
 yarn-error.log
 					
 			`
-		fs.writeFile(gitignore, GitIgnore, (err) => {
-			if (err) throw err;
-			console.log('.gitignore has been created');
-		});
+		writeFileSyncWithLog(gitignore, GitIgnore);
 
 		const AppJS = `import { LibNotification } from 'esoftplay/cache/lib/notification/import';
 import { UserIndex } from 'esoftplay/cache/user/index/import';
@@ -348,6 +337,7 @@ export default function App() {
 			'react-native-mmkv',
 			'react-native-reanimated',
 			'react-native-safe-area-context',
+			"react-native-worklets",
 			'react-native-screens',
 			'react-native-webview',
 			'shorthash',
@@ -365,78 +355,74 @@ export default function App() {
 			"typescript",
 		]
 
-		fs.writeFile(appts, AppJS, (err) => {
-			if (err) throw err;
-			fs.unlink(appjs, (err) => { })
-			let installExpoLibs = []
-			let installDevLibs = []
-			expoLib.forEach((exlib) => {
-				if (fs.existsSync("../../node_modules/" + exlib)) {
-					console.log(exlib + " is Exist, Skipped")
-					if (exlib == '@expo/vector-icons') {
-						installExpoLibs.push(exlib)
-					}
-				} else {
-					console.log("⚙⚙⚙ INSTALLING ... " + exlib)
-					installExpoLibs.push(exlib)
-				}
-			})
-			devLibs.forEach((devlib) => {
-				if (fs.existsSync("../../node_modules/" + devlib)) {
-					console.log(devlib + " is Exist, Skipped")
-				} else {
-					console.log("⚙⚙⚙ INSTALLING ... " + devlib)
-					installDevLibs.push(devlib)
-				}
-			})
-			if (!fs.existsSync(DIR + 'modules'))
-				fs.mkdirSync(DIR + 'modules')
-			let cmd = "cd ../../ "
-			if (installDevLibs.length > 0) {
-				// console.log(installDevLibs)
-				cmd += "&& bun add " + installDevLibs.join(" ") + " --dev "
-			}
-			if (installExpoLibs.length > 0) {
-				// console.log(installExpoLibs)
-				cmd += "&& npx expo install " + installExpoLibs.join(" ")
-			}
-			console.log((JSON.stringify({ cmd }, undefined, 2)))
-			execSync(cmd + "|| true")
-			// execSync("cd ../../ && bun install --verbose || true")
-			execSync("cd ../../ && bun ./node_modules/esoftplay/bin/router.js || true")
-			execSync("cd ../../ && bun ./node_modules/esoftplay/bin/locale.js || true")
-			// execSync("cd ../../ && eas update:configure || true")
-			console.log('App.js has been replace to App.tsx');
-			// if (appjson)
-			// /* bugfix AsyncStorage @firebase, remove this section if firebase has update the AsyncStorage */
-			if (fs.existsSync('../@firebase/app/dist/index.rn.cjs.js')) {
-				let firebaseText = fs.readFileSync('../@firebase/app/dist/index.rn.cjs.js', 'utf8')
-				firebaseText = firebaseText.replace("var AsyncStorage = require('react-native').AsyncStorage;", "var AsyncStorage = require('@react-native-async-storage/async-storage').default;")
-				fs.writeFileSync('../@firebase/app/dist/index.rn.cjs.js', firebaseText)
-			}
-			// /* end AsyncStorage @firebase section */
-			if (fs.existsSync('../@expo/vector-icons')) {
-				let esoftplayIcon = ''
-				fs.readdir('../@expo/vector-icons/build', (err, files) => {
-					const dfiles = files.filter((file) => file.includes('d.ts'))
-					dfiles.map((dfile, i) => {
-						const rdfile = fs.readFileSync('../@expo/vector-icons/build/' + dfile, { encoding: 'utf8' })
-						const names = (/import\("\.\/createIconSet"\)\.Icon<((.*))\,.*>/g).exec(rdfile);
-						if (names && names[1].includes('|')) {
-							esoftplayIcon += 'export type ' + dfile.replace('.d.ts', 'Types') + ' = ' + names[1] + '\n';
-						}
-					})
-					fs.writeFileSync('../@expo/vector-icons/build/esoftplay_icons.ts', esoftplayIcon)
-				})
+		writeFileSyncWithLog(appts, AppJS);
+		try { fs.unlinkSync(appjs); } catch (e) { }
+		let installExpoLibs = []
+		let installDevLibs = []
+		expoLib.forEach((exlib) => {
+			if (fs.existsSync("../../node_modules/" + exlib)) {
+				console.log(exlib + " is Exist, Skipped")
+				// if (exlib == '@expo/vector-icons') {
+				// 	installExpoLibs.push(exlib)
+				// }
 			} else {
-				console.log("@expo/vector-icons not installed")
+				console.log("⚙⚙⚙ INSTALLING ... " + exlib)
+				installExpoLibs.push(exlib)
 			}
-			console.log('Please wait until processes has finished...');
-		});
+		})
+		devLibs.forEach((devlib) => {
+			if (fs.existsSync("../../node_modules/" + devlib)) {
+				console.log(devlib + " is Exist, Skipped")
+			} else {
+				console.log("⚙⚙⚙ INSTALLING ... " + devlib)
+				installDevLibs.push(devlib)
+			}
+		})
+		if (!fs.existsSync(DIR + 'modules'))
+			fs.mkdirSync(DIR + 'modules')
+		let cmd = "cd ../../ "
+		if (installDevLibs.length > 0) {
+			cmd += "&& bun add " + installDevLibs.join(" ") + " --dev "
+		}
+		if (installExpoLibs.length > 0) {
+			cmd += "&& npx expo install " + installExpoLibs.join(" ")
+		}
+		console.log((JSON.stringify({ cmd }, undefined, 2)))
+		execSync(cmd + "|| true")
+		execSync("cd ../../ && bun ./node_modules/esoftplay/bin/router.js || true")
+		execSync("cd ../../ && bun ./node_modules/esoftplay/bin/locale.js || true")
+		console.log('App.js has been replace to App.tsx');
+		if (fs.existsSync('../@firebase/app/dist/index.rn.cjs.js')) {
+			let firebaseText = fs.readFileSync('../@firebase/app/dist/index.rn.cjs.js', 'utf8')
+			firebaseText = firebaseText.replace("var AsyncStorage = require('react-native').AsyncStorage;", "var AsyncStorage = require('@react-native-async-storage/async-storage').default;")
+			fs.writeFileSync('../@firebase/app/dist/index.rn.cjs.js', firebaseText)
+		}
+		if (fs.existsSync('../@expo/vector-icons')) {
+			let esoftplayIcon = ''
+			const files = fs.readdirSync('../@expo/vector-icons/build');
+			const dfiles = files.filter((file) => file.includes('d.ts'))
+			dfiles.map((dfile, i) => {
+				const rdfile = fs.readFileSync('../@expo/vector-icons/build/' + dfile, { encoding: 'utf8' })
+				const names = (/import\("\.\/createIconSet"\)\.Icon<((.*))\,.*>/g).exec(rdfile);
+				if (names && names[1].includes('|')) {
+					esoftplayIcon += 'export type ' + dfile.replace('.d.ts', 'Types') + ' = ' + names[1] + '\n';
+				}
+			})
+			fs.writeFileSync('../@expo/vector-icons/build/esoftplay_icons.ts', esoftplayIcon)
+		} else {
+			console.log("@expo/vector-icons not installed")
+		}
+		console.log('Please wait until processes has finished...');
 	}
 } else {
 	console.log(packjson + " not found!!")
 }
+
+// ensure we always exit when script finishes (particularly for postinstall hooks)
+if (require.main === module) {
+	process.exit(0);
+}
+
 // packjson scripts
 // "preuninstall": "cd ../../ && bun ./node_modules/.bin/esoftplay stop",
 // "postuninstall": "bun ./bin/build.js uninstall",
