@@ -331,7 +331,6 @@ export default function App() {
 			'react-fast-compare',
 			'react-native-gesture-handler',
 			'react-native-awesome-gallery',
-			'react-native-global-exception-handler',
 			'react-native-image-crop-picker',
 			'react-native-keyboard-controller',
 			'react-native-mmkv',
