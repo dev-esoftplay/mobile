@@ -107,7 +107,7 @@ if (fs.existsSync("../" + mainModule + "/" + moduleName)) {
   if (fs.existsSync("../" + mainModule + "/mover.js")) {
     shell("bun ../" + mainModule + "/mover.js", { stdio: 'inherit' })
   }
-  shell('bun ./node_modules/esoftplay/bin/connector.js')
+  shell('cd ../../ && bun ./node_modules/esoftplay/bin/connector.js')
 }
 function mergeDeep(target, ...sources) {
   target = Object(target);

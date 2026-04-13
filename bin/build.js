@@ -336,7 +336,7 @@ export default function App() {
 			'react-native-mmkv',
 			'react-native-reanimated',
 			'react-native-safe-area-context',
-			"react-native-worklets",
+			// "react-native-worklets",
 			'react-native-screens',
 			'react-native-webview',
 			'shorthash',

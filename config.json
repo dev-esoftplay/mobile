@@ -15,8 +15,7 @@
         "111111111"
       ]
     },
-    "group_id":'1,
-    2', // string separated comma
+    "group_id":"1,2", // string separated comma
     "isDebug": 1, // optional: display console on esp.log('any message'), don't use it for automatic detect the environment (production / development)
     "salt": "CHANGE_INTO_YOUR_OWN_SALT", // SALT form config.php in your website
     "notification": 1, // optional: to determine is this application have notification or not
