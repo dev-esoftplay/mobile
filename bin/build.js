@@ -6,6 +6,7 @@ const DIR = "../../"
 const packjson = DIR + "package.json"
 const appjson = DIR + "app.json"
 const easjson = DIR + "eas.json"
+const metroconfigjs = DIR + "metro.config.js"
 const confjson = DIR + "config.json"
 const conflivejson = DIR + "config.live.json"
 const gitignore = DIR + ".gitignore"
@@ -40,7 +41,8 @@ if (fs.existsSync(packjson)) {
 
 	if (args[0] == "install") {
 		$package.scripts.start = "esp start && bunx expo start --dev-client"
-		$package.trustedDependencies = [
+		const existedTrustedDependencies = $package.trustedDependencies
+		const trustedDependencies = [
 			"esoftplay",
 			"esoftplay-android-print",
 			"esoftplay-chatting",
@@ -54,6 +56,7 @@ if (fs.existsSync(packjson)) {
 			"esoftplay-web",
 			"esoftplay-web-pwa"
 		]
+		$package.trustedDependencies = trustedDependencies.concat(existedTrustedDependencies || []).reduce((acc, item) => acc.includes(item) ? acc : [...acc, item], []);
 		writeFileSyncWithLog(packjson, JSON.stringify($package, null, 2));
 	}
 
@@ -142,6 +145,7 @@ if (fs.existsSync(packjson)) {
 				"./raw/plugins/heapSize",
 				"./raw/plugins/fcmIcon",
 				"./raw/plugins/noDarkAndroid",
+				"./raw/plugins/withAndroidPermissionsFix",
 				"./raw/plugins/withAndroidVerifiedLinksWorkaround",
 			]
 
@@ -215,6 +219,19 @@ if (fs.existsSync(packjson)) {
 }`
 
 		writeFileSyncWithLog(easjson, easconfg);
+
+
+		const metroConfig = `// Learn more https://docs.expo.io/guides/customizing-metro
+const { getDefaultConfig } = require('expo/metro-config');
+const { wrapWithReanimatedMetroConfig } = require('react-native-reanimated/metro-config');
+
+/** @type {import('expo/metro-config').MetroConfig} */
+const config = getDefaultConfig(__dirname);
+
+module.exports = wrapWithReanimatedMetroConfig(config);
+`;
+		writeFileSyncWithLog(metroconfigjs, metroConfig)
+
 
 		const babelconf = `module.exports = function (api) {
 	api.cache(true);
