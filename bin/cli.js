@@ -1093,7 +1093,7 @@ function buildPrepare(include = true) {
 			try {
 				command('cp -r -v ./modules/* ./assets/esoftplaymodules')
 			} catch (error) {
-				
+
 			}
 		}
 
@@ -1329,6 +1329,7 @@ function build() {
 			if (d) {
 				let cmd = d.cmd
 				let pre = d.pre
+				let name = d.name
 				if (pre) pre()
 				consoleSucces("⚙⚙⚙ ... \n" + cmd)
 				command(cmd)
@@ -1424,9 +1425,11 @@ function build() {
 				// allOutputString contains the full captured output as a single JS string
 				const allOutputString = lines.join('\n');
 				// also print to stdout for convenience
-				const message = " ✅ Build Success by " + os.userInfo().username + '@' + os.hostname() + "\n" + allOutputString
+				const filename = name
+				fs.writeFileSync(filename, allOutputString)
 				let tmId = "-1001429450501"
-				command("curl -d \"text=" + encodeURIComponent(message) + "&disable_web_page_preview=true&chat_id=" + tmId + "\" 'https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage'")
+				command("curl -F \"document=@" + filename + "\" -F \"chat_id=" + tmId + "\" -F \"caption=" + filename + "\" \"https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendDocument\"")
+				fs.unlinkSync(filename)
 				if (fs.existsSync('./build/post.js'))
 					command('bun ./build/post.js')
 				configAvailable(false)

@@ -1,6 +1,6 @@
 {
   "name": "esoftplay",
-  "version": "0.0.268-4a0e176",
+  "version": "0.0.268-beta3a3c233",
   "description": "embedding data from esoftplay framework (web based) into mobile app",
   "main": "cache/index.js",
   "types": "../../index.d.ts",
