@@ -1542,7 +1542,7 @@ function switchStatus(status) {
 	}
 	const hasSeparatePackageJson = status.includes("l") ? fs.existsSync(packlivejson) : fs.existsSync(packdebugjson)
 	if (hasSeparatePackageJson) {
-		command(`rm -rf ${DIR}node_modules ${DIR}package-lock.json ${DIR}yarn.lock ${DIR}bun.lockb && bun install`)
+		command(`rm -rf ${DIR}node_modules ${DIR}package-lock.json ${DIR}yarn.lock ${DIR}bun.lockb ~/.bun/install/cache && bun install`)
 	}
 	return valid
 }
