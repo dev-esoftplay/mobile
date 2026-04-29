@@ -1,6 +1,5 @@
 // noPage
 // withObject
-import { InteractionManager } from 'react-native'
 
 let updater: any
 /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/autoreload.md) untuk melihat dokumentasi*/
@@ -12,7 +11,7 @@ export default {
       updater = undefined
     }
     updater = setInterval(() => {
-      InteractionManager.runAfterInteractions(() => {
+      requestIdleCallback(() => {
         callback()
       });
     }, duration || 6000)

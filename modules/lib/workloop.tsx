@@ -4,7 +4,7 @@ import { LibNotification } from 'esoftplay/cache/lib/notification/import';
 import { UserClass } from 'esoftplay/cache/user/class/import';
 import esp from 'esoftplay/esp';
 import React from 'react';
-import { InteractionManager, View } from 'react-native';
+import { View } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 export interface LibWorkloopProps {
@@ -58,7 +58,7 @@ export default class m extends LibComponent<LibWorkloopProps, LibWorkloopState> 
 
   static onMessage(e: any): void {
     if (workloopHasTask) {
-      InteractionManager.runAfterInteractions(() => {
+      requestIdleCallback(() => {
         const ctask = workloopTasks?.[0]
         if (ctask) {
           if (ctask.length == 2) {

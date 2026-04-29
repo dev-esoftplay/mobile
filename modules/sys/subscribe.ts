@@ -2,7 +2,6 @@
 // useLibs
 
 import React from 'react';
-import { InteractionManager } from 'react-native';
 
 export interface useGlobalSubscriberReturn<T> {
   getValue: () => any,
@@ -38,7 +37,7 @@ export default function useGlobalSubscriber<T>(defaultValue?: any): useGlobalSub
   function notify(newValue?: any) {
     value = newValue;
     subscribers.forEach((fun: Function) => {
-      InteractionManager.runAfterInteractions(() => {
+      requestIdleCallback(() => {
         fun?.(newValue)
       })
     });

@@ -3,7 +3,6 @@
 
 import useSafeState from 'esoftplay/state';
 import { useEffect } from 'react';
-import { InteractionManager } from 'react-native';
 
 export interface LibLazyProps {
   children?: any;
@@ -32,10 +31,10 @@ export default function m(props: LibLazyProps): any {
   const [done, setDone] = useSafeState(false);
 
   useEffect(() => {
-    const int = InteractionManager.runAfterInteractions(() => {
+    const int = requestIdleCallback(() => {
       setDone(true)
     })
-    return () => int.cancel()
+    return () => cancelIdleCallback(int)
   }, [])
 
   // const [sync] = useTasks((item) => new Promise((next) => {

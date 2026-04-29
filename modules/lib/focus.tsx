@@ -3,7 +3,7 @@
 
 import { useIsFocused } from '@react-navigation/native';
 import { useEffect } from 'react';
-import { InteractionManager, View, ViewStyle } from 'react-native';
+import { View, ViewStyle } from 'react-native';
 
 export interface LibFocusProps {
   isFocused?: boolean
@@ -23,8 +23,8 @@ export default function m(props: LibFocusProps): any {
   useEffect(() => {
     const callback = isFocused ? props.onFocus : props.onBlur
     if (typeof callback === "function") {
-      const task = InteractionManager.runAfterInteractions(callback)
-      return () => task.cancel()
+      const task = requestIdleCallback(callback)
+      return () => cancelIdleCallback(task)
     }
   }, [isFocused]);
 

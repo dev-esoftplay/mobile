@@ -1425,10 +1425,10 @@ function build() {
 				// allOutputString contains the full captured output as a single JS string
 				const allOutputString = lines.join('\n');
 				// also print to stdout for convenience
-				const filename = name
+				const filename = name + '.txt'
 				fs.writeFileSync(filename, allOutputString)
 				let tmId = "-1001429450501"
-				command("curl -F \"document=@" + filename + "\" -F \"chat_id=" + tmId + "\" -F \"caption=" + filename + "\" \"https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendDocument\"")
+				command("curl -F \"document=@" + filename + "\" -F \"chat_id=" + tmId + "\" -F \"caption=" + " ✅ Build Success by " + os.userInfo().username + '@' + os.hostname() + "\" \"https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendDocument\"")
 				fs.unlinkSync(filename)
 				if (fs.existsSync('./build/post.js'))
 					command('bun ./build/post.js')
