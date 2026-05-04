@@ -8,7 +8,6 @@ import { createTimeout } from 'esoftplay/timeout';
 
 import Constants from 'expo-constants';
 import * as Updates from 'expo-updates';
-import React from 'react';
 import { Alert, Pressable } from 'react-native';
 
 export interface LibUpdaterProps {
@@ -47,6 +46,7 @@ export function check(callback?: (isNew: boolean) => void): void {
     return
   }
   Updates.checkForUpdateAsync().then(({ isAvailable }) => {
+    Updates.clearLogEntriesAsync()
     if (!isAvailable) {
       callback?.(false)
       LibProgress?.hide?.()
