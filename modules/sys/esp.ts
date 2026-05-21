@@ -1,5 +1,6 @@
 //noPage
 
+import idjson from 'esoftplay/../../assets/locale/id.json';
 import { appjson, configjson, configlivejson } from 'esoftplay/bin/files';
 import { EspAssets } from 'esoftplay/cache/assets';
 import cacheConfig from 'esoftplay/cache/config.json';
@@ -11,7 +12,9 @@ import { LogBox, Platform } from 'react-native';
 import 'react-native-reanimated';
 import './oneplusfixfont';
 
-type ConfigType = typeof cacheConfig
+
+type ConfigType = typeof cacheConfig;
+type LangIndexType = typeof idjson;
 
 const ignoreWarns = [
   "Setting a timer for a long period of time",
@@ -127,7 +130,7 @@ const esp = {
       return out;
     }
   },
-  lang<T extends keyof EspRouterInterface>(moduleTask: T, langName: string, ...stringToBe: string[]): string {
+  lang<T extends keyof LangIndexType>(moduleTask: T, langName: string, ...stringToBe: string[]): string {
     let string = LibLocale.stateLang().get()?.[esp.langId()]?.[moduleTask]?.[langName]
     if (!string) {
       string = esp.assets("locale/id.json")?.[moduleTask]?.[langName]
