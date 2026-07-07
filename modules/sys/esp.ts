@@ -1,9 +1,7 @@
 //noPage
 
-import idjson from 'esoftplay/../../assets/locale/id.json';
 import { appjson, configjson, configlivejson } from 'esoftplay/bin/files';
 import { EspAssets } from 'esoftplay/cache/assets';
-import cacheConfig from 'esoftplay/cache/config.json';
 import { LibLocale } from 'esoftplay/cache/lib/locale/import';
 import { EspRouterPropertyInterface } from 'esoftplay/cache/properties';
 import { EspRouterInterface } from 'esoftplay/cache/routers';
@@ -11,10 +9,11 @@ import * as Application from 'expo-application';
 import { LogBox, Platform } from 'react-native';
 import 'react-native-reanimated';
 import './oneplusfixfont';
+// import cacheConfig from 'esoftplay/../../config.json';
+// import idJson from 'esoftplay/../../assets/locale/id.json';
 
-
-type ConfigType = typeof cacheConfig;
-type LangIndexType = typeof idjson;
+type ConfigType = any;
+type LangIndexType = any;
 
 const ignoreWarns = [
   "Setting a timer for a long period of time",
@@ -169,7 +168,7 @@ const esp = {
     const properties = require('esoftplay/cache/properties')
     return properties(modtast.join("/"));
   },
-  _config(): typeof cacheConfig {
+  _config(): ConfigType {
     let app = esp.mergeDeep(appjson, configjson)
     var msg = ''
     if (!app.hasOwnProperty('config')) {

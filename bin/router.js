@@ -184,7 +184,8 @@ function createIndex() {
   AllRoutes.forEach((nav) => {
     const [module, task] = nav.split('/')
     const comp = ucword(module) + ucword(task)
-    if (!task.includes('.debug') && !task.includes('.live') && !task.includes('.d.')) {
+
+    if (!task.endsWith('.debug') && !task.endsWith('.live') && !task.endsWith('.d') && !task.endsWith('.web')) {
       importer.push(`import { ${comp} } from ${'"esoftplay/cache/' + module + '/' + task + '/import"'} `)
       importer.push(`import * as ${comp}Property from ${'"esoftplay/cache/' + module + '/' + task + '/import"'} `)
     }
