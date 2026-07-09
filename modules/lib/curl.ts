@@ -1,8 +1,9 @@
 
 
 //noPage
-import { reportApiError } from "esoftplay/error";
 import esp from 'esoftplay/esp';
+import { LibCrypt } from 'esoftplay/cache/lib/crypt/import';
+import { reportApiError } from "esoftplay/error";
 
 //api_logger_import
 
@@ -115,7 +116,6 @@ export default class m {
   protected async setHeader(): Promise<void> {
     return new Promise((r) => {
       if ((/:\/\/data.*?\/(.*)/g).test(this.url)) {
-        const LibCrypt = esp.mod("lib/crypt")
         this.header["masterkey"] = new LibCrypt().encode(this.url)
       }
       r()

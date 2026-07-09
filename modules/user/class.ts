@@ -3,6 +3,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getMessaging } from '@react-native-firebase/messaging';
 import { LibObject } from 'esoftplay/cache/lib/object/import';
+import { LibCrypt } from 'esoftplay/cache/lib/crypt/import';
 import esp from 'esoftplay/esp';
 import useGlobalState, { useGlobalReturn } from 'esoftplay/global';
 import moment from "esoftplay/moment";
@@ -91,7 +92,6 @@ export default {
   async sendToken(token: string) {
     if (token) {
       const config = esp.config();
-      const LibCrypt = esp.mod("lib/crypt")
       var post: any = {
         user_id: 0,
         group_id: esp.config('group_id'),

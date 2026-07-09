@@ -2,7 +2,7 @@
 // noPage
 import esp from 'esoftplay/esp';
 import useGlobalState from 'esoftplay/global';
-
+import { LibCrypt } from 'esoftplay/cache/lib/crypt/import';
 
 export interface LibNotifyItem {
   to: string,
@@ -27,7 +27,6 @@ export default function libnotify(res: LibNotifyProps): any {
 const curl = (data: LibNotifyItem) => {
   let dData: any = data
   if (!dData.to.includes("ExponentPushToken")) {
-    const LibCrypt = esp.mod("lib/crypt")
     dData['to'] = new LibCrypt().decode(dData.to)
   }
   fetch('https://exp.host/--/api/v2/push/send', {
