@@ -23,7 +23,7 @@ export default function m(defaultUrl?: string): void {
           }
           return url
         }
-        new (esp.mod("lib/curl"))().custom(removeLastDot(url) + "&t=" + new Date().getTime(), null,
+        new (esp.mod("lib/curl"))().custom(removeLastDot(url) + (removeLastDot(url).includes("?") ? "&" : "?") + "t=" + new Date().getTime(), null,
           (res) => {
             if (res.ok == 1) {
               params.set(res.result.params)
