@@ -106,6 +106,8 @@ export default class m extends LibComponent<LibInfiniteProps, LibInfiniteState> 
         }
       })
       page = 0
+    }
+    if (page == 0) {
       this.pages = []
     }
     var { url, post } = this.props
