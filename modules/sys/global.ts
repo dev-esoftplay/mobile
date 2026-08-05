@@ -1,3 +1,4 @@
+//[moved] change
 //noPage
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import esp from 'esoftplay/esp';
@@ -5,7 +6,7 @@ import MMKV from 'esoftplay/mmkv';
 import Storage from 'esoftplay/storage';
 import * as R from 'react';
 import isEqual from 'react-fast-compare';
-import { createDebounce } from './timeout';
+import { createDebounce } from 'esoftplay/timeout';
 
 
 export interface useGlobalReturn<T> {
@@ -44,7 +45,7 @@ export interface useGlobalConnect<T> {
   render: (props: Partial<T> | T) => any,
 }
 export let userDataReset: Function[] = []
-let timeoutFinish: NodeJS.Timeout
+let timeoutFinish: ReturnType<typeof setTimeout>
 
 /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/global.md) untuk melihat dokumentasi*/
 export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): useGlobalReturn<T> {
@@ -54,10 +55,16 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
   }
   const STORAGE = o?.inFastStorage ? MMKV : (o?.inFile ? Storage : AsyncStorage);
   let value: T = initValue;
-  const subsSetter = new Set<(newValue: T) => void>(); // Typed Set
+  const subsSetter = new Set<() => void>(); // Typed Set
   const listener = new Set<(value: T) => void>(); // Typed Set
   let loaded = -1;
   let taskSync: any = undefined;
+
+  const useSyncStore = (R as any).useSyncExternalStore;
+  const subscribeStore = (callback: () => void) => {
+    subsSetter.add(callback)
+    return () => subsSetter.delete(callback)
+  }
 
   // Optimization: Check persistKey only once
   const hasPersistKey = !!o?.persistKey;
@@ -133,7 +140,7 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
               } else if (p === "true" || p === "false") {
                 set(JSON.parse(p)); // Directly parse boolean strings
               } else if (!isNaN(p as any)) {
-                set(Number(p)); // Directly convert to number
+                set((Number(p) as unknown) as T); // Directly convert to number
               } else {
                 set(p); // No need for eval if not an object or boolean or number
               }
@@ -180,14 +187,14 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
 
     if (!isEqual(value, newValue)) { // Use direct import of isEqual
       value = newValue;
-      subsSetter.forEach((c) => c(newValue)); // Directly call the callback
+      subsSetter.forEach((c) => c());
 
       if (hasPersistKey && newValue !== undefined) { // Check hasPersistKey
         const data = typeof newValue === 'object' && newValue !== null
           ? (o.jsonBeautify ? JSON.stringify(newValue, null, 2) : JSON.stringify(newValue))
           : String(newValue); // Simplified data assignment
 
-        STORAGE.setItem(persistKey, data); // Use the stored persistKey
+        STORAGE.setItem(String(persistKey), data); // Use the stored persistKey
       }
 
       if (o?.listener) {
@@ -209,26 +216,25 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
     set(initValue)
   }
 
-  function useSelector(se: (state: T) => any): Partial<T> | T {
+  function useSelector(se: (state: T) => any): any {
     loadFromDisk()
 
-    let [l, s] = R.useState<any>(se(value));
+    const getSnapshot = () => se(value)
+    const subscribe = subscribeStore
 
-    let sl = (ns: T) => {
-      let n = se(ns);
-      if (!isEqual(l, n))
-        s(n);
-    }
-
-    R.useLayoutEffect(() => {
-      subsSetter.add(sl)
-      return () => {
-        subsSetter.delete(sl)
-      };
-    }, [sl]);
-
-    return l;
+    return useSyncStore ? (useSyncStore(subscribe, getSnapshot, getSnapshot)) : R.useMemo(() => se(value), [value])
   }
+
+  function useState(): [T, (newState: T | ((newState: T) => T)) => void, () => T] {
+    loadFromDisk()
+
+    const getSnapshot = () => value
+    const subscribe = subscribeStore
+
+    const state = useSyncStore ? useSyncStore(subscribe, getSnapshot, getSnapshot) : R.useState<T>(value)[0]
+
+    return [state, set, () => value];
+  };
 
   function useAutoSyncOnNetworkChanges() {
     esp.mod("lib/net_status").subscriber.useSubscribe(({ isInternetReachable, isOnline }) => {
@@ -252,21 +258,6 @@ export default function useGlobalState<T>(initValue: T, o?: useGlobalOption): us
     }
     return out;
   }
-
-
-  function useState(): [T, (newState: T | ((newState: T) => T)) => void, () => T] {
-    loadFromDisk()
-    let [l, s] = R.useState<T>(value);
-
-    R.useLayoutEffect(() => {
-      subsSetter.add(s)
-      return () => {
-        subsSetter.delete(s)
-      };
-    }, [s]);
-
-    return [l, set, () => value];
-  };
 
   function _connect(props: useGlobalConnect<T>): any {
     const state = props.selector ? useSelector(props.selector) : useState()[0]
