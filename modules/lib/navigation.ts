@@ -10,7 +10,7 @@ import { UserRoutes } from 'esoftplay/cache/user/routes/import';
 
 import esp from 'esoftplay/esp';
 import useGlobalState, { useGlobalReturn } from 'esoftplay/global';
-import React, { useEffect } from "react";
+import React, { useEffect, useSyncExternalStore } from "react";
 
 export interface LibNavigationTabConfigReturn<S extends keyof EspArgsInterface> {
   activeIndex: number,
@@ -23,7 +23,44 @@ export interface LibNavigationInjector {
   children?: any
 }
 
-export const lastArgs = useGlobalState(undefined, { persistKey: "lib/navigation/lastargs" })
+interface LibNavigationState {
+  redirect: Record<number, { func: Function }>,
+  data: Record<string | number, any>,
+  ref: any,
+  isReady: boolean
+}
+
+const initialNavigationState: LibNavigationState = {
+  redirect: {},
+  data: {},
+  ref: undefined,
+  isReady: false
+}
+
+let navigationState = initialNavigationState
+const navigationSubscribers = new Set<() => void>()
+
+const navigationStore = {
+  getSnapshot: () => navigationState,
+  subscribe: (callback: () => void) => {
+    navigationSubscribers.add(callback)
+    return () => navigationSubscribers.delete(callback)
+  },
+  setState: (nextState: LibNavigationState) => {
+    navigationState = nextState
+    navigationSubscribers.forEach((callback) => callback())
+  }
+}
+
+export function useNavigationState(): LibNavigationState {
+  return useSyncExternalStore(
+    navigationStore.subscribe,
+    navigationStore.getSnapshot,
+    navigationStore.getSnapshot
+  )
+}
+
+export const lastArgs = useGlobalState(undefined, { persistKey: "lib/navigation/lastargs", inFastStorage: true, loadOnInit: true })
 
 function logArgs(params: any) {
   lastArgs.set(params)
@@ -31,17 +68,25 @@ function logArgs(params: any) {
 
 /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md) untuk melihat dokumentasi*/
 export default {
-  _redirect: {} as any,
-  _data: {} as any,
-  _ref: {} as any,
-  _isReady: false,
+  get _redirect() {
+    return navigationStore.getSnapshot().redirect
+  },
+  get _data() {
+    return navigationStore.getSnapshot().data
+  },
+  get _ref() {
+    return navigationStore.getSnapshot().ref
+  },
+  get _isReady() {
+    return navigationStore.getSnapshot().isReady
+  },
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#setRef) untuk melihat dokumentasi*/
   setRef(ref: any): void {
-    this._ref = ref
+    navigationStore.setState({ ...navigationStore.getSnapshot(), ref })
   },
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#setIsReady) untuk melihat dokumentasi*/
   setIsReady(isReady: boolean): void {
-    this._isReady = isReady;
+    navigationStore.setState({ ...navigationStore.getSnapshot(), isReady });
   },
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#getIsReady) untuk melihat dokumentasi*/
   getIsReady(): boolean {
@@ -49,7 +94,8 @@ export default {
   },
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#setNavigation) untuk melihat dokumentasi*/
   setNavigation(nav: any): void {
-    this._data._navigation = nav
+    const state = navigationStore.getSnapshot()
+    navigationStore.setState({ ...state, data: { ...state.data, _navigation: nav } })
   },
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#getArgs) untuk melihat dokumentasi*/
   getArgs(props: any, key: string, defOutput?: any): any {
@@ -72,45 +118,49 @@ export default {
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#setRedirect) untuk melihat dokumentasi*/
   setRedirect(func: Function, key?: number) {
     if (!key) key = 1
-    this._redirect[key] = { func }
+    const state = navigationStore.getSnapshot()
+    navigationStore.setState({ ...state, redirect: { ...state.redirect, [key]: { func } } })
   },
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#delRedirect) untuk melihat dokumentasi*/
   delRedirect(key?: number) {
     if (!key) key = 1
-    delete this._redirect[key]
+    const state = navigationStore.getSnapshot()
+    const redirect = { ...state.redirect }
+    delete redirect[key]
+    navigationStore.setState({ ...state, redirect })
   },
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#redirect) untuk melihat dokumentasi*/
   redirect(key?: number) {
     if (!key) key = 1
-    if (this._redirect?.[key]) {
-      const { func } = this._redirect?.[key]
+    const redirect = navigationStore.getSnapshot().redirect
+    if (redirect?.[key]) {
+      const { func } = redirect[key]
       if (typeof func == 'function')
         func()
-      delete this._redirect[key]
+      const state = navigationStore.getSnapshot()
+      const nextRedirect = { ...state.redirect }
+      delete nextRedirect[key]
+      navigationStore.setState({ ...state, redirect: nextRedirect })
     }
   },
   /* <T  EspRouterInterface>(path: T): EspRouterInterface[T] { */
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#navigate) untuk melihat dokumentasi*/
   navigate<S extends keyof EspArgsInterface>(route: S, params?: EspArgsInterface[S]): void {
     logArgs(params)
-    doIt(() => {
-      this._ref?.navigate?.(replaceModuleByUrlParam(params, route), params)
-    })
+    this._ref?.navigate?.(replaceModuleByUrlParam(params, route), params)
   },
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#navigateTab) untuk melihat dokumentasi*/
   navigateTab<S extends keyof EspArgsInterface>(route: S, tabIndex: number, params?: EspArgsInterface[S]): void {
     logArgs(params)
-    doIt(() => {
-      this._ref?.navigate?.(replaceModuleByUrlParam(params, route), params)
-      setTimeout(() => {
-        const TabConfig = esp.modProp(replaceModuleByUrlParam(params, route))?.TabConfig;
-        if (TabConfig) {
-          TabConfig.set(esp.mod("lib/object").set(TabConfig.get(), tabIndex)('activeIndex'))
-        } else {
-          console.error("TabConfig not found or exported in module " + route);
-        }
-      }, 100);
-    })
+    this._ref?.navigate?.(replaceModuleByUrlParam(params, route), params)
+    setTimeout(() => {
+      const TabConfig = esp.modProp(replaceModuleByUrlParam(params, route))?.TabConfig;
+      if (TabConfig) {
+        TabConfig.set(esp.mod("lib/object").set(TabConfig.get(), tabIndex)('activeIndex'))
+      } else {
+        console.error("TabConfig not found or exported in module " + route);
+      }
+    }, 100);
   },
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#createTabConfig) untuk melihat dokumentasi*/
   createTabConfig<S extends keyof EspArgsInterface>(modules: S[], defaultIndex?: number): useGlobalReturn<LibNavigationTabConfigReturn<S>> {
@@ -147,7 +197,10 @@ export default {
       key = 1
     }
     try {
-      delete this._data[key]
+      const state = navigationStore.getSnapshot()
+      const data = { ...state.data }
+      delete data[key]
+      navigationStore.setState({ ...state, data })
     } catch (error) { }
   },
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#sendBackResult) untuk melihat dokumentasi*/
@@ -157,7 +210,10 @@ export default {
     }
     if (this._data[key] != undefined) {
       this._data[key](result)
-      delete this._data[key]
+      const state = navigationStore.getSnapshot()
+      const data = { ...state.data }
+      delete data[key]
+      navigationStore.setState({ ...state, data })
     }
     this.back()
   },
@@ -172,13 +228,18 @@ export default {
       }
       params['_senderKey'] = key
       if (!this._data.hasOwnProperty(key) && key != undefined) {
-        this._data[key] = (value: any) => {
-          r(value)
-        };
+        const state = navigationStore.getSnapshot()
+        navigationStore.setState({
+          ...state,
+          data: {
+            ...state.data,
+            [key]: (value: any) => {
+              r(value)
+            }
+          }
+        })
       }
-      doIt(() => {
-        this.push(replaceModuleByUrlParam(params, route), params)
-      })
+      this.push(replaceModuleByUrlParam(params, route), params)
     })
   },
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#replace) untuk melihat dokumentasi*/
@@ -191,14 +252,12 @@ export default {
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#push) untuk melihat dokumentasi*/
   push<S extends keyof EspArgsInterface>(route: S, params?: EspArgsInterface[S]): void {
     logArgs(params)
-    doIt(() => {
-      this._ref?.dispatch?.(
-        StackActions.push(
-          replaceModuleByUrlParam(params, route),
-          params
-        )
+    this._ref?.dispatch?.(
+      StackActions.push(
+        replaceModuleByUrlParam(params, route),
+        params
       )
-    })
+    )
   },
   /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/navigation.md#reset) untuk melihat dokumentasi*/
   reset(route?: LibNavigationRoutes, ...routes: LibNavigationRoutes[]): void {
@@ -219,9 +278,7 @@ export default {
   back(deep?: number): void {
     let _deep = deep || 1
     const popAction = StackActions.pop(_deep);
-    doIt(() => {
-      this._ref?.dispatch?.(popAction)
-    })
+    this._ref?.dispatch?.(popAction)
   },
 
   /* return `root` on initialRoute otherwise return the route was active  */
@@ -242,10 +299,6 @@ export default {
     if (!props.children) return null
     return React.cloneElement(props.children, { navigation: { state: { params: props.args } } })
   }
-}
-
-function doIt(func: Function) {
-  requestAnimationFrame(() => func())
 }
 
 
