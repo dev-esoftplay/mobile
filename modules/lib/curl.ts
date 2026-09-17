@@ -4,8 +4,8 @@
 import esp from 'esoftplay/esp';
 import { LibCrypt } from 'esoftplay/cache/lib/crypt/import';
 import { reportApiError } from "esoftplay/error";
+import { File } from 'expo-file-system';
 
-//api_logger_import
 
 /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/curl.md) untuk melihat dokumentasi*/
 export default class m {
@@ -30,7 +30,7 @@ export default class m {
   }
 
   constructor(uri?: string, post?: any, onDone?: (res: any, msg: string) => void, onFailed?: (error: any, timeout: boolean) => void, debug?: number) {
-    this.header = { version: esp.config()?.publish_id }
+    this.header = { version: (esp.config()?.publish_id).toString() }
     // this.maxRetry = 2;
     this.setUri = this.setUri.bind(this);
     this.setUrl = this.setUrl.bind(this);
@@ -356,11 +356,12 @@ export default class m {
     if (post) {
       if (upload) {
         let fd = new FormData();
-        Object.keys(post).map(function (key) {
+        await Promise.all(Object.keys(post).map(async (key) => {
           if (post[key] !== undefined) {
-            fd.append(key, post[key])
+            const file = new File(post[key].uri)
+            fd.append(key, file as any, post[key].name)
           }
-        });
+        }));
         this.post = fd
       } else {
         let ps = Object.keys(post).map((key) => {
@@ -383,10 +384,9 @@ export default class m {
       this.setUrl(esp.config("url"))
     }
     await this.setHeader();
-    if (upload)
-      this.header["Content-Type"] = "multipart/form-data"
-    else
+    if (!upload)
       this.header["Content-Type"] = "application/x-www-form-urlencoded;charset=UTF-8"
+    
     let options: any = {
       method: !this.post ? "GET" : "POST",
       headers: this.header,
