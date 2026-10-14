@@ -17,7 +17,7 @@ export interface LibPictureProps {
 /** Klik [disini](https://github.com/dev-esoftplay/mobile-docs/blob/main/modules/lib/picture.md) untuk melihat dokumentasi*/
 export default function m(props: LibPictureProps): any {
 
-  let resizeMode
+  let resizeMode: any
   if (props?.style?.resizeMode == 'cover')
     resizeMode = "cover"
   else if (props?.style?.resizeMode == 'contain')
@@ -35,6 +35,8 @@ export default function m(props: LibPictureProps): any {
   }
 
   return (
-    <Image {...props} source={source} contentFit={resizeMode} allowDownscaling cachePolicy={"memory-disk"} />
+    <Image {...props}
+      recyclingKey={props.source.uri}
+      source={source} contentFit={resizeMode} allowDownscaling cachePolicy={"memory-disk"} />
   )
 }
