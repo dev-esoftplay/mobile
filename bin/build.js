@@ -218,7 +218,8 @@ if (fs.existsSync(packjson)) {
 	}
 }`
 
-		writeFileSyncWithLog(easjson, easconfg);
+		if (!fs.existsSync(easjson))
+			writeFileSyncWithLog(easjson, easconfg);
 
 
 		const metroConfig = `// Learn more https://docs.expo.io/guides/customizing-metro
