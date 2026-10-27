@@ -300,10 +300,12 @@ yarn-error.log
 		const AppJS = `import { LibNotification } from 'esoftplay/cache/lib/notification/import';
 import { UserIndex } from 'esoftplay/cache/user/index/import';
 import * as Notifications from 'expo-notifications';
+import { Platform } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { enableFreeze, enableScreens } from 'react-native-screens';
 
-enableFreeze()
+if (Platform.OS == 'android')
+  enableFreeze()
 enableScreens()
 
 Notifications.addNotificationResponseReceivedListener(x => LibNotification.onAction(x));
