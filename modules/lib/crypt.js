@@ -1,3 +1,4 @@
+//noPage
 import esp from 'esoftplay/esp';
 
 var crypto
