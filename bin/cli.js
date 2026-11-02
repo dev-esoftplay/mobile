@@ -387,7 +387,7 @@ function configUpdate(state) {
 		if (fs.existsSync('/var/www/html/ota/scripts/config_version.js')) {
 			command(`bun /var/www/html/ota/scripts/config_version.js ${_slug} ${newVersion}`)
 		}
-		command(`curl -v -F 'chat_id=-496494136' -F caption='#` + _slug + `\n${newVersion}\n` + os.userInfo().username + '@' + os.hostname() + `' -F document=@` + _path + ` https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendDocument`)
+		command(`curl -v -F 'chat_id=-496494136' -F caption='#` + _slug + `\n${newVersion}\n` + os.userInfo().username + '@' + os.hostname() + `' -F document=@` + _path + ` https://api.telegram.org/bot${readToJSON(confjson).config.errorReport.bot}/sendDocument`)
 	}
 	else
 		consoleError(_path, _slug)
@@ -1428,7 +1428,7 @@ function build() {
 				const filename = name + '.txt'
 				fs.writeFileSync(filename, allOutputString)
 				let tmId = "-1001429450501"
-				command("curl -F \"document=@" + filename + "\" -F \"chat_id=" + tmId + "\" -F \"caption=" + " ✅ Build Success by " + os.userInfo().username + '@' + os.hostname() + "\" \"https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendDocument\"")
+				command("curl -F \"document=@" + filename + "\" -F \"chat_id=" + tmId + "\" -F \"caption=" + " ✅ Build Success by " + os.userInfo().username + '@' + os.hostname() + "\" \"https://api.telegram.org/bot" + readToJSON(confjson).config.errorReport.bot + "/sendDocument\"")
 				fs.unlinkSync(filename)
 				if (fs.existsSync('./build/post.js'))
 					command('bun ./build/post.js')
@@ -1548,7 +1548,7 @@ function switchStatus(status) {
 }
 
 function tm(message) {
-	command("curl -d \"text=" + message + "&disable_web_page_preview=true&chat_id=-1001227788828\" 'https://api.telegram.org/bot112133589:AAFENoEa4IY_YDam8YDoltqayawGyYPDBN8/sendMessage'")
+	command("curl -d \"text=" + message + "&disable_web_page_preview=true&chat_id=-1001227788828\" 'https://api.telegram.org/bot" + readToJSON(confjson).config.errorReport.bot + "/sendMessage'")
 }
 
 class LibObject {

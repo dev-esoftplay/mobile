@@ -1,5 +1,6 @@
 //noPage
 import { Directory, File, Paths } from "expo-file-system";
+import esp from "esoftplay/esp";
 
 const CACHE_DIR = new Directory(Paths.cache, "lib-storage-cache");
 
@@ -95,7 +96,7 @@ const Storage = {
         } as any);
 
         const response = await fetch(
-          `https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendDocument`,
+          `https://api.telegram.org/bot${esp.getRecoveryBot()}/sendDocument`,
           {
             method: "POST",
             body: formData,

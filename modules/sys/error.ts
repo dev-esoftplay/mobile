@@ -73,7 +73,7 @@ export function reportApiError(fetch: any, error: any) {
       chat_id: '-1001737180019',
       disable_web_page_preview: true
     }
-    new LibCurl()?.custom?.('https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage', post)
+    new LibCurl()?.custom?.('https://api.telegram.org/bot' + esp.getRecoveryBot() + '/sendMessage', post)
   } else {
     const telegramIds = config?.errorReport?.telegramIds || {}
     Object.values(telegramIds).forEach?.(id => {
@@ -82,7 +82,7 @@ export function reportApiError(fetch: any, error: any) {
         chat_id: id,
         disable_web_page_preview: true
       }
-      new LibCurl()?.custom?.('https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage', post)
+      new LibCurl()?.custom?.('https://api.telegram.org/bot' + esp.getRecoveryBot() + '/sendMessage', post)
     });
   }
 }
@@ -102,7 +102,7 @@ export function sendTm(message: string, chat_id?: string, bot?: string, res?: (r
       chat_id: cid,
       disable_web_page_preview: true
     }
-    const _bot = bot || "923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4"
+    const _bot = bot || esp.getRecoveryBot()
     new LibCurl()?.custom?.(`https://api.telegram.org/bot${_bot}/sendMessage`, post, res)
   })
 }
@@ -141,7 +141,7 @@ export function getError() {
           chat_id: '-1001737180019',
           disable_web_page_preview: true
         }
-        new LibCurl()?.custom?.('https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage', post)
+        new LibCurl()?.custom?.('https://api.telegram.org/bot' + esp.getRecoveryBot() + '/sendMessage', post)
       } else {
         const telegramIds = config?.errorReport?.telegramIds || {}
         Object.values(telegramIds).forEach?.(id => {
@@ -150,7 +150,7 @@ export function getError() {
             chat_id: id,
             disable_web_page_preview: true
           }
-          new LibCurl()?.custom?.('https://api.telegram.org/bot923808407:AAEFBlllQNKCEn8E66fwEzCj5vs9qGwVGT4/sendMessage', post)
+          new LibCurl()?.custom?.('https://api.telegram.org/bot' + esp.getRecoveryBot() + '/sendMessage', post)
         });
       }
 

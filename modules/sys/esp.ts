@@ -113,6 +113,9 @@ const esp = {
     }
     return configjson.config.domain != lconf.config.domain
   },
+  getRecoveryBot(): string {
+    return esp.config()?.errorReport?.bot
+  },
   readDeepObj(obj: any) {
     return function (param?: string, ...params: string[]): any {
       let out: any = obj
