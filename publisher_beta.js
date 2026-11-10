@@ -8,5 +8,5 @@ const randomHash = crypto.randomBytes(4).toString('hex').substring(0,7)
 const nextVersion = baseVersion + '-beta' + randomHash
 const newPackJson = { ...packJson, version: nextVersion }
 fs.writeFileSync("./package.json", JSON.stringify(newPackJson, undefined, 2))
-shell("npm publish", { stdio: ['inherit', 'inherit', 'inherit'] })
+shell("npm publish --tag beta", { stdio: ['inherit', 'inherit', 'inherit'] })
 console.log("\nbun add esoftplay@" + nextVersion + " && bun install\n")

@@ -41,6 +41,7 @@ if (fs.existsSync(packjson)) {
 
 	if (args[0] == "install") {
 		$package.scripts.start = "esp start && bunx expo start --dev-client"
+		$package.scripts.test = "node /var/www/html/mobile-tester/index.mjs"
 		const existedTrustedDependencies = $package.trustedDependencies
 		const trustedDependencies = [
 			"esoftplay",

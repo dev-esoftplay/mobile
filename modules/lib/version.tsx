@@ -1,3 +1,4 @@
+// noPage
 
 import { LibComponent } from 'esoftplay/cache/lib/component/import';
 import { LibCurl } from 'esoftplay/cache/lib/curl/import';
