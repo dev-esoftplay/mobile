@@ -1,4 +1,3 @@
-// withHooks
 
 import { LibComponent } from 'esoftplay/cache/lib/component/import';
 import { LibIcon } from 'esoftplay/cache/lib/icon/import';
