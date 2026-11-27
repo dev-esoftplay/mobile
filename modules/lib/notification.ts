@@ -122,15 +122,8 @@ onTokenRefresh(getMessaging(), (token) => {
   })
 })
 
-
-
-function mainUrl(): string {
-  const { protocol, domain, uri } = esp.config()
-  return protocol + "://" + domain + uri;
-}
-
 function readAll(ids: (string | number)[]) {
-  let url = mainUrl() + "user/push-read";
+  let url = "user/push-read";
   const { salt } = esp.config()
   let post: any = {
     notif_id: ids.join(','),
@@ -221,7 +214,7 @@ export default {
     }
   },
   loadData(isFirst?: boolean): void {
-    let _uri = mainUrl() + "user/push-notif/desc"
+    let _uri = "user/push-notif/desc"
     let lastUrl = lastUrlState.get()
     if (isFirst) {
       lastUrl = undefined
